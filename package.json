@@ -1,14 +1,26 @@
 {
-  "name": "mecraft",
+  "name": "mecraft-monorepo",
   "private": true,
   "version": "3.1.0",
   "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "vite",
+    "dev:launcher": "npm run dev --workspace=@mecraft/launcher",
+    "dev:pdf": "npm run dev --workspace=@mecraft/mepdf",
+    "dev:photo": "npm run dev --workspace=@mecraft/mephoto",
+    "desktop:launcher": "npm run desktop:dev --workspace=@mecraft/launcher",
+    "desktop:pdf": "npm run desktop:dev --workspace=@mecraft/mepdf",
+    "desktop:photo": "npm run desktop:dev --workspace=@mecraft/mephoto",
     "build": "tsc && vite build",
+    "build:all": "npm run build --workspaces --if-present",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:all": "vitest run",
     "desktop:dev": "tauri dev",
     "desktop:build": "tauri build"
   },
