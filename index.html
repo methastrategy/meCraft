@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="bmw">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>meCraft Studio</title>
+    <meta name="description" content="meCraft Studio - สุดยอดห้องแล็บโปรแกรมจัดการเอกสารและภาพระดับโปร (PDF & Photo Studio) ทำงานในเครื่อง 100% ไร้การอัปโหลดไฟล์ ปลอดภัยสูงสุด" />
+    <meta name="keywords" content="mecraft, mepdf, photo studio, pdf editor, crop, deskew, camscanner, merge pdf, split pdf, compress pdf, protect pdf, watermark pdf, page numbering, sanitize pdf, รวมไฟล์ pdf, แต่งรูป, โปรแกรม pdf ฟรี" />
+    <meta name="author" content="Metha Triparpanchit" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://mecraft.vercel.app/" />
+
+    <!-- PWA & Mobile Meta -->
+    <meta name="theme-color" content="#06070a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" type="image/png" href="/assets/mascot/sticker_pdf_studio.png?v=3" />
+    <link rel="shortcut icon" href="/favicon.ico?v=3" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3" />
+
+    <!-- Open Graph / Social Previews -->
+    <meta property="og:site_name" content="meCraft" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mecraft.vercel.app/" />
+    <meta property="og:title" content="meCraft Studio" />
+    <meta property="og:description" content="100% In-Browser & Desktop Creative Studio (PDF & Photo). Merge, split, compress, edit photos, protect, watermark offline with zero server upload." />
+    <meta property="og:image" content="https://mecraft.vercel.app/hero_mepdf_studio.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://mecraft.vercel.app/" />
+    <meta name="twitter:title" content="meCraft Studio" />
+    <meta name="twitter:description" content="100% In-Browser & Desktop Creative Studio (PDF & Photo). Merge, split, compress, edit photos, protect, watermark offline with zero server upload." />
+    <meta name="twitter:image" content="https://mecraft.vercel.app/hero_mepdf_studio.jpg" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "meCraft",
+        "alternateName": "meCraft Studio",
+        "url": "https://mecraft.vercel.app/",
+        "description": "100% In-Browser & Desktop Pure Client-Side Creative & Document Studio (PDF & Photo). Merge, split, rotate, photo enhance, compress, watermark, page number, encrypt with zero server upload.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All modern browsers and Windows Desktop",
+        "browserRequirements": "Requires JavaScript. Supports WebAssembly and Web Workers.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "Merge multiple PDF files into one",
+          "Split PDF by page ranges or individual pages",
+          "Dual-engine compression: Lossless vector stream deflation & Canvas downsampling",
+          "Rotated watermarks (text and image) with custom opacity and positioning",
+          "Automated page numbering with custom formats and cover skipping",
+          "AES document encryption and password protection",
+          "1-Click metadata inspection and sanitizer",
+          "100% offline client-side privacy with zero server uploads"
+        ],
+        "author": {
+          "@type": "Person",
+          "name": "Metha Triparpanchit"
+        }
+      }
+    </script>
+
+    <!-- Fonts (Linear Precision: Plus Jakarta Sans + IBM Plex Sans Thai + JetBrains Mono) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <!-- Critical Accessibility & Focus Harness (Hard Invariants) -->
+    <style>
+      :focus-visible {
+        outline: 2px solid #5068f2;
+        outline-offset: 2px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+      @media (forced-colors: active) {
+        :focus-visible {
+          outline: 2px solid Highlight !important;
+          outline-offset: 2px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="app-container"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
