@@ -9,6 +9,203 @@ import {
   type DownloadProgress,
 } from '@mecraft/core-bridge';
 
+export interface LauncherTranslations {
+  brandTitle: string;
+  brandTag: string;
+  brandSubtitle: string;
+  networkConnected: string;
+  networkOffline: string;
+  settingsBtn: string;
+  langBtn: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  badgePrivacy: string;
+  badgeDesktop: string;
+  badgeOcr: string;
+  badgeHomography: string;
+  dropZoneTitle: string;
+  dropZoneSubtitle: string;
+  dropZoneBtn: string;
+  dropZoneRouting: (app: string) => string;
+  catalogTitle: string;
+  catalogCount: (count: number) => string;
+  filterAll: string;
+  filterInstalled: string;
+  filterDoc: string;
+  filterGraphics: string;
+  openWebStudio: string;
+  launchDesktop: string;
+  installDesktop: (size?: string) => string;
+  installing: (percent: number) => string;
+  comingSoon: string;
+  inDevelopment: string;
+  moreOptions: string;
+  openFolder: string;
+  checkUpdates: string;
+  uninstall: string;
+  recentProjectsTitle: string;
+  recentCount: (count: number) => string;
+  clearHistory: string;
+  emptyRecents: string;
+  settingsTitle: string;
+  storageDirLabel: string;
+  autoCheckLabel: string;
+  hwAccelLabel: string;
+  healthTitle: string;
+  privacyGuaranteeTitle: string;
+  privacyGuaranteeText: string;
+  runtimeLabel: string;
+  runtimeTauri: string;
+  runtimeWeb: string;
+  statusHealthy: string;
+  statusDraft: string;
+  doneBtn: string;
+  copyPathBtn: string;
+  copiedBtn: string;
+  updateDialogTitle: (app: string) => string;
+  launchErrorTitle: (app: string) => string;
+  installErrorTitle: (app: string) => string;
+  unsupportedFile: string;
+}
+
+export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
+  en: {
+    brandTitle: 'meCraft',
+    brandTag: 'Ecosystem Hub',
+    brandSubtitle: 'The Creative & Document Workstation Ecosystem',
+    networkConnected: '100% Private Local',
+    networkOffline: 'Offline Sandbox',
+    settingsBtn: 'Settings & Health',
+    langBtn: 'TH',
+    heroTitle: 'Creative & Document Workstation Studio',
+    heroSubtitle: 'Pure Client-Side Private Processing • Zero-Cloud Upload • Native Windows Desktop + Offline PWA',
+    badgePrivacy: '100% In-Browser Privacy',
+    badgeDesktop: 'Offline PWA + Native Desktop',
+    badgeOcr: 'Searchable Client OCR',
+    badgeHomography: '4-Point Homography Deskew',
+    dropZoneTitle: 'Drop any PDF or Image here to launch instantly in meCraft Studio',
+    dropZoneSubtitle: 'Auto-routes PDF to mePDF Studio • Images to mePhoto Studio • 100% Private In-Browser Execution',
+    dropZoneBtn: 'Browse Local File...',
+    dropZoneRouting: (app) => `Routing to ${app}...`,
+    catalogTitle: 'Apps Catalog',
+    catalogCount: (count) => `${count} Apps`,
+    filterAll: 'All Apps',
+    filterInstalled: 'Installed',
+    filterDoc: 'Document Tools',
+    filterGraphics: 'Creative & Graphics',
+    openWebStudio: 'Open Web Studio',
+    launchDesktop: 'Launch Desktop (.exe)',
+    installDesktop: (size) => `Install Desktop (.exe)${size ? ` (${size})` : ''}`,
+    installing: (percent) => `Installing... ${percent}%`,
+    comingSoon: 'Coming Soon • Notify Me',
+    inDevelopment: 'In Development',
+    moreOptions: 'More Options',
+    openFolder: 'Open Install Folder',
+    checkUpdates: 'Check for Updates',
+    uninstall: 'Uninstall App',
+    recentProjectsTitle: 'Universal Recent Projects',
+    recentCount: (count) => `${count} Files`,
+    clearHistory: 'Clear History',
+    emptyRecents: 'No recent projects yet. Drop files above or open documents in mePDF / mePhoto to see them here.',
+    settingsTitle: 'meCraft Ecosystem Health & Settings',
+    storageDirLabel: 'Applications Storage Directory',
+    autoCheckLabel: 'Automatically check for app updates upon launching meCraft Hub',
+    hwAccelLabel: 'Hardware Acceleration (DirectX 12 / Vulkan / WebGL 2.0)',
+    healthTitle: 'Ecosystem System Health Check',
+    privacyGuaranteeTitle: 'Zero-Cloud & 100% Privacy Guarantee',
+    privacyGuaranteeText: 'All documents, photos, homography rectification, and OCR text recognition execute entirely inside your local device sandbox. No documents, images, or telemetry are ever uploaded to any remote server.',
+    runtimeLabel: 'Runtime Sandbox Environment',
+    runtimeTauri: 'Native Windows Desktop Engine (Tauri v2)',
+    runtimeWeb: 'Pure Client-Side Browser Sandbox (Offline PWA Ready)',
+    statusHealthy: 'Ready • Fully Functional',
+    statusDraft: 'Planned / Pipeline',
+    doneBtn: 'Done',
+    copyPathBtn: 'Copy Path',
+    copiedBtn: 'Copied!',
+    updateDialogTitle: (app) => `Update Check — ${app}`,
+    launchErrorTitle: (app) => `Launch Error — ${app}`,
+    installErrorTitle: (app) => `Installation Failed — ${app}`,
+    unsupportedFile: 'Unsupported file type. Please drop a PDF document (.pdf) or image file (.png, .jpg, .jpeg, .webp).',
+  },
+  th: {
+    brandTitle: 'meCraft',
+    brandTag: 'ศูนย์กลางโปรแกรม',
+    brandSubtitle: 'ระบบรวมเครื่องมือเอกสารและงานสร้างสรรค์ระดับโปร',
+    networkConnected: 'ประมวลผลในเครื่อง 100%',
+    networkOffline: 'ออฟไลน์ แซนด์บ็อกซ์',
+    settingsBtn: 'การตั้งค่าและสถานะระบบ',
+    langBtn: 'EN',
+    heroTitle: 'สตูดิโอสร้างสรรค์และจัดการเอกสารระดับโปร',
+    heroSubtitle: 'ประมวลผลส่วนตัวในเครื่อง 100% • ปลอดภัยไม่ส่งไฟล์ขึ้นคลาวด์ • ใช้งานได้ทั้งเว็บออฟไลน์และโปรแกรมติดตั้ง Windows',
+    badgePrivacy: 'ความเป็นส่วนตัวในเครื่อง 100%',
+    badgeDesktop: 'PWA ออฟไลน์ + Windows .exe',
+    badgeOcr: 'OCR แทรกข้อความค้นหาได้',
+    badgeHomography: 'ปรับมุมเอียงด้วย Homography 4 จุด',
+    dropZoneTitle: 'ลากไฟล์ PDF หรือรูปภาพมาวางที่นี่ เพื่อเปิดใช้งานทันทีใน meCraft Studio',
+    dropZoneSubtitle: 'เปิดไฟล์ PDF ใน mePDF Studio อัตโนมัติ • รูปภาพเปิดใน mePhoto Studio • ปลอดภัยในเครื่อง ไม่ส่งออกภายนอก',
+    dropZoneBtn: 'เลือกไฟล์จากเครื่อง...',
+    dropZoneRouting: (app) => `กำลังเปิดใน ${app}...`,
+    catalogTitle: 'รายการโปรแกรมทั้งหมด',
+    catalogCount: (count) => `${count} โปรแกรม`,
+    filterAll: 'ทั้งหมด',
+    filterInstalled: 'ติดตั้งแล้ว',
+    filterDoc: 'จัดการเอกสาร',
+    filterGraphics: 'กราฟิกและภาพถ่าย',
+    openWebStudio: 'เปิด Web Studio',
+    launchDesktop: 'เปิดแอป Desktop (.exe)',
+    installDesktop: (size) => `ติดตั้ง Desktop (.exe)${size ? ` (${size})` : ''}`,
+    installing: (percent) => `กำลังติดตั้ง... ${percent}%`,
+    comingSoon: 'เร็วๆ นี้ • แจ้งเตือนเมื่อพร้อม',
+    inDevelopment: 'กำลังอยู่ระหว่างพัฒนา',
+    moreOptions: 'ตัวเลือกเพิ่มเติม',
+    openFolder: 'เปิดโฟลเดอร์ติดตั้ง',
+    checkUpdates: 'ตรวจสอบอัปเดต',
+    uninstall: 'ถอนการติดตั้ง',
+    recentProjectsTitle: 'ประวัติไฟล์และโปรเจกต์ล่าสุด',
+    recentCount: (count) => `${count} ไฟล์`,
+    clearHistory: 'ล้างประวัติ',
+    emptyRecents: 'ยังไม่มีประวัติไฟล์ ลากไฟล์มาวางด้านบน หรือเปิดไฟล์ใน mePDF / mePhoto เพื่อแสดงที่นี่',
+    settingsTitle: 'การตั้งค่าและตรวจสอบสถานะ meCraft',
+    storageDirLabel: 'ไดเรกทอรีจัดเก็บโปรแกรมบนเครื่อง',
+    autoCheckLabel: 'ตรวจสอบอัปเดตอัตโนมัติเมื่อเปิด meCraft Hub',
+    hwAccelLabel: 'การเร่งความเร็วด้วยฮาร์ดแวร์ (DirectX 12 / Vulkan / WebGL 2.0)',
+    healthTitle: 'การตรวจสอบสถานะระบบและความพร้อมของโปรแกรม',
+    privacyGuaranteeTitle: 'การรับประกันความปลอดภัยข้อมูลและไม่ใช้คลาวด์',
+    privacyGuaranteeText: 'เอกสาร รูปภาพ การปรับมุมมองเอกสาร และการรู้จำข้อความ OCR ทั้งหมด ทำงานบนเครื่องของคุณโดยตรง ไม่มีการส่งข้อมูล เอกสาร หรือการบันทึก telemetry ไปยังเซิร์ฟเวอร์ใดๆ ทั้งสิ้น',
+    runtimeLabel: 'สภาวะแวดล้อมที่กำลังรัน',
+    runtimeTauri: 'โปรแกรมติดตั้งเนทีฟ Windows (Tauri v2)',
+    runtimeWeb: 'เว็บเบราว์เซอร์แซนด์บ็อกซ์ (พร้อมทำงานออฟไลน์ PWA)',
+    statusHealthy: 'พร้อมใช้งาน • สมบูรณ์ 100%',
+    statusDraft: 'ตามแผนงาน / กำลังพัฒนา',
+    doneBtn: 'เสร็จสิ้น',
+    copyPathBtn: 'คัดลอกโฟลเดอร์',
+    copiedBtn: 'คัดลอกแล้ว!',
+    updateDialogTitle: (app) => `ตรวจสอบอัปเดต — ${app}`,
+    launchErrorTitle: (app) => `เกิดข้อผิดพลาดในการเปิด — ${app}`,
+    installErrorTitle: (app) => `การติดตั้งไม่สำเร็จ — ${app}`,
+    unsupportedFile: 'รูปแบบไฟล์ไม่รองรับ กรุณาลากไฟล์ PDF (.pdf) หรือไฟล์รูปภาพ (.png, .jpg, .jpeg, .webp)',
+  },
+};
+
+export const APP_THAI_METADATA: Record<string, { tagline: string; description: string }> = {
+  mepdf: {
+    tagline: 'สตูดิโอวิศวกรรมเอกสาร PDF ในเบราว์เซอร์ 100%',
+    description: 'จัดการเอกสาร รวมไฟล์ แยกหน้า บีบอัดแบบ Lossless/Scanned รหัสผ่าน AES-256 และระบบ OCR ออฟไลน์ค้นหาข้อความได้ทันที',
+  },
+  mephoto: {
+    tagline: 'สตูดิโอปรับแต่งภาพและแก้เอกสารสแกนระดับ CamScanner',
+    description: 'ลบเงาดำพื้นหลัง (Adaptive Otsu B&W), โหมดสี Magic Color, ลับคม Unsharp Mask, ปรับระนาบ 4-Point Homography และส่งออกหลายฟอร์แมต',
+  },
+  mevector: {
+    tagline: 'เครื่องมือวาดภาพเวกเตอร์ ตัดต่อพาธ SVG และกราฟิก PDF',
+    description: 'ตัดต่อเส้นพาธ Bézier เวกเตอร์ความแม่นยำสูง ดัดแปลงจุด Node และส่งออกเวกเตอร์ความละเอียดสูงคมชัดทุกขนาด',
+  },
+  medoc: {
+    tagline: 'โปรแกรมพิมพ์งานสมาธิสูง พิมพ์สูตรคณิตศาสตร์และ Markdown',
+    description: 'จัดหน้าแบบ Zen ไร้สิ่งรบกวน แสดงสูตรสมการ LaTeX แบบเรียลไทม์ ตรวจไวยากรณ์ออฟไลน์สองภาษา และส่งออกสิ่งพิมพ์ได้ทันที',
+  },
+};
+
 class MeCraftLauncher {
   private bridge = createLauncherBridge();
   private catalog: AppCatalogItem[] = getDefaultCatalog();
@@ -23,6 +220,10 @@ class MeCraftLauncher {
   constructor() {
     this.appEl = document.getElementById('app')!;
     this.init();
+  }
+
+  private get t(): LauncherTranslations {
+    return TRANSLATIONS[this.currentLang];
   }
 
   private async init() {
@@ -53,6 +254,8 @@ class MeCraftLauncher {
   }
 
   private renderSkeleton() {
+    const t = this.t;
+
     this.appEl.innerHTML = `
       <header class="launcher-header">
         <div class="launcher-brand">
@@ -63,55 +266,121 @@ class MeCraftLauncher {
           </div>
           <div class="launcher-title-group">
             <div class="launcher-title">
-              meCraft
-              <span class="launcher-version-badge">Ecosystem Hub</span>
+              <span id="header-brand-title">${t.brandTitle}</span>
+              <span class="launcher-version-badge" id="header-brand-badge">${t.brandTag}</span>
             </div>
-            <div class="launcher-subtitle">The Creative & Document Workstation Ecosystem</div>
+            <div class="launcher-subtitle" id="header-brand-subtitle">${t.brandSubtitle}</div>
           </div>
         </div>
 
         <div class="launcher-nav-right">
           <div class="network-badge">
             <div class="network-dot"></div>
-            <span>Cloud Connected</span>
+            <span id="header-network-label">${t.networkConnected}</span>
           </div>
-          <button class="btn-header" id="btn-toggle-lang" aria-label="Switch Language (Current: EN)">
+          <button class="btn-header" id="btn-toggle-lang" aria-label="Switch Language (Current: ${this.currentLang.toUpperCase()})">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-            <span id="lang-label">TH</span>
+            <span id="lang-label">${t.langBtn}</span>
           </button>
-          <button class="btn-header" id="btn-open-settings" aria-label="Open Settings">
+          <button class="btn-header" id="btn-open-settings" aria-label="Open Settings & Health">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            Settings
+            <span id="btn-settings-label">${t.settingsBtn}</span>
           </button>
         </div>
       </header>
 
       <main class="launcher-content">
+        <!-- Interactive Hero Banner -->
+        <section class="launcher-hero">
+          <div class="hero-content">
+            <div class="hero-header-row">
+              <div class="hero-pill">
+                <span class="hero-pill-dot"></span>
+                <span>meCraft Ecosystem Hub</span>
+              </div>
+            </div>
+            <h1 class="hero-title" id="hero-title">${t.heroTitle}</h1>
+            <p class="hero-subtitle" id="hero-subtitle">${t.heroSubtitle}</p>
+            <div class="hero-badges" id="hero-badges">
+              <div class="hero-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>${t.badgePrivacy}</span>
+              </div>
+              <div class="hero-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                <span>${t.badgeDesktop}</span>
+              </div>
+              <div class="hero-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                <span>${t.badgeOcr}</span>
+              </div>
+              <div class="hero-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span>${t.badgeHomography}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Universal Drop Zone -->
+        <section class="hub-drop-section">
+          <div class="hub-dropzone" id="hub-dropzone" role="region" aria-label="Universal Drop Zone">
+            <input type="file" id="hub-file-input" accept=".pdf,image/png,image/jpeg,image/webp,image/jpg,image/bmp,image/svg+xml" style="display: none;" />
+            <div class="hub-dropzone-inner">
+              <div class="hub-dropzone-icons">
+                <div class="drop-icon-chip pdf">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  <span>PDF</span>
+                </div>
+                <div class="drop-icon-chip connector">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+                <div class="drop-icon-chip photo">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                  <span>PHOTO</span>
+                </div>
+              </div>
+
+              <div class="hub-dropzone-text">
+                <div class="hub-dropzone-title" id="dropzone-title">${t.dropZoneTitle}</div>
+                <div class="hub-dropzone-subtitle" id="dropzone-subtitle">${t.dropZoneSubtitle}</div>
+              </div>
+
+              <button class="btn-hub-browse" id="btn-browse-hub">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span id="btn-browse-hub-text">${t.dropZoneBtn}</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Apps Catalog -->
         <section>
           <div class="section-header">
             <div class="section-title">
-              Apps Catalog
-              <span class="section-badge" id="catalog-count">4 Apps</span>
+              <span id="catalog-section-title">${t.catalogTitle}</span>
+              <span class="section-badge" id="catalog-count">${t.catalogCount(this.catalog.length)}</span>
             </div>
           </div>
 
           <div class="filter-bar" role="tablist" aria-label="Applications filter">
-            <button class="filter-tab active" role="tab" aria-selected="true" data-filter="all">All Apps</button>
-            <button class="filter-tab" role="tab" aria-selected="false" data-filter="installed">Installed</button>
-            <button class="filter-tab" role="tab" aria-selected="false" data-filter="document">Document Tools</button>
-            <button class="filter-tab" role="tab" aria-selected="false" data-filter="graphics">Creative & Graphics</button>
+            <button class="filter-tab active" role="tab" aria-selected="true" data-filter="all" id="filter-all">${t.filterAll}</button>
+            <button class="filter-tab" role="tab" aria-selected="false" data-filter="installed" id="filter-installed">${t.filterInstalled}</button>
+            <button class="filter-tab" role="tab" aria-selected="false" data-filter="document" id="filter-doc">${t.filterDoc}</button>
+            <button class="filter-tab" role="tab" aria-selected="false" data-filter="graphics" id="filter-graphics">${t.filterGraphics}</button>
           </div>
 
           <div class="apps-grid" id="apps-grid"></div>
         </section>
 
+        <!-- Universal Recent Projects -->
         <section>
           <div class="section-header">
             <div class="section-title">
-              Universal Recent Projects
-              <span class="section-badge" id="recent-count">0 Files</span>
+              <span id="recents-section-title">${t.recentProjectsTitle}</span>
+              <span class="section-badge" id="recent-count">${t.recentCount(this.recentProjects.length)}</span>
             </div>
-            <button class="btn-header" id="btn-clear-recents" aria-label="Clear Recent Projects" style="display: none;">Clear History</button>
+            <button class="btn-header" id="btn-clear-recents" aria-label="Clear Recent Projects" style="display: none;">${t.clearHistory}</button>
           </div>
           <div id="recent-projects-list"></div>
         </section>
@@ -139,6 +408,11 @@ class MeCraftLauncher {
   private renderAppCard(app: AppCatalogItem): string {
     const downloading = this.downloadingApps.get(app.id);
 
+    // Bilingual metadata resolution
+    const thaiMeta = APP_THAI_METADATA[app.id];
+    const tagline = (this.currentLang === 'th' && thaiMeta?.tagline) || app.tagline;
+    const description = (this.currentLang === 'th' && thaiMeta?.description) || app.description;
+
     return `
       <div class="app-card" data-app-id="${app.id}">
         <div class="app-card-glow" style="background: ${app.color};"></div>
@@ -152,11 +426,11 @@ class MeCraftLauncher {
               <span>${app.name}</span>
               <span class="app-card-version">v${app.version}</span>
             </div>
-            <div class="app-card-tagline">${app.tagline}</div>
+            <div class="app-card-tagline">${tagline}</div>
           </div>
         </div>
 
-        <div class="app-card-desc">${app.description}</div>
+        <div class="app-card-desc">${description}</div>
 
         <div class="app-card-tags">
           ${app.tags.map((t: string) => `<span class="app-tag">${t}</span>`).join('')}
@@ -170,6 +444,8 @@ class MeCraftLauncher {
   }
 
   private renderCardAction(app: AppCatalogItem, downloading?: DownloadProgress): string {
+    const t = this.t;
+
     if (downloading) {
       const mbDownloaded = (downloading.downloadedBytes / (1024 * 1024)).toFixed(1);
       const mbTotal = (downloading.totalBytes / (1024 * 1024)).toFixed(1);
@@ -178,7 +454,7 @@ class MeCraftLauncher {
       return `
         <div class="download-progress-box">
           <div class="download-progress-header">
-            <span>Installing... ${downloading.percent}%</span>
+            <span>${t.installing(downloading.percent)}</span>
             <span>${mbDownloaded} MB / ${mbTotal} MB (${speedStr})</span>
           </div>
           <div class="download-progress-track">
@@ -192,7 +468,7 @@ class MeCraftLauncher {
       return `
         <button class="btn-action disabled" disabled>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          Coming Soon • Notify Me
+          ${t.comingSoon}
         </button>
       `;
     }
@@ -201,66 +477,86 @@ class MeCraftLauncher {
       return `
         <button class="btn-action disabled" disabled>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-          In Development
+          ${t.inDevelopment}
         </button>
       `;
     }
 
-    if (app.status === 'installed') {
-      const isMenuOpen = this.activeMenuAppId === app.id;
-      return `
-        <button class="btn-action launch" data-action="launch" data-app-id="${app.id}" aria-label="Launch ${app.name}">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-          Launch
-        </button>
-        <button class="btn-more" data-action="more" data-app-id="${app.id}" title="More Options" aria-label="More options for ${app.name}" aria-haspopup="menu" aria-expanded="${isMenuOpen}">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-        </button>
-        ${
-          isMenuOpen
-            ? `
-          <div class="context-menu" role="menu" aria-label="${app.name} options" data-menu-id="${app.id}">
-            <button class="context-menu-item" role="menuitem" data-menu-action="open-folder" data-app-id="${app.id}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-              Open Install Folder
-            </button>
-            <button class="context-menu-item" role="menuitem" data-menu-action="check-updates" data-app-id="${app.id}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-              Check for Updates
-            </button>
-            <div style="height: 1px; background: var(--border-subtle); margin: 4px 0;"></div>
-            <button class="context-menu-item danger" role="menuitem" data-menu-action="uninstall" data-app-id="${app.id}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-              Uninstall App
-            </button>
-          </div>
-        `
-            : ''
-        }
-      `;
-    }
+    // Dual-Action Launch for ready apps (mePDF, mePhoto)
+    const isMenuOpen = this.activeMenuAppId === app.id;
 
     return `
-      <button class="btn-action install" data-action="install" data-app-id="${app.id}" aria-label="Install ${app.name} (${app.sizeFormatted || 'v' + app.version})">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        Install (${app.sizeFormatted || 'v' + app.version})
-      </button>
+      <div class="card-action-dual">
+        <button class="btn-action btn-action-web" data-action="open-web" data-app-id="${app.id}" title="100% In-Browser Private Execution • 0 Install Required" aria-label="${t.openWebStudio} for ${app.name}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span>${t.openWebStudio}</span>
+        </button>
+
+        ${
+          app.status === 'installed'
+            ? `
+          <div class="desktop-action-group">
+            <button class="btn-action btn-action-desktop launch" data-action="launch" data-app-id="${app.id}" aria-label="${t.launchDesktop} for ${app.name}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <span>${t.launchDesktop}</span>
+            </button>
+            <button class="btn-more" data-action="more" data-app-id="${app.id}" title="${t.moreOptions}" aria-label="${t.moreOptions} for ${app.name}" aria-haspopup="menu" aria-expanded="${isMenuOpen}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+            </button>
+            ${
+              isMenuOpen
+                ? `
+              <div class="context-menu" role="menu" aria-label="${app.name} options" data-menu-id="${app.id}">
+                <button class="context-menu-item" role="menuitem" data-menu-action="open-folder" data-app-id="${app.id}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                  ${t.openFolder}
+                </button>
+                <button class="context-menu-item" role="menuitem" data-menu-action="check-updates" data-app-id="${app.id}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  ${t.checkUpdates}
+                </button>
+                <div style="height: 1px; background: var(--border-subtle); margin: 4px 0;"></div>
+                <button class="context-menu-item danger" role="menuitem" data-menu-action="uninstall" data-app-id="${app.id}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  ${t.uninstall}
+                </button>
+              </div>
+            `
+                : ''
+            }
+          </div>
+        `
+            : `
+          <button class="btn-action btn-action-desktop install" data-action="install" data-app-id="${app.id}" aria-label="${t.installDesktop(app.sizeFormatted || 'v' + app.version)} for ${app.name}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>${t.installDesktop(app.sizeFormatted || 'v' + app.version)}</span>
+          </button>
+        `
+        }
+      </div>
     `;
   }
 
   private renderRecentProjects() {
+    const t = this.t;
     const container = document.getElementById('recent-projects-list');
     const badge = document.getElementById('recent-count');
     const clearBtn = document.getElementById('btn-clear-recents');
     if (!container) return;
 
-    if (badge) badge.textContent = `${this.recentProjects.length} Files`;
+    if (badge) badge.textContent = t.recentCount(this.recentProjects.length);
     if (clearBtn) clearBtn.style.display = this.recentProjects.length > 0 ? 'flex' : 'none';
 
     if (this.recentProjects.length === 0) {
       container.innerHTML = `
         <div class="empty-recents">
-          No recent projects yet. Open documents in mePDF or mePhoto to see them here.
+          ${t.emptyRecents}
         </div>
       `;
       return;
@@ -297,7 +593,7 @@ class MeCraftLauncher {
         const appId = card.getAttribute('data-app-id');
         const path = card.getAttribute('data-path');
         if (appId && path) {
-          this.bridge.launchApp({ appId, filePath: path });
+          this.bridge.launchApp({ appId, filePath: path, target: 'web' });
         }
       };
       card.addEventListener('click', launch);
@@ -312,7 +608,15 @@ class MeCraftLauncher {
   }
 
   private attachCardEvents() {
-    // Install button
+    // Open Web Studio button
+    document.querySelectorAll('[data-action="open-web"]').forEach((btn: Element) => {
+      btn.addEventListener('click', (e: Event) => {
+        const appId = (e.currentTarget as HTMLElement).dataset.appId;
+        if (appId) this.handleLaunchWeb(appId);
+      });
+    });
+
+    // Install Desktop button
     document.querySelectorAll('[data-action="install"]').forEach((btn: Element) => {
       btn.addEventListener('click', (e: Event) => {
         const appId = (e.currentTarget as HTMLElement).dataset.appId;
@@ -320,11 +624,11 @@ class MeCraftLauncher {
       });
     });
 
-    // Launch button
+    // Launch Desktop button
     document.querySelectorAll('[data-action="launch"]').forEach((btn: Element) => {
       btn.addEventListener('click', (e: Event) => {
         const appId = (e.currentTarget as HTMLElement).dataset.appId;
-        if (appId) this.handleLaunch(appId);
+        if (appId) this.handleLaunchDesktop(appId);
       });
     });
 
@@ -360,7 +664,7 @@ class MeCraftLauncher {
           const catalogVersion = app?.version ?? 'unknown';
           const installedVersion = status.version ?? catalogVersion;
           const msg = `${appId.toUpperCase()} — Installed: v${installedVersion} (Latest Catalog Release: v${catalogVersion})`;
-          this.showNoticeModal(`Update Check — ${appId.toUpperCase()}`, msg);
+          this.showNoticeModal(this.t.updateDialogTitle(appId.toUpperCase()), msg);
         }
       });
     });
@@ -397,13 +701,64 @@ class MeCraftLauncher {
     // Language toggle
     document.getElementById('btn-toggle-lang')?.addEventListener('click', () => {
       this.currentLang = this.currentLang === 'en' ? 'th' : 'en';
-      const label = document.getElementById('lang-label');
-      if (label) label.textContent = this.currentLang === 'en' ? 'TH' : 'EN';
-      const toggleBtn = document.getElementById('btn-toggle-lang');
-      if (toggleBtn) {
-        toggleBtn.setAttribute('aria-label', `Switch Language (Current: ${this.currentLang.toUpperCase()})`);
-      }
+      this.applyLanguage();
     });
+
+    // Universal Drop Zone Drag & Drop
+    const dropzone = document.getElementById('hub-dropzone');
+    const fileInput = document.getElementById('hub-file-input') as HTMLInputElement | null;
+    const browseBtn = document.getElementById('btn-browse-hub');
+
+    if (dropzone) {
+      ['dragenter', 'dragover'].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (e: Event) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.add('drag-active');
+        });
+      });
+
+      ['dragleave', 'dragend', 'drop'].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (e: Event) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.remove('drag-active');
+        });
+      });
+
+      dropzone.addEventListener('drop', (e: DragEvent) => {
+        const files = e.dataTransfer?.files;
+        if (files && files.length > 0) {
+          const file = files[0];
+          if (file) {
+            void this.handleDroppedFile(file);
+          }
+        }
+      });
+
+      dropzone.addEventListener('click', (e: MouseEvent) => {
+        if (e.target !== browseBtn && !browseBtn?.contains(e.target as Node)) {
+          fileInput?.click();
+        }
+      });
+    }
+
+    if (browseBtn && fileInput) {
+      browseBtn.addEventListener('click', (e: MouseEvent) => {
+        e.stopPropagation();
+        fileInput.click();
+      });
+    }
+
+    if (fileInput) {
+      fileInput.addEventListener('change', () => {
+        const file = fileInput.files?.[0];
+        if (file) {
+          void this.handleDroppedFile(file);
+        }
+        fileInput.value = '';
+      });
+    }
 
     // Dismiss context menu on global click
     document.addEventListener('click', () => {
@@ -412,6 +767,150 @@ class MeCraftLauncher {
         this.renderCatalog();
       }
     });
+  }
+
+  private applyLanguage() {
+    const t = this.t;
+    document.documentElement.lang = this.currentLang;
+    if (this.currentLang === 'th') {
+      this.appEl.classList.add('lang-th');
+    } else {
+      this.appEl.classList.remove('lang-th');
+    }
+
+    // Update Header
+    const brandTitle = document.getElementById('header-brand-title');
+    if (brandTitle) brandTitle.textContent = t.brandTitle;
+    const brandBadge = document.getElementById('header-brand-badge');
+    if (brandBadge) brandBadge.textContent = t.brandTag;
+    const brandSubtitle = document.getElementById('header-brand-subtitle');
+    if (brandSubtitle) brandSubtitle.textContent = t.brandSubtitle;
+    const networkLabel = document.getElementById('header-network-label');
+    if (networkLabel) networkLabel.textContent = t.networkConnected;
+    const langLabel = document.getElementById('lang-label');
+    if (langLabel) langLabel.textContent = t.langBtn;
+    const settingsLabel = document.getElementById('btn-settings-label');
+    if (settingsLabel) settingsLabel.textContent = t.settingsBtn;
+
+    // Update Hero
+    const heroTitle = document.getElementById('hero-title');
+    if (heroTitle) heroTitle.textContent = t.heroTitle;
+    const heroSubtitle = document.getElementById('hero-subtitle');
+    if (heroSubtitle) heroSubtitle.textContent = t.heroSubtitle;
+
+    const heroBadges = document.getElementById('hero-badges');
+    if (heroBadges) {
+      heroBadges.innerHTML = `
+        <div class="hero-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>${t.badgePrivacy}</span>
+        </div>
+        <div class="hero-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          <span>${t.badgeDesktop}</span>
+        </div>
+        <div class="hero-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+          <span>${t.badgeOcr}</span>
+        </div>
+        <div class="hero-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          <span>${t.badgeHomography}</span>
+        </div>
+      `;
+    }
+
+    // Update Drop Zone
+    const dropzoneTitle = document.getElementById('dropzone-title');
+    if (dropzoneTitle) dropzoneTitle.textContent = t.dropZoneTitle;
+    const dropzoneSubtitle = document.getElementById('dropzone-subtitle');
+    if (dropzoneSubtitle) dropzoneSubtitle.textContent = t.dropZoneSubtitle;
+    const browseHubText = document.getElementById('btn-browse-hub-text');
+    if (browseHubText) browseHubText.textContent = t.dropZoneBtn;
+
+    // Update Catalog Section
+    const catalogTitle = document.getElementById('catalog-section-title');
+    if (catalogTitle) catalogTitle.textContent = t.catalogTitle;
+    const catalogCount = document.getElementById('catalog-count');
+    if (catalogCount) catalogCount.textContent = t.catalogCount(this.catalog.length);
+
+    // Update Filter Tabs
+    const fAll = document.getElementById('filter-all');
+    if (fAll) fAll.textContent = t.filterAll;
+    const fInstalled = document.getElementById('filter-installed');
+    if (fInstalled) fInstalled.textContent = t.filterInstalled;
+    const fDoc = document.getElementById('filter-doc');
+    if (fDoc) fDoc.textContent = t.filterDoc;
+    const fGraphics = document.getElementById('filter-graphics');
+    if (fGraphics) fGraphics.textContent = t.filterGraphics;
+
+    // Update Recents Section
+    const recentsTitle = document.getElementById('recents-section-title');
+    if (recentsTitle) recentsTitle.textContent = t.recentProjectsTitle;
+    const clearRecentsBtn = document.getElementById('btn-clear-recents');
+    if (clearRecentsBtn) clearRecentsBtn.textContent = t.clearHistory;
+
+    // Re-render dynamic list areas
+    this.renderCatalog();
+    this.renderRecentProjects();
+  }
+
+  public async handleDroppedFile(file: File): Promise<void> {
+    const isPdf = file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';
+    const isImage =
+      file.type.startsWith('image/') ||
+      /\.(jpe?g|png|webp|avif|bmp|gif|svg)$/i.test(file.name);
+
+    if (!isPdf && !isImage) {
+      this.showNoticeModal('Unsupported File', this.t.unsupportedFile, true);
+      return;
+    }
+
+    const targetApp = isPdf ? 'mepdf' : 'mephoto';
+    const fileType = isPdf ? 'pdf' : file.type || 'image/jpeg';
+
+    // Read as Data URL for seamless cross-tab passing
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const dataUrl = reader.result as string;
+
+      // 1. Save to Universal Recent Projects
+      await this.bridge.saveRecentProject({
+        name: file.name,
+        path: (file as any).path || file.name,
+        appId: targetApp,
+        fileType,
+        sizeBytes: file.size,
+      });
+
+      await this.loadRecentProjects();
+      this.renderRecentProjects();
+
+      // 2. Launch target app with filePath and dataUrl
+      await this.bridge.launchApp({
+        appId: targetApp,
+        filePath: (file as any).path || file.name,
+        dataUrl,
+        target: 'web',
+      });
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  private async handleLaunchWeb(appId: string) {
+    await this.bridge.launchApp({ appId, target: 'web' });
+  }
+
+  private async handleLaunchDesktop(appId: string) {
+    const res = await this.bridge.launchApp({ appId, target: 'desktop' });
+    if (!res.success) {
+      this.showNoticeModal(
+        this.t.launchErrorTitle(appId.toUpperCase()),
+        res.error || 'Could not launch native desktop binary. You can also click "Open Web Studio" for instant 0-install in-browser execution.',
+        true
+      );
+    }
   }
 
   private async handleInstall(appId: string) {
@@ -440,15 +939,8 @@ class MeCraftLauncher {
       await this.refreshStatuses();
       this.renderCatalog();
     } else {
-      this.showNoticeModal(`Installation Failed — ${appId.toUpperCase()}`, result.error || 'Unknown error during installation', true);
+      this.showNoticeModal(this.t.installErrorTitle(appId.toUpperCase()), result.error || 'Unknown error during installation', true);
       this.renderCatalog();
-    }
-  }
-
-  private async handleLaunch(appId: string) {
-    const res = await this.bridge.launchApp({ appId });
-    if (!res.success) {
-      this.showNoticeModal(`Launch Error — ${appId.toUpperCase()}`, res.error || 'Could not launch application binary', true);
     }
   }
 
@@ -457,7 +949,7 @@ class MeCraftLauncher {
     if (!container) return;
     container.innerHTML = `
       <div class="modal-overlay" id="notice-overlay">
-        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="notice-dialog-title" style="max-width: 420px;">
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="notice-dialog-title" style="max-width: 440px;">
           <div class="modal-header">
             <div class="modal-title" id="notice-dialog-title">${title}</div>
             <button class="btn-more" id="btn-close-notice-modal" aria-label="Close dialog">✕</button>
@@ -466,7 +958,7 @@ class MeCraftLauncher {
             ${message}
           </div>
           <div class="modal-footer">
-            <button class="btn-header" id="btn-notice-done" aria-label="Acknowledge and close">OK</button>
+            <button class="btn-header primary" id="btn-notice-done" aria-label="Acknowledge and close">${this.t.doneBtn}</button>
           </div>
         </div>
       </div>
@@ -480,22 +972,23 @@ class MeCraftLauncher {
   }
 
   private showFolderModal(appId: string, directory: string) {
+    const t = this.t;
     const container = document.getElementById('modal-container');
     if (!container) return;
     container.innerHTML = `
       <div class="modal-overlay" id="folder-overlay">
         <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="folder-dialog-title" style="max-width: 480px;">
           <div class="modal-header">
-            <div class="modal-title" id="folder-dialog-title">${appId.toUpperCase()} Install Directory</div>
+            <div class="modal-title" id="folder-dialog-title">${appId.toUpperCase()} ${t.openFolder}</div>
             <button class="btn-more" id="btn-close-folder-modal" aria-label="Close dialog">✕</button>
           </div>
           <div class="modal-body" style="padding: 16px 0;">
-            <p style="margin: 0 0 8px 0; font-size: 13px; color: var(--text-secondary);">Installation and binary location:</p>
+            <p style="margin: 0 0 8px 0; font-size: 13px; color: var(--text-secondary);">${t.storageDirLabel}:</p>
             <input type="text" readonly value="${directory}" class="selectable" id="folder-path-input" style="width: 100%; padding: 8px 12px; background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-mono); font-size: 12px;" />
           </div>
           <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button class="btn-header" id="btn-copy-folder" aria-label="Copy folder path to clipboard">Copy Path</button>
-            <button class="btn-header" id="btn-folder-done" aria-label="Close dialog">Done</button>
+            <button class="btn-header" id="btn-copy-folder" aria-label="${t.copyPathBtn}">${t.copyPathBtn}</button>
+            <button class="btn-header primary" id="btn-folder-done" aria-label="${t.doneBtn}">${t.doneBtn}</button>
           </div>
         </div>
       </div>
@@ -506,7 +999,7 @@ class MeCraftLauncher {
     document.getElementById('btn-copy-folder')?.addEventListener('click', () => {
       navigator.clipboard?.writeText(directory);
       const copyBtn = document.getElementById('btn-copy-folder');
-      if (copyBtn) copyBtn.textContent = 'Copied!';
+      if (copyBtn) copyBtn.textContent = t.copiedBtn;
     });
     document.getElementById('folder-overlay')?.addEventListener('click', (ev: MouseEvent) => {
       if (ev.target === ev.currentTarget) closeFolder();
@@ -514,34 +1007,103 @@ class MeCraftLauncher {
   }
 
   private showSettingsModal() {
+    const t = this.t;
     const container = document.getElementById('modal-container')!;
     container.innerHTML = `
       <div class="modal-overlay" id="settings-overlay">
-        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-dialog-title">
+        <div class="modal-dialog settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-dialog-title">
           <div class="modal-header">
-            <div class="modal-title" id="settings-dialog-title">meCraft Launcher Settings</div>
+            <div class="modal-title-group">
+              <div class="modal-title" id="settings-dialog-title">${t.settingsTitle}</div>
+              <div class="modal-subtitle">meCraft Hub v3.1.0 • Ecosystem Status & Privacy Diagnostics</div>
+            </div>
             <button class="btn-more" id="btn-close-modal" aria-label="Close settings dialog">✕</button>
           </div>
-          <div class="modal-body">
-            <div>
-              <label style="display: block; font-weight: 600; margin-bottom: 6px;">Applications Storage Directory</label>
-              <input type="text" readonly value="%LOCALAPPDATA%\\meCraft\\apps\\" class="selectable" style="width: 100%; padding: 8px 12px; background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-mono); font-size: 12px;" />
+
+          <div class="modal-body settings-body">
+            <!-- Section 1: System Health Check -->
+            <div class="settings-section">
+              <div class="settings-section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                <span>${t.healthTitle}</span>
+              </div>
+
+              <div class="health-grid">
+                <div class="health-card active">
+                  <div class="health-card-top">
+                    <span class="health-dot ready"></span>
+                    <span class="health-app-name">mePDF Studio</span>
+                    <span class="health-badge ready">v3.1.0 Ready</span>
+                  </div>
+                  <div class="health-desc">Client-Side PDF Engine • AES-256 Crypto • Searchable OCR Layer Injection</div>
+                </div>
+
+                <div class="health-card active">
+                  <div class="health-card-top">
+                    <span class="health-dot ready"></span>
+                    <span class="health-app-name">mePhoto Studio</span>
+                    <span class="health-badge ready">v1.0.0 Ready</span>
+                  </div>
+                  <div class="health-desc">4-Point Homography Deskew • Adaptive Otsu B&W • Magic Color • ClipBus Relay</div>
+                </div>
+
+                <div class="health-card draft">
+                  <div class="health-card-top">
+                    <span class="health-dot draft"></span>
+                    <span class="health-app-name">meVector</span>
+                    <span class="health-badge draft">v0.1.0 Pipeline</span>
+                  </div>
+                  <div class="health-desc">Bézier Curve Engine • SVG Vector Workbench • Node Pen Operations</div>
+                </div>
+
+                <div class="health-card draft">
+                  <div class="health-card-top">
+                    <span class="health-dot draft"></span>
+                    <span class="health-app-name">meDoc</span>
+                    <span class="health-badge draft">v0.1.0 Pipeline</span>
+                  </div>
+                  <div class="health-desc">Distraction-Free Zen Typewriter • Markdown LaTeX Math Preview</div>
+                </div>
+              </div>
+
+              <div class="health-runtime-box">
+                <span class="runtime-tag">${t.runtimeLabel}:</span>
+                <strong>${this.bridge.isTauri() ? t.runtimeTauri : t.runtimeWeb}</strong>
+              </div>
             </div>
-            <div>
-              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                <input type="checkbox" checked />
-                <span>Automatically check for app updates upon launching meCraft Hub</span>
-              </label>
+
+            <!-- Section 2: Privacy Guarantee -->
+            <div class="settings-section privacy-box">
+              <div class="privacy-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>${t.privacyGuaranteeTitle}</span>
+              </div>
+              <p class="privacy-box-desc">${t.privacyGuaranteeText}</p>
             </div>
-            <div>
-              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                <input type="checkbox" checked />
-                <span>Hardware Acceleration (Vulkan / DirectX 12)</span>
-              </label>
+
+            <!-- Section 3: Storage & Preferences -->
+            <div class="settings-section">
+              <div>
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">${t.storageDirLabel}</label>
+                <input type="text" readonly value="%LOCALAPPDATA%\\meCraft\\apps\\" class="selectable" style="width: 100%; padding: 8px 12px; background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-mono); font-size: 12px;" />
+              </div>
+              <div style="margin-top: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="checkbox" checked />
+                  <span>${t.autoCheckLabel}</span>
+                </label>
+              </div>
+              <div style="margin-top: 6px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="checkbox" checked />
+                  <span>${t.hwAccelLabel}</span>
+                </label>
+              </div>
             </div>
           </div>
+
           <div class="modal-footer">
-            <button class="btn-header" id="btn-modal-done" aria-label="Save settings and close">Done</button>
+            <button class="btn-header primary" id="btn-modal-done" aria-label="Save settings and close">${t.doneBtn}</button>
           </div>
         </div>
       </div>

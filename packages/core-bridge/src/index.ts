@@ -4,6 +4,7 @@
  */
 
 export * from './clip-bus';
+import { clipBus } from './clip-bus';
 
 export type AppId = 'mepdf' | 'mephoto' | 'mevector' | 'medoc' | string;
 
@@ -67,6 +68,8 @@ export interface LaunchAppOptions {
   appId: AppId;
   args?: string[];
   filePath?: string;
+  dataUrl?: string;
+  target?: 'web' | 'desktop';
 }
 
 export interface LauncherBridge {
@@ -364,13 +367,13 @@ export function createLauncherBridge(): LauncherBridge {
     },
 
     async launchApp(options: LaunchAppOptions): Promise<{ success: boolean; error?: string }> {
-      const { appId, args = [], filePath } = options;
+      const { appId, args = [], filePath, dataUrl, target } = options;
       const launchArgs = [...args];
       if (filePath) {
         launchArgs.push(filePath);
       }
 
-      if (isTauriEnv) {
+      if (isTauriEnv && target !== 'web') {
         try {
           const { invoke } = await import('@tauri-apps/api/core');
           const launched = await invoke<boolean>('launch_app', {
@@ -383,8 +386,59 @@ export function createLauncherBridge(): LauncherBridge {
         }
       }
 
-      // Web Fallback: if browser, alert or trigger navigation
-      console.info(`[LauncherBridge:WebFallback] Launching ${appId} with args:`, launchArgs);
+      // Web Fallback: open target web studio in browser tab/window
+      let targetUrl = '';
+      if (typeof window !== 'undefined') {
+        const isLocalhost = Boolean(
+          window.location &&
+          (window.location.hostname === 'localhost' ||
+           window.location.hostname === '127.0.0.1' ||
+           window.location.hostname === '0.0.0.0' ||
+           window.location.hostname.endsWith('.local'))
+        );
+
+        let baseUrl = `/${appId}/`;
+        if (isLocalhost) {
+          if (appId === 'mepdf') {
+            baseUrl = 'http://localhost:5173/';
+          } else if (appId === 'mephoto') {
+            baseUrl = 'http://localhost:5174/';
+          }
+        }
+
+        try {
+          const origin = window.location && window.location.origin ? window.location.origin : 'http://localhost:5175';
+          const resolved = new URL(baseUrl, origin);
+
+          const activeDataUrl = dataUrl || (filePath && filePath.startsWith('data:') ? filePath : undefined);
+          if (activeDataUrl) {
+            try {
+              clipBus.send({
+                sourceApp: 'launcher',
+                targetApp: appId,
+                type: appId === 'mepdf' ? (activeDataUrl.startsWith('data:application/pdf') ? 'document' : 'image-page') : 'image-page',
+                dataUrl: activeDataUrl,
+                name: filePath && !filePath.startsWith('data:') ? filePath.split(/[/\\]/).pop() : `Import_${Date.now()}`,
+              });
+            } catch (busErr) {
+              console.warn('[LauncherBridge] ClipBus relay warning:', busErr);
+            }
+          }
+
+          if (filePath && !filePath.startsWith('data:')) {
+            resolved.searchParams.set('filePath', filePath);
+          }
+
+          targetUrl = resolved.toString();
+          if (typeof window.open === 'function') {
+            window.open(targetUrl, '_blank', 'noopener,noreferrer');
+          }
+        } catch (err) {
+          console.warn('[LauncherBridge:WebFallback] URL resolution error:', err);
+        }
+      }
+
+      console.info(`[LauncherBridge:WebFallback] Launching ${appId} with args:`, launchArgs, `url: ${targetUrl}`);
       return { success: true };
     },
 

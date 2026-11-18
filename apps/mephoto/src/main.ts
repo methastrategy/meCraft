@@ -50,6 +50,39 @@ class MePhotoStudio {
     this.renderLayout();
     this.initCanvas();
     this.attachGlobalEvents();
+    this.initClipBus();
+  }
+
+  private processedClipBusIds = new Set<string>();
+
+  private initClipBus(): void {
+    clipBus.subscribe((msg) => {
+      if (msg.targetApp === 'mephoto' && msg.dataUrl) {
+        if (msg.id && this.processedClipBusIds.has(msg.id)) return;
+        if (msg.id) this.processedClipBusIds.add(msg.id);
+        void this.importFromDataUrl(msg.dataUrl, msg.name || 'mePhoto_Import.jpg');
+      }
+    });
+
+    const pending = clipBus.consumePending('mephoto');
+    for (const p of pending) {
+      if (p.dataUrl) {
+        if (p.id && this.processedClipBusIds.has(p.id)) continue;
+        if (p.id) this.processedClipBusIds.add(p.id);
+        void this.importFromDataUrl(p.dataUrl, p.name || 'mePhoto_Import.jpg');
+      }
+    }
+  }
+
+  public async importFromDataUrl(dataUrl: string, name = 'mePhoto_Import.jpg'): Promise<void> {
+    try {
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      const file = new File([blob], name, { type: blob.type || 'image/jpeg' });
+      await this.loadFiles([file]);
+    } catch (err) {
+      console.error('[mePhoto] Failed to import from dataUrl:', err);
+    }
   }
 
   private renderLayout() {

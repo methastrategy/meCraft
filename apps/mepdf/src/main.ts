@@ -1292,21 +1292,34 @@ class MeCraftApp {
   }
 
   private initClipBus(): void {
+    const handleMessage = async (msg: import('@mecraft/core-bridge').ClipBusMessage) => {
+      if (!msg.dataUrl) return;
+      if (msg.id && this.processedClipBusIds.has(msg.id)) return;
+      if (msg.id) this.processedClipBusIds.add(msg.id);
+
+      if (msg.type === 'document' || msg.dataUrl.startsWith('data:application/pdf')) {
+        try {
+          const res = await fetch(msg.dataUrl);
+          const blob = await res.blob();
+          const file = new File([blob], msg.name || 'Imported_Document.pdf', { type: 'application/pdf' });
+          await this.handleFiles([file]);
+        } catch (e) {
+          console.error('[mePDF] Failed to load PDF from ClipBus:', e);
+        }
+      } else {
+        await this.importImageAsPage(msg.dataUrl, msg.name || 'mePhoto_Scan.jpg');
+      }
+    };
+
     clipBus.subscribe((msg) => {
-      if (msg.targetApp === 'mepdf' && msg.type === 'image-page' && msg.dataUrl) {
-        if (msg.id && this.processedClipBusIds.has(msg.id)) return;
-        if (msg.id) this.processedClipBusIds.add(msg.id);
-        void this.importImageAsPage(msg.dataUrl, msg.name || 'mePhoto_Scan.jpg');
+      if (msg.targetApp === 'mepdf') {
+        void handleMessage(msg);
       }
     });
 
     const pending = clipBus.consumePending('mepdf');
     for (const p of pending) {
-      if (p.type === 'image-page' && p.dataUrl) {
-        if (p.id && this.processedClipBusIds.has(p.id)) continue;
-        if (p.id) this.processedClipBusIds.add(p.id);
-        void this.importImageAsPage(p.dataUrl, p.name || 'mePhoto_Scan.jpg');
-      }
+      void handleMessage(p);
     }
   }
 

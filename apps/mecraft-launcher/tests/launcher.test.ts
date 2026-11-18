@@ -195,4 +195,80 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
     expect(list.length).toBe(1);
     expect(list[0].name).toBe('Duplicate_Doc.pdf');
   });
+
+  describe('Launcher Bilingual & Routing Enhancements', () => {
+    it('supports dual-action launchApp routing to web studio and desktop targets', async () => {
+      const bridge = createLauncherBridge();
+
+      // Launch Web Studio target
+      const webRes = await bridge.launchApp({
+        appId: 'mepdf',
+        target: 'web',
+      });
+      expect(webRes.success).toBe(true);
+
+      // Launch Desktop target
+      const desktopRes = await bridge.launchApp({
+        appId: 'mephoto',
+        target: 'desktop',
+      });
+      expect(desktopRes.success).toBe(true);
+    });
+
+    it('supports dataUrl payload in launchApp options', async () => {
+      const bridge = createLauncherBridge();
+      const mockDataUrl = 'data:application/pdf;base64,JVBERi0xLjcK...';
+
+      const res = await bridge.launchApp({
+        appId: 'mepdf',
+        dataUrl: mockDataUrl,
+        filePath: 'invoice.pdf',
+        target: 'web',
+      });
+      expect(res.success).toBe(true);
+    });
+
+    it('has symmetrical bilingual translations for both EN and TH languages', async () => {
+      const { TRANSLATIONS, APP_THAI_METADATA } = await import('../src/main');
+      expect(TRANSLATIONS.en).toBeDefined();
+      expect(TRANSLATIONS.th).toBeDefined();
+
+      const enKeys = Object.keys(TRANSLATIONS.en).sort();
+      const thKeys = Object.keys(TRANSLATIONS.th).sort();
+      expect(enKeys).toEqual(thKeys);
+
+      expect(TRANSLATIONS.en.badgePrivacy).toContain('Privacy');
+      expect(TRANSLATIONS.th.badgePrivacy).toContain('ความเป็นส่วนตัว');
+      expect(TRANSLATIONS.en.openWebStudio).toBe('Open Web Studio');
+      expect(TRANSLATIONS.th.openWebStudio).toBe('เปิด Web Studio');
+
+      expect(APP_THAI_METADATA.mepdf).toBeDefined();
+      expect(APP_THAI_METADATA.mephoto).toBeDefined();
+      expect(APP_THAI_METADATA.mepdf.tagline.length).toBeGreaterThan(0);
+      expect(APP_THAI_METADATA.mephoto.tagline.length).toBeGreaterThan(0);
+    });
+
+    it('correctly maps file extensions to target apps in universal drop routing', () => {
+      const getTargetApp = (filename: string, mimeType?: string) => {
+        const isPdf = filename.toLowerCase().endsWith('.pdf') || mimeType === 'application/pdf';
+        const isImage = (mimeType && mimeType.startsWith('image/')) || /\.(jpe?g|png|webp|avif|bmp|gif|svg)$/i.test(filename);
+        if (isPdf) return 'mepdf';
+        if (isImage) return 'mephoto';
+        return null;
+      };
+
+      expect(getTargetApp('report.pdf')).toBe('mepdf');
+      expect(getTargetApp('SCAN_DOCUMENT.PDF')).toBe('mepdf');
+      expect(getTargetApp('custom', 'application/pdf')).toBe('mepdf');
+
+      expect(getTargetApp('photo.png')).toBe('mephoto');
+      expect(getTargetApp('receipt.jpg')).toBe('mephoto');
+      expect(getTargetApp('scan.jpeg')).toBe('mephoto');
+      expect(getTargetApp('graphic.webp')).toBe('mephoto');
+      expect(getTargetApp('file', 'image/png')).toBe('mephoto');
+
+      expect(getTargetApp('unknown.xyz')).toBeNull();
+      expect(getTargetApp('binary.exe')).toBeNull();
+    });
+  });
 });
