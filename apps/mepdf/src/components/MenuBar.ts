@@ -5,6 +5,7 @@ import {
   Save,
   Trash2,
   Undo2,
+  Redo2,
   CheckSquare,
   Square,
   RotateCw,
@@ -33,6 +34,7 @@ import { getLanguage } from '../core/i18n';
 export interface MenuBarState {
   hasDocument: boolean;
   canUndo: boolean;
+  canRedo: boolean;
   viewMode: 'cockpit' | 'grid';
   selectedCount: number;
   totalPageCount: number;
@@ -45,6 +47,7 @@ export interface MenuBarCallbacks {
   onExportAs?: () => void;
   onClearWorkspace: () => void;
   onUndo: () => void;
+  onRedo: () => void;
   onSelectAll: () => void;
   onDeselectAll: () => void;
   onInvertSelection: () => void;
@@ -70,6 +73,7 @@ export class MenuBar {
   private state: MenuBarState = {
     hasDocument: false,
     canUndo: false,
+    canRedo: false,
     viewMode: 'cockpit',
     selectedCount: 0,
     totalPageCount: 0,
@@ -141,6 +145,17 @@ export class MenuBar {
         e.preventDefault();
         if (this.state.canUndo) {
           this.callbacks.onUndo();
+        }
+        return;
+      }
+
+      if (
+        ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') ||
+        ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && e.shiftKey)
+      ) {
+        e.preventDefault();
+        if (this.state.canRedo) {
+          this.callbacks.onRedo();
         }
         return;
       }
@@ -234,6 +249,7 @@ export class MenuBar {
     const lang = getLanguage();
     const hasDoc = this.state.hasDocument;
     const canUndo = this.state.canUndo;
+    const canRedo = this.state.canRedo;
 
     this.container.innerHTML = `
       <div class="menubar-wrapper" role="menubar" aria-label="Main Menu">
@@ -288,6 +304,11 @@ export class MenuBar {
                 <i data-lucide="undo-2" class="menu-icon"></i>
                 <span class="menu-label">${lang === 'th' ? 'เลิกทำ' : 'Undo'}</span>
                 <kbd class="menu-shortcut">Ctrl+Z</kbd>
+              </button>
+              <button class="menubar-menu-item ${!canRedo ? 'disabled' : ''}" data-action="redo" role="menuitem" ${!canRedo ? 'disabled' : ''}>
+                <i data-lucide="redo-2" class="menu-icon"></i>
+                <span class="menu-label">${lang === 'th' ? 'ทำซ้ำ' : 'Redo'}</span>
+                <kbd class="menu-shortcut">Ctrl+Y</kbd>
               </button>
               <div class="menubar-separator" role="separator"></div>
               <button class="menubar-menu-item ${!hasDoc ? 'disabled' : ''}" data-action="select-all" role="menuitem" ${!hasDoc ? 'disabled' : ''}>
@@ -519,6 +540,9 @@ export class MenuBar {
       case 'undo':
         this.callbacks.onUndo();
         break;
+      case 'redo':
+        this.callbacks.onRedo();
+        break;
       case 'select-all':
         this.callbacks.onSelectAll();
         break;
@@ -595,6 +619,7 @@ export class MenuBar {
         Save,
         Trash2,
         Undo2,
+        Redo2,
         CheckSquare,
         Square,
         RotateCw,

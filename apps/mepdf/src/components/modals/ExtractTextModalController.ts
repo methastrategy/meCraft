@@ -1,5 +1,5 @@
 import { escapeHtml, downloadBlob } from '../../utils/file-utils';
-import { extractText } from '../../core/pdf-operations';
+import { extractText, injectSearchableTextLayer } from '../../core/pdf-operations';
 import { toast } from '../Toast';
 import { progressOverlay } from '../ProgressOverlay';
 import { t } from '../../core/i18n';
@@ -19,8 +19,12 @@ export async function showExtractTextModal(
     const title = `<i data-lucide="file-text" style="width: 18px; height: 18px; color: var(--primary);"></i> ${t('extractTextModalTitle')}`;
     const displayText = text.trim() ? text : t('extractTextEmpty');
     const bodyHtml = `
-      <div style="font-size: 0.8125rem; color: var(--text-muted);">
-        ${escapeHtml(filename)} (${text.length.toLocaleString()} characters)
+      <div style="font-size: 0.8125rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+        <span>${escapeHtml(filename)} (${text.length.toLocaleString()} characters)</span>
+        <button class="btn btn-ghost btn-sm" id="modal-make-searchable-btn" title="Inject invisible searchable OCR text layer into this PDF">
+          <i data-lucide="sparkles" style="width: 14px; height: 14px; color: var(--accent-cyan);"></i>
+          <span>Make Searchable (OCR)</span>
+        </button>
       </div>
       <textarea class="text-preview-box" id="extracted-text-area" readonly>${escapeHtml(displayText)}</textarea>
     `;
@@ -41,6 +45,28 @@ export async function showExtractTextModal(
     const textArea = modal.bodyContent.querySelector<HTMLTextAreaElement>('#extracted-text-area')!;
     const copyBtn = modal.footerActions.querySelector<HTMLButtonElement>('#modal-copy-text-btn')!;
     const dlBtn = modal.footerActions.querySelector<HTMLButtonElement>('#modal-download-text-btn')!;
+    const ocrBtn = modal.bodyContent.querySelector<HTMLButtonElement>('#modal-make-searchable-btn');
+
+    ocrBtn?.addEventListener('click', async () => {
+      try {
+        progressOverlay.show('Injecting searchable OCR text layer...');
+        const searchableBytes = await injectSearchableTextLayer(
+          fileBytes,
+          (info) => progressOverlay.update(info),
+          password
+        );
+        progressOverlay.hide();
+
+        const outName = filename.replace(/\.pdf$/i, '') + '_searchable.pdf';
+        const blob = new Blob([searchableBytes as unknown as BlobPart], { type: 'application/pdf' });
+        downloadBlob(blob, outName);
+        toast.show('Searchable PDF generated and downloaded!', 'success');
+      } catch (err: unknown) {
+        progressOverlay.hide();
+        const msg = err instanceof Error ? err.message : String(err);
+        toast.show(`OCR injection failed: ${msg}`, 'error');
+      }
+    });
 
     copyBtn.addEventListener('click', async () => {
       try {

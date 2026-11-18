@@ -22,8 +22,10 @@ import {
   RotateCw,
   Trash2,
   Undo2,
+  Redo2,
   LayoutGrid,
 } from 'lucide';
+import { clipBus } from '@mecraft/core-bridge';
 import { registerSW } from 'virtual:pwa-register';
 
 import type { PDFPageItem, DocumentMetadata } from './core/types';
@@ -69,6 +71,12 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
   };
 }
 
+export interface HistoryCommand {
+  description: string;
+  undo: () => void | Promise<void>;
+  redo: () => void | Promise<void>;
+}
+
 class MeCraftApp {
   private appEl: HTMLElement;
   private documents = new Map<string, DocumentMetadata>();
@@ -93,10 +101,9 @@ class MeCraftApp {
   private photoStudioModal: PhotoStudioModal | null = null;
   private fileInput: HTMLInputElement;
   private pendingAction: string | null = null;
-  private undoStack: Array<{
-    pages: { page: PDFPageItem; index: number }[];
-    documents: DocumentMetadata[];
-  }> = [];
+  private undoStack: HistoryCommand[] = [];
+  private redoStack: HistoryCommand[] = [];
+  private processedClipBusIds = new Set<string>();
   private activeUndoToast: { dismiss: () => void } | null = null;
   private autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -132,6 +139,7 @@ class MeCraftApp {
     this.initCockpitComponents();
     this.initEventListeners();
     this.initRouterAndStorage();
+    this.initClipBus();
     this.updateUI();
   }
 
@@ -174,6 +182,9 @@ class MeCraftApp {
 
           <button class="btn btn-ghost btn-sm" id="ribbon-undo-btn" title="Undo (Ctrl+Z)" style="display: none;">
             <i data-lucide="undo-2" style="width: 14px; height: 14px;"></i>
+          </button>
+          <button class="btn btn-ghost btn-sm" id="ribbon-redo-btn" title="Redo (Ctrl+Y)" style="display: none;">
+            <i data-lucide="redo-2" style="width: 14px; height: 14px;"></i>
           </button>
         </div>
 
@@ -381,7 +392,8 @@ class MeCraftApp {
       onSaveFile: () => void this.exportCurrentDocument({ forceSaveAs: false }),
       onExportAs: () => void this.exportCurrentDocument({ forceSaveAs: true }),
       onClearWorkspace: () => this.clearAll(),
-      onUndo: () => this.undoDelete(),
+      onUndo: () => this.undo(),
+      onRedo: () => this.redo(),
       onSelectAll: () => this.selectAll(),
       onDeselectAll: () => this.deselectAll(),
       onInvertSelection: () => this.invertSelection(),
@@ -484,6 +496,26 @@ class MeCraftApp {
     };
     this.pages.splice(idx + 1, 0, duplicate);
     this.activePageId = duplicate.id;
+
+    this.executeCommand({
+      description: `Duplicate page ${idx + 1}`,
+      undo: () => {
+        const dIdx = this.pages.findIndex((p) => p.id === duplicate.id);
+        if (dIdx !== -1) {
+          this.pages.splice(dIdx, 1);
+          this.activePageId = orig.id;
+          this.updateUI();
+        }
+      },
+      redo: () => {
+        const curOrigIdx = this.pages.findIndex((p) => p.id === orig.id);
+        const insertAt = curOrigIdx !== -1 ? curOrigIdx + 1 : idx + 1;
+        this.pages.splice(insertAt, 0, duplicate);
+        this.activePageId = duplicate.id;
+        this.updateUI();
+      },
+    });
+
     this.updateUI();
     toast.show(`Duplicated page ${idx + 1}`, 'success');
   }
@@ -510,6 +542,7 @@ class MeCraftApp {
         RotateCw,
         Trash2,
         Undo2,
+        Redo2,
         LayoutGrid,
       },
       nameAttr: 'data-lucide',
@@ -596,9 +629,12 @@ class MeCraftApp {
       }
     });
 
-    // Ribbon Undo button
+    // Ribbon Undo & Redo buttons
     this.appEl.querySelector('#ribbon-undo-btn')?.addEventListener('click', () => {
-      this.undoDelete();
+      this.undo();
+    });
+    this.appEl.querySelector('#ribbon-redo-btn')?.addEventListener('click', () => {
+      this.redo();
     });
 
     // Language toggle
@@ -822,10 +858,14 @@ class MeCraftApp {
     const exportLabel = this.appEl.querySelector<HTMLElement>('#nav-export-label')!;
     const ribbonDocInfo = this.appEl.querySelector<HTMLElement>('#ribbon-doc-info')!;
     const ribbonUndoBtn = this.appEl.querySelector<HTMLElement>('#ribbon-undo-btn')!;
+    const ribbonRedoBtn = this.appEl.querySelector<HTMLElement>('#ribbon-redo-btn')!;
 
-    // Undo button visibility
+    // Undo & Redo button visibility
     if (ribbonUndoBtn) {
       ribbonUndoBtn.style.display = this.undoStack.length > 0 ? 'inline-flex' : 'none';
+    }
+    if (ribbonRedoBtn) {
+      ribbonRedoBtn.style.display = this.redoStack.length > 0 ? 'inline-flex' : 'none';
     }
 
     const selectedCount = this.pages.filter((p) => p.selected).length;
@@ -897,6 +937,7 @@ class MeCraftApp {
     this.menuBar?.updateState({
       hasDocument: hasPages,
       canUndo: this.undoStack.length > 0,
+      canRedo: this.redoStack.length > 0,
       viewMode: this.activeViewMode,
       selectedCount,
       totalPageCount: this.pages.length,
@@ -945,11 +986,73 @@ class MeCraftApp {
     this.updateUI();
   }
 
+  public executeCommand(cmd: HistoryCommand, alreadyApplied = true): void {
+    if (!alreadyApplied) {
+      void cmd.redo();
+    }
+    this.undoStack.push(cmd);
+    if (this.undoStack.length > 50) {
+      this.undoStack.shift();
+    }
+    this.redoStack = [];
+    this.updateUI();
+  }
+
+  public undo(): void {
+    const cmd = this.undoStack.pop();
+    if (!cmd) return;
+    if (this.activeUndoToast) {
+      this.activeUndoToast.dismiss();
+      this.activeUndoToast = null;
+    }
+    void cmd.undo();
+    this.redoStack.push(cmd);
+    this.updateUI();
+    toast.show(`Undo: ${cmd.description}`, 'info');
+  }
+
+  public redo(): void {
+    const cmd = this.redoStack.pop();
+    if (!cmd) return;
+    if (this.activeUndoToast) {
+      this.activeUndoToast.dismiss();
+      this.activeUndoToast = null;
+    }
+    void cmd.redo();
+    this.undoStack.push(cmd);
+    this.updateUI();
+    toast.show(`Redo: ${cmd.description}`, 'info');
+  }
+
+  public undoDelete(): void {
+    this.undo();
+  }
+
   private rotateAll(degrees: number): void {
     if (this.pages.length === 0) return;
+    const previous = this.pages.map((p) => ({ id: p.id, rotation: p.rotation }));
     this.pages.forEach((p) => {
       p.rotation = (p.rotation + degrees) % 360;
     });
+
+    this.executeCommand({
+      description: `Rotate all pages ${degrees}°`,
+      undo: () => {
+        previous.forEach((item) => {
+          const pg = this.pages.find((p) => p.id === item.id);
+          if (pg) pg.rotation = item.rotation;
+        });
+        this.updateUI();
+      },
+      redo: () => {
+        previous.forEach((item) => {
+          const pg = this.pages.find((p) => p.id === item.id);
+          if (pg) pg.rotation = (item.rotation + degrees) % 360;
+        });
+        this.updateUI();
+      },
+    });
+
     toast.show(t('toastRotatedAll', { count: this.pages.length, deg: degrees }), 'info');
     this.updateUI();
   }
@@ -965,8 +1068,27 @@ class MeCraftApp {
       return;
     }
 
+    const previous = selectedPages.map((p) => ({ id: p.id, rotation: p.rotation }));
     selectedPages.forEach((p) => {
       p.rotation = (p.rotation + degrees) % 360;
+    });
+
+    this.executeCommand({
+      description: `Rotate ${selectedPages.length} selected pages ${degrees}°`,
+      undo: () => {
+        previous.forEach((item) => {
+          const pg = this.pages.find((p) => p.id === item.id);
+          if (pg) pg.rotation = item.rotation;
+        });
+        this.updateUI();
+      },
+      redo: () => {
+        previous.forEach((item) => {
+          const pg = this.pages.find((p) => p.id === item.id);
+          if (pg) pg.rotation = (item.rotation + degrees) % 360;
+        });
+        this.updateUI();
+      },
     });
 
     toast.show(t('toastRotatedSelected', { count: selectedPages.length, deg: degrees }), 'info');
@@ -976,7 +1098,28 @@ class MeCraftApp {
   private rotateSinglePage(pageId: string, degrees: number): void {
     const page = this.pages.find((p) => p.id === pageId);
     if (page) {
-      page.rotation = (page.rotation + degrees) % 360;
+      const oldRotation = page.rotation;
+      const newRotation = (oldRotation + degrees) % 360;
+      page.rotation = newRotation;
+
+      this.executeCommand({
+        description: `Rotate page ${degrees}°`,
+        undo: () => {
+          const pg = this.pages.find((p) => p.id === pageId);
+          if (pg) {
+            pg.rotation = oldRotation;
+            this.updateUI();
+          }
+        },
+        redo: () => {
+          const pg = this.pages.find((p) => p.id === pageId);
+          if (pg) {
+            pg.rotation = newRotation;
+            this.updateUI();
+          }
+        },
+      });
+
       this.updateUI();
     }
   }
@@ -1011,13 +1154,9 @@ class MeCraftApp {
       this.activeUndoToast = null;
     }
 
-    this.undoStack.push({
-      pages: [{ page: { ...deletedPage, selected: false }, index: idx }],
-      documents: docMeta ? [{ ...docMeta }] : [],
-    });
-    if (this.undoStack.length > 20) {
-      this.undoStack.shift();
-    }
+    const savedDoc = docMeta ? { ...docMeta } : null;
+    const savedPage = { ...deletedPage, selected: false };
+    const savedIndex = idx;
 
     this.pages.splice(idx, 1);
     this.pruneUnusedDocuments();
@@ -1028,8 +1167,31 @@ class MeCraftApp {
       this.activePageId = nextItem ? nextItem.id : null;
     }
 
+    this.executeCommand({
+      description: `Delete page ${savedIndex + 1}`,
+      undo: () => {
+        if (savedDoc && !this.documents.has(savedDoc.id)) {
+          this.documents.set(savedDoc.id, savedDoc);
+        }
+        this.pages.splice(savedIndex, 0, { ...savedPage });
+        this.activePageId = savedPage.id;
+        this.updateUI();
+      },
+      redo: () => {
+        const removeIdx = this.pages.findIndex((p) => p.id === savedPage.id);
+        if (removeIdx !== -1) {
+          this.pages.splice(removeIdx, 1);
+          this.pruneUnusedDocuments();
+          if (this.activePageId === savedPage.id) {
+            this.activePageId = this.pages.length > 0 ? this.pages[0]?.id || null : null;
+          }
+          this.updateUI();
+        }
+      },
+    });
+
     this.updateUI();
-    this.activeUndoToast = toast.showAction(t('toastPageRemoved'), t('toastUndo'), () => this.undoDelete());
+    this.activeUndoToast = toast.showAction(t('toastPageRemoved'), t('toastUndo'), () => this.undo());
   }
 
   private deleteSelected(): void {
@@ -1051,19 +1213,12 @@ class MeCraftApp {
     const docIds = new Set(selectedPagesWithIndices.map((item) => item.page.docId));
     const docsToKeep = Array.from(docIds)
       .map((id) => this.documents.get(id))
-      .filter((d): d is DocumentMetadata => Boolean(d));
+      .filter((d): d is DocumentMetadata => Boolean(d))
+      .map((d) => ({ ...d }));
 
     if (this.activeUndoToast) {
       this.activeUndoToast.dismiss();
       this.activeUndoToast = null;
-    }
-
-    this.undoStack.push({
-      pages: selectedPagesWithIndices,
-      documents: docsToKeep.map((d) => ({ ...d })),
-    });
-    if (this.undoStack.length > 20) {
-      this.undoStack.shift();
     }
 
     const selectedIds = new Set(selectedPagesWithIndices.map((item) => item.page.id));
@@ -1074,38 +1229,40 @@ class MeCraftApp {
       this.activePageId = this.pages.length > 0 ? (this.pages[0]?.id || null) : null;
     }
 
+    this.executeCommand({
+      description: `Delete ${selectedCount} pages`,
+      undo: () => {
+        for (const doc of docsToKeep) {
+          if (!this.documents.has(doc.id)) {
+            this.documents.set(doc.id, doc);
+          }
+        }
+        const sorted = [...selectedPagesWithIndices].sort((a, b) => a.index - b.index);
+        for (const item of sorted) {
+          const insertIdx = Math.min(item.index, this.pages.length);
+          this.pages.splice(insertIdx, 0, { ...item.page });
+        }
+        if (sorted[0]) {
+          this.activePageId = sorted[0].page.id;
+        }
+        this.updateUI();
+      },
+      redo: () => {
+        this.pages = this.pages.filter((p) => !selectedIds.has(p.id));
+        this.pruneUnusedDocuments();
+        if (this.activePageId && selectedIds.has(this.activePageId)) {
+          this.activePageId = this.pages.length > 0 ? this.pages[0]?.id || null : null;
+        }
+        this.updateUI();
+      },
+    });
+
     this.updateUI();
     this.activeUndoToast = toast.showAction(
       `${selectedCount} pages removed`,
       t('toastUndo'),
-      () => this.undoDelete()
+      () => this.undo()
     );
-  }
-
-  private undoDelete(): void {
-    const lastAction = this.undoStack.pop();
-    if (!lastAction) return;
-
-    if (this.activeUndoToast) {
-      this.activeUndoToast.dismiss();
-      this.activeUndoToast = null;
-    }
-
-    for (const doc of lastAction.documents) {
-      if (!this.documents.has(doc.id)) {
-        this.documents.set(doc.id, doc);
-      }
-    }
-
-    const sortedPages = [...lastAction.pages].sort((a, b) => a.index - b.index);
-    for (const item of sortedPages) {
-      const insertIdx = Math.min(item.index, this.pages.length);
-      this.pages.splice(insertIdx, 0, item.page);
-    }
-
-    const count = sortedPages.length;
-    this.updateUI();
-    toast.show(t('toastPagesRestored', { count }), 'success');
   }
 
   private reorderPages(fromIndex: number, toIndex: number): void {
@@ -1113,7 +1270,127 @@ class MeCraftApp {
     const [movedItem] = this.pages.splice(fromIndex, 1);
     if (movedItem) {
       this.pages.splice(toIndex, 0, movedItem);
+      this.executeCommand({
+        description: `Reorder page ${fromIndex + 1} to ${toIndex + 1}`,
+        undo: () => {
+          const [item] = this.pages.splice(toIndex, 1);
+          if (item) {
+            this.pages.splice(fromIndex, 0, item);
+            this.updateUI();
+          }
+        },
+        redo: () => {
+          const [item] = this.pages.splice(fromIndex, 1);
+          if (item) {
+            this.pages.splice(toIndex, 0, item);
+            this.updateUI();
+          }
+        },
+      });
       this.updateUI();
+    }
+  }
+
+  private initClipBus(): void {
+    clipBus.subscribe((msg) => {
+      if (msg.targetApp === 'mepdf' && msg.type === 'image-page' && msg.dataUrl) {
+        if (msg.id && this.processedClipBusIds.has(msg.id)) return;
+        if (msg.id) this.processedClipBusIds.add(msg.id);
+        void this.importImageAsPage(msg.dataUrl, msg.name || 'mePhoto_Scan.jpg');
+      }
+    });
+
+    const pending = clipBus.consumePending('mepdf');
+    for (const p of pending) {
+      if (p.type === 'image-page' && p.dataUrl) {
+        if (p.id && this.processedClipBusIds.has(p.id)) continue;
+        if (p.id) this.processedClipBusIds.add(p.id);
+        void this.importImageAsPage(p.dataUrl, p.name || 'mePhoto_Scan.jpg');
+      }
+    }
+  }
+
+  public async importImageAsPage(dataUrl: string, filename = 'mePhoto_Scan.jpg'): Promise<void> {
+    try {
+      let blob: Blob;
+      try {
+        const res = await fetch(dataUrl);
+        blob = await res.blob();
+      } catch {
+        // Direct base64 data URL decoding fallback if fetch() fails
+        const commaIdx = dataUrl.indexOf(',');
+        const header = commaIdx > 0 ? dataUrl.slice(0, commaIdx) : '';
+        const base64Str = commaIdx > 0 ? dataUrl.slice(commaIdx + 1) : dataUrl;
+        const mimeMatch = header.match(/:(.*?);/);
+        const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+        const binStr = atob(base64Str);
+        const u8 = new Uint8Array(binStr.length);
+        for (let i = 0; i < binStr.length; i++) {
+          u8[i] = binStr.charCodeAt(i);
+        }
+        blob = new Blob([u8], { type: mime });
+      }
+
+      const virtualFile = new File([blob], filename, { type: blob.type || 'image/jpeg' });
+      const convertedBytes = await imagesToPdf([virtualFile], { pageSize: 'fit' });
+      const newDocId = `doc_clip_${Date.now()}`;
+      const docName = `${filename.replace(/\.[^.]+$/, '')}.pdf`;
+      this.documents.set(newDocId, {
+        id: newDocId,
+        filename: docName,
+        size: convertedBytes.byteLength,
+        pageCount: 1,
+        fileBytes: convertedBytes,
+      });
+
+      const newPage: PDFPageItem = {
+        id: `page_clip_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        docId: newDocId,
+        docName,
+        pageIndex: 0,
+        displayPageNumber: 1,
+        rotation: 0,
+        thumbnailDataUrl: dataUrl,
+        width: 595,
+        height: 842,
+        selected: false,
+      };
+
+      this.pages.push(newPage);
+      this.activePageId = newPage.id;
+
+      this.executeCommand({
+        description: `Import scan ${filename}`,
+        undo: () => {
+          const idx = this.pages.findIndex((p) => p.id === newPage.id);
+          if (idx !== -1) {
+            this.pages.splice(idx, 1);
+            this.pruneUnusedDocuments();
+            this.activePageId = this.pages.length > 0 ? this.pages[0]?.id || null : null;
+            this.updateUI();
+          }
+        },
+        redo: () => {
+          if (!this.documents.has(newDocId)) {
+            this.documents.set(newDocId, {
+              id: newDocId,
+              filename: docName,
+              size: convertedBytes.byteLength,
+              pageCount: 1,
+              fileBytes: convertedBytes,
+            });
+          }
+          this.pages.push(newPage);
+          this.activePageId = newPage.id;
+          this.updateUI();
+        },
+      });
+
+      this.updateUI();
+      toast.show(`Imported page from mePhoto: ${filename}`, 'success');
+    } catch (e: any) {
+      console.error('[mePDF] Failed to import ClipBus image:', e);
+      toast.show(`Failed to import page: ${e.message}`, 'error');
     }
   }
 
@@ -1130,6 +1407,7 @@ class MeCraftApp {
         this.pages = [];
         this.documents.clear();
         this.undoStack = [];
+        this.redoStack = [];
         this.activePageId = null;
         clearThumbnailCache();
         await clearWorkspaceState();

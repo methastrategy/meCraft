@@ -1,6 +1,20 @@
-import type { PhotoAdjustmentRecipe, PhotoFilterPreset, CropRect, ProcessedPhotoResult } from '@mecraft/photo-core';
+import type {
+  PhotoAdjustmentRecipe,
+  PhotoFilterPreset,
+  CropRect,
+  ProcessedPhotoResult,
+  QuadCorners,
+  Point2D,
+} from '@mecraft/photo-core';
 
-export type { PhotoAdjustmentRecipe, PhotoFilterPreset, CropRect, ProcessedPhotoResult };
+export type {
+  PhotoAdjustmentRecipe,
+  PhotoFilterPreset,
+  CropRect,
+  ProcessedPhotoResult,
+  QuadCorners,
+  Point2D,
+};
 
 export interface PhotoDocumentItem {
   id: string;

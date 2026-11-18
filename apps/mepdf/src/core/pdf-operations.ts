@@ -445,7 +445,50 @@ export async function extractText(
 ): Promise<string> {
   const pdfDoc = await loadPdfDocument(pdfBytes, password);
   try {
-    return await extractTextFromDoc(pdfDoc, onProgress);
+    const directText = await extractTextFromDoc(pdfDoc, onProgress);
+    // Check if meaningful text was found
+    const meaningfulLines = directText
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l && !l.startsWith('=== Page ') && !l.includes('[No selectable text on this page]'));
+
+    if (meaningfulLines.length > 0) {
+      return directText;
+    }
+
+    // Scanned document: run client-side OCR extraction
+    const { performOcr } = await import('@mecraft/photo-core');
+    const total = pdfDoc.numPages;
+    const ocrPages: string[] = [];
+
+    if (typeof document !== 'undefined') {
+      for (let i = 1; i <= total; i++) {
+        try {
+          const canvas = await renderPageToCanvas(pdfDoc, i, 2.0);
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          if (ctx) {
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const ocr = performOcr(imgData);
+            ocrPages.push(`=== Page ${i} / ${total} (OCR) ===\n` + (ocr.text || '[No text detected]'));
+          }
+          canvas.width = 0;
+          canvas.height = 0;
+        } catch {
+          ocrPages.push(`=== Page ${i} / ${total} (OCR) ===\n[No text detected]`);
+        }
+
+        if (onProgress) {
+          onProgress({
+            stage: 'Extracting text via OCR',
+            current: i,
+            total,
+            percent: Math.round((i / total) * 100),
+          });
+        }
+      }
+    }
+
+    return ocrPages.join('\n\n');
   } finally {
     await destroyPdfDocument(pdfDoc);
   }
@@ -779,6 +822,85 @@ export async function updatePdfMetadata(
   }
 
   return await doc.save();
+}
+
+/**
+ * Injects an invisible searchable text layer into scanned or image PDF pages
+ * so that Ctrl+F searchability and text selection work on scanned documents.
+ */
+export async function injectSearchableTextLayer(
+  fileBytes: Uint8Array,
+  onProgress?: ProgressCallback,
+  password?: string
+): Promise<Uint8Array> {
+  const { performOcr } = await import('@mecraft/photo-core');
+  const pdfDoc = await loadPdfDocument(fileBytes, password);
+  const pdfLibDoc = await PDFDocument.load(fileBytes, { ignoreEncryption: true });
+  const helvetica = await pdfLibDoc.embedFont(StandardFonts.Helvetica);
+  const total = pdfDoc.numPages;
+
+  try {
+    for (let i = 1; i <= total; i++) {
+      let page: any = null;
+      try {
+        page = await pdfDoc.getPage(i);
+        const textContent = await page.getTextContent();
+        const hasText = textContent.items.some((item: any) => 'str' in item && item.str.trim().length > 0);
+
+        if (!hasText && typeof document !== 'undefined') {
+          const canvas = await renderPageToCanvas(pdfDoc, i, 2.0);
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          if (ctx) {
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const ocrResult = performOcr(imgData);
+
+            if (ocrResult.words.length > 0) {
+              const pdfPage = pdfLibDoc.getPage(i - 1);
+              const { width: pWidth, height: pHeight } = pdfPage.getSize();
+              const scaleX = pWidth / canvas.width;
+              const scaleY = pHeight / canvas.height;
+
+              for (const word of ocrResult.words) {
+                if (!word.text.trim()) continue;
+                const pdfX = word.bbox.x * scaleX;
+                const pdfY = pHeight - (word.bbox.y + word.bbox.height) * scaleY;
+                const fontSize = Math.max(4, Math.min(48, word.bbox.height * scaleY * 0.85));
+
+                try {
+                  pdfPage.drawText(word.text, {
+                    x: Math.max(0, pdfX),
+                    y: Math.max(0, pdfY),
+                    size: fontSize,
+                    font: helvetica,
+                    opacity: 0, // INVISIBLE SEARCHABLE TEXT LAYER
+                  });
+                } catch {
+                  // Ignore glyph encoding fallbacks
+                }
+              }
+            }
+          }
+          canvas.width = 0;
+          canvas.height = 0;
+        }
+      } finally {
+        page?.cleanup();
+      }
+
+      if (onProgress) {
+        onProgress({
+          stage: 'Injecting searchable OCR text layer',
+          current: i,
+          total,
+          percent: Math.round((i / total) * 100),
+        });
+      }
+    }
+
+    return await pdfLibDoc.save({ useObjectStreams: false });
+  } finally {
+    await destroyPdfDocument(pdfDoc);
+  }
 }
 
 export { addWatermarkToPdf as watermarkPdf };

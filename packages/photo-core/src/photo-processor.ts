@@ -1,4 +1,5 @@
 ﻿import { canvasToBlob } from './file-utils';
+import { type QuadCorners, warpPerspective } from './homography';
 
 export interface CropRect {
   x: number; // Relative 0..1
@@ -17,6 +18,7 @@ export type PhotoFilterPreset =
 
 export interface PhotoAdjustmentRecipe {
   crop?: CropRect;
+  perspectiveQuad?: QuadCorners;
   rotation: number; // In degrees (-180..180 or arbitrary)
   flipH: boolean;
   flipV: boolean;
@@ -69,6 +71,7 @@ export function createImageData(
 export function createDefaultAdjustmentRecipe(): PhotoAdjustmentRecipe {
   return {
     crop: undefined,
+    perspectiveQuad: undefined,
     rotation: 0,
     flipH: false,
     flipV: false,
@@ -319,17 +322,24 @@ export function calculateOtsuThreshold(
   width: number,
   height: number
 ): number {
-  const totalPixels = width * height;
-  if (totalPixels === 0) return 128;
+  if (width * height === 0) return 128;
 
   const histogram = new Int32Array(256);
+  let validPixels = 0;
+
   for (let i = 0; i < data.length; i += 4) {
+    // Ignore transparent / alpha-masked background pixels
+    if (data[i + 3]! < 128) continue;
+
     const r = data[i]!;
     const g = data[i + 1]!;
     const b = data[i + 2]!;
     const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
     histogram[gray] = (histogram[gray] ?? 0) + 1;
+    validPixels++;
   }
+
+  if (validPixels === 0) return 128;
 
   let totalSum = 0;
   for (let t = 0; t < 256; t++) {
@@ -344,7 +354,7 @@ export function calculateOtsuThreshold(
   for (let t = 0; t < 256; t++) {
     backgroundWeight += histogram[t]!;
     if (backgroundWeight === 0) continue;
-    const foregroundWeight = totalPixels - backgroundWeight;
+    const foregroundWeight = validPixels - backgroundWeight;
     if (foregroundWeight === 0) break;
 
     backgroundSum += t * histogram[t]!;
@@ -802,8 +812,42 @@ export function renderRecipeToCanvas(
 
   const rawWidth = 'naturalWidth' in source ? source.naturalWidth || source.width : source.width;
   const rawHeight = 'naturalHeight' in source ? source.naturalHeight || source.height : source.height;
-  const srcWidth = Math.max(1, rawWidth || 1);
-  const srcHeight = Math.max(1, rawHeight || 1);
+  let srcWidth = Math.max(1, rawWidth || 1);
+  let srcHeight = Math.max(1, rawHeight || 1);
+
+  // 0. 4-Point Homography Perspective Deskew (if specified)
+  let effectiveSource: HTMLImageElement | HTMLCanvasElement | ImageBitmap = source;
+  if (recipe.perspectiveQuad) {
+    try {
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = srcWidth;
+      tempCanvas.height = srcHeight;
+      const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+      if (tempCtx) {
+        tempCtx.drawImage(source, 0, 0);
+        const srcImageData = tempCtx.getImageData(0, 0, srcWidth, srcHeight);
+        const unwarpedData = warpPerspective(srcImageData, recipe.perspectiveQuad);
+        const unwarpedCanvas = document.createElement('canvas');
+        unwarpedCanvas.width = unwarpedData.width;
+        unwarpedCanvas.height = unwarpedData.height;
+        const unwarpedCtx = unwarpedCanvas.getContext('2d', { willReadFrequently: true });
+        if (unwarpedCtx) {
+          if (typeof ImageData !== 'undefined' && unwarpedData instanceof ImageData) {
+            unwarpedCtx.putImageData(unwarpedData, 0, 0);
+          } else {
+            const imgDataObj = unwarpedCtx.createImageData(unwarpedData.width, unwarpedData.height);
+            imgDataObj.data.set(unwarpedData.data);
+            unwarpedCtx.putImageData(imgDataObj, 0, 0);
+          }
+          effectiveSource = unwarpedCanvas;
+          srcWidth = unwarpedCanvas.width;
+          srcHeight = unwarpedCanvas.height;
+        }
+      }
+    } catch (err) {
+      console.warn('[renderRecipeToCanvas] Perspective deskew failed, falling back to source:', err);
+    }
+  }
 
   // 1. Calculate rotation and bounding dimensions
   const rotRad = (recipe.rotation * Math.PI) / 180;
@@ -827,7 +871,7 @@ export function renderRecipeToCanvas(
   rotCtx.translate(rotWidth / 2, rotHeight / 2);
   rotCtx.rotate(rotRad);
   rotCtx.scale(recipe.flipH ? -1 : 1, recipe.flipV ? -1 : 1);
-  rotCtx.drawImage(source, -srcWidth / 2, -srcHeight / 2);
+  rotCtx.drawImage(effectiveSource, -srcWidth / 2, -srcHeight / 2);
   rotCtx.restore();
 
   // 2. Non-destructive Crop

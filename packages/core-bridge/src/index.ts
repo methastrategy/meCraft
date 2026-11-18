@@ -3,6 +3,8 @@
  * Cross-app process communication, app catalog types, and launcher IPC contracts.
  */
 
+export * from './clip-bus';
+
 export type AppId = 'mepdf' | 'mephoto' | 'mevector' | 'medoc' | string;
 
 export type AppInstallStatus =
@@ -442,7 +444,7 @@ export function createLauncherBridge(): LauncherBridge {
 
       const item: RecentProject = {
         ...project,
-        id: existingIdx >= 0 ? list[existingIdx].id : `proj_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+        id: existingIdx >= 0 && list[existingIdx] ? list[existingIdx]!.id : `proj_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         lastOpened: Date.now(),
       };
 
