@@ -5,7 +5,7 @@ import {
   resizeCropRect,
   type PhotoAdjustmentRecipe,
   type PhotoFilterPreset,
-} from '../src/core/photo-processor';
+} from '@mecraft/photo-core';
 
 describe('mePhoto Studio Application Core & Operations', () => {
   it('generates a clean default adjustment recipe', () => {

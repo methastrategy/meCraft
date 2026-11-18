@@ -1,6 +1,6 @@
 use std::fs;
-use std::io::{Read, Write};
-use std::path::{Path, PathBuf};
+use std::io::Write;
+use std::path::PathBuf;
 use std::time::Instant;
 use futures_util::StreamExt;
 use tauri::Emitter;
@@ -44,6 +44,33 @@ fn get_target_app_dir(app_id: &str) -> PathBuf {
     get_base_apps_dir().join(app_id)
 }
 
+fn validate_app_id(app_id: &str) -> Result<(), String> {
+    let len = app_id.len();
+    if !(2..=32).contains(&len) {
+        return Err(format!(
+            "Invalid app_id length (must be 2-32 chars): '{}'",
+            app_id
+        ));
+    }
+
+    // Hard safety guard against any potential directory traversal
+    if app_id.contains('.') || app_id.contains('/') || app_id.contains('\\') || app_id.contains('\0') {
+        return Err(format!("Path traversal attempt blocked: '{}'", app_id));
+    }
+
+    let is_valid_char = app_id
+        .chars()
+        .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '-');
+    if !is_valid_char || app_id.starts_with('-') || app_id.ends_with('-') || app_id.contains("--") {
+        return Err(format!(
+            "Invalid app_id format (lowercase alphanumeric and single hyphens only, no leading/trailing hyphens): '{}'",
+            app_id
+        ));
+    }
+
+    Ok(())
+}
+
 fn get_target_exe_path(app_id: &str) -> PathBuf {
     let app_dir = get_target_app_dir(app_id);
     let exe_name = if cfg!(windows) {
@@ -56,14 +83,20 @@ fn get_target_exe_path(app_id: &str) -> PathBuf {
 
 #[tauri::command]
 fn check_app_status(app_id: String) -> Result<AppStatusResponse, String> {
+    validate_app_id(&app_id)?;
     let exe_path = get_target_exe_path(&app_id);
 
     if exe_path.exists() {
         let size = fs::metadata(&exe_path).map(|m| m.len()).unwrap_or(0);
+        // Read version from version.txt alongside the exe; fall back to None
+        let version = {
+            let ver_file = get_target_app_dir(&app_id).join("version.txt");
+            fs::read_to_string(&ver_file).ok().map(|s| s.trim().to_string())
+        };
         return Ok(AppStatusResponse {
             app_id: app_id.clone(),
             installed: true,
-            version: Some("3.1.0".to_string()),
+            version,
             exe_path: Some(exe_path.to_string_lossy().to_string()),
             size_bytes: Some(size),
         });
@@ -84,6 +117,10 @@ async fn download_and_install_app(
     app_id: String,
     release_url: String,
 ) -> Result<String, String> {
+    validate_app_id(&app_id)?;
+    if !release_url.starts_with("https://") && !release_url.starts_with("http://") {
+        return Err(format!("Invalid release URL scheme: {}", release_url));
+    }
     let app_dir = get_target_app_dir(&app_id);
     fs::create_dir_all(&app_dir).map_err(|e| format!("Failed to create app dir: {}", e))?;
 
@@ -148,37 +185,45 @@ async fn download_and_install_app(
 
     drop(temp_file);
 
+    // TODO(P2 — Security): Add SHA-256 checksum verification before unpacking.
+    // Add `sha2 = { version = "0.10", features = ["std"] }` to Cargo.toml,
+    // then hash the bytes in `temp_zip_path` with `sha2::Sha256` and compare
+    // against an expected digest distributed alongside each release asset.
+
     // Unpack ZIP Archive
-    let zip_file = fs::File::open(&temp_zip_path)
-        .map_err(|e| format!("Failed to open downloaded archive: {}", e))?;
-    let mut archive = zip::ZipArchive::new(zip_file)
-        .map_err(|e| format!("Corrupt zip archive: {}", e))?;
+    let unpack_result = (|| -> Result<(), String> {
+        let zip_file = fs::File::open(&temp_zip_path)
+            .map_err(|e| format!("Failed to open downloaded archive: {}", e))?;
+        let mut archive = zip::ZipArchive::new(zip_file)
+            .map_err(|e| format!("Corrupt zip archive: {}", e))?;
 
-    for i in 0..archive.len() {
-        let mut file = archive
-            .by_index(i)
-            .map_err(|e| format!("Failed to read archive entry #{}: {}", i, e))?;
+        for i in 0..archive.len() {
+            let mut file = archive
+                .by_index(i)
+                .map_err(|e| format!("Failed to read archive entry #{}: {}", i, e))?;
 
-        let outpath = match file.enclosed_name() {
-            Some(path) => app_dir.join(path),
-            None => continue,
-        };
+            let outpath = match file.enclosed_name() {
+                Some(path) => app_dir.join(path),
+                None => continue,
+            };
 
-        if file.name().ends_with('/') {
-            fs::create_dir_all(&outpath).map_err(|e| e.to_string())?;
-        } else {
-            if let Some(p) = outpath.parent() {
-                if !p.exists() {
+            if file.is_dir() || file.name().ends_with('/') || file.name().ends_with('\\') {
+                fs::create_dir_all(&outpath).map_err(|e| e.to_string())?;
+            } else {
+                if let Some(p) = outpath.parent() {
                     fs::create_dir_all(p).map_err(|e| e.to_string())?;
                 }
+                let mut outfile = fs::File::create(&outpath).map_err(|e| e.to_string())?;
+                std::io::copy(&mut file, &mut outfile).map_err(|e| e.to_string())?;
             }
-            let mut outfile = fs::File::create(&outpath).map_err(|e| e.to_string())?;
-            std::io::copy(&mut file, &mut outfile).map_err(|e| e.to_string())?;
         }
-    }
+        Ok(())
+    })();
 
-    // Clean up temporary download file
+    // Ensure temporary download file is always cleaned up regardless of unpack result
     let _ = fs::remove_file(&temp_zip_path);
+
+    unpack_result?;
 
     // Emit final 100% progress
     let _ = app_handle.emit(
@@ -198,6 +243,7 @@ async fn download_and_install_app(
 
 #[tauri::command]
 fn launch_app(app_id: String, args: Vec<String>) -> Result<bool, String> {
+    validate_app_id(&app_id)?;
     let exe_path = get_target_exe_path(&app_id);
 
     if !exe_path.exists() {
@@ -209,6 +255,7 @@ fn launch_app(app_id: String, args: Vec<String>) -> Result<bool, String> {
     }
 
     let mut cmd = std::process::Command::new(&exe_path);
+    cmd.current_dir(get_target_app_dir(&app_id));
     cmd.args(&args);
 
     #[cfg(windows)]
@@ -225,6 +272,7 @@ fn launch_app(app_id: String, args: Vec<String>) -> Result<bool, String> {
 
 #[tauri::command]
 fn get_app_directory(app_id: String) -> Result<String, String> {
+    validate_app_id(&app_id)?;
     let app_dir = get_target_app_dir(&app_id);
     if !app_dir.exists() {
         let _ = fs::create_dir_all(&app_dir);
@@ -234,6 +282,7 @@ fn get_app_directory(app_id: String) -> Result<String, String> {
 
 #[tauri::command]
 fn uninstall_app(app_id: String) -> Result<bool, String> {
+    validate_app_id(&app_id)?;
     let app_dir = get_target_app_dir(&app_id);
     if app_dir.exists() {
         fs::remove_dir_all(&app_dir).map_err(|e| format!("Failed to remove app directory: {}", e))?;
@@ -265,4 +314,84 @@ pub fn run() {
         })
         .run(tauri::generate_context!())
         .expect("error while building tauri launcher application");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_validate_app_id_accepts_valid_ids() {
+        assert!(validate_app_id("mepdf").is_ok());
+        assert!(validate_app_id("mephoto").is_ok());
+        assert!(validate_app_id("mevector").is_ok());
+        assert!(validate_app_id("medoc").is_ok());
+        assert!(validate_app_id("mecraft-pdf").is_ok());
+        assert!(validate_app_id("app123").is_ok());
+        assert!(validate_app_id("a-b-c").is_ok());
+        assert!(validate_app_id("ab").is_ok());
+        assert!(validate_app_id("12").is_ok());
+        assert!(validate_app_id("1-2").is_ok());
+        assert!(validate_app_id("0a").is_ok());
+        assert!(validate_app_id("a0").is_ok());
+        assert!(validate_app_id("abcdefghijklmnopqrstuvwxyz012345").is_ok()); // 32 chars
+    }
+
+    #[test]
+    fn test_validate_app_id_blocks_path_traversal_and_invalid_formats() {
+        // Path traversal
+        assert!(validate_app_id("../mepdf").is_err());
+        assert!(validate_app_id("..\\mepdf").is_err());
+        assert!(validate_app_id("../../windows/system32").is_err());
+        assert!(validate_app_id("/etc/passwd").is_err());
+        assert!(validate_app_id("./mepdf").is_err());
+        assert!(validate_app_id(".").is_err());
+        assert!(validate_app_id("..").is_err());
+        assert!(validate_app_id("mepdf.app").is_err());
+        assert!(validate_app_id("mepdf.").is_err());
+        assert!(validate_app_id(".mepdf").is_err());
+        assert!(validate_app_id("mepdf/test").is_err());
+        assert!(validate_app_id("mepdf\\test").is_err());
+
+        // Length boundaries
+        assert!(validate_app_id("").is_err());
+        assert!(validate_app_id("a").is_err());
+        assert!(validate_app_id("abcdefghijklmnopqrstuvwxyz0123456").is_err()); // 33 chars
+
+        // Invalid characters
+        assert!(validate_app_id("unknown_app").is_err()); // underscore
+        assert!(validate_app_id("mepdf\0").is_err());
+        assert!(validate_app_id(" mepdf").is_err());
+        assert!(validate_app_id("mepdf ").is_err());
+        assert!(validate_app_id("mepdf app").is_err());
+        assert!(validate_app_id("mepdf\n").is_err());
+        assert!(validate_app_id("\tmepdf").is_err());
+        assert!(validate_app_id("MEPDF").is_err());
+        assert!(validate_app_id("MePhoto").is_err());
+        assert!(validate_app_id("ไทย").is_err());
+        assert!(validate_app_id("mepdfé").is_err());
+
+        // Hyphen violations
+        assert!(validate_app_id("-mepdf").is_err());
+        assert!(validate_app_id("mepdf-").is_err());
+        assert!(validate_app_id("me--pdf").is_err());
+        assert!(validate_app_id("--").is_err());
+        assert!(validate_app_id("-a").is_err());
+        assert!(validate_app_id("a-").is_err());
+        assert!(validate_app_id("a--").is_err());
+        assert!(validate_app_id("--a").is_err());
+    }
+
+    #[test]
+    fn test_target_paths_consistency() {
+        let app_dir = get_target_app_dir("mepdf");
+        assert!(app_dir.ends_with("mepdf"));
+
+        let exe_path = get_target_exe_path("mepdf");
+        if cfg!(windows) {
+            assert!(exe_path.ends_with("mepdf.exe"));
+        } else {
+            assert!(exe_path.ends_with("mepdf"));
+        }
+    }
 }

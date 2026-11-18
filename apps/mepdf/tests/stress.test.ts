@@ -155,7 +155,7 @@ describe('WBS 4.3: End-to-End Stress & Chain Pipeline Testing', () => {
   });
 
   it('validates SEO, Open Graph and Structured Data (JSON-LD) integrity', () => {
-    const indexPath = resolve(process.cwd(), 'index.html');
+    const indexPath = resolve(__dirname, '../index.html');
     const indexHtml = readFileSync(indexPath, 'utf8');
 
     expect(indexHtml).toContain('<title>');
@@ -180,8 +180,8 @@ describe('WBS 4.3: End-to-End Stress & Chain Pipeline Testing', () => {
   });
 
   it('validates robots.txt and sitemap.xml presence', () => {
-    const robotsPath = resolve(process.cwd(), 'public/robots.txt');
-    const sitemapPath = resolve(process.cwd(), 'public/sitemap.xml');
+    const robotsPath = resolve(__dirname, '../public/robots.txt');
+    const sitemapPath = resolve(__dirname, '../public/sitemap.xml');
 
     expect(existsSync(robotsPath)).toBe(true);
     expect(existsSync(sitemapPath)).toBe(true);

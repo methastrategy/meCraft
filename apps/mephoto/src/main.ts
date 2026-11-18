@@ -5,7 +5,7 @@ import {
   processPhoto,
   type PhotoAdjustmentRecipe,
   type PhotoFilterPreset,
-} from './core/photo-processor';
+} from '@mecraft/photo-core';
 import { downloadBlob } from './utils/file-utils';
 import type { PhotoDocumentItem, ViewportMode } from './core/types';
 

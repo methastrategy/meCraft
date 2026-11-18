@@ -75,11 +75,11 @@ class MeCraftLauncher {
             <div class="network-dot"></div>
             <span>Cloud Connected</span>
           </div>
-          <button class="btn-header" id="btn-toggle-lang">
+          <button class="btn-header" id="btn-toggle-lang" aria-label="Switch Language (Current: EN)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
             <span id="lang-label">TH</span>
           </button>
-          <button class="btn-header" id="btn-open-settings">
+          <button class="btn-header" id="btn-open-settings" aria-label="Open Settings">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             Settings
           </button>
@@ -95,11 +95,11 @@ class MeCraftLauncher {
             </div>
           </div>
 
-          <div class="filter-bar">
-            <button class="filter-tab active" data-filter="all">All Apps</button>
-            <button class="filter-tab" data-filter="installed">Installed</button>
-            <button class="filter-tab" data-filter="document">Document Tools</button>
-            <button class="filter-tab" data-filter="graphics">Creative & Graphics</button>
+          <div class="filter-bar" role="tablist" aria-label="Applications filter">
+            <button class="filter-tab active" role="tab" aria-selected="true" data-filter="all">All Apps</button>
+            <button class="filter-tab" role="tab" aria-selected="false" data-filter="installed">Installed</button>
+            <button class="filter-tab" role="tab" aria-selected="false" data-filter="document">Document Tools</button>
+            <button class="filter-tab" role="tab" aria-selected="false" data-filter="graphics">Creative & Graphics</button>
           </div>
 
           <div class="apps-grid" id="apps-grid"></div>
@@ -111,7 +111,7 @@ class MeCraftLauncher {
               Universal Recent Projects
               <span class="section-badge" id="recent-count">0 Files</span>
             </div>
-            <button class="btn-header" id="btn-clear-recents" style="display: none;">Clear History</button>
+            <button class="btn-header" id="btn-clear-recents" aria-label="Clear Recent Projects" style="display: none;">Clear History</button>
           </div>
           <div id="recent-projects-list"></div>
         </section>
@@ -159,7 +159,7 @@ class MeCraftLauncher {
         <div class="app-card-desc">${app.description}</div>
 
         <div class="app-card-tags">
-          ${app.tags.map((t) => `<span class="app-tag">${t}</span>`).join('')}
+          ${app.tags.map((t: string) => `<span class="app-tag">${t}</span>`).join('')}
         </div>
 
         <div class="app-card-action">
@@ -209,27 +209,27 @@ class MeCraftLauncher {
     if (app.status === 'installed') {
       const isMenuOpen = this.activeMenuAppId === app.id;
       return `
-        <button class="btn-action launch" data-action="launch" data-app-id="${app.id}">
+        <button class="btn-action launch" data-action="launch" data-app-id="${app.id}" aria-label="Launch ${app.name}">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
           Launch
         </button>
-        <button class="btn-more" data-action="more" data-app-id="${app.id}" title="More Options">
+        <button class="btn-more" data-action="more" data-app-id="${app.id}" title="More Options" aria-label="More options for ${app.name}" aria-haspopup="menu" aria-expanded="${isMenuOpen}">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
         </button>
         ${
           isMenuOpen
             ? `
-          <div class="context-menu" data-menu-id="${app.id}">
-            <button class="context-menu-item" data-menu-action="open-folder" data-app-id="${app.id}">
+          <div class="context-menu" role="menu" aria-label="${app.name} options" data-menu-id="${app.id}">
+            <button class="context-menu-item" role="menuitem" data-menu-action="open-folder" data-app-id="${app.id}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
               Open Install Folder
             </button>
-            <button class="context-menu-item" data-menu-action="check-updates" data-app-id="${app.id}">
+            <button class="context-menu-item" role="menuitem" data-menu-action="check-updates" data-app-id="${app.id}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
               Check for Updates
             </button>
             <div style="height: 1px; background: var(--border-subtle); margin: 4px 0;"></div>
-            <button class="context-menu-item danger" data-menu-action="uninstall" data-app-id="${app.id}">
+            <button class="context-menu-item danger" role="menuitem" data-menu-action="uninstall" data-app-id="${app.id}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
               Uninstall App
             </button>
@@ -241,7 +241,7 @@ class MeCraftLauncher {
     }
 
     return `
-      <button class="btn-action install" data-action="install" data-app-id="${app.id}">
+      <button class="btn-action install" data-action="install" data-app-id="${app.id}" aria-label="Install ${app.name} (${app.sizeFormatted || 'v' + app.version})">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         Install (${app.sizeFormatted || 'v' + app.version})
       </button>
@@ -270,13 +270,13 @@ class MeCraftLauncher {
       <div class="recent-projects-list">
         ${this.recentProjects
           .map(
-            (p) => `
-          <div class="recent-project-card" data-recent-id="${p.id}" data-app-id="${p.appId}" data-path="${p.path}">
+            (p: RecentProject) => `
+          <div class="recent-project-card" role="button" tabindex="0" aria-label="Open ${p.name} with ${p.appId.toUpperCase()}" data-recent-id="${p.id}" data-app-id="${p.appId}" data-path="${p.path}">
             <div class="recent-project-icon">
               ${p.appId === 'mepdf' ? this.getAppIconSvg('FileText') : this.getAppIconSvg('Camera')}
             </div>
             <div class="recent-project-info">
-              <div class="recent-project-name" title="${p.name}">${p.name}</div>
+              <div class="recent-project-name" title="${p.name} (${p.path})">${p.name}</div>
               <div class="recent-project-meta">
                 <span>${p.appId.toUpperCase()}</span>
                 <span>•</span>
@@ -292,12 +292,20 @@ class MeCraftLauncher {
       </div>
     `;
 
-    container.querySelectorAll('.recent-project-card').forEach((card) => {
-      card.addEventListener('click', () => {
+    container.querySelectorAll('.recent-project-card').forEach((card: Element) => {
+      const launch = () => {
         const appId = card.getAttribute('data-app-id');
         const path = card.getAttribute('data-path');
         if (appId && path) {
           this.bridge.launchApp({ appId, filePath: path });
+        }
+      };
+      card.addEventListener('click', launch);
+      card.addEventListener('keydown', (e: Event) => {
+        const keyEvent = e as KeyboardEvent;
+        if (keyEvent.key === 'Enter' || keyEvent.key === ' ') {
+          keyEvent.preventDefault();
+          launch();
         }
       });
     });
@@ -305,24 +313,24 @@ class MeCraftLauncher {
 
   private attachCardEvents() {
     // Install button
-    document.querySelectorAll('[data-action="install"]').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
+    document.querySelectorAll('[data-action="install"]').forEach((btn: Element) => {
+      btn.addEventListener('click', (e: Event) => {
         const appId = (e.currentTarget as HTMLElement).dataset.appId;
         if (appId) this.handleInstall(appId);
       });
     });
 
     // Launch button
-    document.querySelectorAll('[data-action="launch"]').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
+    document.querySelectorAll('[data-action="launch"]').forEach((btn: Element) => {
+      btn.addEventListener('click', (e: Event) => {
         const appId = (e.currentTarget as HTMLElement).dataset.appId;
         if (appId) this.handleLaunch(appId);
       });
     });
 
     // More [...] button
-    document.querySelectorAll('[data-action="more"]').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
+    document.querySelectorAll('[data-action="more"]').forEach((btn: Element) => {
+      btn.addEventListener('click', (e: Event) => {
         e.stopPropagation();
         const appId = (e.currentTarget as HTMLElement).dataset.appId;
         this.activeMenuAppId = this.activeMenuAppId === appId ? null : appId || null;
@@ -331,8 +339,8 @@ class MeCraftLauncher {
     });
 
     // Context menu actions
-    document.querySelectorAll('[data-menu-action]').forEach((item) => {
-      item.addEventListener('click', async (e) => {
+    document.querySelectorAll('[data-menu-action]').forEach((item: Element) => {
+      item.addEventListener('click', async (e: Event) => {
         e.stopPropagation();
         const target = e.currentTarget as HTMLElement;
         const action = target.dataset.menuAction;
@@ -345,9 +353,14 @@ class MeCraftLauncher {
           this.renderCatalog();
         } else if (action === 'open-folder' && appId) {
           const dir = await this.bridge.getAppDirectory(appId);
-          alert(`Installed Directory:\n${dir}`);
+          this.showFolderModal(appId, dir);
         } else if (action === 'check-updates' && appId) {
-          alert(`${appId} is already up to date!`);
+          const status = await this.bridge.checkAppStatus(appId);
+          const app = this.catalog.find((a: AppCatalogItem) => a.id === appId);
+          const catalogVersion = app?.version ?? 'unknown';
+          const installedVersion = status.version ?? catalogVersion;
+          const msg = `${appId.toUpperCase()} — Installed: v${installedVersion} (Latest Catalog Release: v${catalogVersion})`;
+          this.showNoticeModal(`Update Check — ${appId.toUpperCase()}`, msg);
         }
       });
     });
@@ -355,12 +368,16 @@ class MeCraftLauncher {
 
   private attachEventListeners() {
     // Filter tabs
-    document.querySelectorAll('.filter-tab').forEach((tab) => {
-      tab.addEventListener('click', (e) => {
+    document.querySelectorAll('.filter-tab').forEach((tab: Element) => {
+      tab.addEventListener('click', (e: Event) => {
         const target = e.currentTarget as HTMLElement;
         this.activeFilter = target.dataset.filter || 'all';
-        document.querySelectorAll('.filter-tab').forEach((t) => t.classList.remove('active'));
+        document.querySelectorAll('.filter-tab').forEach((t: Element) => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
         target.classList.add('active');
+        target.setAttribute('aria-selected', 'true');
         this.renderCatalog();
       });
     });
@@ -382,6 +399,10 @@ class MeCraftLauncher {
       this.currentLang = this.currentLang === 'en' ? 'th' : 'en';
       const label = document.getElementById('lang-label');
       if (label) label.textContent = this.currentLang === 'en' ? 'TH' : 'EN';
+      const toggleBtn = document.getElementById('btn-toggle-lang');
+      if (toggleBtn) {
+        toggleBtn.setAttribute('aria-label', `Switch Language (Current: ${this.currentLang.toUpperCase()})`);
+      }
     });
 
     // Dismiss context menu on global click
@@ -394,7 +415,7 @@ class MeCraftLauncher {
   }
 
   private async handleInstall(appId: string) {
-    const app = this.catalog.find((a) => a.id === appId);
+    const app = this.catalog.find((a: AppCatalogItem) => a.id === appId);
     if (!app) return;
 
     const releaseUrl = `https://github.com/methastrategy/meCraft/releases/download/v${app.version}/${app.releaseAssetPattern}`;
@@ -408,7 +429,7 @@ class MeCraftLauncher {
     });
     this.renderCatalog();
 
-    const result = await this.bridge.downloadAndInstallApp(appId, releaseUrl, (progress) => {
+    const result = await this.bridge.downloadAndInstallApp(appId, releaseUrl, (progress: DownloadProgress) => {
       this.downloadingApps.set(appId, progress);
       this.renderCatalog();
     });
@@ -419,7 +440,7 @@ class MeCraftLauncher {
       await this.refreshStatuses();
       this.renderCatalog();
     } else {
-      alert(`Installation failed: ${result.error}`);
+      this.showNoticeModal(`Installation Failed — ${appId.toUpperCase()}`, result.error || 'Unknown error during installation', true);
       this.renderCatalog();
     }
   }
@@ -427,23 +448,84 @@ class MeCraftLauncher {
   private async handleLaunch(appId: string) {
     const res = await this.bridge.launchApp({ appId });
     if (!res.success) {
-      alert(`Could not launch ${appId}: ${res.error}`);
+      this.showNoticeModal(`Launch Error — ${appId.toUpperCase()}`, res.error || 'Could not launch application binary', true);
     }
+  }
+
+  private showNoticeModal(title: string, message: string, isError = false) {
+    const container = document.getElementById('modal-container');
+    if (!container) return;
+    container.innerHTML = `
+      <div class="modal-overlay" id="notice-overlay">
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="notice-dialog-title" style="max-width: 420px;">
+          <div class="modal-header">
+            <div class="modal-title" id="notice-dialog-title">${title}</div>
+            <button class="btn-more" id="btn-close-notice-modal" aria-label="Close dialog">✕</button>
+          </div>
+          <div class="modal-body selectable" style="padding: 16px 0; color: ${isError ? '#ef4444' : 'var(--text-primary)'};">
+            ${message}
+          </div>
+          <div class="modal-footer">
+            <button class="btn-header" id="btn-notice-done" aria-label="Acknowledge and close">OK</button>
+          </div>
+        </div>
+      </div>
+    `;
+    const closeNotice = () => { container.innerHTML = ''; };
+    document.getElementById('btn-close-notice-modal')?.addEventListener('click', closeNotice);
+    document.getElementById('btn-notice-done')?.addEventListener('click', closeNotice);
+    document.getElementById('notice-overlay')?.addEventListener('click', (ev: MouseEvent) => {
+      if (ev.target === ev.currentTarget) closeNotice();
+    });
+  }
+
+  private showFolderModal(appId: string, directory: string) {
+    const container = document.getElementById('modal-container');
+    if (!container) return;
+    container.innerHTML = `
+      <div class="modal-overlay" id="folder-overlay">
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="folder-dialog-title" style="max-width: 480px;">
+          <div class="modal-header">
+            <div class="modal-title" id="folder-dialog-title">${appId.toUpperCase()} Install Directory</div>
+            <button class="btn-more" id="btn-close-folder-modal" aria-label="Close dialog">✕</button>
+          </div>
+          <div class="modal-body" style="padding: 16px 0;">
+            <p style="margin: 0 0 8px 0; font-size: 13px; color: var(--text-secondary);">Installation and binary location:</p>
+            <input type="text" readonly value="${directory}" class="selectable" id="folder-path-input" style="width: 100%; padding: 8px 12px; background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-mono); font-size: 12px;" />
+          </div>
+          <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button class="btn-header" id="btn-copy-folder" aria-label="Copy folder path to clipboard">Copy Path</button>
+            <button class="btn-header" id="btn-folder-done" aria-label="Close dialog">Done</button>
+          </div>
+        </div>
+      </div>
+    `;
+    const closeFolder = () => { container.innerHTML = ''; };
+    document.getElementById('btn-close-folder-modal')?.addEventListener('click', closeFolder);
+    document.getElementById('btn-folder-done')?.addEventListener('click', closeFolder);
+    document.getElementById('btn-copy-folder')?.addEventListener('click', () => {
+      navigator.clipboard?.writeText(directory);
+      const copyBtn = document.getElementById('btn-copy-folder');
+      if (copyBtn) copyBtn.textContent = 'Copied!';
+    });
+    document.getElementById('folder-overlay')?.addEventListener('click', (ev: MouseEvent) => {
+      if (ev.target === ev.currentTarget) closeFolder();
+    });
   }
 
   private showSettingsModal() {
     const container = document.getElementById('modal-container')!;
     container.innerHTML = `
       <div class="modal-overlay" id="settings-overlay">
-        <div class="modal-dialog">
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-dialog-title">
           <div class="modal-header">
-            <div class="modal-title">meCraft Launcher Settings</div>
-            <button class="btn-more" id="btn-close-modal">✕</button>
+            <div class="modal-title" id="settings-dialog-title">meCraft Launcher Settings</div>
+            <button class="btn-more" id="btn-close-modal" aria-label="Close settings dialog">✕</button>
           </div>
           <div class="modal-body">
             <div>
               <label style="display: block; font-weight: 600; margin-bottom: 6px;">Applications Storage Directory</label>
-              <input type="text" readonly value="%LOCALAPPDATA%\\meCraft\\apps\\" style="width: 100%; padding: 8px 12px; background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-mono); font-size: 12px;" />
+              <input type="text" readonly value="%LOCALAPPDATA%\\meCraft\\apps\\" class="selectable" style="width: 100%; padding: 8px 12px; background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-mono); font-size: 12px;" />
             </div>
             <div>
               <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
@@ -459,7 +541,7 @@ class MeCraftLauncher {
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn-header" id="btn-modal-done">Done</button>
+            <button class="btn-header" id="btn-modal-done" aria-label="Save settings and close">Done</button>
           </div>
         </div>
       </div>
@@ -471,7 +553,7 @@ class MeCraftLauncher {
 
     document.getElementById('btn-close-modal')?.addEventListener('click', close);
     document.getElementById('btn-modal-done')?.addEventListener('click', close);
-    document.getElementById('settings-overlay')?.addEventListener('click', (e) => {
+    document.getElementById('settings-overlay')?.addEventListener('click', (e: MouseEvent) => {
       if (e.target === e.currentTarget) close();
     });
   }

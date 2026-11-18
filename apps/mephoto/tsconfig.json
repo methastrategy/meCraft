@@ -13,7 +13,15 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@mecraft/core-bridge": ["../../packages/core-bridge/src/index.ts"],
+      "@mecraft/core-bridge/*": ["../../packages/core-bridge/src/*"],
+      "@mecraft/ui-tokens": ["../../packages/ui-tokens/src/index.ts"],
+      "@mecraft/ui-tokens/*": ["../../packages/ui-tokens/*"],
+      "@mecraft/photo-core": ["../../packages/photo-core/src/index.ts"],
+      "@mecraft/photo-core/*": ["../../packages/photo-core/src/*"]
+    }
   },
   "include": ["src", "tests"]
 }

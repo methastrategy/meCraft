@@ -9,8 +9,6 @@ html, body {
   background-color: var(--bg-oled);
   color: var(--text-primary);
   font-family: var(--font-sans);
-  user-select: none;
-  -webkit-user-select: none;
 }
 
 #app {
@@ -18,9 +16,38 @@ html, body {
   flex-direction: column;
   width: 100vw;
   height: 100vh;
+  user-select: none;
+  -webkit-user-select: none;
   background: radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
               radial-gradient(circle at 20% 80%, rgba(6, 182, 212, 0.06) 0%, transparent 40%),
               var(--bg-app);
+}
+
+/* Allow text selection in designated areas (readable text, inputs, code/paths, modal content) */
+input,
+textarea,
+code,
+pre,
+.selectable,
+.selectable *,
+.modal-body,
+.modal-body *,
+.recent-project-name,
+.recent-project-meta,
+.app-card-name,
+.app-card-version,
+.app-card-tagline,
+.app-card-desc,
+.app-tag,
+.launcher-subtitle,
+.empty-recents {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+::selection {
+  background: rgba(99, 102, 241, 0.35);
+  color: #ffffff;
 }
 
 /* Header */

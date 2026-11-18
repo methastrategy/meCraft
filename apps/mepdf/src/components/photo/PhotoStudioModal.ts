@@ -29,7 +29,7 @@ import {
   type PhotoFilterPreset,
   type CropRect,
   type ProcessedPhotoResult,
-} from '../../core/photo-processor';
+} from '@mecraft/photo-core';
 import { downloadBlob } from '../../utils/file-utils';
 import { getLanguage } from '../../core/i18n';
 

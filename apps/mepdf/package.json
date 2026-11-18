@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@mecraft/core-bridge": "*",
+    "@mecraft/photo-core": "*",
     "@mecraft/ui-tokens": "*",
     "@supabase/supabase-js": "^2.118.0",
     "@tauri-apps/api": "^2.12.5",

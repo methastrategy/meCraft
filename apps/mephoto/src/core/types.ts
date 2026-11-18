@@ -1,4 +1,4 @@
-import type { PhotoAdjustmentRecipe, PhotoFilterPreset, CropRect, ProcessedPhotoResult } from './photo-processor';
+import type { PhotoAdjustmentRecipe, PhotoFilterPreset, CropRect, ProcessedPhotoResult } from '@mecraft/photo-core';
 
 export type { PhotoAdjustmentRecipe, PhotoFilterPreset, CropRect, ProcessedPhotoResult };
 
