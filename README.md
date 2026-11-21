@@ -182,10 +182,15 @@ To release official binaries for Windows:
    git tag v3.1.0
    git push origin v3.1.0
    ```
-3. GitHub Actions automatically spins up a `windows-latest` runner, runs tests, builds Tauri `.exe` binaries for all 3 applications, compresses them into `.zip` packages, and publishes them to **GitHub Releases**:
-   - `mecraft-launcher-windows-x64.zip`
-   - `mepdf-windows-x64.zip`
-   - `mephoto-windows-x64.zip`
+3. GitHub Actions automatically spins up a `windows-latest` runner, runs tests, builds Tauri desktop binaries across all formats, and publishes them to **GitHub Releases**:
+   - **Windows Installers (`.msi` / `setup.exe`):** Official setup wizards with Desktop & Start Menu shortcuts and automatic system file associations (`.pdf`, `.png`, `.jpg`).
+     - `meCraft_<version>_x64-setup.exe` / `*.msi`
+     - `mePDF_<version>_x64-setup.exe` / `*.msi`
+     - `mePhoto_<version>_x64-setup.exe` / `*.msi`
+   - **Portable Packages (`.zip` containing standalone `.exe`):** Zero-install, admin-free portable binaries (also consumed automatically by the Launcher Hub in-app downloader).
+     - `mecraft-launcher-windows-x64.zip`
+     - `mepdf-windows-x64.zip`
+     - `mephoto-windows-x64.zip`
 
 ---
 

@@ -66,6 +66,15 @@ export interface LauncherTranslations {
   launchErrorTitle: (app: string) => string;
   installErrorTitle: (app: string) => string;
   unsupportedFile: string;
+  downloadModalTitle: (app: string) => string;
+  downloadModalSubtitle: string;
+  downloadDirectExeTitle: string;
+  downloadDirectExeDesc: string;
+  downloadSetupExeTitle: string;
+  downloadSetupExeDesc: string;
+  downloadMsiTitle: string;
+  downloadMsiDesc: string;
+  viewAllReleases: string;
 }
 
 export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
@@ -126,6 +135,15 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     launchErrorTitle: (app) => `Launch Error — ${app}`,
     installErrorTitle: (app) => `Installation Failed — ${app}`,
     unsupportedFile: 'Unsupported file type. Please drop a PDF document (.pdf) or image file (.png, .jpg, .jpeg, .webp).',
+    downloadModalTitle: (app) => `Download ${app} for Windows`,
+    downloadModalSubtitle: 'Direct official binary download • 100% Client-Side Private • Zero Cloud Leakage',
+    downloadDirectExeTitle: 'Direct Standalone (.exe)',
+    downloadDirectExeDesc: 'Portable single-file binary. Run immediately without any installer or admin rights.',
+    downloadSetupExeTitle: 'Setup Wizard (.exe)',
+    downloadSetupExeDesc: 'NSIS installer with Start Menu shortcuts, desktop icon, and system file associations.',
+    downloadMsiTitle: 'Windows Installer (.msi)',
+    downloadMsiDesc: 'Official MSI package for system administrators and Windows Installer management.',
+    viewAllReleases: 'View All GitHub Releases & Checksums',
   },
   th: {
     brandTitle: 'meCraft',
@@ -184,6 +202,15 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     launchErrorTitle: (app) => `เกิดข้อผิดพลาดในการเปิด — ${app}`,
     installErrorTitle: (app) => `การติดตั้งไม่สำเร็จ — ${app}`,
     unsupportedFile: 'รูปแบบไฟล์ไม่รองรับ กรุณาลากไฟล์ PDF (.pdf) หรือไฟล์รูปภาพ (.png, .jpg, .jpeg, .webp)',
+    downloadModalTitle: (app) => `ดาวน์โหลด ${app} สำหรับ Windows`,
+    downloadModalSubtitle: 'ดาวน์โหลดไฟล์โปรแกรมแท้โดยตรง • ทำงานในเครื่อง 100% • ปลอดภัยไม่ส่งข้อมูลออกภายนอก',
+    downloadDirectExeTitle: 'โปรแกรมพกพา (.exe แบบพร้อมใช้)',
+    downloadDirectExeDesc: 'ไฟล์เดียวจบ ดับเบิ้ลคลิกเปิดใช้งานได้ทันที ไม่ต้องมีหน้าต่างติดตั้ง ไม่ต้องขอสิทธิ์ Admin',
+    downloadSetupExeTitle: 'ตัวช่วยติดตั้ง (.exe Setup)',
+    downloadSetupExeDesc: 'ติดตั้งลงเครื่องแบบมาตรฐาน พร้อมสร้างไอคอนหน้าจอ เมนูเริ่ม และผูกไฟล์กับระบบ',
+    downloadMsiTitle: 'แพ็กเกจติดตั้ง (.msi Installer)',
+    downloadMsiDesc: 'ไฟล์ MSI สำหรับการติดตั้งระดับระบบ Windows และการจัดการในองค์กร',
+    viewAllReleases: 'ดูรายการไฟล์และประวัติการปล่อยเวอร์ชันบน GitHub',
   },
 };
 

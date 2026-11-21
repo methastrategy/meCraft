@@ -44,28 +44,43 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      # 1. Build meCraft Launcher
-      - name: Build meCraft Launcher (.exe)
+      # 1. Build meCraft Launcher (.exe, .msi, .zip)
+      - name: Build meCraft Launcher
         run: |
           cd apps/mecraft-launcher
           npm run desktop:build
+          Copy-Item src-tauri/target/release/mecraft-launcher.exe -Destination ../../mecraft-launcher.exe -Force
           Compress-Archive -Path src-tauri/target/release/mecraft-launcher.exe -DestinationPath ../../mecraft-launcher-windows-x64.zip -Force
+          $nsis = Get-ChildItem -Path src-tauri/target/release/bundle/nsis -Filter *setup.exe -Recurse | Select-Object -First 1
+          if ($nsis) { Copy-Item $nsis.FullName -Destination ../../mecraft-launcher-setup.exe -Force }
+          $msi = Get-ChildItem -Path src-tauri/target/release/bundle/msi -Filter *.msi -Recurse | Select-Object -First 1
+          if ($msi) { Copy-Item $msi.FullName -Destination ../../mecraft-launcher.msi -Force }
           cd ../..
 
-      # 2. Build mePDF Studio
-      - name: Build mePDF Studio (.exe)
+      # 2. Build mePDF Studio (.exe, .msi, .zip)
+      - name: Build mePDF Studio
         run: |
           cd apps/mepdf
           npm run desktop:build
+          Copy-Item src-tauri/target/release/mepdf.exe -Destination ../../mepdf.exe -Force
           Compress-Archive -Path src-tauri/target/release/mepdf.exe -DestinationPath ../../mepdf-windows-x64.zip -Force
+          $nsis = Get-ChildItem -Path src-tauri/target/release/bundle/nsis -Filter *setup.exe -Recurse | Select-Object -First 1
+          if ($nsis) { Copy-Item $nsis.FullName -Destination ../../mepdf-setup.exe -Force }
+          $msi = Get-ChildItem -Path src-tauri/target/release/bundle/msi -Filter *.msi -Recurse | Select-Object -First 1
+          if ($msi) { Copy-Item $msi.FullName -Destination ../../mepdf.msi -Force }
           cd ../..
 
-      # 3. Build mePhoto Studio
-      - name: Build mePhoto Studio (.exe)
+      # 3. Build mePhoto Studio (.exe, .msi, .zip)
+      - name: Build mePhoto Studio
         run: |
           cd apps/mephoto
           npm run desktop:build
+          Copy-Item src-tauri/target/release/mephoto.exe -Destination ../../mephoto.exe -Force
           Compress-Archive -Path src-tauri/target/release/mephoto.exe -DestinationPath ../../mephoto-windows-x64.zip -Force
+          $nsis = Get-ChildItem -Path src-tauri/target/release/bundle/nsis -Filter *setup.exe -Recurse | Select-Object -First 1
+          if ($nsis) { Copy-Item $nsis.FullName -Destination ../../mephoto-setup.exe -Force }
+          $msi = Get-ChildItem -Path src-tauri/target/release/bundle/msi -Filter *.msi -Recurse | Select-Object -First 1
+          if ($msi) { Copy-Item $msi.FullName -Destination ../../mephoto.msi -Force }
           cd ../..
 
       # 4. Upload Assets to GitHub Release
@@ -74,9 +89,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            mecraft-launcher-windows-x64.zip
-            mepdf-windows-x64.zip
-            mephoto-windows-x64.zip
+            *.exe
+            *.msi
+            *.zip
           draft: false
           prerelease: false
           generate_release_notes: true
