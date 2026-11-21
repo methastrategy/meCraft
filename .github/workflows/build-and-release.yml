@@ -140,23 +140,24 @@ jobs:
           $outDir = "../../dist-artifacts/${{ matrix.app_id }}"
           New-Item -ItemType Directory -Force -Path $outDir
 
-          # 1. Standalone Portable Executable (.exe & .zip)
-          $exe = "src-tauri/target/release/${{ matrix.exe_name }}.exe"
-          if (Test-Path $exe) {
-            Copy-Item $exe -Destination "$outDir/${{ matrix.exe_name }}.exe" -Force
-            Compress-Archive -Path $exe -DestinationPath "$outDir/${{ matrix.exe_name }}-windows-x64.zip" -Force
-          }
-
-          # 2. NSIS Setup Wizard Installer (setup.exe)
-          $nsis = Get-ChildItem -Path src-tauri/target/release/bundle/nsis -Filter *setup.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
-          if ($nsis) {
-            Copy-Item $nsis.FullName -Destination "$outDir/${{ matrix.exe_name }}-setup.exe" -Force
-          }
-
-          # 3. Windows Installer Package (.msi)
-          $msi = Get-ChildItem -Path src-tauri/target/release/bundle/msi -Filter *.msi -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
-          if ($msi) {
-            Copy-Item $msi.FullName -Destination "$outDir/${{ matrix.exe_name }}.msi" -Force
+          if ("${{ matrix.app_id }}" -eq "mecraft-launcher") {
+            # Single Unified Windows Installer for meCraft Suite
+            $nsis = Get-ChildItem -Path src-tauri/target/release/bundle/nsis -Filter *setup.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($nsis) {
+              Copy-Item $nsis.FullName -Destination "$outDir/meCraft-Setup.exe" -Force
+            }
+            # Standalone Portable single-file executable
+            $exe = "src-tauri/target/release/${{ matrix.exe_name }}.exe"
+            if (Test-Path $exe) {
+              Copy-Item $exe -Destination "$outDir/meCraft-Portable.exe" -Force
+            }
+          } else {
+            # Ecosystem Sub-Apps (mePDF, mePhoto) - Distributed for in-app 1-click install via meCraft Hub
+            $exe = "src-tauri/target/release/${{ matrix.exe_name }}.exe"
+            if (Test-Path $exe) {
+              Copy-Item $exe -Destination "$outDir/${{ matrix.exe_name }}.exe" -Force
+              Compress-Archive -Path $exe -DestinationPath "$outDir/${{ matrix.exe_name }}-windows-x64.zip" -Force
+            }
           }
 
       - name: Stash Binaries for Release

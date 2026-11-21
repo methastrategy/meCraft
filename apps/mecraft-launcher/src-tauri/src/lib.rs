@@ -124,7 +124,7 @@ async fn download_and_install_app(
     let app_dir = get_target_app_dir(&app_id);
     fs::create_dir_all(&app_dir).map_err(|e| format!("Failed to create app dir: {}", e))?;
 
-    let temp_zip_path = app_dir.join(format!("{}_download.zip", app_id));
+    let temp_download_path = app_dir.join(format!("{}_download.tmp", app_id));
 
     let client = reqwest::Client::builder()
         .user_agent("meCraft-Launcher/1.0.0")
@@ -145,7 +145,7 @@ async fn download_and_install_app(
     let mut downloaded_bytes: u64 = 0;
     let mut stream = res.bytes_stream();
 
-    let mut temp_file = fs::File::create(&temp_zip_path)
+    let mut temp_file = fs::File::create(&temp_download_path)
         .map_err(|e| format!("Failed to create temporary download file: {}", e))?;
 
     let start_time = Instant::now();
@@ -185,14 +185,17 @@ async fn download_and_install_app(
 
     drop(temp_file);
 
-    // TODO(P2 — Security): Add SHA-256 checksum verification before unpacking.
-    // Add `sha2 = { version = "0.10", features = ["std"] }` to Cargo.toml,
-    // then hash the bytes in `temp_zip_path` with `sha2::Sha256` and compare
-    // against an expected digest distributed alongside each release asset.
-
-    // Unpack ZIP Archive
+    // Install binary (either direct .exe or unpack .zip)
+    let is_direct_exe = release_url.ends_with(".exe");
     let unpack_result = (|| -> Result<(), String> {
-        let zip_file = fs::File::open(&temp_zip_path)
+        if is_direct_exe {
+            let target_exe = get_target_exe_path(&app_id);
+            fs::copy(&temp_download_path, &target_exe)
+                .map_err(|e| format!("Failed to save executable: {}", e))?;
+            return Ok(());
+        }
+
+        let zip_file = fs::File::open(&temp_download_path)
             .map_err(|e| format!("Failed to open downloaded archive: {}", e))?;
         let mut archive = zip::ZipArchive::new(zip_file)
             .map_err(|e| format!("Corrupt zip archive: {}", e))?;
@@ -221,9 +224,18 @@ async fn download_and_install_app(
     })();
 
     // Ensure temporary download file is always cleaned up regardless of unpack result
-    let _ = fs::remove_file(&temp_zip_path);
+    let _ = fs::remove_file(&temp_download_path);
 
     unpack_result?;
+
+    // Record installed version if identifiable from URL
+    if let Some(idx) = release_url.find("/download/v") {
+        let rest = &release_url[idx + 11..];
+        if let Some(slash_idx) = rest.find('/') {
+            let ver = &rest[..slash_idx];
+            let _ = fs::write(app_dir.join("version.txt"), ver);
+        }
+    }
 
     // Emit final 100% progress
     let _ = app_handle.emit(

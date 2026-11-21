@@ -102,9 +102,9 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     filterInstalled: 'Installed',
     filterDoc: 'Document Tools',
     filterGraphics: 'Creative & Graphics',
-    openWebStudio: 'Open Web Studio',
-    launchDesktop: 'Launch Desktop (.exe)',
-    installDesktop: (size) => `Install Desktop (.exe)${size ? ` (${size})` : ''}`,
+    openWebStudio: 'Open in Browser',
+    launchDesktop: 'Launch Application',
+    installDesktop: (size) => `Install into meCraft${size ? ` (${size})` : ''}`,
     installing: (percent) => `Installing... ${percent}%`,
     comingSoon: 'Coming Soon • Notify Me',
     inDevelopment: 'In Development',
@@ -135,10 +135,10 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     launchErrorTitle: (app) => `Launch Error — ${app}`,
     installErrorTitle: (app) => `Installation Failed — ${app}`,
     unsupportedFile: 'Unsupported file type. Please drop a PDF document (.pdf) or image file (.png, .jpg, .jpeg, .webp).',
-    downloadModalTitle: (app) => `Download ${app} for Windows`,
-    downloadModalSubtitle: 'Direct official binary download • 100% Client-Side Private • Zero Cloud Leakage',
-    downloadDirectExeTitle: 'Direct Standalone (.exe)',
-    downloadDirectExeDesc: 'Portable single-file binary. Run immediately without any installer or admin rights.',
+    downloadModalTitle: (app) => `Download meCraft Suite for Windows`,
+    downloadModalSubtitle: 'Single unified installer • 100% Client-Side Private • Zero Cloud Leakage',
+    downloadDirectExeTitle: 'meCraft-Setup.exe (Official Installer)',
+    downloadDirectExeDesc: 'Single installer for the entire suite. Once installed, manage and launch mePDF and mePhoto directly inside the Hub.',
     downloadSetupExeTitle: 'Setup Wizard (.exe)',
     downloadSetupExeDesc: 'NSIS installer with Start Menu shortcuts, desktop icon, and system file associations.',
     downloadMsiTitle: 'Windows Installer (.msi)',
@@ -169,9 +169,9 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     filterInstalled: 'ติดตั้งแล้ว',
     filterDoc: 'จัดการเอกสาร',
     filterGraphics: 'กราฟิกและภาพถ่าย',
-    openWebStudio: 'เปิด Web Studio',
-    launchDesktop: 'เปิดแอป Desktop (.exe)',
-    installDesktop: (size) => `ติดตั้ง Desktop (.exe)${size ? ` (${size})` : ''}`,
+    openWebStudio: 'เปิดในเบราว์เซอร์',
+    launchDesktop: 'เปิดใช้งานโปรแกรม',
+    installDesktop: (size) => `ติดตั้งลงใน meCraft${size ? ` (${size})` : ''}`,
     installing: (percent) => `กำลังติดตั้ง... ${percent}%`,
     comingSoon: 'เร็วๆ นี้ • แจ้งเตือนเมื่อพร้อม',
     inDevelopment: 'กำลังอยู่ระหว่างพัฒนา',
@@ -202,10 +202,10 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     launchErrorTitle: (app) => `เกิดข้อผิดพลาดในการเปิด — ${app}`,
     installErrorTitle: (app) => `การติดตั้งไม่สำเร็จ — ${app}`,
     unsupportedFile: 'รูปแบบไฟล์ไม่รองรับ กรุณาลากไฟล์ PDF (.pdf) หรือไฟล์รูปภาพ (.png, .jpg, .jpeg, .webp)',
-    downloadModalTitle: (app) => `ดาวน์โหลด ${app} สำหรับ Windows`,
-    downloadModalSubtitle: 'ดาวน์โหลดไฟล์โปรแกรมแท้โดยตรง • ทำงานในเครื่อง 100% • ปลอดภัยไม่ส่งข้อมูลออกภายนอก',
-    downloadDirectExeTitle: 'โปรแกรมพกพา (.exe แบบพร้อมใช้)',
-    downloadDirectExeDesc: 'ไฟล์เดียวจบ ดับเบิ้ลคลิกเปิดใช้งานได้ทันที ไม่ต้องมีหน้าต่างติดตั้ง ไม่ต้องขอสิทธิ์ Admin',
+    downloadModalTitle: (app) => `ดาวน์โหลดชุดโปรแกรม meCraft สำหรับ Windows`,
+    downloadModalSubtitle: 'ตัวติดตั้งหนึ่งเดียว • ทำงานในเครื่อง 100% • ปลอดภัยไม่ส่งข้อมูลออกภายนอก',
+    downloadDirectExeTitle: 'meCraft-Setup.exe (ตัวช่วยติดตั้งอย่างเป็นทางการ)',
+    downloadDirectExeDesc: 'ติดตั้งตัวเดียวจบ สามารถติดตั้งและเปิดใช้งานโปรแกรมทั้งชุด (mePDF, mePhoto) ได้จากภายใน meCraft ได้ทันที',
     downloadSetupExeTitle: 'ตัวช่วยติดตั้ง (.exe Setup)',
     downloadSetupExeDesc: 'ติดตั้งลงเครื่องแบบมาตรฐาน พร้อมสร้างไอคอนหน้าจอ เมนูเริ่ม และผูกไฟล์กับระบบ',
     downloadMsiTitle: 'แพ็กเกจติดตั้ง (.msi Installer)',
@@ -513,7 +513,60 @@ class MeCraftLauncher {
 
     // Dual-Action Launch for ready apps (mePDF, mePhoto)
     const isMenuOpen = this.activeMenuAppId === app.id;
+    const isDesktop = this.bridge.isTauri();
 
+    // Native Windows Desktop Engine: Streamlined single-path ergonomics (Install into meCraft / Launch)
+    if (isDesktop) {
+      if (app.status === 'installed') {
+        return `
+          <div class="desktop-action-group full-width">
+            <button class="btn-action btn-action-desktop launch primary-gold" data-action="launch" data-app-id="${app.id}" aria-label="${t.launchDesktop} for ${app.name}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <span>${t.launchDesktop}</span>
+            </button>
+            <button class="btn-more" data-action="more" data-app-id="${app.id}" title="${t.moreOptions}" aria-label="${t.moreOptions} for ${app.name}" aria-haspopup="menu" aria-expanded="${isMenuOpen}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+            </button>
+            ${
+              isMenuOpen
+                ? `
+              <div class="context-menu" role="menu" aria-label="${app.name} options" data-menu-id="${app.id}">
+                <button class="context-menu-item" role="menuitem" data-menu-action="open-folder" data-app-id="${app.id}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                  ${t.openFolder}
+                </button>
+                <button class="context-menu-item" role="menuitem" data-menu-action="check-updates" data-app-id="${app.id}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  ${t.checkUpdates}
+                </button>
+                <button class="context-menu-item" role="menuitem" data-menu-action="open-web-fallback" data-app-id="${app.id}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  ${t.openWebStudio}
+                </button>
+                <div style="height: 1px; background: var(--border-subtle); margin: 4px 0;"></div>
+                <button class="context-menu-item danger" role="menuitem" data-menu-action="uninstall" data-app-id="${app.id}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  ${t.uninstall}
+                </button>
+              </div>
+            `
+                : ''
+            }
+          </div>
+        `;
+      }
+
+      return `
+        <button class="btn-action btn-action-desktop install primary-emerald full-width" data-action="install" data-app-id="${app.id}" aria-label="${t.installDesktop(app.sizeFormatted || 'v' + app.version)} for ${app.name}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>${t.installDesktop(app.sizeFormatted || 'v' + app.version)}</span>
+        </button>
+      `;
+    }
+
+    // Web Browser Mode: Dual-Action Launch for ready apps
     return `
       <div class="card-action-dual">
         <button class="btn-action btn-action-web" data-action="open-web" data-app-id="${app.id}" title="100% In-Browser Private Execution • 0 Install Required" aria-label="${t.openWebStudio} for ${app.name}">
@@ -687,6 +740,8 @@ class MeCraftLauncher {
         } else if (action === 'open-folder' && appId) {
           const dir = await this.bridge.getAppDirectory(appId);
           this.showFolderModal(appId, dir);
+        } else if (action === 'open-web-fallback' && appId) {
+          this.handleLaunchWeb(appId);
         } else if (action === 'check-updates' && appId) {
           const status = await this.bridge.checkAppStatus(appId);
           const app = this.catalog.find((a: AppCatalogItem) => a.id === appId);
