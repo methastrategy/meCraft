@@ -8,7 +8,7 @@
 > Built with **Tauri v2 (Rust), Vite, TypeScript, Web Workers, Canvas API, and WebAssembly**.
 
 [![Official Web Portal](https://img.shields.io/badge/Web%20Portal-mecrafts.vercel.app-6366f1?style=for-the-badge&logo=vercel&logoColor=white)](https://mecrafts.vercel.app)
-[![GitHub Release](https://img.shields.io/badge/Release-v3.1.0-emerald?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/releases)
+[![GitHub Release](https://img.shields.io/badge/Release-v3.2.0-emerald?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/releases)
 [![Tauri v2](https://img.shields.io/badge/Desktop-Tauri%20v2%20(Rust)-ea580c?style=for-the-badge&logo=tauri)](https://tauri.app/)
 [![Client-Side Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-blue?style=for-the-badge&logo=shield)](https://mecrafts.vercel.app)
 [![Tests Passing](https://img.shields.io/badge/Tests-226%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
@@ -183,13 +183,18 @@ This repository includes an enterprise-grade GitHub Actions parallel matrix work
 Instead of compiling applications sequentially (12–15 minutes), GitHub Actions executes a **3-stage parallel pipeline**:
 1. **Quality Gate (`verify`):** Runs tests (226 tests) and TypeScript typecheck across all 6 workspaces in parallel (< 1 min).
 2. **Parallel Matrix Compilation (`build-app`):** Automatically spins up **3 dedicated Windows VMs simultaneously** to compile `meCraft Launcher`, `mePDF Studio`, and `mePhoto Studio` in parallel (~3–4 min).
-3. **Atomic Release Publisher (`publish-release`):** Aggregates all `.exe`, `setup.exe`, `.msi`, and `.zip` artifacts into a unified GitHub Release.
+3. **Atomic Release Publisher (`publish-release`):** Aggregates the unified `meCraft-Setup.exe` installer alongside in-app ecosystem runtime packages.
+
+### 📦 Single Unified Windows Installer Architecture (v3.2.0+)
+Users only need to download a single installer for the entire ecosystem:
+- **`meCraft-Setup.exe`**: Official setup wizard with Desktop & Start Menu shortcuts, automatic launch on completion (`hooks.nsh`), and 1-click in-app management.
+- **In-App Ecosystem**: `mePDF Studio` and `mePhoto Studio` are installed and launched directly from inside meCraft Hub with one click.
 
 ### Granular Tag Triggers
 - **Full Suite Release:**
   ```bash
-  git tag v3.1.0
-  git push origin v3.1.0
+  git tag v3.2.0
+  git push origin v3.2.0
   ```
 - **App-Specific Targeted Releases (Only builds the requested application):**
   ```bash

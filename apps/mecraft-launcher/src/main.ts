@@ -1003,7 +1003,7 @@ class MeCraftLauncher {
 
     // On Web Browser: trigger download of the single official meCraft-Setup.exe installer
     if (!this.bridge.isTauri()) {
-      const installerUrl = `https://github.com/methastrategy/meCraft/releases/download/v3.1.0/meCraft-Setup.exe`;
+      const installerUrl = `https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe`;
       if (typeof document !== 'undefined') {
         const a = document.createElement('a');
         a.href = installerUrl;
@@ -1086,7 +1086,7 @@ class MeCraftLauncher {
             </div>
           </div>
           <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-top: 1px solid var(--border-subtle);">
-            <a href="https://github.com/methastrategy/meCraft/releases/tag/v3.1.0" target="_blank" rel="noopener noreferrer" style="font-size: 12px; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px;">
+            <a href="https://github.com/methastrategy/meCraft/releases/tag/v3.2.0" target="_blank" rel="noopener noreferrer" style="font-size: 12px; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px;">
               <span>${t.viewAllReleases}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </a>
@@ -1175,7 +1175,7 @@ class MeCraftLauncher {
           <div class="modal-header">
             <div class="modal-title-group">
               <div class="modal-title" id="settings-dialog-title">${t.settingsTitle}</div>
-              <div class="modal-subtitle">meCraft Hub v3.1.0 • Ecosystem Status & Privacy Diagnostics</div>
+              <div class="modal-subtitle">meCraft Hub v3.2.0 • Ecosystem Status & Privacy Diagnostics</div>
             </div>
             <button class="btn-more" id="btn-close-modal" aria-label="Close settings dialog">✕</button>
           </div>
