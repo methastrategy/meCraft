@@ -1035,3 +1035,120 @@ pre,
   color: var(--text-secondary);
   line-height: 1.5;
 }
+
+/* ============================================================
+   Thai Luxury & Modern Desktop Hub UI Enhancements (/medesign new)
+   ============================================================ */
+:root {
+  --gold-primary: #d4af37;
+  --gold-hover: #e5b95c;
+  --gold-glow: rgba(212, 175, 55, 0.35);
+  --emerald-primary: #10b981;
+  --emerald-hover: #34d399;
+  --emerald-glow: rgba(16, 185, 129, 0.35);
+}
+
+.full-width {
+  width: 100% !important;
+}
+
+.btn-action-desktop.launch.primary-gold {
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  color: #0b0f17;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 16px var(--gold-glow);
+  min-height: 44px;
+}
+
+.btn-action-desktop.launch.primary-gold:hover {
+  background: linear-gradient(135deg, #e5b95c, #d4af37);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-action-desktop.install.primary-emerald {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 4px 16px var(--emerald-glow);
+  min-height: 44px;
+}
+
+.btn-action-desktop.install.primary-emerald:hover {
+  background: linear-gradient(135deg, #34d399, #10b981);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Single Installer Modal Box */
+.single-installer-box {
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.08) 0%, rgba(18, 24, 38, 0.95) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.installer-badge-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.installer-chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-medium);
+  color: var(--text-muted);
+}
+
+.installer-chip.gold {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.4);
+  color: var(--gold-hover);
+}
+
+.installer-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #ffffff;
+  font-family: var(--font-mono);
+}
+
+.installer-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.btn-installer-download {
+  margin-top: 8px;
+  min-height: 44px;
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  color: #0b0f17;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 18px var(--gold-glow);
+  transition: all var(--duration-fast);
+}
+
+.btn-installer-download:hover {
+  background: linear-gradient(135deg, #e5b95c, #d4af37);
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.6);
+  transform: translateY(-1px);
+}

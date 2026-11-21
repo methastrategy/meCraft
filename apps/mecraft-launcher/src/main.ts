@@ -102,7 +102,7 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     filterInstalled: 'Installed',
     filterDoc: 'Document Tools',
     filterGraphics: 'Creative & Graphics',
-    openWebStudio: 'Open in Browser',
+    openWebStudio: 'Open Web Studio',
     launchDesktop: 'Launch Application',
     installDesktop: (size) => `Install into meCraft${size ? ` (${size})` : ''}`,
     installing: (percent) => `Installing... ${percent}%`,
@@ -169,7 +169,7 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     filterInstalled: 'ติดตั้งแล้ว',
     filterDoc: 'จัดการเอกสาร',
     filterGraphics: 'กราฟิกและภาพถ่าย',
-    openWebStudio: 'เปิดในเบราว์เซอร์',
+    openWebStudio: 'เปิด Web Studio',
     launchDesktop: 'เปิดใช้งานโปรแกรม',
     installDesktop: (size) => `ติดตั้งลงใน meCraft${size ? ` (${size})` : ''}`,
     installing: (percent) => `กำลังติดตั้ง... ${percent}%`,
@@ -1001,16 +1001,13 @@ class MeCraftLauncher {
     const app = this.catalog.find((a: AppCatalogItem) => a.id === appId);
     if (!app) return;
 
-    const directExeUrl = `https://github.com/methastrategy/meCraft/releases/download/v${app.version}/${app.exeName}`;
-    const setupExeUrl = `https://github.com/methastrategy/meCraft/releases/download/v${app.version}/${app.id}-setup.exe`;
-    const msiUrl = `https://github.com/methastrategy/meCraft/releases/download/v${app.version}/${app.id}.msi`;
-
-    // On Web Browser: trigger immediate direct .exe download and show download options modal
-    if (!this.bridge.isTauri) {
+    // On Web Browser: trigger download of the single official meCraft-Setup.exe installer
+    if (!this.bridge.isTauri()) {
+      const installerUrl = `https://github.com/methastrategy/meCraft/releases/download/v3.1.0/meCraft-Setup.exe`;
       if (typeof document !== 'undefined') {
         const a = document.createElement('a');
-        a.href = directExeUrl;
-        a.download = app.exeName;
+        a.href = installerUrl;
+        a.download = 'meCraft-Setup.exe';
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
         document.body.appendChild(a);
@@ -1018,16 +1015,17 @@ class MeCraftLauncher {
         document.body.removeChild(a);
       }
 
-      this.showDownloadModal(app, directExeUrl, setupExeUrl, msiUrl);
+      this.showWebDownloadModal(app, installerUrl);
       return;
     }
 
+    // In Native Windows Desktop Mode: 1-click in-app background download & install into meCraft!
     const releaseUrl = `https://github.com/methastrategy/meCraft/releases/download/v${app.version}/${app.releaseAssetPattern}`;
 
     this.downloadingApps.set(appId, {
       appId,
       downloadedBytes: 0,
-      totalBytes: 50 * 1024 * 1024,
+      totalBytes: 45 * 1024 * 1024,
       percent: 0,
       speedBps: 0,
     });
@@ -1049,82 +1047,50 @@ class MeCraftLauncher {
     }
   }
 
-  private showDownloadModal(app: AppCatalogItem, directExeUrl: string, setupExeUrl: string, msiUrl: string) {
+  private showWebDownloadModal(app: AppCatalogItem, installerUrl: string) {
     const container = document.getElementById('modal-container');
     if (!container) return;
     const t = this.t;
 
     container.innerHTML = `
       <div class="modal-overlay" id="download-overlay">
-        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="download-dialog-title" style="max-width: 540px;">
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="download-dialog-title" style="max-width: 500px;">
           <div class="modal-header">
             <div>
               <div class="modal-title" id="download-dialog-title" style="display: flex; align-items: center; gap: 8px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${app.color}" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 <span>${t.downloadModalTitle(app.name)}</span>
               </div>
               <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${t.downloadModalSubtitle}</div>
             </div>
             <button class="btn-more" id="btn-close-download-modal" aria-label="Close dialog">✕</button>
           </div>
-          <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px; padding: 18px;">
-            <!-- Option 1: Direct Standalone .exe -->
-            <a href="${directExeUrl}" download="${app.exeName}" class="download-option-card recommended" style="text-decoration: none; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--surface-raised); border: 1px solid rgba(99, 102, 241, 0.4); border-radius: var(--radius-md); transition: all var(--duration-fast); cursor: pointer;">
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: rgba(99, 102, 241, 0.2); display: flex; align-items: center; justify-content: center; color: var(--primary);">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                </div>
-                <div>
-                  <div style="font-weight: 600; font-size: 13.5px; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
-                    ${t.downloadDirectExeTitle}
-                    <span style="font-size: 10px; background: var(--primary); color: white; padding: 1px 6px; border-radius: 4px; font-weight: 700;">.EXE</span>
-                  </div>
-                  <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">${t.downloadDirectExeDesc}</div>
-                </div>
+          <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px; padding: 18px 20px;">
+            <div class="single-installer-box">
+              <div class="installer-badge-row">
+                <span class="installer-chip gold">Windows Official</span>
+                <span class="installer-chip">Single Installer</span>
               </div>
-              <span class="btn-action btn-action-web" style="width: auto; height: 32px; padding: 0 14px; font-size: 12px; flex-shrink: 0;">Download</span>
-            </a>
-
-            <!-- Option 2: Setup Wizard .exe -->
-            <a href="${setupExeUrl}" download="${app.id}-setup.exe" class="download-option-card" style="text-decoration: none; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-md); transition: all var(--duration-fast); cursor: pointer;">
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: rgba(16, 185, 129, 0.2); display: flex; align-items: center; justify-content: center; color: var(--success);">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                </div>
-                <div>
-                  <div style="font-weight: 600; font-size: 13.5px; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
-                    ${t.downloadSetupExeTitle}
-                    <span style="font-size: 10px; background: var(--success); color: white; padding: 1px 6px; border-radius: 4px; font-weight: 700;">SETUP</span>
-                  </div>
-                  <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">${t.downloadSetupExeDesc}</div>
-                </div>
+              <div class="installer-title">meCraft-Setup.exe</div>
+              <div class="installer-desc">
+                ${
+                  this.currentLang === 'th'
+                    ? 'ตัวช่วยติดตั้งหนึ่งเดียวสำหรับชุดโปรแกรม meCraft เมื่อติดตั้งแล้วสามารถเปิดใช้งานและติดตั้งเครื่องมือทั้งหมด (mePDF Studio, mePhoto Studio) ได้จากภายในโปรแกรมได้ทันที ไม่ต้องโหลดแยกให้สับสน'
+                    : 'The single unified installer for the entire meCraft Suite. Once installed, launch and install all ecosystem tools (mePDF Studio, mePhoto Studio) directly inside the desktop hub.'
+                }
               </div>
-              <span class="btn-action" style="width: auto; height: 32px; padding: 0 14px; font-size: 12px; background: var(--surface-hover); color: var(--text-primary); border: 1px solid var(--border-medium); flex-shrink: 0;">Download</span>
-            </a>
-
-            <!-- Option 3: MSI Installer -->
-            <a href="${msiUrl}" download="${app.id}.msi" class="download-option-card" style="text-decoration: none; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-md); transition: all var(--duration-fast); cursor: pointer;">
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: rgba(6, 182, 212, 0.2); display: flex; align-items: center; justify-content: center; color: var(--accent-cyan);">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                </div>
-                <div>
-                  <div style="font-weight: 600; font-size: 13.5px; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
-                    ${t.downloadMsiTitle}
-                    <span style="font-size: 10px; background: var(--accent-cyan); color: #042f2e; padding: 1px 6px; border-radius: 4px; font-weight: 700;">.MSI</span>
-                  </div>
-                  <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">${t.downloadMsiDesc}</div>
-                </div>
-              </div>
-              <span class="btn-action" style="width: auto; height: 32px; padding: 0 14px; font-size: 12px; background: var(--surface-hover); color: var(--text-primary); border: 1px solid var(--border-medium); flex-shrink: 0;">Download</span>
-            </a>
+              <a href="${installerUrl}" download="meCraft-Setup.exe" class="btn-action btn-installer-download">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>${this.currentLang === 'th' ? 'ดาวน์โหลด meCraft-Setup.exe' : 'Download meCraft-Setup.exe'}</span>
+              </a>
+            </div>
           </div>
           <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-top: 1px solid var(--border-subtle);">
-            <a href="https://github.com/methastrategy/meCraft/releases/tag/v${app.version}" target="_blank" rel="noopener noreferrer" style="font-size: 12px; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px;">
+            <a href="https://github.com/methastrategy/meCraft/releases/tag/v3.1.0" target="_blank" rel="noopener noreferrer" style="font-size: 12px; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px;">
               <span>${t.viewAllReleases}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </a>
-            <button class="btn-action btn-action-desktop" id="btn-close-download-done" style="width: auto; padding: 0 16px;">${t.doneBtn}</button>
+            <button class="btn-header" id="btn-close-download-done" style="padding: 0 16px;">${t.doneBtn}</button>
           </div>
         </div>
       </div>
