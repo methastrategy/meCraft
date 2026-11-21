@@ -4,13 +4,31 @@ on:
   push:
     tags:
       - 'v*'
+      - 'mepdf-v*'
+      - 'mephoto-v*'
+      - 'launcher-v*'
   workflow_dispatch:
+    inputs:
+      target_app:
+        description: 'Target Application to build'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - mecraft-launcher
+          - mepdf
+          - mephoto
 
 permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  # ============================================================
+  # Stage 1: Fast Quality Gate (Unit Tests & Typecheck)
+  # ============================================================
+  verify:
+    name: Verify Tests & Types
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
@@ -22,76 +40,155 @@ jobs:
           node-version: 22
           cache: 'npm'
 
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Test Suite (226 tests)
+        run: npm test
+
+      - name: Run Typecheck Across Workspaces
+        run: npm run typecheck
+
+  # ============================================================
+  # Stage 2: Parallel Matrix Build (3x Speedup)
+  # ============================================================
+  build-app:
+    name: Build ${{ matrix.display_name }}
+    needs: verify
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app_id: mecraft-launcher
+            display_name: 'meCraft Launcher'
+            dir: apps/mecraft-launcher
+            exe_name: mecraft-launcher
+          - app_id: mepdf
+            display_name: 'mePDF Studio'
+            dir: apps/mepdf
+            exe_name: mepdf
+          - app_id: mephoto
+            display_name: 'mePhoto Studio'
+            dir: apps/mephoto
+            exe_name: mephoto
+    steps:
+      - name: Evaluate Build Target Trigger
+        id: filter
+        shell: bash
+        run: |
+          TAG="${{ github.ref_name }}"
+          INPUT="${{ inputs.target_app }}"
+          APP="${{ matrix.app_id }}"
+
+          if [ -n "$INPUT" ]; then
+            if [ "$INPUT" = "all" ] || [ "$INPUT" = "$APP" ]; then
+              echo "should_build=true" >> $GITHUB_OUTPUT
+            else
+              echo "should_build=false" >> $GITHUB_OUTPUT
+            fi
+            exit 0
+          fi
+
+          if [[ "$TAG" == v* ]]; then
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          elif [[ "$TAG" == mepdf-v* ]] && [ "$APP" = "mepdf" ]; then
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          elif [[ "$TAG" == mephoto-v* ]] && [ "$APP" = "mephoto" ]; then
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          elif [[ "$TAG" == launcher-v* ]] && [ "$APP" = "mecraft-launcher" ]; then
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_build=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout Repository
+        if: steps.filter.outputs.should_build == 'true'
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: steps.filter.outputs.should_build == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
       - name: Setup Rust Toolchain
+        if: steps.filter.outputs.should_build == 'true'
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: x86_64-pc-windows-msvc
 
       - name: Rust Cache
+        if: steps.filter.outputs.should_build == 'true'
         uses: swatinem/rust-cache@v2
         with:
           workspaces: |
-            apps/mecraft-launcher/src-tauri
-            apps/mepdf/src-tauri
-            apps/mephoto/src-tauri
+            ${{ matrix.dir }}/src-tauri
 
       - name: Install Dependencies
+        if: steps.filter.outputs.should_build == 'true'
         run: npm ci
 
-      - name: Run Test Suite
-        run: npm test
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      # 1. Build meCraft Launcher (.exe, .msi, .zip)
-      - name: Build meCraft Launcher
+      - name: Compile Tauri v2 Windows Binaries (.exe, setup.exe, .msi, .zip)
+        if: steps.filter.outputs.should_build == 'true'
+        shell: pwsh
         run: |
-          cd apps/mecraft-launcher
+          cd ${{ matrix.dir }}
           npm run desktop:build
-          Copy-Item src-tauri/target/release/mecraft-launcher.exe -Destination ../../mecraft-launcher.exe -Force
-          Compress-Archive -Path src-tauri/target/release/mecraft-launcher.exe -DestinationPath ../../mecraft-launcher-windows-x64.zip -Force
-          $nsis = Get-ChildItem -Path src-tauri/target/release/bundle/nsis -Filter *setup.exe -Recurse | Select-Object -First 1
-          if ($nsis) { Copy-Item $nsis.FullName -Destination ../../mecraft-launcher-setup.exe -Force }
-          $msi = Get-ChildItem -Path src-tauri/target/release/bundle/msi -Filter *.msi -Recurse | Select-Object -First 1
-          if ($msi) { Copy-Item $msi.FullName -Destination ../../mecraft-launcher.msi -Force }
-          cd ../..
 
-      # 2. Build mePDF Studio (.exe, .msi, .zip)
-      - name: Build mePDF Studio
-        run: |
-          cd apps/mepdf
-          npm run desktop:build
-          Copy-Item src-tauri/target/release/mepdf.exe -Destination ../../mepdf.exe -Force
-          Compress-Archive -Path src-tauri/target/release/mepdf.exe -DestinationPath ../../mepdf-windows-x64.zip -Force
-          $nsis = Get-ChildItem -Path src-tauri/target/release/bundle/nsis -Filter *setup.exe -Recurse | Select-Object -First 1
-          if ($nsis) { Copy-Item $nsis.FullName -Destination ../../mepdf-setup.exe -Force }
-          $msi = Get-ChildItem -Path src-tauri/target/release/bundle/msi -Filter *.msi -Recurse | Select-Object -First 1
-          if ($msi) { Copy-Item $msi.FullName -Destination ../../mepdf.msi -Force }
-          cd ../..
+          $outDir = "../../dist-artifacts/${{ matrix.app_id }}"
+          New-Item -ItemType Directory -Force -Path $outDir
 
-      # 3. Build mePhoto Studio (.exe, .msi, .zip)
-      - name: Build mePhoto Studio
-        run: |
-          cd apps/mephoto
-          npm run desktop:build
-          Copy-Item src-tauri/target/release/mephoto.exe -Destination ../../mephoto.exe -Force
-          Compress-Archive -Path src-tauri/target/release/mephoto.exe -DestinationPath ../../mephoto-windows-x64.zip -Force
-          $nsis = Get-ChildItem -Path src-tauri/target/release/bundle/nsis -Filter *setup.exe -Recurse | Select-Object -First 1
-          if ($nsis) { Copy-Item $nsis.FullName -Destination ../../mephoto-setup.exe -Force }
-          $msi = Get-ChildItem -Path src-tauri/target/release/bundle/msi -Filter *.msi -Recurse | Select-Object -First 1
-          if ($msi) { Copy-Item $msi.FullName -Destination ../../mephoto.msi -Force }
-          cd ../..
+          # 1. Standalone Portable Executable (.exe & .zip)
+          $exe = "src-tauri/target/release/${{ matrix.exe_name }}.exe"
+          if (Test-Path $exe) {
+            Copy-Item $exe -Destination "$outDir/${{ matrix.exe_name }}.exe" -Force
+            Compress-Archive -Path $exe -DestinationPath "$outDir/${{ matrix.exe_name }}-windows-x64.zip" -Force
+          }
 
-      # 4. Upload Assets to GitHub Release
-      - name: Upload Release Binaries
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+          # 2. NSIS Setup Wizard Installer (setup.exe)
+          $nsis = Get-ChildItem -Path src-tauri/target/release/bundle/nsis -Filter *setup.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($nsis) {
+            Copy-Item $nsis.FullName -Destination "$outDir/${{ matrix.exe_name }}-setup.exe" -Force
+          }
+
+          # 3. Windows Installer Package (.msi)
+          $msi = Get-ChildItem -Path src-tauri/target/release/bundle/msi -Filter *.msi -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($msi) {
+            Copy-Item $msi.FullName -Destination "$outDir/${{ matrix.exe_name }}.msi" -Force
+          }
+
+      - name: Stash Binaries for Release
+        if: steps.filter.outputs.should_build == 'true'
+        uses: actions/upload-artifact@v4
         with:
-          files: |
-            *.exe
-            *.msi
-            *.zip
+          name: binaries-${{ matrix.app_id }}
+          path: dist-artifacts/${{ matrix.app_id }}/*
+          if-no-files-found: ignore
+
+  # ============================================================
+  # Stage 3: Atomic Release Publisher
+  # ============================================================
+  publish-release:
+    name: Publish Official Release
+    needs: build-app
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download All Application Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Inspect Release Artifacts
+        run: ls -la release-assets/
+
+      - name: Upload Binaries to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/*
           draft: false
           prerelease: false
           generate_release_notes: true

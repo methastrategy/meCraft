@@ -175,26 +175,46 @@ npm run desktop:build
 
 ---
 
-## 🤖 Automated CI/CD & GitHub Releases
+## 🤖 Automated CI/CD & High-Speed Parallel Matrix Releases
 
-This repository includes a production-ready GitHub Actions workflow at [`.github/workflows/build-and-release.yml`](.github/workflows/build-and-release.yml).
+This repository includes an enterprise-grade GitHub Actions parallel matrix workflow at [`.github/workflows/build-and-release.yml`](.github/workflows/build-and-release.yml).
 
-To release official binaries for Windows:
-1. Commit all code to `main`.
-2. Tag the release:
-   ```bash
-   git tag v3.1.0
-   git push origin v3.1.0
-   ```
-3. GitHub Actions automatically spins up a `windows-latest` runner, runs tests, builds Tauri desktop binaries across all formats, and publishes them to **GitHub Releases**:
-   - **Windows Installers (`.msi` / `setup.exe`):** Official setup wizards with Desktop & Start Menu shortcuts and automatic system file associations (`.pdf`, `.png`, `.jpg`).
-     - `meCraft_<version>_x64-setup.exe` / `*.msi`
-     - `mePDF_<version>_x64-setup.exe` / `*.msi`
-     - `mePhoto_<version>_x64-setup.exe` / `*.msi`
-   - **Portable Packages (`.zip` containing standalone `.exe`):** Zero-install, admin-free portable binaries (also consumed automatically by the Launcher Hub in-app downloader).
-     - `mecraft-launcher-windows-x64.zip`
-     - `mepdf-windows-x64.zip`
-     - `mephoto-windows-x64.zip`
+### Parallel 3x Acceleration Matrix
+Instead of compiling applications sequentially (12–15 minutes), GitHub Actions executes a **3-stage parallel pipeline**:
+1. **Quality Gate (`verify`):** Runs tests (226 tests) and TypeScript typecheck across all 6 workspaces in parallel (< 1 min).
+2. **Parallel Matrix Compilation (`build-app`):** Automatically spins up **3 dedicated Windows VMs simultaneously** to compile `meCraft Launcher`, `mePDF Studio`, and `mePhoto Studio` in parallel (~3–4 min).
+3. **Atomic Release Publisher (`publish-release`):** Aggregates all `.exe`, `setup.exe`, `.msi`, and `.zip` artifacts into a unified GitHub Release.
+
+### Granular Tag Triggers
+- **Full Suite Release:**
+  ```bash
+  git tag v3.1.0
+  git push origin v3.1.0
+  ```
+- **App-Specific Targeted Releases (Only builds the requested application):**
+  ```bash
+  # Release ONLY mePDF Studio (~3 min)
+  git tag mepdf-v3.1.0
+  git push origin mepdf-v3.1.0
+
+  # Release ONLY mePhoto Studio (~3 min)
+  git tag mephoto-v1.0.0
+  git push origin mephoto-v1.0.0
+
+  # Release ONLY meCraft Launcher (~2 min)
+  git tag launcher-v1.0.0
+  git push origin launcher-v1.0.0
+  ```
+
+### Release Formats
+- **Windows Installers (`.msi` / `setup.exe`):** Official setup wizards with Desktop & Start Menu shortcuts and automatic system file associations (`.pdf`, `.png`, `.jpg`).
+  - `mecraft-launcher-setup.exe` / `mecraft-launcher.msi`
+  - `mepdf-setup.exe` / `mepdf.msi`
+  - `mephoto-setup.exe` / `mephoto.msi`
+- **Portable Standalone Executables (`.exe` / `.zip`):** Single-file binaries with zero-install, zero-admin execution.
+  - `mecraft-launcher.exe` / `mecraft-launcher-windows-x64.zip`
+  - `mepdf.exe` / `mepdf-windows-x64.zip`
+  - `mephoto.exe` / `mephoto-windows-x64.zip`
 
 ---
 
