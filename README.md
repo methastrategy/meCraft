@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/branding/mecraft-hero-banner.jpg" alt="meCraft Master Suite — Autonomous Creative & Document Workstation" width="100%" style="border-radius: 12px; box-shadow: 0 16px 36px rgba(0,0,0,0.6);" />
+</p>
+
 # 🎨 meCraft Suite — Autonomous Creative & Document Workstation
 
 > **100% Private, Zero-Server-Upload Document & Photo Engineering Ecosystem.**  

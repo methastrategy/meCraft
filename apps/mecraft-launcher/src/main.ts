@@ -286,7 +286,8 @@ class MeCraftLauncher {
     this.appEl.innerHTML = `
       <header class="launcher-header">
         <div class="launcher-brand">
-          <div class="launcher-logo">
+          <div class="launcher-logo" style="overflow: hidden; border-radius: var(--radius-sm); position: relative;">
+            <img src="./assets/branding/mecraft-hub-emblem.jpg" alt="meCraft" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
             </svg>
@@ -445,7 +446,8 @@ class MeCraftLauncher {
         <div class="app-card-glow" style="background: ${app.color};"></div>
         
         <div class="app-card-top">
-          <div class="app-card-icon" style="background: linear-gradient(135deg, ${app.color}, rgba(255,255,255,0.1));">
+          <div class="app-card-icon" style="background: linear-gradient(135deg, ${app.color}, rgba(255,255,255,0.1)); overflow: hidden; position: relative;">
+            <img src="./assets/branding/${app.id}-studio-emblem.jpg" alt="${app.name}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
             ${this.getAppIconSvg(app.icon)}
           </div>
           <div class="app-card-headings">
