@@ -8,7 +8,10 @@
 > Built with **Tauri v2 (Rust), Vite, TypeScript, Web Workers, Canvas API, and WebAssembly**.
 
 [![Official Web Portal](https://img.shields.io/badge/Web%20Portal-mecrafts.vercel.app-6366f1?style=for-the-badge&logo=vercel&logoColor=white)](https://mecrafts.vercel.app)
+[![CI/CD](https://github.com/methastrategy/meCraft/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/methastrategy/meCraft/actions/workflows/build-and-release.yml)
 [![GitHub Release](https://img.shields.io/badge/Release-v3.2.0-emerald?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/releases)
+[![GitHub Stars](https://img.shields.io/github/stars/methastrategy/meCraft?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/methastrategy/meCraft?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/network)
 [![Tauri v2](https://img.shields.io/badge/Desktop-Tauri%20v2%20(Rust)-ea580c?style=for-the-badge&logo=tauri)](https://tauri.app/)
 [![Client-Side Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-blue?style=for-the-badge&logo=shield)](https://mecrafts.vercel.app)
 [![Tests Passing](https://img.shields.io/badge/Tests-226%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
@@ -239,8 +242,12 @@ meCraft/
 │   └── build-web.js          # Unified Multi-App Web Assembler for Vercel
 ├── public/                   # Static icons, favicons, and manifest assets
 ├── .github/
-│   └── workflows/
-│       └── build-and-release.yml # Automated Windows Native Packaging & GitHub Release CI
+│   ├── ISSUE_TEMPLATE/       # Bug Report & Feature Request Templates
+│   ├── workflows/
+│   │   └── build-and-release.yml # Automated Windows Native Packaging & GitHub Release CI
+│   └── PULL_REQUEST_TEMPLATE.md  # Pull Request Verification Checklist
+├── CHANGELOG.md              # Keep a Changelog Release History
+├── CONTRIBUTING.md           # Contributor Guidelines & Privacy Invariants
 ├── vercel.json               # Vercel Multi-App Rewrite & Header Configuration
 ├── vitest.workspace.ts       # Unified Vitest Workspace Configuration
 ├── package.json              # Monorepo Workspace Configuration

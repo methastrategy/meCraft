@@ -484,12 +484,12 @@ export class CockpitInspector {
 
         <div class="form-group">
           <label class="form-label" for="insp-protect-pass">Password</label>
-          <input type="password" id="insp-protect-pass" class="input-text" placeholder="Enter secure password" />
+          <input type="password" id="insp-protect-pass" class="input-text" placeholder="Enter secure password" autocomplete="new-password" />
         </div>
 
         <div class="form-group">
           <label class="form-label" for="insp-protect-confirm">Confirm Password</label>
-          <input type="password" id="insp-protect-confirm" class="input-text" placeholder="Repeat password" />
+          <input type="password" id="insp-protect-confirm" class="input-text" placeholder="Repeat password" autocomplete="new-password" />
         </div>
 
         <div class="inspector-divider"></div>

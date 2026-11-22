@@ -1,0 +1,15 @@
+/* ========================================================
+   MECRAFT OLED PURE BLACK THEME OVERRIDE (LAUNCHER VARIANT)
+   ======================================================== */
+[data-theme="oled"],
+.theme-oled {
+  --bg-oled: #000000;
+  --bg-app: #050608;
+  --surface-base: #0a0c10;
+  --surface-raised: #10131a;
+  --surface-card: #141822;
+  --surface-active: #1c2230;
+  --surface-hover: #181d2a;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-medium: rgba(255, 255, 255, 0.12);
+}

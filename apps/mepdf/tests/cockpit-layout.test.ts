@@ -372,6 +372,12 @@ describe('BMW Neue Klasse 3-Pane Studio Cockpit Architecture', () => {
         expect.objectContaining({ enabled: true, position: 'bottom-center' })
       );
 
+      // Tab switch: Protect (WCAG 2.2 §3.3.8 Accessible Auth)
+      inspector.setActiveTab('protect');
+      expect(inspector.getActiveTab()).toBe('protect');
+      expect(container.innerHTML).toContain('id="insp-protect-pass" class="input-text" placeholder="Enter secure password" autocomplete="new-password"');
+      expect(container.innerHTML).toContain('id="insp-protect-confirm" class="input-text" placeholder="Repeat password" autocomplete="new-password"');
+
       // Collapse state toggle
       inspector.setCollapsed(true);
       expect(inspector.isPanelCollapsed()).toBe(true);

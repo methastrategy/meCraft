@@ -1,45 +1,50 @@
 /**
- * meCraft Design Tokens & Theme Constants
+ * meCraft Design Tokens & Theme Constants (v2.5)
  */
 
 export const THEME_COLORS = {
-  bgOled: '#050608',
-  bgApp: '#08090d',
-  surfaceBase: '#0e1117',
-  surfaceRaised: '#141822',
-  surfaceCard: '#181d2a',
-  surfaceOverlay: 'rgba(16, 20, 30, 0.88)',
-  surfaceActive: '#21283a',
-  surfaceHover: '#1c2232',
+  bgOled: '#06070a',
+  bgApp: '#090a0f',
+  surfaceBase: 'oklch(0.14 0.008 265)',
+  surfaceRaised: 'oklch(0.18 0.010 265)',
+  surfaceCard: 'oklch(0.16 0.010 265)',
+  surfaceOverlay: 'rgba(22, 25, 34, 0.86)',
+  surfaceActive: 'oklch(0.23 0.012 265)',
+  surfaceHover: 'oklch(0.20 0.010 265)',
 
-  borderSubtle: 'rgba(255, 255, 255, 0.08)',
-  borderMedium: 'rgba(255, 255, 255, 0.15)',
+  borderSubtle: 'rgba(255, 255, 255, 0.07)',
+  borderMedium: 'rgba(255, 255, 255, 0.14)',
   borderActive: 'rgba(255, 255, 255, 0.28)',
-  borderFocus: '#6366f1',
+  borderFocus: 'oklch(0.65 0.22 264)',
 
-  primary: '#6366f1',
-  primaryHover: '#4f46e5',
-  primaryActive: '#4338ca',
+  primary: 'oklch(0.62 0.22 264)',
+  primaryHover: 'oklch(0.68 0.22 264)',
+  primaryActive: 'oklch(0.55 0.22 264)',
   primaryGlow: 'rgba(99, 102, 241, 0.28)',
 
-  accentCyan: '#06b6d4',
-  accentViolet: '#8b5cf6',
-  accentRose: '#f43f5e',
-  accentEmerald: '#10b981',
-  accentAmber: '#f59e0b',
+  accentCyan: 'oklch(0.78 0.16 210)',
+  accentViolet: 'oklch(0.65 0.22 290)',
+  accentRose: 'oklch(0.65 0.22 15)',
+  accentEmerald: 'oklch(0.75 0.16 150)',
+  accentAmber: 'oklch(0.78 0.16 75)',
 
-  danger: '#ef4444',
-  success: '#10b981',
-  warning: '#f59e0b',
+  danger: 'oklch(0.65 0.22 25)',
+  dangerHover: 'oklch(0.70 0.22 25)',
+  dangerBg: 'rgba(239, 68, 68, 0.15)',
+  success: 'oklch(0.75 0.16 145)',
+  successBg: 'rgba(16, 185, 129, 0.15)',
+  warning: 'oklch(0.78 0.15 85)',
+  warningBg: 'rgba(245, 158, 11, 0.15)',
 
   textPrimary: '#ffffff',
-  textSecondary: '#cbd5e1',
-  textMuted: '#94a3b8',
-  textFaint: '#64748b',
+  textSecondary: 'oklch(0.86 0.005 265)',
+  textMuted: 'oklch(0.72 0.006 265)',
+  textFaint: 'oklch(0.55 0.010 265)',
+  textInverse: '#090a0f',
 } as const;
 
 export const TYPOGRAPHY = {
-  fontSans: "'Inter', 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  fontSans: "'Plus Jakarta Sans', 'Inter', 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
   fontMono: "'JetBrains Mono', 'Fira Code', Menlo, monospace",
   lhUi: 1.35,
   lhProse: 1.70,
@@ -52,6 +57,9 @@ export const RADII = {
   lg: '16px',
   xl: '24px',
   full: '9999px',
+  outer: '12px',
+  inner: 'max(0px, calc(12px - 1px - 4px))',
+  cornerR: 'max(0px, calc(10px - 1px - 4px))',
 } as const;
 
 export const TRANSITIONS = {
