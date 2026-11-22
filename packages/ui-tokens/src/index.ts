@@ -23,6 +23,7 @@ export const THEME_COLORS = {
   primaryGlow: 'rgba(99, 102, 241, 0.28)',
 
   accentCyan: 'oklch(0.78 0.16 210)',
+  accentOnPrimary: '#ffffff',
   accentViolet: 'oklch(0.65 0.22 290)',
   accentRose: 'oklch(0.65 0.22 15)',
   accentEmerald: 'oklch(0.75 0.16 150)',
@@ -41,6 +42,18 @@ export const THEME_COLORS = {
   textMuted: 'oklch(0.72 0.006 265)',
   textFaint: 'oklch(0.55 0.010 265)',
   textInverse: '#090a0f',
+} as const;
+
+export const THEME_OLED_COLORS = {
+  bgOled: '#000000',
+  bgApp: '#050608',
+  surfaceBase: '#0a0c10',
+  surfaceRaised: '#10131a',
+  surfaceCard: '#141822',
+  surfaceActive: '#1c2230',
+  surfaceHover: '#181d2a',
+  borderSubtle: 'rgba(255, 255, 255, 0.06)',
+  borderMedium: 'rgba(255, 255, 255, 0.12)',
 } as const;
 
 export const TYPOGRAPHY = {

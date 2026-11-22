@@ -1,4 +1,5 @@
 @import '@mecraft/ui-tokens/tokens.css';
+@import '@mecraft/ui-tokens/theme-oled.css';
 
 html, body {
   margin: 0;

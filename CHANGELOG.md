@@ -37,3 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Multi-Format Export**: Client-side page rendering and export to high-resolution PNG and JPEG with customizable DPI scaling.
 - **Linear Studio Dark Cockpit**: Utilitarian dark mode user interface with Thai-Latin typography calibration and keyboard shortcuts.
 - **100% In-Browser Privacy Sandbox**: Guarantee of zero cloud upload, zero remote telemetry, and complete offline availability.
+
+[Unreleased]: https://github.com/methastrategy/meCraft/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/methastrategy/meCraft/compare/v3.1.0...v3.2.0
+[3.1.0]: https://github.com/methastrategy/meCraft/compare/v1.0.0...v3.1.0
+[1.0.0]: https://github.com/methastrategy/meCraft/releases/tag/v1.0.0

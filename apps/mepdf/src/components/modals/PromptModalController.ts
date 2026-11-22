@@ -56,7 +56,7 @@ export function showPasswordPromptModal(
     </div>
     <div class="form-group" style="margin-top: 0.75rem;">
       <label class="form-label" for="pdf-password-input">${t('passwordPlaceholder')}</label>
-      <input type="password" class="form-input" id="pdf-password-input" placeholder="${t('passwordPlaceholder')}" autofocus />
+      <input type="password" class="form-input" id="pdf-password-input" placeholder="${t('passwordPlaceholder')}" autocomplete="current-password" autofocus />
       <div id="pdf-password-error" style="color: var(--danger); font-size: 0.75rem; display: none; margin-top: 0.25rem;"></div>
     </div>
   `;
