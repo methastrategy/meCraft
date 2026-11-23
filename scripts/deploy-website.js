@@ -5,10 +5,10 @@ import { execSync } from 'node:child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = fs.realpathSync(path.resolve(__dirname, '..'));
 const websiteDir = fs.existsSync(path.resolve(rootDir, 'meCrafts-website/.git'))
-  ? path.resolve(rootDir, 'meCrafts-website')
-  : path.resolve(rootDir, '../meCrafts-website');
+  ? fs.realpathSync(path.resolve(rootDir, 'meCrafts-website'))
+  : fs.realpathSync(path.resolve(rootDir, '../meCrafts-website'));
 
 console.log('🚀 [deploy:website] Starting deployment pipeline to meCrafts-website...');
 
