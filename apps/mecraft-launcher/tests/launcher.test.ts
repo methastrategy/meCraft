@@ -7,6 +7,15 @@ import {
   formatSpeed,
   type AppCatalogItem,
 } from '@mecraft/core-bridge';
+import {
+  getAuthSession,
+  saveAuthSession,
+  clearAuthSession,
+  createMockAuthSession,
+  getTierBadge,
+  isFeatureUnlocked,
+  isOfflineGraceValid,
+} from '../src/main';
 
 describe('meCraft Launcher Core & Catalog Engine', () => {
   beforeEach(() => {
@@ -269,6 +278,50 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
 
       expect(getTargetApp('unknown.xyz')).toBeNull();
       expect(getTargetApp('binary.exe')).toBeNull();
+    });
+  });
+
+  describe('Strict Hub Gate & Feature-Tiered Membership System', () => {
+    beforeEach(() => {
+      clearAuthSession();
+    });
+
+    it('enforces strict gate: unauthenticated state when no session exists', () => {
+      const session = getAuthSession();
+      expect(session).toBeNull();
+    });
+
+    it('preserves valid Free Member session within 30-day offline grace period', () => {
+      const mock = createMockAuthSession('creator@mecraft.dev', 'free_member');
+      saveAuthSession(mock);
+
+      const restored = getAuthSession();
+      expect(restored).not.toBeNull();
+      expect(restored?.user.email).toBe('creator@mecraft.dev');
+      expect(restored?.user.tier).toBe('free_member');
+      expect(isOfflineGraceValid(restored)).toBe(true);
+    });
+
+    it('enforces feature-tiered subscription rules across apps', () => {
+      // Free Member can launch all apps
+      expect(isFeatureUnlocked('app:all_launch', 'free_member')).toBe(true);
+      expect(isFeatureUnlocked('app:mepdf', 'free_member')).toBe(true);
+      expect(isFeatureUnlocked('app:melight', 'free_member')).toBe(true);
+
+      // But premium features require Pro
+      expect(isFeatureUnlocked('feature:4k_render', 'free_member')).toBe(false);
+      expect(isFeatureUnlocked('feature:4k_render', 'pro_monthly')).toBe(true);
+      expect(isFeatureUnlocked('feature:ai_bg_removal', 'free_member')).toBe(false);
+      expect(isFeatureUnlocked('feature:ai_bg_removal', 'pro_yearly')).toBe(true);
+    });
+
+    it('clears session completely on sign out', () => {
+      const mock = createMockAuthSession('signout@mecraft.dev', 'free_member');
+      saveAuthSession(mock);
+      expect(getAuthSession()).not.toBeNull();
+
+      clearAuthSession();
+      expect(getAuthSession()).toBeNull();
     });
   });
 });
