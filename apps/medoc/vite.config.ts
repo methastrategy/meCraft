@@ -21,6 +21,10 @@ export default defineConfig({
     port: 5177,
     strictPort: true,
   },
+  optimizeDeps: {
+    include: ['marked', 'katex', 'pdf-lib'],
+    exclude: ['mermaid'],
+  },
   build: {
     target: 'esnext',
     sourcemap: false,

@@ -489,8 +489,38 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
 ];
 
-// ─── SVG Icons ───────────────────────────────────────────────────────────────
-function getAppIcon(icon: string, color: string): string {
+// ─── App Icons & 3D Thai Mythology Emblems ────────────────────────────────
+const APP_ICON_MAP: Record<string, string> = {
+  mepdf: 'mepdf',
+  pdf: 'mepdf',
+  mephoto: 'mephoto',
+  photo: 'mephoto',
+  medrop: 'medrop',
+  drop: 'medrop',
+  mevector: 'mevector',
+  vector: 'mevector',
+  mefilm: 'mefilm',
+  film: 'mefilm',
+  melight: 'melight',
+  light: 'melight',
+  memotion: 'memotion',
+  motion: 'memotion',
+  medesign: 'medesign',
+  design: 'medesign',
+  meaudio: 'meaudio',
+  audio: 'meaudio',
+  medoc: 'medoc',
+  doc: 'medoc',
+  me3d: 'me3d',
+  '3d': 'me3d',
+  'mecraft-suite': 'mecraft-suite',
+  suite: 'mecraft-suite',
+  hub: 'mecraft-suite',
+};
+
+function getAppIcon(iconOrId: string, color: string = '#d4af37'): string {
+  const brandKey = APP_ICON_MAP[iconOrId] ?? iconOrId;
+  const svgKey = iconOrId.startsWith('me') ? iconOrId.slice(2) : iconOrId;
   const icons: Record<string, string> = {
     pdf: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
     photo: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.6"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>`,
@@ -504,7 +534,8 @@ function getAppIcon(icon: string, color: string): string {
     '3d': `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.6"><path d="M12 2l9 4.9V17L12 22l-9-5.1V6.9L12 2z"/><line x1="12" y1="22" x2="12" y2="12"/><polyline points="21 6.9 12 12 3 6.9"/></svg>`,
     drop: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>`,
   };
-  return icons[icon] ?? icons['doc'];
+  const fallbackSvg = icons[svgKey] ?? icons[iconOrId] ?? icons['doc'];
+  return `<span class="app-emblem-wrap"><img src="./branding/${brandKey}.png" class="app-3d-emblem" alt="${brandKey}" loading="lazy" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='inline-flex';}" /><span class="app-icon-svg-fallback" style="display:none;align-items:center;justify-content:center;">${fallbackSvg}</span></span>`;
 }
 
 // ─── Sanitization ───────────────────────────────────────────────────────────
@@ -845,17 +876,7 @@ class MeCraftsPortal {
       <div class="auth-gate-card">
         <div class="auth-brand">
           <div class="auth-brand-emblem" aria-hidden="true">
-            <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
-              <defs>
-                <linearGradient id="auth-emblem-g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#d4af37"/>
-                  <stop offset="100%" stop-color="#f7d774"/>
-                </linearGradient>
-              </defs>
-              <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#auth-emblem-g)" opacity="0.15"/>
-              <path d="M8 24 L16 8 L24 24" stroke="url(#auth-emblem-g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              <path d="M11 19 h10" stroke="url(#auth-emblem-g)" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <img src="./branding/mecraft-suite.png" class="auth-brand-img" alt="meCrafts" />
           </div>
           <h1 class="auth-title">meCraft Studio</h1>
           <p class="auth-subtitle">${this.lang === 'en' ? 'Creative & Document Workstation Suite' : 'ศูนย์กลางชุดโปรแกรมสร้างสรรค์และเอกสาร'}</p>
@@ -956,17 +977,7 @@ class MeCraftsPortal {
         <button type="button" class="auth-modal-close" id="btn-close-auth-modal" aria-label="Close dialog">✕</button>
         <div class="auth-brand">
           <div class="auth-brand-emblem" aria-hidden="true">
-            <svg width="36" height="36" viewBox="0 0 32 32" fill="none">
-              <defs>
-                <linearGradient id="modal-auth-emblem-g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#d4af37"/>
-                  <stop offset="100%" stop-color="#f7d774"/>
-                </linearGradient>
-              </defs>
-              <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#modal-auth-emblem-g)" opacity="0.15"/>
-              <path d="M8 24 L16 8 L24 24" stroke="url(#modal-auth-emblem-g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              <path d="M11 19 h10" stroke="url(#modal-auth-emblem-g)" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <img src="./branding/mecraft-suite.png" class="auth-brand-img" alt="meCrafts" />
           </div>
           <h2 class="auth-title" id="modal-auth-title">${this.t.authModalTitle}</h2>
           <p class="auth-subtitle">${this.t.authModalSubtitle}</p>
@@ -1090,7 +1101,7 @@ class MeCraftsPortal {
       <!-- Native Windows Title Bar -->
       <div class="desktop-window-titlebar">
         <div class="window-titlebar-left">
-          <div class="window-app-icon">${getAppIcon(app.icon, app.accentColor)}</div>
+          <div class="window-app-icon">${getAppIcon(app.id, app.accentColor)}</div>
           <span class="window-title-text" id="preview-window-title-${app.id}">${app.name} — [${sampleDocName}] - ${isIndev ? (this.lang === 'th' ? 'ภาพร่างโครงร่างต้นแบบ (WIP)' : 'Architecture Schematic (WIP)') : 'Windows Native Desktop'}</span>
           <span class="window-native-pill ${isIndev ? 'pill-indev-wireframe' : ''}">
             ${isIndev ? (this.lang === 'th' ? 'ภาพร่างต้นแบบ (R&D)' : 'Concept Wireframe (WIP)') : '100% Native Desktop App'}
@@ -1926,7 +1937,8 @@ class MeCraftsPortal {
       <div class="portal-header-inner">
         <a class="portal-brand" href="#" aria-label="meCrafts home">
           <div class="portal-brand-emblem" aria-hidden="true">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <img src="./branding/mecraft-suite.png" class="portal-brand-img" alt="meCrafts" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='inline-flex';}" />
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="portal-brand-fallback" style="display:none;">
               <defs>
                 <linearGradient id="emblem-g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stop-color="#d4af37"/>
@@ -2025,6 +2037,9 @@ class MeCraftsPortal {
             <span class="hero-hint-arrow" aria-hidden="true">↗</span>
             <span>${this.lang === 'th' ? 'ดาวน์โหลดตัวติดตั้งสำหรับ Windows ได้ที่มุมขวาบน' : 'Download Windows installer anytime from top-right corner'}</span>
           </div>
+        </div>
+        <div class="hero-guardians-panorama" aria-hidden="true">
+          <img src="./assets/branding/guardians-panorama.png" class="hero-guardians-img" alt="meCraft Guardians Lineup" loading="lazy" />
         </div>
         ${!this.currentSession ? `
           <div class="hero-member-bar">
@@ -2147,7 +2162,7 @@ class MeCraftsPortal {
       aria-selected="${isActive}"
       style="--pill-accent: ${app.accentColor}; --pill-glow: ${app.glowColor};"
     >
-      <span class="pill-emblem" aria-hidden="true">${getAppIcon(app.icon, app.accentColor)}</span>
+      <span class="pill-emblem" aria-hidden="true">${getAppIcon(app.id, app.accentColor)}</span>
       <span class="pill-title">${cleanName}</span>
       <span class="pill-status-dot ${isAppActive ? 'dot-active' : 'dot-indev'}" title="${isAppActive ? 'Active Production' : 'In Development'}"></span>
     </button>`;
