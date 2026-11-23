@@ -2183,7 +2183,7 @@ class MeCraftsPortal {
         <div class="studio-spotlight-info">
           <div class="spotlight-info-header">
             <div class="spotlight-emblem" aria-hidden="true" style="background: radial-gradient(circle, ${app.glowColor} 0%, transparent 70%);">
-              ${getAppIcon(app.icon, app.accentColor)}
+              ${getAppIcon(app.id, app.accentColor)}
             </div>
             <div class="spotlight-meta">
               <div class="spotlight-badges">
