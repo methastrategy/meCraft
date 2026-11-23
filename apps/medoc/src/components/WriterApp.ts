@@ -38,9 +38,45 @@ export class WriterApp {
     this.container = target;
     this.vault = new VaultManager();
     this.activeDoc = this.vault.getActiveDocument();
+
+    if (typeof window !== 'undefined' && window.location) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const viewParam = urlParams.get('view');
+      if (viewParam === 'editor' || viewParam === 'preview' || viewParam === 'split') {
+        this.viewMode = viewParam;
+      }
+      if (urlParams.get('zen') === 'true') {
+        this.zenMode = true;
+      }
+      if (urlParams.get('tab') === 'files') {
+        this.sidebarTab = 'files';
+      }
+    }
+
     this.mount();
     this.bindEvents();
+    if (this.zenMode) {
+      this.toggleZenMode(true);
+    } else {
+      this.setViewMode(this.viewMode);
+    }
     this.triggerRender(true);
+
+    if (typeof window !== 'undefined' && window.location) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const scrollParam = urlParams.get('scroll');
+      if (scrollParam) {
+        setTimeout(() => {
+          if (scrollParam === 'mermaid') {
+            const el = this.previewPaneEl.querySelector('.mermaid-container');
+            el?.scrollIntoView({ behavior: 'instant' as any });
+          } else if (scrollParam === 'katex') {
+            const el = this.previewPaneEl.querySelector('.medoc-math-display');
+            el?.scrollIntoView({ behavior: 'instant' as any });
+          }
+        }, 120);
+      }
+    }
   }
 
   private mount(): void {

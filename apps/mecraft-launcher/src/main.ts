@@ -595,6 +595,9 @@ class MeCraftsPortal {
   private previewAppId: string | null = null;
   private activeStudioId: string = 'mepdf';
   private isFullscreenMockupOpen = false;
+  private isUserProfileModalOpen = false;
+  private scrollSpyObserver: IntersectionObserver | null = null;
+  private recentProjects: RecentProject[] = [];
 
   constructor() {
     const urlSession = checkUrlAuthHandoff();
@@ -637,6 +640,28 @@ class MeCraftsPortal {
 
     this.render();
     this.attachListeners();
+    this.loadRecentProjects();
+  }
+
+  private async loadRecentProjects() {
+    try {
+      this.recentProjects = await this.bridge.getRecentProjects();
+      this.render();
+      this.attachListeners();
+    } catch {
+      this.recentProjects = [];
+    }
+  }
+
+  private formatTimeAgo(timestamp: number): string {
+    const elapsedSec = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+    if (elapsedSec < 60) return this.lang === 'th' ? 'เมื่อสักครู่' : 'just now';
+    const min = Math.floor(elapsedSec / 60);
+    if (min < 60) return this.lang === 'th' ? `${min} นาทีที่แล้ว` : `${min}m ago`;
+    const hours = Math.floor(min / 60);
+    if (hours < 24) return this.lang === 'th' ? `${hours} ชม. ที่แล้ว` : `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return this.lang === 'th' ? `${days} วันที่แล้ว` : `${days}d ago`;
   }
 
   private cleanUrlHash() {
@@ -868,17 +893,12 @@ class MeCraftsPortal {
   }
 
   private render() {
-    // In Tauri desktop environment, enforce member auth gate.
-    // On the public showcase web portal, allow immediate access to discovery & downloads.
-    if (this.bridge.isTauri() && !this.currentSession) {
-      this.appEl.innerHTML = this.renderAuthGate();
-      return;
-    }
-
+    this.scrollSpyObserver?.disconnect();
     this.appEl.innerHTML = `
       ${this.renderHeader()}
-      <main id="portal-main">
+      <main id="portal-main" class="workstation-main">
         ${this.renderHero()}
+        ${this.renderRecentProjects()}
         ${this.renderFilterBar()}
         ${this.renderAppsGrid()}
         ${this.renderManifesto()}
@@ -887,9 +907,96 @@ class MeCraftsPortal {
       ${this.renderFooter()}
       ${this.renderAuthModal()}
       ${this.renderSyncModal()}
+      ${this.renderUserProfileModal()}
       ${this.renderDesktopPreviewModal()}
       ${this.renderFullscreenMockupModal()}
     `;
+  }
+
+  private renderUserProfileModal(): string {
+    if (!this.isUserProfileModalOpen || !this.currentSession) return '';
+    const tierBadge = getTierBadge(this.currentSession.user.tier);
+    const syncCode = exportAuthSyncCode(this.currentSession);
+    return `
+    <div class="auth-modal-overlay active" id="profile-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-profile-title">
+      <div class="auth-modal-backdrop" id="modal-profile-backdrop"></div>
+      <div class="auth-gate-card auth-modal-card">
+        <button type="button" class="auth-modal-close" id="btn-close-profile-modal" aria-label="Close dialog">✕</button>
+        <div class="auth-brand">
+          <div class="user-avatar" style="width: 58px; height: 58px; font-size: 24px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #d4af37, #6366f1); border-radius: 50%; color: #fff; font-weight: 700; box-shadow: 0 0 24px rgba(212,175,55,0.4);">
+            ${escapeHtml((this.currentSession.user.fullName || this.currentSession.user.email).charAt(0).toUpperCase())}
+          </div>
+          <h2 class="auth-title" id="modal-profile-title">${escapeHtml(this.currentSession.user.fullName || 'meCraft User')}</h2>
+          <p class="auth-subtitle">${escapeHtml(this.currentSession.user.email)}</p>
+          <div style="margin-top: 10px;">
+            <span class="user-tier-badge ${tierBadge.isPro ? 'badge-pro' : 'badge-free'}" style="font-size: 12px; padding: 4px 14px;">
+              ${tierBadge.label}
+            </span>
+          </div>
+        </div>
+
+        <div class="sync-code-section" style="margin-top: 16px;">
+          <label class="sync-code-label" for="profile-sync-code">${this.lang === 'en' ? 'Desktop Sync Key:' : 'รหัสเชื่อมต่อ Desktop Sync:'}</label>
+          <div class="sync-code-box">
+            <textarea readonly class="sync-code-textarea" id="profile-sync-code" style="height: 52px;" spellcheck="false">${escapeHtml(syncCode)}</textarea>
+            <button type="button" id="btn-copy-profile-sync" class="btn-copy-code">
+              ${this.syncCodeCopied ? (this.lang === 'en' ? '✓ Copied!' : '✓ คัดลอกแล้ว!') : (this.lang === 'en' ? '📋 Copy' : '📋 คัดลอก')}
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 24px;">
+          <button type="button" class="btn-auth-submit" id="btn-profile-signout" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5;">
+            🚪 ${this.t.signOutBtn}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  private renderRecentProjects(): string {
+    const recents = this.recentProjects;
+    return `
+    <section class="portal-recents-section" id="recent-projects" aria-labelledby="recents-title">
+      <div class="portal-section-inner">
+        <div class="recents-header-row">
+          <div class="recents-title-wrap">
+            <span class="recents-icon" aria-hidden="true">📁</span>
+            <h3 class="recents-title" id="recents-title">${this.t.recentProjectsTitle}</h3>
+            ${recents.length > 0 ? `<span class="recents-badge">${recents.length}</span>` : ''}
+          </div>
+          ${recents.length > 0 ? `
+            <button type="button" class="btn-clear-recents" id="btn-clear-recents">
+              ${this.lang === 'th' ? 'ล้างประวัติ' : 'Clear History'}
+            </button>
+          ` : ''}
+        </div>
+
+        ${recents.length === 0 ? `
+          <div class="recents-empty-card">
+            <span class="empty-icon" aria-hidden="true" style="font-size: 26px; display: block; margin-bottom: 6px;">📂</span>
+            <p>${this.t.noRecentProjects}</p>
+          </div>
+        ` : `
+          <div class="recents-grid">
+            ${recents.map(r => `
+              <div class="recent-project-card" data-path="${escapeHtml(r.path)}" data-appid="${r.appId}">
+                <div class="recent-card-left">
+                  <span class="recent-file-icon">${r.fileType === 'pdf' ? '📑' : '🖼️'}</span>
+                  <div class="recent-info">
+                    <span class="recent-file-name" title="${escapeHtml(r.path)}">${escapeHtml(r.name)}</span>
+                    <span class="recent-meta">${r.sizeBytes ? formatBytes(r.sizeBytes) : ''} · ${this.formatTimeAgo(r.lastOpened)}</span>
+                  </div>
+                </div>
+                <button type="button" class="btn-open-recent" data-path="${escapeHtml(r.path)}" data-appid="${r.appId}">
+                  ${this.lang === 'th' ? 'เปิดงาน →' : 'Open →'}
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+    </section>`;
   }
 
   private renderAuthGate(): string {
@@ -1959,6 +2066,7 @@ class MeCraftsPortal {
   }
 
   private renderHeader(): string {
+    const isDesktop = this.bridge.isTauri();
     return `
     <header class="portal-header" role="banner">
       <div class="portal-header-inner">
@@ -1979,32 +2087,34 @@ class MeCraftsPortal {
           </div>
           <div class="portal-brand-text">
             <span class="portal-brand-name">${this.t.brandTitle}</span>
-            <span class="portal-brand-tag">${this.t.brandSubtitle}</span>
+            <span class="portal-brand-tag">${this.lang === 'th' ? 'Workstation Hub v1.0' : 'Workstation Hub v1.0'}</span>
           </div>
         </a>
 
         <nav class="portal-nav" aria-label="Portal navigation">
-          <a href="#apps-grid" class="portal-nav-link">Apps</a>
-          <a href="#manifesto" class="portal-nav-link">Privacy</a>
-          <a href="#specs" class="portal-nav-link">Specs</a>
-          ${!this.currentSession ? `
-            <button type="button" class="portal-nav-link portal-nav-auth btn-trigger-auth" id="btn-open-auth" aria-label="${this.t.signInBtn}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-              <span>${this.t.signInBtn}</span>
-            </button>
-          ` : ''}
+          <a href="#hero-dropzone" class="portal-nav-link active">${this.lang === 'th' ? '⚡ ค็อกพิท' : '⚡ Cockpit'}</a>
+          <a href="#apps-grid" class="portal-nav-link">${this.lang === 'th' ? '📦 โปรแกรม' : 'Apps'}</a>
+          <a href="#recent-projects" class="portal-nav-link">${this.lang === 'th' ? '📁 ไฟล์ล่าสุด' : 'Recents'}</a>
+          <a href="#manifesto" class="portal-nav-link">${this.lang === 'th' ? '🔒 ความเป็นส่วนตัว' : 'Privacy'}</a>
+          <a href="#specs" class="portal-nav-link">${this.lang === 'th' ? '⚙️ สเปก' : 'Specs'}</a>
           <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer" class="portal-nav-link portal-nav-github" aria-label="GitHub Repository">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.63-5.373-12-12-12z"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.63-5.373-12-12-12z"/></svg>
             GitHub
           </a>
         </nav>
 
         <div class="portal-header-actions">
+          <div class="desktop-engine-status-pill" title="${this.lang === 'th' ? 'ประมวลผลบน RAM ภายในเครื่อง 100% ไร้คลาวด์' : '100% Client-Side Local Sandbox'}">
+            <span class="status-dot-green"></span>
+            <span>${this.lang === 'th' ? '100% Private Local' : '100% Private Local'}</span>
+          </div>
+
+          <button class="portal-lang-btn" id="btn-lang" aria-label="Switch language">
+            ${this.lang === 'en' ? '🇹🇭 TH' : '🇬🇧 EN'}
+          </button>
+
           ${this.currentSession ? `
-            <div class="user-profile-pill" id="user-profile-pill">
+            <div class="user-profile-pill" id="user-profile-pill" role="button" tabindex="0" title="${escapeHtml(this.currentSession.user.email)}">
               <div class="user-avatar" aria-hidden="true">${escapeHtml((this.currentSession.user.fullName || this.currentSession.user.email).charAt(0).toUpperCase())}</div>
               <div class="user-details">
                 <span class="user-email" title="${escapeHtml(this.currentSession.user.email)}">${escapeHtml(this.currentSession.user.email)}</span>
@@ -2012,18 +2122,26 @@ class MeCraftsPortal {
                   ${getTierBadge(this.currentSession.user.tier).label}
                 </span>
               </div>
-              <button class="btn-signout" id="btn-signout" title="${this.lang === 'en' ? 'Sign Out' : 'ออกจากระบบ'}" aria-label="Sign Out">
+              <button class="btn-signout" id="btn-signout" title="${this.t.signOutBtn}" aria-label="Sign Out">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
               </button>
             </div>
+          ` : `
+            <button type="button" class="portal-auth-btn btn-trigger-auth" id="header-btn-auth" aria-label="${this.t.signInBtn}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <span>${this.t.signInBtn}</span>
+            </button>
+          `}
+
+          ${!isDesktop ? `
+            <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="portal-cta-btn portal-cta-btn-sm" id="header-cta" title="${this.lang === 'th' ? 'ดาวน์โหลดตัวติดตั้ง meCraft Suite สำหรับ Windows (14.8 MB)' : 'Download meCraft Suite Installer for Windows (14.8 MB)'}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>${this.lang === 'th' ? 'ดาวน์โหลด .exe' : 'Download .exe'}</span>
+            </a>
           ` : ''}
-          <button class="portal-lang-btn" id="btn-lang" aria-label="Switch language">
-            ${this.lang === 'en' ? '🇹🇭 TH' : '🇬🇧 EN'}
-          </button>
-          <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="portal-cta-btn portal-cta-btn-sm" id="header-cta" title="${this.lang === 'th' ? 'ดาวน์โหลดตัวติดตั้ง meCraft Suite สำหรับ Windows (14.8 MB)' : 'Download meCraft Suite Installer for Windows (14.8 MB)'}">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>${this.lang === 'th' ? 'ดาวน์โหลด .exe' : 'Download .exe'}</span>
-          </a>
         </div>
       </div>
     </header>`;
@@ -2044,7 +2162,7 @@ class MeCraftsPortal {
         <div class="hero-glow hero-glow-cyan"></div>
       </div>
       <div class="portal-hero-inner">
-        <div class="hero-pill" aria-label="Suite version">${this.t.appsCount} · Windows</div>
+        <div class="hero-pill" aria-label="Suite version">meCraft Workstation · v1.0.0 · Windows</div>
         <h1 class="hero-title" id="hero-title">${this.t.heroTitle}</h1>
         <p class="hero-subtitle">${this.t.heroSubtitle}</p>
         <div class="hero-badges" role="list" aria-label="Key features">
@@ -2055,28 +2173,71 @@ class MeCraftsPortal {
             </div>
           `).join('')}
         </div>
-        <div class="hero-ctas">
-          <a href="#apps-grid" class="hero-cta-primary" id="hero-cta-explore">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            <span>${this.lang === 'th' ? 'สำรวจทั้ง 11 โปรแกรม & ดูพรีวิวสด' : 'Explore All 11 Programs & Live Preview'}</span>
-          </a>
-          <div class="hero-topright-hint">
-            <span class="hero-hint-arrow" aria-hidden="true">↗</span>
-            <span>${this.lang === 'th' ? 'ดาวน์โหลดตัวติดตั้งสำหรับ Windows ได้ที่มุมขวาบน' : 'Download Windows installer anytime from top-right corner'}</span>
+
+        <!-- Universal Interactive Dropzone -->
+        <div class="hero-dropzone-cockpit" id="hero-dropzone" role="region" aria-label="Universal File Dropzone">
+          <input type="file" id="hero-file-input" style="display: none;" accept="application/pdf,image/*,.doc,.docx,.txt" multiple />
+          <div class="dropzone-inner">
+            <div class="dropzone-icon-halo" aria-hidden="true">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <div class="dropzone-content">
+              <h3 class="dropzone-title">${this.t.dropzoneTitle}</h3>
+              <p class="dropzone-desc">${this.t.dropzoneSubtitle}</p>
+            </div>
+            <button type="button" class="dropzone-browse-btn" id="btn-browse-dropzone">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              <span>${this.t.dropzoneBrowse}</span>
+            </button>
           </div>
         </div>
-        <div class="hero-guardians-panorama" aria-hidden="true">
-          <img src="./assets/branding/guardians-panorama.png" class="hero-guardians-img" alt="meCraft Guardians Lineup" loading="lazy" />
+
+        <!-- Quick Studio Launchers -->
+        <div class="hero-quick-launch-row">
+          <button type="button" class="quick-launch-chip chip-mepdf btn-launch-app" data-appid="mepdf" data-target="desktop">
+            <span class="chip-icon">📑</span>
+            <span class="chip-name">mePDF Studio Pro</span>
+            <span class="chip-action">${this.t.launchDesktopBtn}</span>
+          </button>
+          <button type="button" class="quick-launch-chip chip-mephoto btn-launch-app" data-appid="mephoto" data-target="desktop">
+            <span class="chip-icon">🖼️</span>
+            <span class="chip-name">mePhoto Studio</span>
+            <span class="chip-action">${this.t.launchDesktopBtn}</span>
+          </button>
+          <button type="button" class="quick-launch-chip chip-medrop btn-launch-app" data-appid="medrop" data-target="desktop">
+            <span class="chip-icon">🍩</span>
+            <span class="chip-name">meDrop Radial HUD</span>
+            <span class="chip-action">${this.t.launchDesktopBtn}</span>
+          </button>
+          <button type="button" class="quick-launch-chip chip-medoc btn-launch-app" data-appid="medoc" data-target="desktop">
+            <span class="chip-icon">📝</span>
+            <span class="chip-name">meDoc Typewriter</span>
+            <span class="chip-action">${this.t.launchDesktopBtn}</span>
+          </button>
         </div>
-        ${!this.currentSession ? `
-          <div class="hero-member-bar">
+
+        <div class="hero-member-bar">
+          ${!this.currentSession ? `
             <span class="hero-member-label">${this.lang === 'en' ? 'Already have an account or desktop license?' : 'มีบัญชีสมาชิกหรือไลเซนส์เดสก์ท็อปแล้ว?'}</span>
             <button type="button" class="hero-member-link btn-trigger-auth" id="hero-btn-open-auth">
               <span>${this.t.signInBtn}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
-          </div>
-        ` : ''}
+          ` : `
+            <span class="hero-member-label">
+              ${this.lang === 'en' ? `Signed in as ${escapeHtml(this.currentSession.user.email)}` : `เข้าสู่ระบบแล้ว: ${escapeHtml(this.currentSession.user.email)}`}
+            </span>
+            <button type="button" class="hero-member-link" id="hero-btn-open-sync">
+              <span>${this.t.syncDesktopBtn}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          `}
+        </div>
+
         <p class="hero-meta">Windows 10/11 64-bit · 100% In-Device Privacy · Zero Cloud Uploads · MIT License</p>
       </div>
     </section>`;
@@ -2148,9 +2309,14 @@ class MeCraftsPortal {
           </nav>
         </div>
 
-        <!-- 2. Active Studio Spotlight Cockpit -->
-        <div class="studio-spotlight-mount" id="studio-spotlight-mount">
-          ${this.renderStudioSpotlight(activeApp)}
+        <!-- 2. All Studios Spotlight Stream -->
+        <div class="studios-spotlight-stream" id="studios-spotlight-stream">
+          ${apps.length > 0 ? apps.map(app => this.renderStudioSpotlight(app)).join('') : `
+            <div class="apps-empty" role="status">
+              <div class="apps-empty-icon" aria-hidden="true">🔍</div>
+              <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
+            </div>
+          `}
         </div>
 
         <!-- 3. All 11 Programs Ecosystem Overview Grid -->
@@ -2165,12 +2331,7 @@ class MeCraftsPortal {
             </div>
           </div>
           <div class="ecosystem-grid" id="ecosystem-grid" role="list" aria-label="meCrafts ecosystem catalog">
-            ${apps.length > 0 ? apps.map(app => this.renderEcosystemCard(app, app.id === activeApp.id)).join('') : `
-              <div class="apps-empty" role="status">
-                <div class="apps-empty-icon" aria-hidden="true">🔍</div>
-                <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
-              </div>
-            `}
+            ${apps.length > 0 ? apps.map(app => this.renderEcosystemCard(app, app.id === activeApp.id)).join('') : ''}
           </div>
         </div>
       </div>
@@ -2245,15 +2406,22 @@ class MeCraftsPortal {
 
           <!-- Contextual Action Buttons -->
           <div class="spotlight-action-row">
-            ${isActive && app.downloadUrl ? `
-              <div class="spotlight-download-group">
-                <a href="${app.downloadUrl}" download="${app.exeName || 'setup.exe'}" class="spotlight-cta-btn" id="spotlight-btn-download">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  <span>${this.lang === 'th' ? `ดาวน์โหลด ${app.exeName} (${app.exeSize || 'Standalone'})` : `Download ${app.exeName} (${app.exeSize || 'Standalone'})`}</span>
-                </a>
-                <span class="spotlight-suite-note">
-                  ${this.lang === 'th' ? '✓ รวมอยู่ในตัวติดตั้ง meCraft Suite ที่มุมขวาบน' : '✓ Included in full meCraft Suite Installer (top-right)'}
-                </span>
+            ${isActive ? `
+              <div class="spotlight-actions-flex" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <button type="button" class="spotlight-cta-btn btn-launch-app" data-appid="${app.id}" data-target="desktop" style="background: ${app.accentColor}; color: #ffffff; border: none; cursor: pointer;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <span>${this.lang === 'th' ? `เปิดใช้งาน ${app.name}` : `Launch ${app.name}`}</span>
+                </button>
+                <button type="button" class="quick-launch-chip btn-launch-app" data-appid="${app.id}" data-target="web" style="cursor: pointer;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  <span>${this.t.openWebBtn}</span>
+                </button>
+                ${app.downloadUrl && !this.bridge.isTauri() ? `
+                  <a href="${app.downloadUrl}" download="${app.exeName || 'setup.exe'}" class="quick-launch-chip" style="font-size: 11px; opacity: 0.8;" title="${app.exeName}">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>${app.exeSize || '.exe'}</span>
+                  </a>
+                ` : ''}
               </div>
             ` : `
               <div class="spotlight-indev-group">
