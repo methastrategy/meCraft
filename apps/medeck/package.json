@@ -1,0 +1,12 @@
+{
+  "name": "@mecraft/medeck",
+  "private": true,
+  "version": "3.2.1",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
