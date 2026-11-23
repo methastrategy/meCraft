@@ -9,8 +9,8 @@
 
 | Application | Workspace | Status | Focus Areas | Target Release |
 |:---|:---|:---:|:---|:---:|
-| **🚀 meCraft Launcher Hub** | `apps/mecraft-launcher` | **Stable** (`v3.2.0`) | Universal Hub drop zone, native detached process spawning, dual-action routing, and bilingual Thai/EN cockpit. | Released |
-| **📄 mePDF Studio** | `apps/mepdf` | **Stable** (`v3.2.0`) | 3-pane Studio Cockpit, Dual-Engine compression (Lossless & Scanned), 256-bit AES encryption, searchable OCR layer injection. | Released |
+| **🚀 meCraft Launcher Hub** | `apps/mecraft-launcher` | **Stable** (`v1.0.0`) | Universal Hub drop zone, native detached process spawning, dual-action routing, and bilingual Thai/EN cockpit. | Released |
+| **📄 mePDF Studio** | `apps/mepdf` | **Stable** (`v1.0.0`) | 3-pane Studio Cockpit, Dual-Engine compression (Lossless & Scanned), 256-bit AES encryption, searchable OCR layer injection. | Released |
 | **🪄 mePhoto Studio** | `apps/mephoto` | **Stable** (`v1.0.0`) | 4-point homography perspective deskew, Adaptive Otsu binarization, Magic Color, and 1-click ClipBus handoff to mePDF. | Released |
 | **📐 meVector** | `apps/mevector` | *Roadmap* | Precision Bézier vector editor, node manipulation, boolean path operations, and infinite-resolution SVG/PDF export. | v4.0.0 |
 | **📝 meDoc** | `apps/medoc` | *Roadmap* | Zen distraction-free typewriter, live LaTeX mathematical formula rendering, bilingual grammar analysis, and academic publishing. | v4.1.0 |

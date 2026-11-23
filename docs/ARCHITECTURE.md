@@ -19,8 +19,8 @@ flowchart TD
     end
 
     subgraph Application_Workspaces["🚀 Application Suite (Workspaces)"]
-        Launcher["apps/mecraft-launcher (@mecraft/launcher v3.2)\n• Dual-Action App Routing (Web Studio + Desktop Launch)\n• MIME-Based File Drop Zone Auto-Router\n• Detached Native Process Spawning (Rust Windows API)"]
-        PDF["apps/mepdf (@mecraft/mepdf v3.2)\n• 3-Pane Studio Cockpit (Filmstrip, Canvas, 6-Tab Inspector)\n• Dual-Engine Smart Compression (Lossless & Scanned)\n• Client-Side AES-256 Encryption & Searchable OCR Injection"]
+        Launcher["apps/mecraft-launcher (@mecraft/launcher v1.0)\n• Dual-Action App Routing (Web Studio + Desktop Launch)\n• MIME-Based File Drop Zone Auto-Router\n• Detached Native Process Spawning (Rust Windows API)"]
+        PDF["apps/mepdf (@mecraft/mepdf v1.0)\n• 3-Pane Studio Cockpit (Filmstrip, Canvas, 6-Tab Inspector)\n• Dual-Engine Smart Compression (Lossless & Scanned)\n• Client-Side AES-256 Encryption & Searchable OCR Injection"]
         Photo["apps/mephoto (@mecraft/mephoto v1.0)\n• Interactive 4-Pin Quad Perspective Canvas\n• CamScanner-Grade Image Enhancement Pipeline\n• Instant 1-Click Handoff to mePDF via ClipBus"]
         Vector["apps/mevector (Roadmap)\n• Bézier Path Operations & SVG/PDF Illustrator"]
         Doc["apps/medoc (Roadmap)\n• Distraction-Free Typewriter & LaTeX Editor"]

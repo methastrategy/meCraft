@@ -9,12 +9,12 @@
 
 [![Official Web Portal](https://img.shields.io/badge/Web%20Portal-mecrafts.vercel.app-6366f1?style=for-the-badge&logo=vercel&logoColor=white)](https://mecrafts.vercel.app)
 [![CI/CD](https://github.com/methastrategy/meCraft/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/methastrategy/meCraft/actions/workflows/build-and-release.yml)
-[![GitHub Release](https://img.shields.io/badge/Release-v3.2.0-emerald?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/releases)
+[![GitHub Release](https://img.shields.io/badge/Release-v1.0.0-emerald?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/releases)
 [![GitHub Stars](https://img.shields.io/github/stars/methastrategy/meCraft?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/methastrategy/meCraft?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/network)
 [![Tauri v2](https://img.shields.io/badge/Desktop-Tauri%20v2%20(Rust)-ea580c?style=for-the-badge&logo=tauri)](https://tauri.app/)
 [![Client-Side Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-blue?style=for-the-badge&logo=shield)](SECURITY.md)
-[![Tests Passing](https://img.shields.io/badge/Tests-226%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
+[![Tests Passing](https://img.shields.io/badge/Tests-247%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 ---
@@ -97,8 +97,8 @@ flowchart TD
 
 | Application | Workspace | Description | Technology Stack | Deployment | Status |
 |:---|:---|:---|:---|:---:|:---:|
-| **🚀 meCraft Launcher Hub** | `apps/mecraft-launcher` | Unified command portal, native process spawner (`DETACHED_PROCESS`), universal drag-and-drop auto-routing, and bilingual Thai/EN cockpit. | Tauri v2, Rust, Vite, TypeScript | Web + Windows (.exe) | **Stable** (`v3.2.0`) |
-| **📄 mePDF Studio** | `apps/mepdf` | Complete client-side PDF engineering: Merge, Split, Dual-Engine Smart Compression (Lossless & Scanned), 256-bit AES encryption, and searchable OCR injection. | PDF.js, pdf-lib, Web Workers | Web + Windows (.exe) | **Stable** (`v3.2.0`) |
+| **🚀 meCraft Launcher Hub** | `apps/mecraft-launcher` | Unified command portal, native process spawner (`DETACHED_PROCESS`), universal drag-and-drop auto-routing, and bilingual Thai/EN cockpit. | Tauri v2, Rust, Vite, TypeScript | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
+| **📄 mePDF Studio** | `apps/mepdf` | Complete client-side PDF engineering: Merge, Split, Dual-Engine Smart Compression (Lossless & Scanned), 256-bit AES encryption, and searchable OCR injection. | PDF.js, pdf-lib, Web Workers | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
 | **🪄 mePhoto Studio** | `apps/mephoto` | CamScanner-grade document lab: 4-point homography perspective warp, adaptive Otsu binarization, Magic Color enhancement, and unsharp text sharpening. | Canvas API, `@mecraft/photo-core` | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
 | **📐 meVector** | `apps/mevector` | Precision Bézier vector illustrator, boolean path operations, and infinite-resolution SVG/PDF export. | Vector Canvas Engine | Planned | *Roadmap* |
 | **📝 meDoc** | `apps/medoc` | Distraction-free typewriter, live LaTeX formula rendering, bilingual grammar engine, and academic publishing. | Typography Engine | In Development | *Roadmap* |

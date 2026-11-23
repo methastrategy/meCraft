@@ -70,7 +70,7 @@ describe('@mecraft/core-bridge', () => {
 
       const result = await bridge.downloadAndInstallApp(
         'mepdf',
-        'https://github.com/methastrategy/meCraft/releases/download/v3.1.0/mepdf-windows-x64.zip',
+        'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mepdf-windows-x64.zip',
         (p) => {
           progressList.push(p.percent);
         }
@@ -83,7 +83,7 @@ describe('@mecraft/core-bridge', () => {
 
       const statusAfter = await bridge.checkAppStatus('mepdf');
       expect(statusAfter.installed).toBe(true);
-      expect(statusAfter.version).toBe('3.1.0');
+      expect(statusAfter.version).toBe('1.0.0');
     });
 
     it('handles app uninstall', async () => {

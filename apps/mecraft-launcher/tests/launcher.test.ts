@@ -73,14 +73,14 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
     // 2. Install app
     const installRes = await bridge.downloadAndInstallApp(
       'mepdf',
-      'https://github.com/methastrategy/meCraft/releases/download/v3.1.0/mepdf-windows-x64.zip'
+      'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mepdf-windows-x64.zip'
     );
     expect(installRes.success).toBe(true);
 
     // 3. Post-install check
     status = await bridge.checkAppStatus('mepdf');
     expect(status.installed).toBe(true);
-    expect(status.version).toBe('3.1.0');
+    expect(status.version).toBe('1.0.0');
 
     // 4. Uninstall
     await bridge.uninstallApp('mepdf');

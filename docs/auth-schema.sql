@@ -1,5 +1,5 @@
 -- ==============================================================================
--- meCraft Ecosystem — Supabase Auth, Profiles & Entitlements Schema v3.2.1
+-- meCraft Ecosystem — Supabase Auth, Profiles & Entitlements Schema v1.0.0
 -- ==============================================================================
 
 -- 1. Create profiles table linked to Supabase auth.users

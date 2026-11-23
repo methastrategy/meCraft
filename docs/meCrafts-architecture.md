@@ -1,4 +1,4 @@
-# meCrafts Ecosystem — Full Architecture Blueprint v3.2.1
+# meCrafts Ecosystem — Full Architecture Blueprint v1.0.0
 
 > **กลยุทธ์หลัก:** ทุก Download Link บนหน้าเว็บ → ชี้ไปที่ **`meCraft-Setup.exe`** เพียงตัวเดียว  
 > โปรแกรมทั้งหมดดาวน์โหลด/ติดตั้ง/อัปเดต **ภายใน meCraft Launcher (Pure Program Manager)** เท่านั้น  
@@ -19,10 +19,10 @@ flowchart TD
     WEB["🌐 mecrafts.vercel.app\nOfficial Showcase & Download Portal\n(Zero In-Browser Editor)"]
     WEB -->|"ทุก CTA → Download Only This"| DL
 
-    DL["⬇️ meCraft-Setup.exe\n14.8 MB · Windows · v3.2.1"]
+    DL["⬇️ meCraft-Setup.exe\n14.8 MB · Windows · v1.0.0"]
     DL --> HUB
 
-    HUB["🚀 meCraft Launcher (Desktop)\nPure Program Manager & App Hub\n(Install · Update · Launch · Uninstall)\n✅ LIVE v3.2.1"]
+    HUB["🚀 meCraft Launcher (Desktop)\nPure Program Manager & App Hub\n(Install · Update · Launch · Uninstall)\n✅ LIVE v1.0.0"]
 
     HUB --> DOC
     HUB --> CRE
@@ -307,5 +307,5 @@ flowchart LR
 
 ---
 
-*Blueprint v3.2.1 · Browser-Verified from GitHub · 2026-11-23*  
+*Blueprint v1.0.0 · Browser-Verified from GitHub · 2026-11-23*  
 *ArtCraft org: [github.com/storytold](https://github.com/storytold) · 73.1k followers · License: GPL-3.0*

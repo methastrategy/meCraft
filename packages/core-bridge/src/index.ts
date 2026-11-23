@@ -155,7 +155,7 @@ export function getDefaultCatalog(): AppCatalogItem[] {
       tagline: 'Vector Illustration & SVG/PDF Graphic Workbench',
       description:
         'Precision Bézier vector editing, node pen, path boolean operations, and ultra-crisp resolution-independent vector export.',
-      version: '0.1.0',
+      version: '1.0.0',
       tags: ['Vector', 'Bezier', 'SVG', 'Pen'],
       category: 'graphics',
       icon: 'PenTool',
@@ -173,7 +173,7 @@ export function getDefaultCatalog(): AppCatalogItem[] {
       tagline: 'Distraction-Free Typewriter & Markdown Document Suite',
       description:
         'Zen focus typography, live LaTeX math equations, offline bilingual grammar assistance, and instant publication export.',
-      version: '0.1.0',
+      version: '1.0.0',
       tags: ['Markdown', 'Typography', 'LaTeX', 'Focus'],
       category: 'writing',
       icon: 'BookOpen',
@@ -351,7 +351,7 @@ export function createLauncherBridge(): LauncherBridge {
         const raw = getStorageItem(STORAGE_KEYS.INSTALLED_APPS);
         const map = raw ? JSON.parse(raw) : {};
         map[appId] = {
-          version: '3.1.0',
+          version: '1.0.0',
           installedAt: Date.now(),
           exePath: `C:\\Users\\User\\AppData\\Local\\meCraft\\apps\\${appId}\\${appId}.exe`,
           sizeBytes: totalBytes,

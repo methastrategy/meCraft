@@ -1,4 +1,4 @@
-# 🎨 meCraft Design System Specification (v3.2)
+# 🎨 meCraft Design System Specification (v1.0)
 
 > **Design Engine:** ME-DESIGN Engine (`/medesign`)  
 > **Aesthetic Profile:** Linear / Raycast Precision Utilitarian Cockpit (Direction A)  
