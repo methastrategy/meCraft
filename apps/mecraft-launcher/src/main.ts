@@ -175,7 +175,7 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
   },
 };
 
-const SUITE_DOWNLOAD_URL = 'https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Setup.exe';
+const SUITE_DOWNLOAD_URL = 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meCraft-Setup.exe';
 
 export const SHOWCASE_APPS: ShowcaseApp[] = [
   {
@@ -192,10 +192,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
       th: 'รวม/แยก PDF, ค็อกพิทหน้าเพจแบบ Visual, บีบอัดแบบไม่สูญเสียคุณภาพ, เข้ารหัส AES-256 และฉีด OCR Text เพื่อค้นหา',
     },
     status: 'active',
-    version: 'v3.2.1',
+    version: 'v1.0.0',
     exeName: 'mepdf.exe',
     exeSize: '~30.8 MB',
-    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v3.2.1/mepdf.exe',
+    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mepdf.exe',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
     accentColor: '#6366f1',
     glowColor: 'rgba(99,102,241,0.3)',
@@ -221,10 +221,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
       th: 'ปรับมุมมอง 4 จุด Homography, กำจัดเงาด้วย Otsu Binarization ท้องถิ่น, เพิ่มความสวยงามเอกสารด้วย Magic Color',
     },
     status: 'active',
-    version: 'v3.2.1',
+    version: 'v1.0.0',
     exeName: 'mephoto.exe',
     exeSize: '~22.7 MB',
-    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v3.2.1/mephoto.exe',
+    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mephoto.exe',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
     accentColor: '#06b6d4',
     glowColor: 'rgba(6,182,212,0.3)',
@@ -250,7 +250,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
       th: 'แก้ไขเส้นพาธอิสระจากความละเอียด, ดัดแปลง Node, ตรรกะเวกเตอร์ Boolean และ Workbench ไอคอน SVG/PDF',
     },
     status: 'in-dev',
-    version: 'v0.1.0',
+    version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
     artcraftEquivalent: 'VectorCraft / Illustrator',
     accentColor: '#a855f7',
@@ -277,7 +277,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
       th: 'ตัดต่อวิดีโอ Non-linear หลายเลเยอร์, Transition, เรนเดอร์ MP4 เร่งด้วย Hardware และจัดลำดับ Clip',
     },
     status: 'in-dev',
-    version: 'v0.1.0',
+    version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
     artcraftEquivalent: 'FilmCraft / Premiere Pro',
     accentColor: '#f59e0b',
@@ -304,7 +304,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
       th: 'Tone-mapping HDR, ปรับ Exposure, Curves แบบ Parametric และ Grade ภาพถ่ายแบบ Batch',
     },
     status: 'in-dev',
-    version: 'v0.1.0',
+    version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
     artcraftEquivalent: 'LightCraft / Lightroom',
     accentColor: '#10b981',
@@ -331,7 +331,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
       th: 'โมชัน Layer บน Timeline, ตัวอักษรเคลื่อนไหว, Preset อนุภาค และแอนิเมชันเส้นพาธเวกเตอร์',
     },
     status: 'in-dev',
-    version: 'v0.1.0',
+    version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
     artcraftEquivalent: 'EffectCraft / After Effects',
     accentColor: '#ec4899',
@@ -358,7 +358,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
       th: 'จัดวางหน้าบนกริดสำหรับนิตยสาร, โปสเตอร์หลายหน้า, โบรชัวร์ และส่งออก PDF สี CMYK',
     },
     status: 'in-dev',
-    version: 'v0.1.0',
+    version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
     artcraftEquivalent: 'DesignCraft / InDesign',
     accentColor: '#f97316',
@@ -385,7 +385,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
       th: 'Master เสียงพูด, ลด Noise แบบ Spectral, ตัดต่อ Podcast หลายไมค์ และส่งออกเสียงแบบ Lossy/Lossless',
     },
     status: 'in-dev',
-    version: 'v0.1.0',
+    version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
     artcraftEquivalent: 'SoundCraft / Audition',
     accentColor: '#84cc16',
@@ -412,7 +412,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
       th: 'ตัวพิมพ์ไร้สิ่งรบกวน, เรนเดอร์สมการ LaTeX KaTeX แบบ Live และสร้างเอกสารสิ่งพิมพ์',
     },
     status: 'in-dev',
-    version: 'v0.1.0',
+    version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
     artcraftEquivalent: 'WordCraft / Microsoft Word',
     accentColor: '#6366f1',
@@ -439,7 +439,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
       th: 'โมเดลตาข่าย Polygon, จัดวาง PBR Material, Preview เชิงพื้นที่แบบ Real-time และส่งออก GLTF/OBJ',
     },
     status: 'in-dev',
-    version: 'v0.1.0',
+    version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
     artcraftEquivalent: '3DCraft / Blender',
     accentColor: '#06b6d4',
@@ -1040,12 +1040,12 @@ class MeCraftsPortal {
     const sampleDocName = this.lang === 'th' ? `ชิ้นงานออกแบบ_2026.${docExt}` : `Creative_Project_Master.${docExt}`;
 
     return `
-    <div class="desktop-preview-window" id="desktop-preview-window">
+    <div class="desktop-preview-window" id="desktop-preview-window-${app.id}">
       <!-- Native Windows Title Bar -->
       <div class="desktop-window-titlebar">
         <div class="window-titlebar-left">
           <div class="window-app-icon">${getAppIcon(app.icon, app.accentColor)}</div>
-          <span class="window-title-text" id="preview-window-title">${app.name} — [${sampleDocName}] - Windows Native Desktop</span>
+          <span class="window-title-text" id="preview-window-title-${app.id}">${app.name} — [${sampleDocName}] - Windows Native Desktop</span>
           <span class="window-native-pill">100% Native Desktop App</span>
         </div>
         <div class="window-titlebar-controls" aria-hidden="true">
@@ -1056,7 +1056,7 @@ class MeCraftsPortal {
       </div>
 
       <!-- Realistic Desktop Application Body -->
-      <div class="desktop-window-body" id="preview-window-body">
+      <div class="desktop-window-body" id="preview-window-body-${app.id}">
         ${this.renderAppDesktopMockup(app)}
       </div>
 
@@ -1373,7 +1373,7 @@ class MeCraftsPortal {
             <span class="mockup-tool-chip" style="background: #d97706; color: #fff;">⬇ Render MP4</span>
           </div>
         </div>
-        <div class="mockup-cockpit-layout" style="grid-template-columns: 1fr; grid-template-rows: 240px 1fr; gap: 8px;">
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 1fr; grid-template-rows: 180px 1fr; gap: 8px;">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #03050a; padding: 10px; border-radius: 6px;">
             <div style="background: #090e1c; border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 13px;">
               Source Footage: Take_04_A_Cam.mov
@@ -1461,7 +1461,7 @@ class MeCraftsPortal {
             <span class="mockup-tool-chip" style="background: #db2777; color: #fff;">⬇ Render ProRes 4444</span>
           </div>
         </div>
-        <div class="mockup-cockpit-layout" style="grid-template-columns: 1fr; grid-template-rows: 240px 1fr; gap: 8px;">
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 1fr; grid-template-rows: 180px 1fr; gap: 8px;">
           <div class="mockup-center-stage" style="background: radial-gradient(circle, #2d0b1f 0%, #090207 100%); display: flex; align-items: center; justify-content: center;">
             <div style="font-size: 32px; font-weight: 800; color: #f472b6; letter-spacing: 2px;">
               KINETIC MOTION GRAPHICS
@@ -1785,7 +1785,7 @@ class MeCraftsPortal {
         <div class="hero-glow hero-glow-cyan"></div>
       </div>
       <div class="portal-hero-inner">
-        <div class="hero-pill" aria-label="Suite version">${this.t.appsCount} · v3.2.1 · Windows</div>
+        <div class="hero-pill" aria-label="Suite version">${this.t.appsCount} · v1.0.0 · Windows</div>
         <h1 class="hero-title" id="hero-title">${this.t.heroTitle}</h1>
         <p class="hero-subtitle">${this.t.heroSubtitle}</p>
         <div class="hero-badges" role="list" aria-label="Key features">
@@ -1861,7 +1861,6 @@ class MeCraftsPortal {
 
   private renderAppsGrid(): string {
     const apps = this.filteredApps();
-    const activeApp = SHOWCASE_APPS.find(a => a.id === this.previewAppId) || apps[0] || SHOWCASE_APPS[0];
 
     return `
     <section class="portal-apps-section" id="apps-grid" aria-labelledby="apps-title">
@@ -1869,8 +1868,8 @@ class MeCraftsPortal {
         <div class="showcase-header">
           <div class="showcase-header-left">
             <div class="section-eyebrow" aria-hidden="true">10 CREATIVE &amp; DOCUMENT WORKSTATIONS</div>
-            <h2 class="section-title" id="apps-title">${this.lang === 'th' ? 'คลังโปรแกรมสตูดิโอ &amp; ค็อกพิทพรีวิวสด' : 'The Creative Workstation Suite &amp; Live Desktop Cockpit'}</h2>
-            <p class="section-subtitle">${this.lang === 'th' ? 'แสดงข้อมูลฟีเจอร์และสเปกโปรแกรมทางด้านซ้าย พร้อมพรีวิวหน้าต่างซอฟต์แวร์จริงบน Windows ด้านขวา' : 'Inspect deep specifications on the left, with real-time native Windows desktop window previews on the right.'}</p>
+            <h2 class="section-title" id="apps-title">${this.lang === 'th' ? 'คลังโปรแกรมสตูดิโอ &amp; พรีวิวแยกรายโปรแกรม' : 'Creative Workstation Studios &amp; Dedicated UI Previews'}</h2>
+            <p class="section-subtitle">${this.lang === 'th' ? 'แสดงข้อมูลฟีเจอร์และสเปกโปรแกรมด้านซ้าย พร้อมหน้าต่างซอฟต์แวร์จริงบน Windows ด้านขวาแยกตามแต่ละโปรแกรม' : 'Explore detailed specifications on the left, with real-time native Windows desktop window previews on the right for each studio.'}</p>
           </div>
           <div class="showcase-header-pill">
             <span class="pulse-indicator"></span>
@@ -1878,36 +1877,19 @@ class MeCraftsPortal {
           </div>
         </div>
 
-        <div class="showcase-split-container">
-          <!-- Left Column: App Cards (Details, Specs, Highlights) -->
-          <div class="showcase-cards-col" role="list" aria-label="meCrafts application catalog" id="showcase-cards-list">
-            ${apps.length > 0 ? apps.map(app => this.renderAppCard(app, app.id === activeApp.id)).join('') : `
-              <div class="apps-empty" role="status">
-                <div class="apps-empty-icon" aria-hidden="true">🔍</div>
-                <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
-              </div>
-            `}
-          </div>
-
-          <!-- Right Column: Sticky Large Native Desktop Window Preview -->
-          <div class="showcase-preview-col">
-            <div class="showcase-preview-sticky">
-              <div class="preview-col-badge">
-                <span class="preview-col-dot" aria-hidden="true"></span>
-                <span class="preview-col-label">${this.lang === 'th' ? 'พรีวิวหน้าต่างโปรแกรมจริง (Windows Native Desktop Preview)' : 'Live Native Desktop UI Preview (Windows 11 x64)'}</span>
-                <span class="preview-col-appname" id="preview-col-appname">${activeApp.name}</span>
-              </div>
-              <div id="inline-preview-mount">
-                ${this.renderDesktopPreviewInline(activeApp)}
-              </div>
+        <div class="showcase-strips-list" id="showcase-strips-list" role="list" aria-label="meCrafts application catalog">
+          ${apps.length > 0 ? apps.map(app => this.renderProgramStrip(app)).join('') : `
+            <div class="apps-empty" role="status">
+              <div class="apps-empty-icon" aria-hidden="true">🔍</div>
+              <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
             </div>
-          </div>
+          `}
         </div>
       </div>
     </section>`;
   }
 
-  private renderAppCard(app: ShowcaseApp, isSelected: boolean = false): string {
+  private renderProgramStrip(app: ShowcaseApp): string {
     const isActive = app.status === 'active';
     const catLabel = app.categoryLabel[this.lang];
     const tagline = app.tagline[this.lang];
@@ -1916,55 +1898,57 @@ class MeCraftsPortal {
     const specsList = app.specs ? app.specs[this.lang] : [];
 
     return `
-    <article class="app-card ${isActive ? 'app-card-active' : 'app-card-indev'} ${isSelected ? 'selected' : ''}" data-app-id="${app.id}" role="listitem" tabindex="0" aria-selected="${isSelected}" style="--card-accent: ${app.accentColor}; --card-glow: ${app.glowColor};">
-      <div class="app-card-header">
-        <div class="app-card-emblem" aria-hidden="true" style="background: radial-gradient(circle, ${app.glowColor} 0%, transparent 70%);">
-          ${getAppIcon(app.icon, app.accentColor)}
+    <article class="program-strip ${isActive ? 'strip-active' : 'strip-indev'}" id="program-${app.id}" role="listitem" style="--strip-accent: ${app.accentColor}; --strip-glow: ${app.glowColor};">
+      <div class="program-strip-inner">
+        <!-- Left Column: Details & Technical Specifications -->
+        <div class="program-strip-info">
+          <div class="strip-info-header">
+            <div class="strip-emblem" aria-hidden="true" style="background: radial-gradient(circle, ${app.glowColor} 0%, transparent 70%);">
+              ${getAppIcon(app.icon, app.accentColor)}
+            </div>
+            <div class="strip-meta">
+              <div class="strip-badges">
+                <span class="strip-cat-badge" style="color: ${app.accentColor}; border-color: ${app.accentColor}40;">${catLabel}</span>
+                <span class="strip-status-pill ${isActive ? 'status-active' : 'status-indev'}">
+                  <span class="status-dot" aria-hidden="true"></span>
+                  ${isActive ? this.t.statusActive : this.t.statusInDev}
+                </span>
+              </div>
+              <span class="strip-version">${app.version}</span>
+            </div>
+          </div>
+
+          <div class="strip-body">
+            <h3 class="strip-name">${app.name}</h3>
+            <p class="strip-tagline">${tagline}</p>
+            <p class="strip-desc">${desc}</p>
+            
+            <div class="strip-engine-badge">
+              <span>⚡</span>
+              <span>${engineText}</span>
+            </div>
+
+            ${specsList.length > 0 ? `
+              <div class="strip-specs-list" aria-label="Program specifications">
+                ${specsList.map(s => `<span class="strip-spec-tag">✦ ${escapeHtml(s)}</span>`).join('')}
+              </div>
+            ` : ''}
+
+            ${app.artcraftEquivalent ? `<p class="strip-equivalent" aria-label="Inspired by">✧ ${app.artcraftEquivalent}</p>` : ''}
+          </div>
         </div>
-        <div class="app-card-meta">
-          <div class="app-card-badges">
-            <span class="app-category-badge" style="color: ${app.accentColor}; border-color: ${app.accentColor}40;">${catLabel}</span>
-            <span class="app-status-pill ${isActive ? 'status-active' : 'status-indev'}" aria-label="Status: ${isActive ? this.t.statusActive : this.t.statusInDev}">
-              <span class="status-dot" aria-hidden="true"></span>
-              ${isActive ? this.t.statusActive : this.t.statusInDev}
-            </span>
-          </div>
-          <span class="app-version">${app.version}</span>
+
+        <!-- Right Column: True Live Desktop Window Mockup for this app -->
+        <div class="program-strip-preview">
+          ${this.renderDesktopPreviewInline(app)}
         </div>
-      </div>
-
-      <div class="app-card-body">
-        <h3 class="app-name">${app.name}</h3>
-        <p class="app-tagline">${tagline}</p>
-        <p class="app-desc">${desc}</p>
-        
-        <div class="app-engine-badge">
-          <span>⚡</span>
-          <span>${engineText}</span>
-        </div>
-
-        ${specsList.length > 0 ? `
-          <div class="app-specs-list" aria-label="Program specifications">
-            ${specsList.map(s => `<span class="app-spec-tag">✦ ${escapeHtml(s)}</span>`).join('')}
-          </div>
-        ` : ''}
-
-        ${app.artcraftEquivalent ? `<p class="app-equivalent" aria-label="Inspired by">✧ ${app.artcraftEquivalent}</p>` : ''}
-      </div>
-
-      <div class="app-card-state-bar">
-        ${isSelected ? `
-          <div class="app-card-state active-preview">
-            <span class="active-pulse"></span>
-            <span>${this.lang === 'th' ? '✓ กำลังพรีวิวหน้าต่างนี้ทางด้านขวา' : '✓ Displayed in Side Preview'}</span>
-          </div>
-        ` : `
-          <div class="app-card-state hover-preview">
-            <span>${this.lang === 'th' ? '👁️ คลิกเพื่อแสดงหน้าต่างโปรแกรมนี้ข้างๆ →' : '👁️ Click to preview this desktop UI →'}</span>
-          </div>
-        `}
       </div>
     </article>`;
+  }
+
+  // Alias for backward compatibility if any reference exists
+  private renderAppCard(app: ShowcaseApp): string {
+    return this.renderProgramStrip(app);
   }
 
   private renderManifesto(): string {
@@ -2070,7 +2054,7 @@ class MeCraftsPortal {
         </div>
         <nav class="footer-links" aria-label="Footer links">
           <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Repository</a>
-          <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="footer-link">Releases (v3.2.1)</a>
+          <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="footer-link">Releases (v1.0.0)</a>
           <a href="https://github.com/methastrategy/meCraft/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="footer-link">MIT License</a>
           ${!this.currentSession ? `
             <button type="button" class="footer-link btn-trigger-auth" id="footer-btn-open-auth">${this.t.signInBtn}</button>
@@ -2348,84 +2332,24 @@ class MeCraftsPortal {
   }
 
   private bindCardSelection() {
-    document.querySelectorAll<HTMLElement>('.app-card[data-app-id]').forEach((card) => {
-      const onSelect = (e: Event) => {
-        e.preventDefault();
-        const appId = card.getAttribute('data-app-id');
-        if (!appId || appId === this.previewAppId) return;
-        this.selectApp(appId);
-      };
-
-      card.addEventListener('click', onSelect);
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          onSelect(e);
-        }
-      });
-    });
+    // Each program strip now displays its own dedicated desktop UI preview inline.
   }
 
-  private selectApp(appId: string) {
-    this.previewAppId = appId;
-    const app = SHOWCASE_APPS.find(a => a.id === appId);
-    if (!app) return;
-
-    // Update active class on cards
-    document.querySelectorAll<HTMLElement>('.app-card').forEach((c) => {
-      const isCur = c.getAttribute('data-app-id') === appId;
-      c.classList.toggle('selected', isCur);
-      c.setAttribute('aria-selected', isCur ? 'true' : 'false');
-      const stateBar = c.querySelector('.app-card-state-bar');
-      if (stateBar) {
-        stateBar.innerHTML = isCur ? `
-          <div class="app-card-state active-preview">
-            <span class="active-pulse"></span>
-            <span>${this.lang === 'th' ? '✓ กำลังพรีวิวหน้าต่างนี้ทางด้านขวา' : '✓ Displayed in Side Preview'}</span>
-          </div>
-        ` : `
-          <div class="app-card-state hover-preview">
-            <span>${this.lang === 'th' ? '👁️ คลิกเพื่อแสดงหน้าต่างโปรแกรมนี้ข้างๆ →' : '👁️ Click to preview this desktop UI →'}</span>
-          </div>
-        `;
-      }
-    });
-
-    // Update the inline preview mount smoothly
-    const mount = document.getElementById('inline-preview-mount');
-    if (mount) {
-      mount.innerHTML = this.renderDesktopPreviewInline(app);
-    }
-    const titleEl = document.getElementById('preview-col-appname');
-    if (titleEl) {
-      titleEl.textContent = app.name;
-    }
+  private selectApp(_appId: string) {
+    // Deprecated: previews are shown inline inside each program strip.
   }
 
   private updateGrid() {
-    const list = document.getElementById('showcase-cards-list');
+    const list = document.getElementById('showcase-strips-list');
     if (!list) return;
     const apps = this.filteredApps();
-    
-    // If current selected app is filtered out, select the first visible app
-    if (apps.length > 0 && !apps.some(a => a.id === this.previewAppId)) {
-      this.previewAppId = apps[0].id;
-      const mount = document.getElementById('inline-preview-mount');
-      if (mount) {
-        mount.innerHTML = this.renderDesktopPreviewInline(apps[0]);
-      }
-      const titleEl = document.getElementById('preview-col-appname');
-      if (titleEl) {
-        titleEl.textContent = apps[0].name;
-      }
-    }
 
     list.innerHTML = apps.length > 0
-      ? apps.map(app => this.renderAppCard(app, app.id === this.previewAppId)).join('')
+      ? apps.map(app => this.renderProgramStrip(app)).join('')
       : `<div class="apps-empty" role="status">
-           <div class="apps-empty-icon">🔍</div>
+           <div class="apps-empty-icon" aria-hidden="true">🔍</div>
            <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
          </div>`;
-    this.bindCardSelection();
   }
 }
 

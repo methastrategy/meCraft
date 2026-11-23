@@ -9,7 +9,7 @@ export const APP_METADATA = {
   name: 'meAudio',
   tagline: 'Multi-Track Digital Audio Workstation & Mastering',
   category: 'MEDIA',
-  version: '3.2.1',
+  version: '1.0.0',
   status: 'draft',
   inspiredBy: 'Adobe Audition / SoundCraft (storytold/soundcraft)',
   supportedExtensions: [".mp3",".wav",".flac",".aac",".ogg"],

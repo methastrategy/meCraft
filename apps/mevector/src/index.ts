@@ -9,7 +9,7 @@ export const APP_METADATA = {
   name: 'meVector',
   tagline: 'Precision Vector Graphics & Illustration',
   category: 'CREATIVE',
-  version: '3.2.1',
+  version: '1.0.0',
   status: 'draft',
   inspiredBy: 'Adobe Illustrator / VectorCraft (storytold/vectorcraft)',
   supportedExtensions: [".svg",".ai",".eps"],

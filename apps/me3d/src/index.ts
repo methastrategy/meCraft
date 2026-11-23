@@ -9,7 +9,7 @@ export const APP_METADATA = {
   name: 'me3D',
   tagline: 'Parametric 3D Modeling & CAD Engineering',
   category: 'ENGINEERING',
-  version: '3.2.1',
+  version: '1.0.0',
   status: 'draft',
   inspiredBy: 'AutoCAD LT / CadCraft (storytold/cadcraft)',
   supportedExtensions: [".dwg",".dxf",".obj",".stl",".step"],

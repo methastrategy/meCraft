@@ -121,7 +121,7 @@ export function getDefaultCatalog(): AppCatalogItem[] {
       tagline: 'Professional Pure Client-Side PDF Engineering Studio',
       description:
         'High-performance document cockpit with client-side merge, split, lossless/scanned compression, AES-256 encryption, and instant vector rendering.',
-      version: '3.1.0',
+      version: '1.0.0',
       tags: ['PDF', 'Merge', 'Split', 'Compress', 'AES-256'],
       category: 'document',
       icon: 'FileText',

@@ -150,7 +150,7 @@ class MeCraftApp {
       <div id="app-update-banner" class="app-update-banner" role="alert">
         <div class="update-banner-content">
           <span class="update-badge">UPDATE</span>
-          <span class="update-text" id="update-banner-text">🎉 มีการอัปเดตเวอร์ชันใหม่ <strong>v3.2.1</strong> สำหรับ mePDF Studio Pro พร้อมติดตั้ง</span>
+          <span class="update-text" id="update-banner-text">🎉 มีการอัปเดตเวอร์ชันใหม่ <strong>v1.0.0</strong> สำหรับ mePDF Studio Pro พร้อมติดตั้ง</span>
         </div>
         <div class="update-banner-actions">
           <button class="btn btn-primary btn-xs update-btn-pulse" id="update-banner-action-btn">
@@ -1593,7 +1593,7 @@ class MeCraftApp {
         <div>
           <h4 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;">meCraft Studio</h4>
           <p style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">
-            Version 3.1.0 (${isTauri ? 'Native Windows Desktop' : 'Web PWA'})
+            Version 1.0.0 (${isTauri ? 'Native Windows Desktop' : 'Web PWA'})
           </p>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; max-width: 420px;">

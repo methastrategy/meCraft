@@ -20,8 +20,8 @@ export class UpdateModalController {
 
   public show(info?: Partial<UpdateInfo>): void {
     const updateInfo: UpdateInfo = {
-      currentVersion: info?.currentVersion || '3.1.0',
-      latestVersion: info?.latestVersion || '3.2.1',
+      currentVersion: info?.currentVersion || '1.0.0',
+      latestVersion: info?.latestVersion || '1.0.0',
       releaseDate: info?.releaseDate || '2026-11-23',
       changelog: info?.changelog || [
         '🎨 โฉมใหม่: Navy Black Pro Studio ธีมน้ำเงินดำ สบายตา สไตล์ Adobe Acrobat Pro',

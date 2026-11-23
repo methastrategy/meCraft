@@ -9,7 +9,7 @@ export const APP_METADATA = {
   name: 'meFilm',
   tagline: 'Multi-Track Video Timeline Editing & Export',
   category: 'MEDIA',
-  version: '3.2.1',
+  version: '1.0.0',
   status: 'draft',
   inspiredBy: 'Adobe Premiere Pro / FilmCraft (storytold/filmcraft)',
   supportedExtensions: [".mp4",".mov",".avi",".mkv",".webm"],

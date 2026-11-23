@@ -9,7 +9,7 @@ export const APP_METADATA = {
   name: 'meDesign',
   tagline: 'Desktop Publishing, Grid Layouts & Typography',
   category: 'CREATIVE',
-  version: '3.2.1',
+  version: '1.0.0',
   status: 'draft',
   inspiredBy: 'Adobe InDesign / DesignCraft (storytold/designcraft)',
   supportedExtensions: [".indd",".idml",".sla"],

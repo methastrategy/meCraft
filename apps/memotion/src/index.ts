@@ -9,7 +9,7 @@ export const APP_METADATA = {
   name: 'meMotion',
   tagline: 'Motion Graphics, Keyframe Animation & VFX',
   category: 'MEDIA',
-  version: '3.2.1',
+  version: '1.0.0',
   status: 'draft',
   inspiredBy: 'Adobe After Effects / EffectCraft (storytold/effectcraft)',
   supportedExtensions: [".mevfx",".aep"],

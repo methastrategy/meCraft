@@ -9,7 +9,7 @@ export const APP_METADATA = {
   name: 'meSheet',
   tagline: 'High-Performance Grid & Financial Analytics',
   category: 'DOCUMENT',
-  version: '3.2.1',
+  version: '1.0.0',
   status: 'draft',
   inspiredBy: 'Microsoft Excel / GridCraft (storytold/gridcraft)',
   supportedExtensions: [".xlsx",".xls",".csv"],

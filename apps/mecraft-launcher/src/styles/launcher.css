@@ -523,7 +523,7 @@ input { font-family: var(--font-sans); }
 }
 
 .portal-section-inner {
-  max-width: 1280px;
+  max-width: 1440px;
   margin: 0 auto;
 }
 
@@ -1926,13 +1926,13 @@ input { font-family: var(--font-sans); }
 
 /* Windows 11 Desktop Titlebar */
 .desktop-window-titlebar {
-  height: 40px;
+  height: 32px;
   background: #091022;
   border-bottom: 1px solid rgba(255, 255, 255, 0.10);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 14px;
+  padding: 0 10px;
   user-select: none;
   flex-shrink: 0;
 }
@@ -1940,7 +1940,7 @@ input { font-family: var(--font-sans); }
 .window-titlebar-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -1950,12 +1950,12 @@ input { font-family: var(--font-sans); }
 }
 
 .window-app-icon svg {
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
 }
 
 .window-title-text {
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 600;
   color: #f1f5f9;
   white-space: nowrap;
@@ -1964,14 +1964,14 @@ input { font-family: var(--font-sans); }
 }
 
 .window-native-pill {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
   background: rgba(59, 130, 246, 0.2);
   color: #60a5fa;
   border: 1px solid rgba(59, 130, 246, 0.35);
-  padding: 2px 7px;
+  padding: 1px 6px;
   border-radius: 4px;
 }
 
@@ -1982,17 +1982,17 @@ input { font-family: var(--font-sans); }
 }
 
 .win-ctrl-btn {
-  width: 32px;
-  height: 28px;
+  width: 26px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
   border: none;
   color: #94a3b8;
-  font-size: 13px;
+  font-size: 11px;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 3px;
   transition: all 120ms ease;
 }
 
@@ -2018,14 +2018,14 @@ input { font-family: var(--font-sans); }
 
 /* Mockup Common Elements */
 .mockup-menubar {
-  height: 32px;
+  height: 26px;
   background: #070c18;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  gap: 16px;
-  font-size: 12px;
+  padding: 0 10px;
+  gap: 12px;
+  font-size: 11px;
   color: #94a3b8;
 }
 
@@ -2039,15 +2039,15 @@ input { font-family: var(--font-sans); }
 }
 
 .mockup-ribbon {
-  height: 52px;
+  height: 38px;
   background: #0a1124;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 14px;
-  font-size: 12px;
-  gap: 12px;
+  padding: 0 10px;
+  font-size: 11px;
+  gap: 8px;
 }
 
 .mockup-ribbon-left,
@@ -2055,20 +2055,20 @@ input { font-family: var(--font-sans); }
 .mockup-ribbon-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .mockup-tool-chip {
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 3px 8px;
+  border-radius: 4px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.10);
   color: #e2e8f0;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .mockup-tool-chip.active {

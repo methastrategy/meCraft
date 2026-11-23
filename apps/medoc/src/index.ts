@@ -9,7 +9,7 @@ export const APP_METADATA = {
   name: 'meDoc',
   tagline: 'Distraction-Free Rich Document & Typography Processor',
   category: 'DOCUMENT',
-  version: '3.2.1',
+  version: '1.0.0',
   status: 'draft',
   inspiredBy: 'Microsoft Word / WordCraft (storytold/wordcraft)',
   supportedExtensions: [".docx",".doc",".rtf",".odt"],

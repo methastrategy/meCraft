@@ -9,7 +9,7 @@ export const APP_METADATA = {
   name: 'meLight Studio',
   tagline: 'Professional RAW Photo Development & Color Grading',
   category: 'CREATIVE',
-  version: '3.2.1',
+  version: '1.0.0',
   status: 'draft',
   inspiredBy: 'Adobe Lightroom / LightCraft (storytold/lightcraft)',
   supportedExtensions: [".raw",".cr2",".nef",".arw",".dng"],

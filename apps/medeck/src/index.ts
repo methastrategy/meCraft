@@ -9,7 +9,7 @@ export const APP_METADATA = {
   name: 'meDeck',
   tagline: 'Dynamic Markdown & Visual Presentation Slides',
   category: 'DOCUMENT',
-  version: '3.2.1',
+  version: '1.0.0',
   status: 'draft',
   inspiredBy: 'Microsoft PowerPoint / DeckCraft (storytold/deckcraft)',
   supportedExtensions: [".pptx",".ppt",".slide"],
