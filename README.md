@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/branding/mecraft-hero-banner.jpg" alt="meCraft Master Suite — Autonomous Creative & Document Workstation" width="100%" style="border-radius: 12px; box-shadow: 0 16px 36px rgba(0,0,0,0.6);" />
+  <img src="assets/branding/github-social-preview.png" alt="meCraft Master Suite — Autonomous Creative & Document Workstation" width="100%" style="border-radius: 12px; box-shadow: 0 16px 36px rgba(0,0,0,0.6);" />
 </p>
 
 # 🎨 meCraft Suite — Autonomous Creative & Document Workstation
@@ -101,16 +101,22 @@ flowchart TD
 
 ---
 
-## 📦 Application Suite Overview
+## 📦 Application Suite & Thai Mythology Guardian Guardians (11 Studios)
 
-| Application | Workspace | Description | Technology Stack | Deployment | Status |
-|:---|:---|:---|:---|:---:|:---:|
-| **🚀 meCraft Launcher Hub** | `apps/mecraft-launcher` | Unified command portal, native process spawner (`DETACHED_PROCESS`), universal drag-and-drop auto-routing, and bilingual Thai/EN cockpit. | Tauri v2, Rust, Vite, TypeScript | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
-| **📄 mePDF Studio** | `apps/mepdf` | Complete client-side PDF engineering: Merge, Split, Dual-Engine Smart Compression (Lossless & Scanned), 256-bit AES encryption, and searchable OCR injection. | PDF.js, pdf-lib, Web Workers | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
-| **🪄 mePhoto Studio** | `apps/mephoto` | CamScanner-grade document lab: 4-point homography perspective warp, adaptive Otsu binarization, Magic Color enhancement, and unsharp text sharpening. | Canvas API, `@mecraft/photo-core` | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
-| **🍩 meDrop Radial HUD** | `apps/medrop` | Zero-Window Radial Drag & Drop File Converter HUD. Hold Ctrl + Drag in Windows Explorer for instant contextual in-place conversion or ClipBus dispatch. | Tauri v2, Rust Hook, SVG Donut, Local RAM | Windows (.exe) + Web | **Stable** (`v1.0.0`) |
-| **📝 meDoc Studio** | `apps/medoc` | Distraction-free typewriter, live KaTeX LaTeX formula rendering, inline Mermaid diagrams, split-view layout, and instant zero-cloud PDF publishing. | marked, KaTeX, Mermaid, pdf-lib, TypeScript | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
-| **📐 meVector** | `apps/mevector` | Precision Bézier vector illustrator, boolean path operations, and infinite-resolution SVG/PDF export. | Vector Canvas Engine | Planned | *Roadmap* |
+| Emblem | Application | Guardian Deity & Lore | Description | Technology Stack | Status |
+|:---:|:---|:---|:---|:---|:---:|
+| <img src="public/branding/mecraft-suite.png" width="36" /> | **🚀 meCraft Hub** | **ทศกัณฐ์ (Thotsakan)**<br>Demon King with 10 Heads & 20 Arms | Central Command Hub, window manager, and single-click offline orchestration. | Tauri v2, Rust, Vite, TypeScript | **Stable** (`v1.0.0`) |
+| <img src="public/branding/mepdf.png" width="36" /> | **📄 mePDF Studio** | **ท้าวเวสสุวรรณ (Thao Vessuwan)**<br>Guardian of Treasures & Diamond Mace | Complete client-side PDF engineering: Merge, Split, Lossless/Scanned Compression, AES-256, OCR. | PDF.js, pdf-lib, Web Workers | **Stable** (`v1.0.0`) |
+| <img src="public/branding/mephoto.png" width="36" /> | **🪄 mePhoto Studio** | **พญานาค (Phraya Naga)**<br>Emerald Serpent with Radiant Gem | CamScanner-grade document lab: 4-point homography deskew, Otsu binarization, Magic Color. | Canvas API, `@mecraft/photo-core` | **Stable** (`v1.0.0`) |
+| <img src="public/branding/medrop.png" width="36" /> | **🍩 meDrop Radial HUD** | **ม้านิลมังกร (Ma Nil Mangkon)**<br>Swift Dragon-Horse & Radial Wheel | Zero-Window Radial Drag & Drop File Converter HUD. Instant local RAM conversion on Ctrl+Drag. | Tauri v2, Rust Hook, SVG Donut | **Stable** (`v1.0.0`) |
+| <img src="public/branding/medoc.png" width="36" /> | **📝 meDoc Studio** | **พระสุนทรีวาณี (Sunthari Vani)**<br>Goddess of Eloquence & Crystal Lotus | Distraction-free typewriter, live KaTeX LaTeX formula rendering, inline Mermaid diagrams, clean PDF export. | marked, KaTeX, Mermaid, pdf-lib | **Stable** (`v1.0.0`) |
+| <img src="public/branding/mevector.png" width="36" /> | **📐 meVector** | **พญาครุฑ (Phraya Garuda)**<br>King of Birds with Feather Splines | Resolution-independent Bézier vector illustration, sub-pixel node editor, Boolean geometry, SVG 2.0. | Vector Canvas Engine | *In Development* |
+| <img src="public/branding/mefilm.png" width="36" /> | **🎬 meFilm Studio** | **นางกินรี (Kinnari Maiden)**<br>Celestial Creature with Golden Wings | Non-linear video timeline, multi-track sequencing, WebCodecs hardware decode, zero-transcode preview. | WebCodecs, WebGL, Canvas | *In Development* |
+| <img src="public/branding/melight.png" width="36" /> | **✨ meLight Studio** | **นางสุพรรณมัจฉา (Suphannamatcha)**<br>Golden Mermaid with Iridescent Scales | High-bit-depth non-destructive RAW photo grading, 3D LUT grading, HSL curves, chromatic aberration. | WebGPU / WebAssembly | *In Development* |
+| <img src="public/branding/memotion.png" width="36" /> | **⚡ meMotion Studio** | **หนุมาน (Hanuman)**<br>White Monkey God of Agile Motion | 120fps motion design, keyframe easing curves, particle kinetic bursts, Lottie & WebM hardware export. | WebGPU, Compositor Engine | *In Development* |
+| <img src="public/branding/medesign.png" width="36" /> | **📐 meDesign Studio** | **ช้างเอราวัณ (Erawan Elephant)**<br>3-Headed Divine Architect Elephant | Multi-page editorial layout, typographic baseline grids, master pages, CMYK prepress flight-check. | Canvas 2D, SVG Engine | *In Development* |
+| <img src="public/branding/meaudio.png" width="36" /> | **🎵 meAudio Studio** | **พระพิราพ (Phra Phirap)**<br>Master Deity of Dramatic Arts & Sound | 32-bit float audio DAW, waveform inspector, spectral de-noise, multi-track mixing, Opus/FLAC lossless. | Web Audio API, AudioWorklets | *In Development* |
+| <img src="public/branding/me3d.png" width="36" /> | **🧊 me3D Studio** | **พระวิศวกรรม (Vishvakarman)**<br>Celestial Architect & Builder of Worlds | Spatial polyhedral mesh modeling, real-time physically-based rendering (PBR), GLTF/USDZ/OBJ export. | Three.js / WebGPU PBR | *In Development* |
 
 ---
 

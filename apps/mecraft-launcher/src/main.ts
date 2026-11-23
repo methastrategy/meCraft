@@ -93,6 +93,15 @@ export interface PortalTranslations {
   authModalTitle: string;
   authModalSubtitle: string;
   syncDesktopBtn: string;
+  dropzoneTitle: string;
+  dropzoneSubtitle: string;
+  dropzoneBrowse: string;
+  launchDesktopBtn: string;
+  openWebBtn: string;
+  recentProjectsTitle: string;
+  noRecentProjects: string;
+  userProfileTitle: string;
+  signOutBtn: string;
 }
 
 const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
@@ -135,6 +144,15 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     authModalTitle: 'meCraft Studio Account',
     authModalSubtitle: 'Access Private Suite & Synchronize Entitlements',
     syncDesktopBtn: 'Sync to Desktop',
+    dropzoneTitle: '⚡ Drop PDF or Image files here for instant private processing',
+    dropzoneSubtitle: 'Auto-routes PDF to mePDF Studio (Merge, Split, OCR) or Images to mePhoto Studio (Deskew, Enhance). 100% In-Device RAM.',
+    dropzoneBrowse: 'Browse Local File...',
+    launchDesktopBtn: 'Launch App →',
+    openWebBtn: 'Open Web Studio',
+    recentProjectsTitle: 'Recent Projects',
+    noRecentProjects: 'No recent files. Drag & drop any PDF or photo above to get started.',
+    userProfileTitle: 'meCraft Studio Account',
+    signOutBtn: 'Sign Out',
   },
   th: {
     brandTitle: 'meCrafts',
@@ -175,6 +193,15 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     authModalTitle: 'บัญชี meCraft Studio',
     authModalSubtitle: 'เข้าใช้งานชุดโปรแกรมและเชื่อมต่อสิทธิ์การใช้งาน',
     syncDesktopBtn: 'เชื่อมต่อ Desktop',
+    dropzoneTitle: '⚡ ลากไฟล์ PDF หรือ รูปภาพ มาวางที่นี่เพื่อเริ่มทำงานทันที',
+    dropzoneSubtitle: 'ส่งไฟล์เข้า mePDF Studio (รวม/แยก/บีบอัด/OCR) หรือ mePhoto Studio (ปรับระนาบ/ลบเงา/แต่งภาพ) อัตโนมัติ 100% บน RAM',
+    dropzoneBrowse: 'เลือกไฟล์จากเครื่อง...',
+    launchDesktopBtn: 'เปิดโปรแกรม →',
+    openWebBtn: 'เปิดบน Web Studio',
+    recentProjectsTitle: 'ไฟล์งานล่าสุด',
+    noRecentProjects: 'ยังไม่มีประวัติไฟล์งาน ลากไฟล์ PDF หรือ รูปภาพ มาวางด้านบนเพื่อเริ่มทำงาน',
+    userProfileTitle: 'ข้อมูลบัญชี meCraft Studio',
+    signOutBtn: 'ออกจากระบบ',
   },
 };
 

@@ -1,9 +1,6 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
-import fs from 'node:fs';
 import { VitePWA } from 'vite-plugin-pwa';
-
-const rootPath = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   base: './',

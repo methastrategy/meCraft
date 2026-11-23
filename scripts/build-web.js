@@ -65,6 +65,16 @@ const publicDir = path.join(rootDir, 'public');
 if (fs.existsSync(publicDir)) {
   console.log('[build-web] Copying root public assets...');
   copyDir(publicDir, distDir);
+
+  // Ensure 3D branding is available at root and inside each sub-app for relative URLs
+  const brandingDir = path.join(publicDir, 'branding');
+  if (fs.existsSync(brandingDir)) {
+    copyDir(brandingDir, path.join(distDir, 'branding'));
+    copyDir(brandingDir, path.join(distDir, 'mepdf', 'branding'));
+    copyDir(brandingDir, path.join(distDir, 'mephoto', 'branding'));
+    copyDir(brandingDir, path.join(distDir, 'medrop', 'branding'));
+    copyDir(brandingDir, path.join(distDir, 'medoc', 'branding'));
+  }
 }
 
 console.log('[build-web] Multi-app dist assembled:');
