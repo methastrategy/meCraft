@@ -1,4 +1,4 @@
-import { ModalContext } from './ModalContext';
+import type { ModalContext } from './ModalContext';
 
 export interface UpdateInfo {
   currentVersion: string;
@@ -10,7 +10,6 @@ export interface UpdateInfo {
 
 export class UpdateModalController {
   private ctx: ModalContext;
-  private isDownloading = false;
   private downloadProgress = 0;
   private isDownloadComplete = false;
   private progressInterval: ReturnType<typeof setInterval> | null = null;
@@ -36,6 +35,7 @@ export class UpdateModalController {
     };
 
     const isUpToDate = updateInfo.currentVersion === updateInfo.latestVersion;
+    const modalTitle = `<i data-lucide="sparkles" style="width: 18px; height: 18px; color: #3b82f6;"></i> ตรวจสอบและติดตั้งการอัปเดต (mePDF Software Update)`;
 
     const bodyHtml = `
       <div class="update-modal-container">
@@ -81,69 +81,72 @@ export class UpdateModalController {
       </div>
     `;
 
-    this.ctx.showModal({
-      title: 'ตรวจสอบและติดตั้งการอัปเดต (mePDF Software Update)',
-      bodyHtml,
-      confirmText: isUpToDate ? 'ปิดหน้าต่าง' : 'อัปเดตและเริ่มใหม่ทันที (Update Now)',
-      cancelText: isUpToDate ? '' : 'เตือนฉันภายหลัง',
-      onConfirm: async () => {
-        if (isUpToDate) return;
-        if (this.isDownloadComplete) {
-          // Restart app
-          window.location.reload();
-          return;
-        }
-        await this.startDownloadSimulation();
-      },
+    const footerHtml = isUpToDate
+      ? `<button class="btn btn-secondary" id="update-modal-close-btn">ปิดหน้าต่าง</button>`
+      : `
+        <button class="btn btn-secondary" id="update-modal-cancel-btn">เตือนฉันภายหลัง</button>
+        <button class="btn btn-primary update-btn-pulse" id="update-modal-confirm-btn">
+          <span>อัปเดตและเริ่มใหม่ทันที (Update Now)</span>
+        </button>
+      `;
+
+    this.ctx.open(modalTitle, bodyHtml, footerHtml);
+
+    const closeBtn = this.ctx.footerActions.querySelector<HTMLButtonElement>('#update-modal-close-btn');
+    closeBtn?.addEventListener('click', () => this.ctx.close());
+
+    const cancelBtn = this.ctx.footerActions.querySelector<HTMLButtonElement>('#update-modal-cancel-btn');
+    cancelBtn?.addEventListener('click', () => this.ctx.close());
+
+    const confirmBtn = this.ctx.footerActions.querySelector<HTMLButtonElement>('#update-modal-confirm-btn');
+    confirmBtn?.addEventListener('click', async () => {
+      if (this.isDownloadComplete) {
+        window.location.reload();
+        return;
+      }
+      await this.startDownloadSimulation(confirmBtn);
     });
   }
 
-  private async startDownloadSimulation(): Promise<void> {
-    const progressContainer = document.querySelector<HTMLElement>('#update-progress-container');
-    const progressBar = document.querySelector<HTMLElement>('#update-progress-bar');
-    const percentText = document.querySelector<HTMLElement>('#update-percent-text');
-    const statusText = document.querySelector<HTMLElement>('#update-status-text');
-    const subtext = document.querySelector<HTMLElement>('#update-subtext');
-    const confirmBtn = document.querySelector<HTMLButtonElement>('.modal-btn-confirm');
+  private async startDownloadSimulation(confirmBtn: HTMLButtonElement): Promise<void> {
+    const progressContainer = this.ctx.bodyContent.querySelector<HTMLElement>('#update-progress-container');
+    const progressBar = this.ctx.bodyContent.querySelector<HTMLElement>('#update-progress-bar');
+    const percentText = this.ctx.bodyContent.querySelector<HTMLElement>('#update-percent-text');
+    const statusText = this.ctx.bodyContent.querySelector<HTMLElement>('#update-status-text');
+    const subtext = this.ctx.bodyContent.querySelector<HTMLElement>('#update-subtext');
 
     if (!progressContainer || !progressBar || !percentText) return;
 
     progressContainer.style.display = 'block';
-    if (confirmBtn) {
-      confirmBtn.disabled = true;
-      confirmBtn.textContent = 'กำลังดาวน์โหลด...';
-    }
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'กำลังดาวน์โหลด...';
 
-    this.isDownloading = true;
     this.downloadProgress = 0;
 
     return new Promise((resolve) => {
       this.progressInterval = setInterval(() => {
-        this.downloadProgress += Math.floor(Math.random() * 15) + 10;
+        this.downloadProgress += Math.floor(Math.random() * 18) + 12;
         if (this.downloadProgress >= 100) {
           this.downloadProgress = 100;
           if (this.progressInterval) clearInterval(this.progressInterval);
-          this.isDownloading = false;
           this.isDownloadComplete = true;
 
           if (progressBar) progressBar.style.width = '100%';
           if (percentText) percentText.textContent = '100%';
           if (statusText) statusText.textContent = '✨ ตรวจสอบลายเซ็น Ed25519 และติดตั้งสำเร็จแล้ว!';
           if (subtext) subtext.textContent = 'ไฟล์ mePDF.exe ถูกอัปเดตเป็นเวอร์ชันล่าสุดในเครื่องเรียบร้อยแล้ว';
-          
-          if (confirmBtn) {
-            confirmBtn.disabled = false;
-            confirmBtn.classList.remove('btn-primary');
-            confirmBtn.classList.add('btn-success');
-            confirmBtn.textContent = 'รีสตาร์ตโปรแกรมเดี๋ยวนี้ (Restart mePDF)';
-          }
+
+          confirmBtn.disabled = false;
+          confirmBtn.classList.remove('btn-primary');
+          confirmBtn.classList.add('btn-success');
+          confirmBtn.textContent = 'รีสตาร์ตโปรแกรมเดี๋ยวนี้ (Restart mePDF)';
           resolve();
         } else {
           if (progressBar) progressBar.style.width = `${this.downloadProgress}%`;
           if (percentText) percentText.textContent = `${this.downloadProgress}%`;
           if (subtext) subtext.textContent = `ดาวน์โหลดแล้ว ${(this.downloadProgress * 0.148).toFixed(1)} MB / 14.8 MB`;
         }
-      }, 250);
+      }, 200);
     });
   }
 }
