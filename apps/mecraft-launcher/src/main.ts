@@ -17,16 +17,62 @@ export interface LauncherTranslations {
   networkOffline: string;
   settingsBtn: string;
   langBtn: string;
+  navProducts: string;
+  navDropzone: string;
+  navPrivacy: string;
+  navRoadmap: string;
+  navSpecs: string;
+  heroPill: string;
   heroTitle: string;
   heroSubtitle: string;
+  heroCtaLaunchPdf: string;
+  heroCtaLaunchPhoto: string;
+  heroCtaDownload: string;
   badgePrivacy: string;
   badgeDesktop: string;
   badgeOcr: string;
   badgeHomography: string;
+  spotlightTabPdf: string;
+  spotlightTabPhoto: string;
+  spotlightTabCraft: string;
   dropZoneTitle: string;
   dropZoneSubtitle: string;
   dropZoneBtn: string;
   dropZoneRouting: (app: string) => string;
+  dropZonePledge: string;
+  showcasePdfEyebrow: string;
+  showcasePdfTitle: string;
+  showcasePdfSubtitle: string;
+  pdfFeature1Title: string;
+  pdfFeature1Desc: string;
+  pdfFeature2Title: string;
+  pdfFeature2Desc: string;
+  pdfFeature3Title: string;
+  pdfFeature3Desc: string;
+  pdfFeature4Title: string;
+  pdfFeature4Desc: string;
+  showcasePhotoEyebrow: string;
+  showcasePhotoTitle: string;
+  showcasePhotoSubtitle: string;
+  photoFeature1Title: string;
+  photoFeature1Desc: string;
+  photoFeature2Title: string;
+  photoFeature2Desc: string;
+  photoFeature3Title: string;
+  photoFeature3Desc: string;
+  photoFeature4Title: string;
+  photoFeature4Desc: string;
+  showcaseHubEyebrow: string;
+  showcaseHubTitle: string;
+  showcaseHubSubtitle: string;
+  hubFeature1Title: string;
+  hubFeature1Desc: string;
+  hubFeature2Title: string;
+  hubFeature2Desc: string;
+  hubFeature3Title: string;
+  hubFeature3Desc: string;
+  hubFeature4Title: string;
+  hubFeature4Desc: string;
   catalogTitle: string;
   catalogCount: (count: number) => string;
   filterAll: string;
@@ -43,6 +89,44 @@ export interface LauncherTranslations {
   openFolder: string;
   checkUpdates: string;
   uninstall: string;
+  roadmapEyebrow: string;
+  roadmapTitle: string;
+  roadmapSubtitle: string;
+  statusInDev: string;
+  statusComingSoon: string;
+  statusSister: string;
+  privacyEyebrow: string;
+  privacyTitle: string;
+  privacySubtitle: string;
+  privacyColMetric: string;
+  privacyColCloud: string;
+  privacyColMecraft: string;
+  privacyRow1Metric: string;
+  privacyRow1Cloud: string;
+  privacyRow1Mecraft: string;
+  privacyRow2Metric: string;
+  privacyRow2Cloud: string;
+  privacyRow2Mecraft: string;
+  privacyRow3Metric: string;
+  privacyRow3Cloud: string;
+  privacyRow3Mecraft: string;
+  privacyRow4Metric: string;
+  privacyRow4Cloud: string;
+  privacyRow4Mecraft: string;
+  privacyRow5Metric: string;
+  privacyRow5Cloud: string;
+  privacyRow5Mecraft: string;
+  specsEyebrow: string;
+  specsTitle: string;
+  specsSubtitle: string;
+  specPwaTitle: string;
+  specPwaDesc: string;
+  specExeTitle: string;
+  specExeDesc: string;
+  specNsisTitle: string;
+  specNsisDesc: string;
+  specMsiTitle: string;
+  specMsiDesc: string;
   recentProjectsTitle: string;
   recentCount: (count: number) => string;
   clearHistory: string;
@@ -75,27 +159,78 @@ export interface LauncherTranslations {
   downloadMsiTitle: string;
   downloadMsiDesc: string;
   viewAllReleases: string;
+  footerBrandDesc: string;
+  footerColProducts: string;
+  footerColArch: string;
+  footerColCommunity: string;
+  footerRights: string;
 }
 
 export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
   en: {
-    brandTitle: 'meCraft',
-    brandTag: 'Ecosystem Hub',
+    brandTitle: 'meCrafts',
+    brandTag: 'Official Suite',
     brandSubtitle: 'The Creative & Document Workstation Ecosystem',
     networkConnected: '100% Private Local',
     networkOffline: 'Offline Sandbox',
     settingsBtn: 'Settings & Health',
     langBtn: 'TH',
-    heroTitle: 'Creative & Document Workstation Studio',
-    heroSubtitle: 'Pure Client-Side Private Processing • Zero-Cloud Upload • Native Windows Desktop + Offline PWA',
+    navProducts: 'Products',
+    navDropzone: 'Drop Hub',
+    navPrivacy: 'Privacy Architecture',
+    navRoadmap: 'Future Pipeline',
+    navSpecs: 'Specs & Downloads',
+    heroPill: 'v3.2.0 • 100% Client-Side In-Browser & Native Desktop Workstation Suite',
+    heroTitle: 'The Private-First Creative & Document Workstation Suite',
+    heroSubtitle: 'Professional-grade client-side PDF engineering, CamScanner-grade document lab, and non-destructive image enhancement. Zero telemetry. Zero file uploads. 100% private in-browser WebAssembly & native Windows performance.',
+    heroCtaLaunchPdf: 'Launch mePDF Studio',
+    heroCtaLaunchPhoto: 'Launch mePhoto Studio',
+    heroCtaDownload: 'Download for Windows',
     badgePrivacy: '100% In-Browser Privacy',
     badgeDesktop: 'Offline PWA + Native Desktop',
     badgeOcr: 'Searchable Client OCR',
     badgeHomography: '4-Point Homography Deskew',
-    dropZoneTitle: 'Drop any PDF or Image here to launch instantly in meCraft Studio',
+    spotlightTabPdf: 'mePDF Studio',
+    spotlightTabPhoto: 'mePhoto Studio',
+    spotlightTabCraft: 'meCraft Workstation',
+    dropZoneTitle: 'Drop any PDF or Image here to test zero-cloud routing live',
     dropZoneSubtitle: 'Auto-routes PDF to mePDF Studio • Images to mePhoto Studio • 100% Private In-Browser Execution',
     dropZoneBtn: 'Browse Local File...',
     dropZoneRouting: (app) => `Routing to ${app}...`,
+    dropZonePledge: 'Zero-Cloud Guarantee: Files are processed directly in browser RAM via Web Workers. 0 bytes ever leave your device.',
+    showcasePdfEyebrow: 'DOCUMENT COCKPIT',
+    showcasePdfTitle: 'mePDF Studio — Client-Side PDF Engineering',
+    showcasePdfSubtitle: 'High-performance document workbench with client-side merge, split, dual-engine compression, military AES-256 encryption, and searchable OCR text injection.',
+    pdfFeature1Title: 'Dual-Engine Smart Compression',
+    pdfFeature1Desc: 'Choose between lossless vector optimization for contracts or scanned downsampling for high-volume archiving.',
+    pdfFeature2Title: 'Military-Grade AES-256 Security',
+    pdfFeature2Desc: 'In-browser password protection and permissions lockdown. Your documents and keys never touch a remote server.',
+    pdfFeature3Title: 'Visual Page Cockpit',
+    pdfFeature3Desc: 'Drag-and-drop page reordering, 90°/180° rotation, page extraction, splitting, and multi-file merging in real time.',
+    pdfFeature4Title: 'Searchable Offline OCR',
+    pdfFeature4Desc: 'Client-side Tesseract OCR engine generates an invisible, searchable text layer directly into scanned PDFs.',
+    showcasePhotoEyebrow: 'COMPUTER VISION LAB',
+    showcasePhotoTitle: 'mePhoto Studio — Document & Photo Lab',
+    showcasePhotoSubtitle: 'CamScanner-grade document restoration and non-destructive image enhancement with sub-pixel 4-point homography and adaptive binarization.',
+    photoFeature1Title: '4-Point Homography Deskew',
+    photoFeature1Desc: 'Perspective rectification matrix corrects angled photos taken on mobile devices into perfectly flat, rectangular scans.',
+    photoFeature2Title: 'Adaptive Local Otsu Binarization',
+    photoFeature2Desc: 'Advanced thresholding removes harsh shadows, wrinkles, and background ink bleeds for crystal-clear document printouts.',
+    photoFeature3Title: 'Magic Color Document Filter',
+    photoFeature3Desc: 'Enhances official ink stamps, logos, and signatures with vivid clarity while keeping paper backgrounds pure white.',
+    photoFeature4Title: 'Non-Destructive Multi-Format Export',
+    photoFeature4Desc: 'Hardware-accelerated Canvas & WebGL shaders export to high-DPI PNG, JPEG, WebP, and multi-page PDF files.',
+    showcaseHubEyebrow: 'ECOSYSTEM ORCHESTRATOR',
+    showcaseHubTitle: 'meCraft Hub — Universal Workstation Launcher',
+    showcaseHubSubtitle: 'The central orchestration center connecting all meCraft tools with inter-process ClipBus communication, automatic file routing, and universal history.',
+    hubFeature1Title: 'MIME-Based Auto Routing',
+    hubFeature1Desc: 'Drag any supported file into the launcher, and it automatically launches the correct workstation studio in milliseconds.',
+    hubFeature2Title: 'Cross-App ClipBus Relay',
+    hubFeature2Desc: 'Seamlessly pass processed documents from mePhoto directly into mePDF without manual export or re-importing.',
+    hubFeature3Title: 'Universal Recent Projects',
+    hubFeature3Desc: 'Persistent local storage registry tracks your recent files across all tools without ever storing file contents in the cloud.',
+    hubFeature4Title: 'Zero-Install Web PWA + Native Desktop',
+    hubFeature4Desc: 'Run with zero installation directly on the web, or install the native Windows app for maximum multi-threading performance.',
     catalogTitle: 'Apps Catalog',
     catalogCount: (count) => `${count} Apps`,
     filterAll: 'All Apps',
@@ -112,6 +247,44 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     openFolder: 'Open Install Folder',
     checkUpdates: 'Check for Updates',
     uninstall: 'Uninstall App',
+    roadmapEyebrow: 'EXPANDING UNIVERSE',
+    roadmapTitle: 'Future Ecosystem Roadmap',
+    roadmapSubtitle: 'meCrafts is continuously expanding with purpose-built creative and engineering workstations designed for focus, speed, and privacy.',
+    statusInDev: 'In Development',
+    statusComingSoon: 'Coming Soon',
+    statusSister: 'Ecosystem Suite',
+    privacyEyebrow: 'SECURITY ARCHITECTURE',
+    privacyTitle: 'Why 100% In-Browser Privacy Matters',
+    privacySubtitle: 'Traditional cloud PDF tools upload your sensitive financial statements, contracts, and IDs to unknown servers. meCrafts runs 100% inside your device sandbox.',
+    privacyColMetric: 'Security Architecture Dimension',
+    privacyColCloud: 'Traditional Cloud SaaS (Smallpdf / Adobe / ILovePDF)',
+    privacyColMecraft: 'meCrafts Zero-Cloud Sandbox',
+    privacyRow1Metric: 'File Data Ingress',
+    privacyRow1Cloud: '100% of bytes uploaded to external cloud servers',
+    privacyRow1Mecraft: '0 bytes transferred — 100% processed in local browser RAM',
+    privacyRow2Metric: 'Processing Execution',
+    privacyRow2Cloud: 'Remote server queue (bound by network bandwidth)',
+    privacyRow2Mecraft: 'Local multi-threaded WebAssembly & Web Workers',
+    privacyRow3Metric: 'Document Confidentiality',
+    privacyRow3Cloud: 'High third-party data leak & server breach risk',
+    privacyRow3Mecraft: 'Zero-trust sandbox — no remote persistence possible',
+    privacyRow4Metric: 'Offline Availability',
+    privacyRow4Cloud: 'Complete failure when internet drops or disconnects',
+    privacyRow4Mecraft: 'Works 100% offline (Service Worker PWA & Windows Desktop)',
+    privacyRow5Metric: 'Telemetry & Tracking',
+    privacyRow5Cloud: 'Aggressive user telemetry, session replay, and analytics',
+    privacyRow5Mecraft: 'Zero telemetry, zero behavioral tracking, zero cookies',
+    specsEyebrow: 'CROSS-PLATFORM DEPLOYMENT',
+    specsTitle: 'Run Everywhere • Choose Your Runtime',
+    specsSubtitle: 'Deploy meCrafts across browser environments or install as native Windows applications with zero compromises.',
+    specPwaTitle: 'Web Browser Edition (PWA)',
+    specPwaDesc: 'Zero installation required. Instant access on Chrome, Edge, Safari, and Firefox with offline Service Worker support.',
+    specExeTitle: 'Windows Portable (.exe)',
+    specExeDesc: 'Self-contained single executable. Carry on a USB drive or run directly on any Windows workstation without administrator rights.',
+    specNsisTitle: 'Windows Installer (Setup.exe)',
+    specNsisDesc: 'Full desktop integration with Start Menu shortcuts, desktop icons, and Windows shell file association for PDF and images.',
+    specMsiTitle: 'Enterprise Installer (.msi)',
+    specMsiDesc: 'Silent automated deployment package built for IT administrators and enterprise system management policies.',
     recentProjectsTitle: 'Universal Recent Projects',
     recentCount: (count) => `${count} Files`,
     clearHistory: 'Clear History',
@@ -144,25 +317,76 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     downloadMsiTitle: 'Windows Installer (.msi)',
     downloadMsiDesc: 'Official MSI package for system administrators and Windows Installer management.',
     viewAllReleases: 'View All GitHub Releases & Checksums',
+    footerBrandDesc: 'The modern private-first creative and document workstation suite. Engineered for speed, mathematical precision, and zero-compromise confidentiality.',
+    footerColProducts: 'Products & Studios',
+    footerColArch: 'Architecture & Security',
+    footerColCommunity: 'Open Source & Legal',
+    footerRights: 'Licensed under the MIT License. Copyright (c) 2026 Metha / methastrategy.',
   },
   th: {
-    brandTitle: 'meCraft',
+    brandTitle: 'meCrafts',
     brandTag: 'ศูนย์กลางโปรแกรม',
     brandSubtitle: 'ระบบรวมเครื่องมือเอกสารและงานสร้างสรรค์ระดับโปร',
     networkConnected: 'ประมวลผลในเครื่อง 100%',
     networkOffline: 'ออฟไลน์ แซนด์บ็อกซ์',
     settingsBtn: 'การตั้งค่าและสถานะระบบ',
     langBtn: 'EN',
-    heroTitle: 'สตูดิโอสร้างสรรค์และจัดการเอกสารระดับโปร',
-    heroSubtitle: 'ประมวลผลส่วนตัวในเครื่อง 100% • ปลอดภัยไม่ส่งไฟล์ขึ้นคลาวด์ • ใช้งานได้ทั้งเว็บออฟไลน์และโปรแกรมติดตั้ง Windows',
+    navProducts: 'ผลิตภัณฑ์',
+    navDropzone: 'วางไฟล์เปิดทันที',
+    navPrivacy: 'สถาปัตยกรรมความปลอดภัย',
+    navRoadmap: 'แผนงานในอนาคต',
+    navSpecs: 'สเปกและดาวน์โหลด',
+    heroPill: 'เวอร์ชัน 3.2.0 • สตูดิโอเอกสารและกราฟิก ประมวลผลในเครื่อง 100% ไร้คลาวด์',
+    heroTitle: 'ชุดสตูดิโอจัดการเอกสารและภาพถ่าย ประมวลผลในเครื่อง 100% ไร้คลาวด์',
+    heroSubtitle: 'รวมสตูดิโอวิศวกรรมเอกสาร PDF ระดับโปร, ห้องแล็บสแกนเอกสารด้วย Homography 4 จุด และแต่งภาพโดยไม่สูญเสียความละเอียด ปลอดภัยในเครื่อง 100% ไม่ส่งข้อมูลออกภายนอก',
+    heroCtaLaunchPdf: 'เปิดใช้งาน mePDF Studio',
+    heroCtaLaunchPhoto: 'เปิดใช้งาน mePhoto Studio',
+    heroCtaDownload: 'ดาวน์โหลดสำหรับ Windows',
     badgePrivacy: 'ความเป็นส่วนตัวในเครื่อง 100%',
     badgeDesktop: 'PWA ออฟไลน์ + Windows .exe',
     badgeOcr: 'OCR แทรกข้อความค้นหาได้',
     badgeHomography: 'ปรับมุมเอียงด้วย Homography 4 จุด',
-    dropZoneTitle: 'ลากไฟล์ PDF หรือรูปภาพมาวางที่นี่ เพื่อเปิดใช้งานทันทีใน meCraft Studio',
+    spotlightTabPdf: 'mePDF Studio',
+    spotlightTabPhoto: 'mePhoto Studio',
+    spotlightTabCraft: 'meCraft Workstation',
+    dropZoneTitle: 'ลากไฟล์ PDF หรือรูปภาพมาวางที่นี่ เพื่อทดสอบการประมวลผลในเครื่องสดๆ',
     dropZoneSubtitle: 'เปิดไฟล์ PDF ใน mePDF Studio อัตโนมัติ • รูปภาพเปิดใน mePhoto Studio • ปลอดภัยในเครื่อง ไม่ส่งออกภายนอก',
     dropZoneBtn: 'เลือกไฟล์จากเครื่อง...',
     dropZoneRouting: (app) => `กำลังเปิดใน ${app}...`,
+    dropZonePledge: 'คำรับประกัน Zero-Cloud: ไฟล์ทั้งหมดประมวลผลในหน่วยความจำ RAM ของเบราว์เซอร์ผ่าน Web Workers ไม่เคยส่งข้อมูลออกสู่ภายนอกแม้แต่ไบต์เดียว',
+    showcasePdfEyebrow: 'ค็อกพิทเอกสารระดับโปร',
+    showcasePdfTitle: 'mePDF Studio — วิศวกรรมเอกสาร PDF ในเบราว์เซอร์',
+    showcasePdfSubtitle: 'สตูดิโอจัดการ PDF ความเร็วสูง รวมไฟล์ แยกหน้า บีบอัดเอกสารสองโหมด เข้ารหัสผ่าน AES-256 มาตรฐานทหาร และระบบ OCR ข้อความในตัว',
+    pdfFeature1Title: 'ระบบบีบอัดอัจฉริยะ Dual-Engine',
+    pdfFeature1Desc: 'เลือกได้ระหว่างบีบอัดแบบ Lossless สำหรับเอกสารสัญญา หรือลดขนาดภาพสแกนสำหรับงานจัดเก็บเอกสารปริมาณมาก',
+    pdfFeature2Title: 'ความปลอดภัยสูงสุด AES-256',
+    pdfFeature2Desc: 'ตั้งรหัสผ่านและล็อกสิทธิ์การพิมพ์ คัดลอก แก้ไข ในเบราว์เซอร์โดยตรง รหัสผ่านและไฟล์ไม่เคยถูกส่งไปเซิร์ฟเวอร์',
+    pdfFeature3Title: 'ค็อกพิทจัดเรียงหน้าแบบเห็นภาพ',
+    pdfFeature3Desc: 'ลากสลับหน้า หมุนเอกสาร 90°/180° คัดแยกหน้า และรวมเอกสารหลายฉบับพร้อมกันแบบเรียลไทม์',
+    pdfFeature4Title: 'OCR ออฟไลน์ค้นหาข้อความได้',
+    pdfFeature4Desc: 'รู้จำตัวอักษรและแทรกเลเยอร์ข้อความโปร่งแสงลงใน PDF สแกน ทำให้ค้นหาและคัดลอกข้อความได้ทันที',
+    showcasePhotoEyebrow: 'ห้องแล็บคอมพิวเตอร์วิทัศน์',
+    showcasePhotoTitle: 'mePhoto Studio — แล็บสแกนเอกสารและปรับแต่งภาพ',
+    showcasePhotoSubtitle: 'สตูดิโอแก้เอกสารสแกนระดับ CamScanner ดึงภาพเอียงให้แบนราบด้วย Homography 4 จุด และปรับสมดุลขาวดำตัดเงาแบบ Adaptive',
+    photoFeature1Title: 'ดึงระนาบด้วย Homography 4 จุด',
+    photoFeature1Desc: 'เมทริกซ์ปรับทัศนมิติแบบ Sub-pixel เปลี่ยนภาพถ่ายเอกสารมุมเอียงบนมือถือให้กลายเป็นเอกสารสแกนแนวราบสมบูรณ์',
+    photoFeature2Title: 'Adaptive Local Otsu Binarization',
+    photoFeature2Desc: 'อัลกอริทึมตัดเงาดำ รอยยับ และหมึกซึมด้านหลังเอกสาร แปลงเป็นขาวดำคมชัดระดับเอกสารราชการ',
+    photoFeature3Title: 'ฟิลเตอร์สีเอกสาร Magic Color',
+    photoFeature3Desc: 'คงความสดของตราประทับ ลายเซ็น และโลโก้สีอย่างคมชัด พร้อมฟอกพื้นกระดาษขาวสะอาดตา',
+    photoFeature4Title: 'ส่งออกไฟล์แบบ Non-Destructive',
+    photoFeature4Desc: 'ประมวลผลด้วยเชเดอร์ WebGL ความเร็วสูง ส่งออกภาพ High-DPI PNG, JPEG, WebP และรวมเป็นไฟล์ PDF หลายหน้า',
+    showcaseHubEyebrow: 'ศูนย์กลางโปรแกรม',
+    showcaseHubTitle: 'meCraft Hub — โปรแกรมเปิดใช้งานและส่งต่องาน',
+    showcaseHubSubtitle: 'ศูนย์กลางเชื่อมโยงเครื่องมือทุกตัวในตระกูล meCraft พร้อมระบบสื่อสาร ClipBus ส่งผ่านไฟล์และจดจำประวัติงานอัตโนมัติ',
+    hubFeature1Title: 'ตรวจสอบชนิดไฟล์และส่งต่ออัตโนมัติ',
+    hubFeature1Desc: 'เพียงลากไฟล์เข้ามา ระบบจะตรวจสอบประเภทไฟล์และเรียกเปิดสตูดิโอที่ถูกต้องทันทีในเสี้ยววินาที',
+    hubFeature2Title: 'ส่งต่องานข้ามแอพผ่าน ClipBus',
+    hubFeature2Desc: 'ส่งเอกสารที่แต่งเสร็จจาก mePhoto ไปรวมเล่มใน mePDF ได้ทันทีโดยไม่ต้องบันทึกและเปิดซ้ำ',
+    hubFeature3Title: 'ประวัติโปรเจกต์ล่าสุดในเครื่อง',
+    hubFeature3Desc: 'บันทึกประวัติไฟล์ที่เคยใช้งานไว้ในเครื่องของคุณ ปลอดภัย ไม่มีการส่งประวัติไปยังเซิร์ฟเวอร์ภายนอก',
+    hubFeature4Title: 'ใช้งานได้ทั้งเว็บ PWA และ Windows',
+    hubFeature4Desc: 'เปิดใช้งานบนเว็บได้ทันทีโดยไม่ต้องติดตั้ง หรือติดตั้งโปรแกรม Windows เนทีฟเพื่อการทำงานแบบมัลติเธรดเต็มประสิทธิภาพ',
     catalogTitle: 'รายการโปรแกรมทั้งหมด',
     catalogCount: (count) => `${count} โปรแกรม`,
     filterAll: 'ทั้งหมด',
@@ -179,6 +403,44 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     openFolder: 'เปิดโฟลเดอร์ติดตั้ง',
     checkUpdates: 'ตรวจสอบอัปเดต',
     uninstall: 'ถอนการติดตั้ง',
+    roadmapEyebrow: 'ระบบนิเวศและแผนงาน',
+    roadmapTitle: 'ผลิตภัณฑ์และโปรแกรมในอนาคต',
+    roadmapSubtitle: 'meCrafts กำลังพัฒนาเครื่องมือเฉพาะทางสำหรับงานสร้างสรรค์ วิศวกรรม และการวิเคราะห์ข้อมูลอย่างต่อเนื่อง',
+    statusInDev: 'กำลังพัฒนา',
+    statusComingSoon: 'เร็วๆ นี้',
+    statusSister: 'ผลิตภัณฑ์ในเครือ',
+    privacyEyebrow: 'ความโปร่งใสทางสถาปัตยกรรม',
+    privacyTitle: 'ทำไมความเป็นส่วนตัวในเครื่อง 100% จึงสำคัญ',
+    privacySubtitle: 'เว็บแปลงไฟล์ PDF ทั่วไปจะอัปโหลดเอกสารธนาคาร สัญญา และบัตรประชาชนของคุณขึ้นเซิร์ฟเวอร์ภายนอก แต่ meCrafts ประมวลผลในเครื่องของคุณ 100%',
+    privacyColMetric: 'มิติความปลอดภัยของข้อมูล',
+    privacyColCloud: 'เว็บแปลงไฟล์ Cloud SaaS ทั่วไป',
+    privacyColMecraft: 'แซนด์บ็อกซ์ Zero-Cloud ของ meCrafts',
+    privacyRow1Metric: 'การส่งผ่านไฟล์ข้อมูล',
+    privacyRow1Cloud: 'อัปโหลดข้อมูลไฟล์ 100% ไปยังเซิร์ฟเวอร์ภายนอก',
+    privacyRow1Mecraft: '0 ไบต์ — ข้อมูลทั้งหมดประมวลผลในหน่วยความจำ RAM ของเครื่อง',
+    privacyRow2Metric: 'สถาปัตยกรรมการรัน',
+    privacyRow2Cloud: 'คิวเซิร์ฟเวอร์ภายนอก (ขึ้นอยู่กับความเร็วเน็ตและคิวผู้ใช้)',
+    privacyRow2Mecraft: 'ประมวลผลด้วย WebAssembly และ Web Workers ในเครื่องคุณโดยตรง',
+    privacyRow3Metric: 'การรักษาความลับเอกสาร',
+    privacyRow3Cloud: 'มีความเสี่ยงต่อการรั่วไหลหรือการละเมิดข้อมูลบนเซิร์ฟเวอร์',
+    privacyRow3Mecraft: 'ปลอดภัยระดับ Zero-Trust ไม่มีใครเข้าถึงเอกสารของคุณได้',
+    privacyRow4Metric: 'ความพร้อมใช้ออฟไลน์',
+    privacyRow4Cloud: 'ใช้งานไม่ได้ทันทีเมื่อเน็ตหลุดหรือไม่มีสัญญาณ',
+    privacyRow4Mecraft: 'ทำงานออฟไลน์ได้ 100% ทั้งแบบ PWA และโปรแกรม Windows',
+    privacyRow5Metric: 'การติดตามและ Telemetry',
+    privacyRow5Cloud: 'มีการบันทึกพฤติกรรม สถิติ และ Telemetry ของผู้ใช้',
+    privacyRow5Mecraft: 'ไม่มีการติดตามข้อมูล ไม่เก็บประวัติพฤติกรรม ไม่ใช้คุกกี้',
+    specsEyebrow: 'รูปแบบการติดตั้งและใช้งาน',
+    specsTitle: 'ใช้งานได้ทุกที่ • เลือกสภาวะแวดล้อมของคุณ',
+    specsSubtitle: 'เปิดใช้งาน meCrafts ได้ทั้งบนเว็บเบราว์เซอร์ทันที หรือติดตั้งลงบน Windows เพื่อประสิทธิภาพสูงสุด',
+    specPwaTitle: 'เว็บเบราว์เซอร์ PWA (ไม่ต้องติดตั้ง)',
+    specPwaDesc: 'เปิดใช้งานได้ทันทีบน Chrome, Edge, Safari และ Firefox พร้อมระบบแคชออฟไลน์ในตัว',
+    specExeTitle: 'โปรแกรมพกพา Windows Portable (.exe)',
+    specExeDesc: 'ไฟล์เดียวจบ พกพาใส่แฟลชไดรฟ์เปิดใช้งานได้ทุกเครื่องโดยไม่ต้องมีสิทธิ์ผู้ดูแลระบบ',
+    specNsisTitle: 'ตัวช่วยติดตั้งมาตรฐาน (Setup.exe)',
+    specNsisDesc: 'ติดตั้งลงเครื่องพร้อมผูกไฟล์กับ Windows เมนูเริ่ม ไอคอนหน้าจอ และคลิกขวาเปิดไฟล์ได้ทันที',
+    specMsiTitle: 'แพ็กเกจติดตั้งองค์กร (.msi)',
+    specMsiDesc: 'ไฟล์ MSI สำหรับการติดตั้งอัตโนมัติในระดับระบบและการจัดการเครื่องลูกข่ายในองค์กร',
     recentProjectsTitle: 'ประวัติไฟล์และโปรเจกต์ล่าสุด',
     recentCount: (count) => `${count} ไฟล์`,
     clearHistory: 'ล้างประวัติ',
@@ -211,6 +473,11 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     downloadMsiTitle: 'แพ็กเกจติดตั้ง (.msi Installer)',
     downloadMsiDesc: 'ไฟล์ MSI สำหรับการติดตั้งระดับระบบ Windows และการจัดการในองค์กร',
     viewAllReleases: 'ดูรายการไฟล์และประวัติการปล่อยเวอร์ชันบน GitHub',
+    footerBrandDesc: 'ชุดเครื่องมือสตูดิโอจัดการเอกสารและภาพถ่ายส่วนตัว ประมวลผลในเครื่อง 100% ด้วยความเร็ว ความแม่นยำ และความลับสูงสุด',
+    footerColProducts: 'รายการโปรแกรมและสตูดิโอ',
+    footerColArch: 'สถาปัตยกรรมและความปลอดภัย',
+    footerColCommunity: 'โอเพนซอร์สและลิขสิทธิ์',
+    footerRights: 'ได้รับอนุญาตภายใต้สัญญาอนุญาต MIT License. ลิขสิทธิ์ (c) 2026 Metha / methastrategy.',
   },
 };
 
@@ -233,11 +500,100 @@ export const APP_THAI_METADATA: Record<string, { tagline: string; description: s
   },
 };
 
+export interface RoadmapItem {
+  id: string;
+  name: string;
+  category: string;
+  taglineEn: string;
+  taglineTh: string;
+  descEn: string;
+  descTh: string;
+  status: 'in-dev' | 'coming-soon' | 'sister-suite';
+  image: string;
+  tags: string[];
+}
+
+export const ROADMAP_ITEMS: RoadmapItem[] = [
+  {
+    id: 'mevector',
+    name: 'meVector',
+    category: 'Graphics & Vector',
+    taglineEn: 'Bézier Vector Illustration & SVG/PDF Graphic Workbench',
+    taglineTh: 'เครื่องมือวาดภาพเวกเตอร์ ตัดต่อพาธ SVG และกราฟิก PDF',
+    descEn: 'Precision Bézier vector curve editing, node pen operations, path boolean geometry, and ultra-crisp resolution-independent graphic export.',
+    descTh: 'ตัดต่อเส้นพาธ Bézier เวกเตอร์ความแม่นยำสูง ดัดแปลงจุด Node ตรรกะพาธ และส่งออกเวกเตอร์ความละเอียดสูงคมชัดทุกขนาด',
+    status: 'in-dev',
+    image: './assets/branding/mecraft-hero-banner.jpg',
+    tags: ['Vector', 'Bezier', 'SVG', 'Node Pen'],
+  },
+  {
+    id: 'medoc',
+    name: 'meDoc',
+    category: 'Writing & Document',
+    taglineEn: 'Distraction-Free Zen Typewriter & LaTeX Math Suite',
+    taglineTh: 'โปรแกรมพิมพ์งานสมาธิสูง พิมพ์สูตรคณิตศาสตร์และ Markdown',
+    descEn: 'Zen distraction-free typography, live LaTeX mathematical formula rendering, offline bilingual grammar assistance, and instant publication export.',
+    descTh: 'จัดหน้าแบบ Zen ไร้สิ่งรบกวน แสดงสูตรสมการ LaTeX แบบเรียลไทม์ ตรวจไวยากรณ์ออฟไลน์สองภาษา และส่งออกสิ่งพิมพ์ได้ทันที',
+    status: 'in-dev',
+    image: './assets/branding/mecraft-hub-emblem.jpg',
+    tags: ['Markdown', 'LaTeX', 'Typography', 'Focus'],
+  },
+  {
+    id: 'mesurv',
+    name: 'meSurv',
+    category: 'Engineering & Survey',
+    taglineEn: 'Professional Panoramic Land Surveying & Traverse Suite',
+    taglineTh: 'วิศวกรรมสำรวจรังวัดแผนที่ คำนวณวงรอบและโครงข่ายพิกัด',
+    descEn: 'High-precision coordinate geometry, total station traverse calculation, Bowditch network adjustment, and geodetic coordinate transformations.',
+    descTh: 'คำนวณวงรอบรังวัด ปรับแก้ความคลาดเคลื่อน Bowditch แปลงพิกัดแผนที่ภูมิศาสตร์ และวิเคราะห์ข้อมูลสำรวจภาคสนาม',
+    status: 'sister-suite',
+    image: './hero_mesurv_panoramic.jpg',
+    tags: ['Surveying', 'Traverse', 'Bowditch', 'GNSS'],
+  },
+  {
+    id: 'meboard',
+    name: 'meBoard',
+    category: 'Quant & Finance',
+    taglineEn: 'Quantitative Market Cockpit & Multi-Agent Intelligence',
+    taglineTh: 'ค็อกพิทวิเคราะห์ตลาดการเงินเชิงปริมาณและระบบประเมินสัญญา',
+    descEn: 'Real-time multi-asset technical telemetry, algorithmic backtest forensics, quantitative risk gating, and multi-agent consensus debates.',
+    descTh: 'วิเคราะห์ตลาดการเงิน หุ้น คริปโต ด้วยการวิเคราะห์เชิงปริมาณ รันแบบจำลองย้อนหลัง และตรวจสอบความเสี่ยงอย่างเป็นระบบ',
+    status: 'sister-suite',
+    image: './hero_meboard_trading.jpg',
+    tags: ['Quant', 'Backtest', 'Risk Gating', 'Trading'],
+  },
+  {
+    id: 'huayork',
+    name: 'huayork',
+    category: 'Analytics & Math',
+    taglineEn: 'Statistical Probability & Historical Pattern Analytics',
+    taglineTh: 'เครื่องมือสถิติวิเคราะห์ความน่าจะเป็นและโครงสร้างตัวเลข',
+    descEn: 'Bayesian frequency distribution modeling, combinatorial probability analysis, and algorithmic pattern clustering over historical archives.',
+    descTh: 'วิเคราะห์การแจกแจงความถี่ตามสถิติเบย์เซียน การจัดหมู่ทางคณิตศาสตร์ และตรวจหารูปแบบตัวเลขในอดีตอย่างเป็นวิทยาศาสตร์',
+    status: 'sister-suite',
+    image: './hero_huayork_lottery.jpg',
+    tags: ['Probability', 'Statistics', 'Bayesian', 'Analytics'],
+  },
+  {
+    id: 'megamehub',
+    name: 'meGameHub',
+    category: 'Interactive & Games',
+    taglineEn: 'WebAssembly Retro Arcade & Interactive Physics Simulator',
+    taglineTh: 'ศูนย์รวมเกมอาร์เคดและระบบจำลองฟิสิกส์บนเบราว์เซอร์',
+    descEn: 'Ultra-low-latency 60fps retro gaming engine running 100% in-browser with zero install via WebAssembly and Canvas hardware shaders.',
+    descTh: 'สตูดิโอเกมอาร์เคดและแบบจำลองฟิสิกส์ เรนเดอร์ 60fps ลื่นไหลในเบราว์เซอร์ด้วย WebAssembly และ Canvas Hardware Shaders',
+    status: 'sister-suite',
+    image: './hero_megamehub_arcade.jpg',
+    tags: ['WASM', '60 FPS', 'Arcade', 'Physics'],
+  },
+];
+
 class MeCraftLauncher {
   private bridge = createLauncherBridge();
   private catalog: AppCatalogItem[] = getDefaultCatalog();
   private recentProjects: RecentProject[] = [];
   private activeFilter = 'all';
+  private activeHeroTab: 'mepdf' | 'mephoto' | 'mecraft' = 'mepdf';
   private downloadingApps = new Map<string, DownloadProgress>();
   private activeMenuAppId: string | null = null;
   private currentLang: 'en' | 'th' = 'en';
@@ -284,10 +640,11 @@ class MeCraftLauncher {
     const t = this.t;
 
     this.appEl.innerHTML = `
+      <!-- Sticky Navigation Bar -->
       <header class="launcher-header">
         <div class="launcher-brand">
           <div class="launcher-logo" style="overflow: hidden; border-radius: var(--radius-sm); position: relative;">
-            <img src="./assets/branding/mecraft-hub-emblem.jpg" alt="meCraft" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
+            <img src="./assets/branding/mecraft-hub-emblem.jpg" alt="meCrafts" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
             </svg>
@@ -300,6 +657,14 @@ class MeCraftLauncher {
             <div class="launcher-subtitle" id="header-brand-subtitle">${t.brandSubtitle}</div>
           </div>
         </div>
+
+        <nav class="launcher-nav-center" aria-label="Portal Navigation">
+          <a class="portal-nav-link" href="#showcase-products" id="nav-products">${t.navProducts}</a>
+          <a class="portal-nav-link" href="#hub-dropzone" id="nav-dropzone">${t.navDropzone}</a>
+          <a class="portal-nav-link" href="#privacy-architecture" id="nav-privacy">${t.navPrivacy}</a>
+          <a class="portal-nav-link" href="#future-ecosystem" id="nav-roadmap">${t.navRoadmap}</a>
+          <a class="portal-nav-link" href="#spec-matrix" id="nav-specs">${t.navSpecs}</a>
+        </nav>
 
         <div class="launcher-nav-right">
           <div class="network-badge">
@@ -317,18 +682,37 @@ class MeCraftLauncher {
         </div>
       </header>
 
+      <!-- Main Portal Content -->
       <main class="launcher-content">
-        <!-- Interactive Hero Banner -->
+        <!-- 1. Hero Showcase Section -->
         <section class="launcher-hero">
           <div class="hero-content">
             <div class="hero-header-row">
               <div class="hero-pill">
                 <span class="hero-pill-dot"></span>
-                <span>meCraft Ecosystem Hub</span>
+                <span id="hero-pill-text">${t.heroPill}</span>
               </div>
             </div>
             <h1 class="hero-title" id="hero-title">${t.heroTitle}</h1>
             <p class="hero-subtitle" id="hero-subtitle">${t.heroSubtitle}</p>
+
+            <div class="spotlight-actions-row" style="margin-bottom: 24px;">
+              <button class="btn-action primary-gold" data-action="open-web" data-app-id="mepdf" style="min-height: 44px; padding: 0 22px; font-weight: 700;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                <span id="hero-btn-mepdf">${t.heroCtaLaunchPdf}</span>
+              </button>
+
+              <button class="btn-action" data-action="open-web" data-app-id="mephoto" style="min-height: 44px; padding: 0 22px; font-weight: 700; background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.4); color: var(--accent-cyan);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                <span id="hero-btn-mephoto">${t.heroCtaLaunchPhoto}</span>
+              </button>
+
+              <button class="btn-header" id="hero-btn-download" style="min-height: 44px; padding: 0 20px; font-weight: 600;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span id="hero-btn-download-text">${t.heroCtaDownload}</span>
+              </button>
+            </div>
+
             <div class="hero-badges" id="hero-badges">
               <div class="hero-badge">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
@@ -347,17 +731,83 @@ class MeCraftLauncher {
                 <span>${t.badgeHomography}</span>
               </div>
             </div>
+
+            <!-- Interactive Spotlight Showcase Box -->
+            <div class="hero-spotlight-wrapper">
+              <div class="hero-preview-tabs" role="tablist">
+                <button class="hero-tab-btn active" data-tab="mepdf" id="tab-spotlight-pdf">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                  <span>${t.spotlightTabPdf}</span>
+                </button>
+                <button class="hero-tab-btn" data-tab="mephoto" id="tab-spotlight-photo">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                  <span>${t.spotlightTabPhoto}</span>
+                </button>
+                <button class="hero-tab-btn" data-tab="mecraft" id="tab-spotlight-craft">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                  <span>${t.spotlightTabCraft}</span>
+                </button>
+              </div>
+
+              <div class="hero-spotlight-box">
+                <div class="hero-spotlight-window-header">
+                  <div class="window-dots">
+                    <span class="window-dot close"></span>
+                    <span class="window-dot min"></span>
+                    <span class="window-dot max"></span>
+                  </div>
+                  <div class="window-title-address" id="spotlight-address-bar">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <span>https://mecrafts.vercel.app/mepdf/</span>
+                  </div>
+                </div>
+
+                <div class="hero-spotlight-display" id="hero-spotlight-display">
+                  <div class="spotlight-media-container">
+                    <img src="./hero_mepdf_studio.jpg" alt="mePDF Studio" class="spotlight-img" id="spotlight-preview-img" onerror="this.src='./assets/branding/mecraft-hero-banner.jpg'" />
+                  </div>
+                  <div class="spotlight-info-panel">
+                    <div class="spotlight-badge-title">
+                      <div class="spotlight-app-name" id="spotlight-name">mePDF Studio</div>
+                      <span class="section-eyebrow" id="spotlight-eyebrow">DOCUMENT COCKPIT</span>
+                    </div>
+                    <div class="spotlight-app-tagline" id="spotlight-tagline">${t.showcasePdfSubtitle}</div>
+                    <div class="spotlight-app-desc" id="spotlight-desc">${t.pdfFeature1Desc}</div>
+                    <div class="spotlight-feature-bullets" id="spotlight-bullets">
+                      <div class="spotlight-bullet-item">
+                        <svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>${t.pdfFeature1Title}</span>
+                      </div>
+                      <div class="spotlight-bullet-item">
+                        <svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>${t.pdfFeature2Title}</span>
+                      </div>
+                      <div class="spotlight-bullet-item">
+                        <svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>${t.pdfFeature4Title}</span>
+                      </div>
+                    </div>
+                    <div class="spotlight-actions-row">
+                      <button class="btn-action primary-gold" id="spotlight-btn-open" data-action="open-web" data-app-id="mepdf">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        <span id="spotlight-btn-text">${t.openWebStudio}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <!-- Universal Drop Zone -->
-        <section class="hub-drop-section">
+        <!-- 2. Universal Drop Zone (Try It Live) -->
+        <section class="hub-drop-section" id="hub-dropzone-section">
           <div class="hub-dropzone" id="hub-dropzone" role="region" aria-label="Universal Drop Zone">
             <input type="file" id="hub-file-input" accept=".pdf,image/png,image/jpeg,image/webp,image/jpg,image/bmp,image/svg+xml" style="display: none;" />
             <div class="hub-dropzone-inner">
               <div class="hub-dropzone-icons">
                 <div class="drop-icon-chip pdf">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
                   <span>PDF</span>
                 </div>
                 <div class="drop-icon-chip connector">
@@ -372,6 +822,7 @@ class MeCraftLauncher {
               <div class="hub-dropzone-text">
                 <div class="hub-dropzone-title" id="dropzone-title">${t.dropZoneTitle}</div>
                 <div class="hub-dropzone-subtitle" id="dropzone-subtitle">${t.dropZoneSubtitle}</div>
+                <div style="font-size: 11px; color: var(--accent-emerald); font-family: var(--font-mono); margin-top: 4px;" id="dropzone-pledge">${t.dropZonePledge}</div>
               </div>
 
               <button class="btn-hub-browse" id="btn-browse-hub">
@@ -382,8 +833,93 @@ class MeCraftLauncher {
           </div>
         </section>
 
-        <!-- Apps Catalog -->
-        <section>
+        <!-- 3. Core Products Showcase (mePDF, mePhoto, meCraft) -->
+        <section class="showcase-section" id="showcase-products">
+          <div class="section-eyebrow-row">
+            <span class="section-eyebrow">${t.showcasePdfEyebrow}</span>
+            <span class="section-eyebrow cyan">${t.showcasePhotoEyebrow}</span>
+          </div>
+
+          <div class="section-header-block">
+            <h2 class="section-headline">${this.currentLang === 'th' ? 'ผลิตภัณฑ์หลักในตระกูล meCrafts' : 'Flagship Ecosystem Products'}</h2>
+            <p class="section-description">${this.currentLang === 'th' ? 'ออกแบบทางวิศวกรรมเพื่อมอบประสบการณ์การทำงานระดับโปร ปลอดภัย ไม่ส่งไฟล์ขึ้นคลาวด์' : 'Precision engineering built for zero-cloud document processing, image forensics, and creative workflow.'}</p>
+          </div>
+
+          <!-- mePDF Bento Showcase -->
+          <div class="bento-showcase-grid">
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                </div>
+                <span class="bento-metric-pill">Dual Engine</span>
+              </div>
+              <h3 class="bento-card-title">${t.pdfFeature1Title}</h3>
+              <p class="bento-card-desc">${t.pdfFeature1Desc}</p>
+            </div>
+
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+                <span class="bento-metric-pill">AES-256</span>
+              </div>
+              <h3 class="bento-card-title">${t.pdfFeature2Title}</h3>
+              <p class="bento-card-desc">${t.pdfFeature2Desc}</p>
+            </div>
+
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                </div>
+                <span class="bento-metric-pill">Offline OCR</span>
+              </div>
+              <h3 class="bento-card-title">${t.pdfFeature4Title}</h3>
+              <p class="bento-card-desc">${t.pdfFeature4Desc}</p>
+            </div>
+          </div>
+
+          <!-- mePhoto Bento Showcase -->
+          <div class="bento-showcase-grid" style="margin-top: 10px;">
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper cyan">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                </div>
+                <span class="bento-metric-pill">Homography</span>
+              </div>
+              <h3 class="bento-card-title">${t.photoFeature1Title}</h3>
+              <p class="bento-card-desc">${t.photoFeature1Desc}</p>
+            </div>
+
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper cyan">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 0 0 20z"></path></svg>
+                </div>
+                <span class="bento-metric-pill">Otsu B&W</span>
+              </div>
+              <h3 class="bento-card-title">${t.photoFeature2Title}</h3>
+              <p class="bento-card-desc">${t.photoFeature2Desc}</p>
+            </div>
+
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper cyan">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+                </div>
+                <span class="bento-metric-pill">Magic Color</span>
+              </div>
+              <h3 class="bento-card-title">${t.photoFeature3Title}</h3>
+              <p class="bento-card-desc">${t.photoFeature3Desc}</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Interactive Apps Catalog Grid -->
+        <section class="showcase-section" id="apps-catalog-section">
           <div class="section-header">
             <div class="section-title">
               <span id="catalog-section-title">${t.catalogTitle}</span>
@@ -401,8 +937,158 @@ class MeCraftLauncher {
           <div class="apps-grid" id="apps-grid"></div>
         </section>
 
-        <!-- Universal Recent Projects -->
-        <section>
+        <!-- 5. Future Ecosystem & Roadmap ("และอื่นๆในภายหลัง") -->
+        <section class="showcase-section" id="future-ecosystem">
+          <div class="section-eyebrow-row">
+            <span class="section-eyebrow emerald">${t.roadmapEyebrow}</span>
+          </div>
+
+          <div class="section-header-block">
+            <h2 class="section-headline">${t.roadmapTitle}</h2>
+            <p class="section-description">${t.roadmapSubtitle}</p>
+          </div>
+
+          <div class="roadmap-grid" id="roadmap-grid">
+            ${ROADMAP_ITEMS.map((item) => {
+              const statusClass = item.status === 'in-dev' ? 'in-dev' : item.status === 'coming-soon' ? 'coming-soon' : 'active-sister';
+              const statusLabel = item.status === 'in-dev' ? t.statusInDev : item.status === 'coming-soon' ? t.statusComingSoon : t.statusSister;
+              const tagline = this.currentLang === 'th' ? item.taglineTh : item.taglineEn;
+              const desc = this.currentLang === 'th' ? item.descTh : item.descEn;
+
+              return `
+                <div class="roadmap-card">
+                  <div class="roadmap-banner-wrapper">
+                    <img src="${item.image}" alt="${item.name}" class="roadmap-banner-img" onerror="this.src='./assets/branding/mecraft-hero-banner.jpg'" />
+                    <span class="roadmap-status-chip ${statusClass}">${statusLabel}</span>
+                  </div>
+                  <div class="roadmap-body">
+                    <div class="roadmap-app-header">
+                      <span class="roadmap-app-title">${item.name}</span>
+                      <span class="roadmap-app-category">${item.category}</span>
+                    </div>
+                    <div class="roadmap-app-tagline">${tagline}</div>
+                    <div class="roadmap-app-desc">${desc}</div>
+                    <div class="roadmap-tags">
+                      ${item.tags.map((tag) => `<span class="app-tag">${tag}</span>`).join('')}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </section>
+
+        <!-- 6. Zero-Cloud Privacy Architecture Breakdown -->
+        <section class="showcase-section" id="privacy-architecture">
+          <div class="section-eyebrow-row">
+            <span class="section-eyebrow amber">${t.privacyEyebrow}</span>
+          </div>
+
+          <div class="section-header-block">
+            <h2 class="section-headline">${t.privacyTitle}</h2>
+            <p class="section-description">${t.privacySubtitle}</p>
+          </div>
+
+          <div class="privacy-table-container">
+            <table class="privacy-table">
+              <thead>
+                <tr>
+                  <th style="width: 25%;">${t.privacyColMetric}</th>
+                  <th style="width: 37.5%;">${t.privacyColCloud}</th>
+                  <th style="width: 37.5%;">${t.privacyColMecraft}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-metric-title">${t.privacyRow1Metric}</td>
+                  <td><div class="cell-saas-risk"><span>✕</span><span>${t.privacyRow1Cloud}</span></div></td>
+                  <td><div class="cell-mecraft-winner"><span>✓</span><span>${t.privacyRow1Mecraft}</span></div></td>
+                </tr>
+                <tr>
+                  <td class="cell-metric-title">${t.privacyRow2Metric}</td>
+                  <td><div class="cell-saas-risk"><span>✕</span><span>${t.privacyRow2Cloud}</span></div></td>
+                  <td><div class="cell-mecraft-winner"><span>✓</span><span>${t.privacyRow2Mecraft}</span></div></td>
+                </tr>
+                <tr>
+                  <td class="cell-metric-title">${t.privacyRow3Metric}</td>
+                  <td><div class="cell-saas-risk"><span>✕</span><span>${t.privacyRow3Cloud}</span></div></td>
+                  <td><div class="cell-mecraft-winner"><span>✓</span><span>${t.privacyRow3Mecraft}</span></div></td>
+                </tr>
+                <tr>
+                  <td class="cell-metric-title">${t.privacyRow4Metric}</td>
+                  <td><div class="cell-saas-risk"><span>✕</span><span>${t.privacyRow4Cloud}</span></div></td>
+                  <td><div class="cell-mecraft-winner"><span>✓</span><span>${t.privacyRow4Mecraft}</span></div></td>
+                </tr>
+                <tr>
+                  <td class="cell-metric-title">${t.privacyRow5Metric}</td>
+                  <td><div class="cell-saas-risk"><span>✕</span><span>${t.privacyRow5Cloud}</span></div></td>
+                  <td><div class="cell-mecraft-winner"><span>✓</span><span>${t.privacyRow5Mecraft}</span></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 7. Cross-Platform Specifications & Downloads Matrix -->
+        <section class="showcase-section" id="spec-matrix">
+          <div class="section-eyebrow-row">
+            <span class="section-eyebrow">${t.specsEyebrow}</span>
+          </div>
+
+          <div class="section-header-block">
+            <h2 class="section-headline">${t.specsTitle}</h2>
+            <p class="section-description">${t.specsSubtitle}</p>
+          </div>
+
+          <div class="spec-matrix-grid">
+            <div class="spec-card">
+              <span class="spec-card-badge">WEB / PWA</span>
+              <h3 class="spec-card-title">${t.specPwaTitle}</h3>
+              <p class="spec-card-desc">${t.specPwaDesc}</p>
+              <div class="spec-feature-list">
+                <span class="spec-feature-item">✓ Zero Install</span>
+                <span class="spec-feature-item">✓ Offline Service Worker</span>
+                <span class="spec-feature-item">✓ Chromium / Safari / Firefox</span>
+              </div>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-card-badge">PORTABLE</span>
+              <h3 class="spec-card-title">${t.specExeTitle}</h3>
+              <p class="spec-card-desc">${t.specExeDesc}</p>
+              <div class="spec-feature-list">
+                <span class="spec-feature-item">✓ Single Executable</span>
+                <span class="spec-feature-item">✓ No Admin Rights</span>
+                <span class="spec-feature-item">✓ USB Flash Drive Ready</span>
+              </div>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-card-badge">NSIS SETUP</span>
+              <h3 class="spec-card-title">${t.specNsisTitle}</h3>
+              <p class="spec-card-desc">${t.specNsisDesc}</p>
+              <div class="spec-feature-list">
+                <span class="spec-feature-item">✓ Desktop & Start Menu</span>
+                <span class="spec-feature-item">✓ File Associations</span>
+                <span class="spec-feature-item">✓ Clean Uninstaller</span>
+              </div>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-card-badge">ENTERPRISE</span>
+              <h3 class="spec-card-title">${t.specMsiTitle}</h3>
+              <p class="spec-card-desc">${t.specMsiDesc}</p>
+              <div class="spec-feature-list">
+                <span class="spec-feature-item">✓ Active Directory GPO</span>
+                <span class="spec-feature-item">✓ Silent Deploy msiexec /qn</span>
+                <span class="spec-feature-item">✓ IT Policy Management</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. Universal Recent Projects -->
+        <section class="showcase-section" id="recents-section">
           <div class="section-header">
             <div class="section-title">
               <span id="recents-section-title">${t.recentProjectsTitle}</span>
@@ -413,6 +1099,59 @@ class MeCraftLauncher {
           <div id="recent-projects-list"></div>
         </section>
       </main>
+
+      <!-- Global Portal Footer -->
+      <footer class="portal-footer">
+        <div class="footer-top-grid">
+          <div class="footer-brand-col">
+            <div class="footer-brand-title">
+              <div class="launcher-logo" style="width: 28px; height: 28px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+              </div>
+              <span>meCrafts</span>
+            </div>
+            <p class="footer-brand-desc">${t.footerBrandDesc}</p>
+          </div>
+
+          <div>
+            <div class="footer-col-title">${t.footerColProducts}</div>
+            <ul class="footer-links-list">
+              <li><a class="footer-link" href="#showcase-products">mePDF Studio</a></li>
+              <li><a class="footer-link" href="#showcase-products">mePhoto Studio</a></li>
+              <li><a class="footer-link" href="#showcase-products">meCraft Hub</a></li>
+              <li><a class="footer-link" href="#future-ecosystem">meVector</a></li>
+              <li><a class="footer-link" href="#future-ecosystem">meDoc</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-col-title">${t.footerColArch}</div>
+            <ul class="footer-links-list">
+              <li><a class="footer-link" href="#privacy-architecture">100% In-Browser Privacy</a></li>
+              <li><a class="footer-link" href="#privacy-architecture">WebAssembly & Workers</a></li>
+              <li><a class="footer-link" href="#privacy-architecture">AES-256 Encryption</a></li>
+              <li><a class="footer-link" href="#spec-matrix">Cross-Platform Matrix</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-col-title">${t.footerColCommunity}</div>
+            <ul class="footer-links-list">
+              <li><a class="footer-link" href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer">GitHub Monorepo</a></li>
+              <li><a class="footer-link" href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer">Releases & Binaries</a></li>
+              <li><a class="footer-link" href="https://github.com/methastrategy/meCraft/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></li>
+              <li><a class="footer-link" href="https://mecrafts.vercel.app">Vercel Web Portal</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom-row">
+          <span>${t.footerRights}</span>
+          <span style="font-family: var(--font-mono); font-size: 11px;">Built with WebAssembly • Canvas 2D • Tauri v2 • Vite</span>
+        </div>
+      </footer>
 
       <div id="modal-container"></div>
     `;
@@ -515,7 +1254,6 @@ class MeCraftLauncher {
     const isMenuOpen = this.activeMenuAppId === app.id;
     const isDesktop = this.bridge.isTauri();
 
-    // Native Windows Desktop Engine: Streamlined single-path ergonomics (Install into meCraft / Launch)
     if (isDesktop) {
       if (app.status === 'installed') {
         return `
@@ -754,7 +1492,95 @@ class MeCraftLauncher {
     });
   }
 
+  private switchHeroTab(tab: 'mepdf' | 'mephoto' | 'mecraft') {
+    this.activeHeroTab = tab;
+    const t = this.t;
+
+    // Update active tab buttons
+    document.querySelectorAll('.hero-tab-btn').forEach((btn) => {
+      const match = btn.getAttribute('data-tab') === tab;
+      btn.classList.toggle('active', match);
+    });
+
+    const addressBar = document.getElementById('spotlight-address-bar');
+    const previewImg = document.getElementById('spotlight-preview-img') as HTMLImageElement | null;
+    const appName = document.getElementById('spotlight-name');
+    const eyebrow = document.getElementById('spotlight-eyebrow');
+    const tagline = document.getElementById('spotlight-tagline');
+    const desc = document.getElementById('spotlight-desc');
+    const bullets = document.getElementById('spotlight-bullets');
+    const actionBtn = document.getElementById('spotlight-btn-open');
+
+    if (tab === 'mepdf') {
+      if (addressBar) addressBar.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>https://mecrafts.vercel.app/mepdf/</span>`;
+      if (previewImg) previewImg.src = './hero_mepdf_studio.jpg';
+      if (appName) appName.textContent = 'mePDF Studio';
+      if (eyebrow) { eyebrow.className = 'section-eyebrow'; eyebrow.textContent = t.showcasePdfEyebrow; }
+      if (tagline) tagline.textContent = t.showcasePdfSubtitle;
+      if (desc) desc.textContent = t.pdfFeature1Desc;
+      if (bullets) {
+        bullets.innerHTML = `
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.pdfFeature1Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.pdfFeature2Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.pdfFeature4Title}</span></div>
+        `;
+      }
+      if (actionBtn) {
+        actionBtn.setAttribute('data-app-id', 'mepdf');
+      }
+    } else if (tab === 'mephoto') {
+      if (addressBar) addressBar.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>https://mecrafts.vercel.app/mephoto/</span>`;
+      if (previewImg) previewImg.src = './assets/branding/mephoto-studio-emblem.jpg';
+      if (appName) appName.textContent = 'mePhoto Studio';
+      if (eyebrow) { eyebrow.className = 'section-eyebrow cyan'; eyebrow.textContent = t.showcasePhotoEyebrow; }
+      if (tagline) tagline.textContent = t.showcasePhotoSubtitle;
+      if (desc) desc.textContent = t.photoFeature1Desc;
+      if (bullets) {
+        bullets.innerHTML = `
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.photoFeature1Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.photoFeature2Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.photoFeature3Title}</span></div>
+        `;
+      }
+      if (actionBtn) {
+        actionBtn.setAttribute('data-app-id', 'mephoto');
+      }
+    } else {
+      if (addressBar) addressBar.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>https://mecrafts.vercel.app/</span>`;
+      if (previewImg) previewImg.src = './assets/branding/mecraft-hero-banner.jpg';
+      if (appName) appName.textContent = 'meCraft Hub';
+      if (eyebrow) { eyebrow.className = 'section-eyebrow emerald'; eyebrow.textContent = t.showcaseHubEyebrow; }
+      if (tagline) tagline.textContent = t.showcaseHubSubtitle;
+      if (desc) desc.textContent = t.hubFeature1Desc;
+      if (bullets) {
+        bullets.innerHTML = `
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.hubFeature1Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.hubFeature2Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.hubFeature4Title}</span></div>
+        `;
+      }
+      if (actionBtn) {
+        actionBtn.setAttribute('data-app-id', 'mepdf');
+      }
+    }
+  }
+
   private attachEventListeners() {
+    // Hero preview tabs
+    document.querySelectorAll('.hero-tab-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const tab = (e.currentTarget as HTMLElement).getAttribute('data-tab') as 'mepdf' | 'mephoto' | 'mecraft';
+        if (tab) this.switchHeroTab(tab);
+      });
+    });
+
+    // Hero download button
+    document.getElementById('hero-btn-download')?.addEventListener('click', () => {
+      const app = this.catalog.find((a) => a.id === 'mepdf') || this.catalog[0];
+      const installerUrl = `https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe`;
+      this.showWebDownloadModal(app, installerUrl);
+    });
+
     // Filter tabs
     document.querySelectorAll('.filter-tab').forEach((tab: Element) => {
       tab.addEventListener('click', (e: Event) => {
@@ -854,89 +1680,11 @@ class MeCraftLauncher {
   }
 
   private applyLanguage() {
-    const t = this.t;
-    document.documentElement.lang = this.currentLang;
-    if (this.currentLang === 'th') {
-      this.appEl.classList.add('lang-th');
-    } else {
-      this.appEl.classList.remove('lang-th');
-    }
-
-    // Update Header
-    const brandTitle = document.getElementById('header-brand-title');
-    if (brandTitle) brandTitle.textContent = t.brandTitle;
-    const brandBadge = document.getElementById('header-brand-badge');
-    if (brandBadge) brandBadge.textContent = t.brandTag;
-    const brandSubtitle = document.getElementById('header-brand-subtitle');
-    if (brandSubtitle) brandSubtitle.textContent = t.brandSubtitle;
-    const networkLabel = document.getElementById('header-network-label');
-    if (networkLabel) networkLabel.textContent = t.networkConnected;
-    const langLabel = document.getElementById('lang-label');
-    if (langLabel) langLabel.textContent = t.langBtn;
-    const settingsLabel = document.getElementById('btn-settings-label');
-    if (settingsLabel) settingsLabel.textContent = t.settingsBtn;
-
-    // Update Hero
-    const heroTitle = document.getElementById('hero-title');
-    if (heroTitle) heroTitle.textContent = t.heroTitle;
-    const heroSubtitle = document.getElementById('hero-subtitle');
-    if (heroSubtitle) heroSubtitle.textContent = t.heroSubtitle;
-
-    const heroBadges = document.getElementById('hero-badges');
-    if (heroBadges) {
-      heroBadges.innerHTML = `
-        <div class="hero-badge">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          <span>${t.badgePrivacy}</span>
-        </div>
-        <div class="hero-badge">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-          <span>${t.badgeDesktop}</span>
-        </div>
-        <div class="hero-badge">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
-          <span>${t.badgeOcr}</span>
-        </div>
-        <div class="hero-badge">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-          <span>${t.badgeHomography}</span>
-        </div>
-      `;
-    }
-
-    // Update Drop Zone
-    const dropzoneTitle = document.getElementById('dropzone-title');
-    if (dropzoneTitle) dropzoneTitle.textContent = t.dropZoneTitle;
-    const dropzoneSubtitle = document.getElementById('dropzone-subtitle');
-    if (dropzoneSubtitle) dropzoneSubtitle.textContent = t.dropZoneSubtitle;
-    const browseHubText = document.getElementById('btn-browse-hub-text');
-    if (browseHubText) browseHubText.textContent = t.dropZoneBtn;
-
-    // Update Catalog Section
-    const catalogTitle = document.getElementById('catalog-section-title');
-    if (catalogTitle) catalogTitle.textContent = t.catalogTitle;
-    const catalogCount = document.getElementById('catalog-count');
-    if (catalogCount) catalogCount.textContent = t.catalogCount(this.catalog.length);
-
-    // Update Filter Tabs
-    const fAll = document.getElementById('filter-all');
-    if (fAll) fAll.textContent = t.filterAll;
-    const fInstalled = document.getElementById('filter-installed');
-    if (fInstalled) fInstalled.textContent = t.filterInstalled;
-    const fDoc = document.getElementById('filter-doc');
-    if (fDoc) fDoc.textContent = t.filterDoc;
-    const fGraphics = document.getElementById('filter-graphics');
-    if (fGraphics) fGraphics.textContent = t.filterGraphics;
-
-    // Update Recents Section
-    const recentsTitle = document.getElementById('recents-section-title');
-    if (recentsTitle) recentsTitle.textContent = t.recentProjectsTitle;
-    const clearRecentsBtn = document.getElementById('btn-clear-recents');
-    if (clearRecentsBtn) clearRecentsBtn.textContent = t.clearHistory;
-
-    // Re-render dynamic list areas
+    this.renderSkeleton();
     this.renderCatalog();
     this.renderRecentProjects();
+    this.switchHeroTab(this.activeHeroTab);
+    this.attachEventListeners();
   }
 
   public async handleDroppedFile(file: File): Promise<void> {
@@ -953,12 +1701,10 @@ class MeCraftLauncher {
     const targetApp = isPdf ? 'mepdf' : 'mephoto';
     const fileType = isPdf ? 'pdf' : file.type || 'image/jpeg';
 
-    // Read as Data URL for seamless cross-tab passing
     const reader = new FileReader();
     reader.onload = async () => {
       const dataUrl = reader.result as string;
 
-      // 1. Save to Universal Recent Projects
       await this.bridge.saveRecentProject({
         name: file.name,
         path: (file as any).path || file.name,
@@ -970,7 +1716,6 @@ class MeCraftLauncher {
       await this.loadRecentProjects();
       this.renderRecentProjects();
 
-      // 2. Launch target app with filePath and dataUrl
       await this.bridge.launchApp({
         appId: targetApp,
         filePath: (file as any).path || file.name,
@@ -1001,7 +1746,6 @@ class MeCraftLauncher {
     const app = this.catalog.find((a: AppCatalogItem) => a.id === appId);
     if (!app) return;
 
-    // On Web Browser: trigger download of the single official meCraft-Setup.exe installer
     if (!this.bridge.isTauri()) {
       const installerUrl = `https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe`;
       if (typeof document !== 'undefined') {
@@ -1019,7 +1763,6 @@ class MeCraftLauncher {
       return;
     }
 
-    // In Native Windows Desktop Mode: 1-click in-app background download & install into meCraft!
     const releaseUrl = `https://github.com/methastrategy/meCraft/releases/download/v${app.version}/${app.releaseAssetPattern}`;
 
     this.downloadingApps.set(appId, {
@@ -1175,7 +1918,7 @@ class MeCraftLauncher {
           <div class="modal-header">
             <div class="modal-title-group">
               <div class="modal-title" id="settings-dialog-title">${t.settingsTitle}</div>
-              <div class="modal-subtitle">meCraft Hub v3.2.0 • Ecosystem Status & Privacy Diagnostics</div>
+              <div class="modal-subtitle">meCrafts Official Portal v3.2.0 • Ecosystem Health & Privacy Diagnostics</div>
             </div>
             <button class="btn-more" id="btn-close-modal" aria-label="Close settings dialog">✕</button>
           </div>
@@ -1283,7 +2026,7 @@ class MeCraftLauncher {
   private getAppIconSvg(icon: string): string {
     switch (icon) {
       case 'FileText':
-        return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+        return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>`;
       case 'Camera':
         return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>`;
       case 'PenTool':
