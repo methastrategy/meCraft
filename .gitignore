@@ -6,6 +6,9 @@ dist-ssr/
 .vercel
 src-tauri/target/
 target/
+.env
+.env.*
+!.env.example
 
 # Root convenience junctions
 /mecraft

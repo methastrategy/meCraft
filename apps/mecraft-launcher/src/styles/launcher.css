@@ -1523,6 +1523,85 @@ input { font-family: var(--font-sans); }
 }
 
 /* ── Web Portal Header Sign In Button ──────────────────────────── */
+.portal-nav-auth {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  min-height: 36px;
+  border-radius: var(--radius-sm);
+  transition: all var(--dur-fast);
+  outline-offset: 2px;
+}
+.portal-nav-auth:hover {
+  color: var(--gold-light, #f7d774);
+  background: rgba(212, 175, 55, 0.08);
+}
+.portal-nav-auth svg {
+  color: var(--gold);
+}
+
+.hero-member-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 18px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  margin-bottom: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.hero-member-label {
+  color: var(--text-secondary);
+}
+.hero-member-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--gold);
+  font-weight: 700;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 12px;
+  transition: color var(--dur-fast), transform var(--dur-fast);
+}
+.hero-member-link:hover {
+  color: var(--gold-light, #f7d774);
+  transform: translateX(2px);
+}
+.hero-member-link svg {
+  transition: transform var(--dur-fast);
+}
+.hero-member-link:hover svg {
+  transform: translateX(2px);
+}
+
+.footer-link-auth {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  padding: 6px 12px;
+}
+.footer-link-auth:hover {
+  color: var(--gold);
+}
+
 .portal-signin-btn {
   display: inline-flex;
   align-items: center;

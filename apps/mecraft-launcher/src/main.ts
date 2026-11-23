@@ -751,6 +751,329 @@ class MeCraftsPortal {
     </div>`;
   }
 
+  private renderDesktopPreviewModal(): string {
+    if (!this.isPreviewModalOpen || !this.previewAppId) {
+      return '';
+    }
+    const app = SHOWCASE_APPS.find(a => a.id === this.previewAppId) || SHOWCASE_APPS[0];
+    const docExt = app.id === 'mepdf' ? 'pdf' : (app.id === 'mephoto' ? 'dng' : (app.id === 'mevector' ? 'svg' : (app.id === 'mefilm' ? 'proj' : 'doc')));
+    const sampleDocName = this.lang === 'th' ? `สัญญาจ้างงาน_2026.${docExt}` : `Creative_Project_Master.${docExt}`;
+
+    return `
+    <div class="desktop-preview-overlay active" id="desktop-preview-overlay" role="dialog" aria-modal="true" aria-label="Desktop Preview">
+      <div class="desktop-preview-backdrop" id="modal-preview-backdrop"></div>
+      
+      <div class="desktop-preview-window">
+        <!-- Native Windows Title Bar -->
+        <div class="desktop-window-titlebar">
+          <div class="window-titlebar-left">
+            <div class="window-app-icon">${getAppIcon(app.icon, app.accentColor)}</div>
+            <span class="window-title-text">${app.name} — [${sampleDocName}] - Windows Native Desktop</span>
+            <span class="window-native-pill">100% Native Desktop App</span>
+          </div>
+          <div class="window-titlebar-controls">
+            <button class="win-ctrl-btn" type="button" title="Minimize">─</button>
+            <button class="win-ctrl-btn" type="button" title="Maximize">□</button>
+            <button class="win-ctrl-btn win-close" id="btn-close-preview-x" type="button" title="Close Preview">✕</button>
+          </div>
+        </div>
+
+        <!-- Realistic Desktop Application Body -->
+        <div class="desktop-window-body">
+          ${this.renderAppDesktopMockup(app)}
+        </div>
+
+        <!-- Window Guidance & Download Footer -->
+        <div class="desktop-preview-footer">
+          <div class="preview-footer-info">
+            <span class="preview-pulse-dot"></span>
+            <span>${this.lang === 'th' 
+              ? 'หน้าต่างจำลองเหมือนโปรแกรมที่ติดตั้งลงเครื่อง 100% — รันออฟไลน์ ไร้เว็บเบราว์เซอร์ เร็วระดับฮาร์ดแวร์จริง' 
+              : '100% True-to-life Native Desktop Interface preview — Pure offline, in-device execution'}</span>
+          </div>
+          <div class="preview-footer-actions">
+            ${app.downloadUrl ? `
+              <a href="${app.downloadUrl}" download="${app.exeName}" class="btn-preview-download">
+                ⬇ ${this.lang === 'th' ? 'ดาวน์โหลดตัวติดตั้ง' : 'Download .exe'} (${app.exeSize || '14.8 MB'})
+              </a>
+            ` : `
+              <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="btn-preview-download">
+                ⬇ ${this.lang === 'th' ? 'ดาวน์โหลด meCraft Suite' : 'Download Suite'} (14.8 MB)
+              </a>
+            `}
+            <button class="btn-preview-close" id="btn-close-preview-footer" type="button">
+              ${this.lang === 'th' ? 'ปิดหน้าต่างพรีวิว' : 'Close Preview'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  private renderAppDesktopMockup(app: ShowcaseApp): string {
+    if (app.id === 'mepdf') {
+      return `
+        <!-- mePDF Studio Pro (Navy Black Acrobat Cockpit) -->
+        <div class="mockup-menubar">
+          <span class="mockup-menu-item"><b>mePDF Pro</b></span>
+          <span class="mockup-menu-item">File</span>
+          <span class="mockup-menu-item">Edit</span>
+          <span class="mockup-menu-item">View</span>
+          <span class="mockup-menu-item">Tools</span>
+          <span class="mockup-menu-item">Organize</span>
+          <span class="mockup-menu-item">Sign</span>
+          <span class="mockup-menu-item">Help</span>
+        </div>
+        <div class="mockup-ribbon">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active">📂 Open File</span>
+            <span class="mockup-tool-chip">💾 Save</span>
+          </div>
+          <div class="mockup-ribbon-center">
+            <span class="mockup-tool-chip">◀</span>
+            <span style="font-weight: 600; color: #f1f5f9;">หน้า 1 / 18</span>
+            <span class="mockup-tool-chip">▶</span>
+            <span class="mockup-tool-chip" style="margin-left: 12px;">➖ 100% ➕</span>
+            <span class="mockup-tool-chip">🔲 พอดีหน้า (Fit)</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="border-color: #3b82f6; color: #60a5fa;">📐 ปรับเอกสารตรง</span>
+            <span class="mockup-tool-chip" style="border-color: #10b981; color: #34d399;">🔍 OCR ค้นหาคำ</span>
+            <span class="mockup-tool-chip" style="background: #2563eb; color: #fff;">⬇ ส่งออก PDF</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout">
+          <!-- Left Thumbnails -->
+          <div class="mockup-left-pane">
+            <div class="mockup-pane-heading">📑 หน้าตัวอย่าง (Thumbnails)</div>
+            <div class="mockup-thumbnail-card active">
+              <div class="mockup-thumb-page">
+                <div class="mockup-doc-line title"></div>
+                <div class="mockup-doc-line"></div>
+                <div class="mockup-doc-line"></div>
+                <div class="mockup-doc-line short"></div>
+              </div>
+              <span class="mockup-thumb-label">หน้า 1 (สัญญาหลัก)</span>
+            </div>
+            <div class="mockup-thumbnail-card">
+              <div class="mockup-thumb-page">
+                <div class="mockup-doc-line title" style="width: 40%;"></div>
+                <div class="mockup-doc-line"></div>
+                <div class="mockup-doc-line"></div>
+                <div class="mockup-doc-line"></div>
+              </div>
+              <span class="mockup-thumb-label">หน้า 2 (ตารางงวดงาน)</span>
+            </div>
+            <div class="mockup-thumbnail-card">
+              <div class="mockup-thumb-page">
+                <div class="mockup-doc-line title" style="width: 50%;"></div>
+                <div class="mockup-doc-line short"></div>
+                <div class="mockup-doc-line"></div>
+              </div>
+              <span class="mockup-thumb-label">หน้า 3 (ลายเซ็นยินยอม)</span>
+            </div>
+          </div>
+          <!-- Center Canvas -->
+          <div class="mockup-center-stage">
+            <div class="mockup-pdf-sheet">
+              <div class="mockup-sheet-header">
+                <h2 class="mockup-sheet-title">สัญญาว่าจ้างพัฒนาระบบซอฟต์แวร์ (MASTER AGREEMENT)</h2>
+                <div class="mockup-sheet-meta">เลขที่สัญญา: MC-2026-0881 · ฉบับจริงลงนามอิเล็กทรอนิกส์</div>
+              </div>
+              <div class="mockup-sheet-body">
+                <p>สัญญาฉบับนี้ทำขึ้น ณ กรุงเทพมหานคร เพื่อเป็นข้อตกลงในการส่งมอบชุดโปรแกรม meCraft Creative Suite และระบบรักษาความปลอดภัยความเป็นส่วนตัวระดับ 100% In-Device Memory Execution</p>
+                <table class="mockup-sheet-table">
+                  <thead>
+                    <tr><th>ลำดับ</th><th>รายการโมดูล</th><th>สถานะความปลอดภัย</th><th>กำหนดส่งมอบ</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>1</td><td>mePDF Studio Pro (Acrobat-Grade)</td><td>100% Client-Side RAM</td><td>พร้อมใช้งาน ✅</td></tr>
+                    <tr><td>2</td><td>mePhoto Studio (Darkroom + OCR)</td><td>WebAssembly / OpenCV</td><td>พร้อมใช้งาน ✅</td></tr>
+                    <tr><td>3</td><td>In-App Auto-Update System</td><td>Ed25519 Signed</td><td>พร้อมใช้งาน ✅</td></tr>
+                  </tbody>
+                </table>
+                <p>คู่สัญญาทั้งสองฝ่ายได้อ่านและเข้าใจข้อความโดยละเอียด จึงลงลายมือชื่อไว้เป็นหลักฐานต่อหน้าพยาน</p>
+              </div>
+              <div class="mockup-sheet-sign">
+                <div>( .................................................. )<br>ผู้ว่าจ้าง (Client Authority)</div>
+                <div>( .................................................. )<br>ผู้รับจ้าง (Lead Engineer)</div>
+              </div>
+            </div>
+          </div>
+          <!-- Right Tools Drawer -->
+          <div class="mockup-right-pane">
+            <div class="mockup-pane-heading">🛠️ เครื่องมือเอกสาร (Action Tools)</div>
+            <div class="mockup-tool-card">
+              <div class="mockup-tool-title">📑 จัดเรียงและรวมหน้า (Organize)</div>
+              <div class="mockup-tool-desc">ลากสลับหน้า หมุน 90° แยกไฟล์ หรือแทรกหน้าเพิ่ม</div>
+              <span class="mockup-tool-badge">Zero-Lag</span>
+            </div>
+            <div class="mockup-tool-card">
+              <div class="mockup-tool-title">📐 ปรับระนาบกล้อง (Deskew)</div>
+              <div class="mockup-tool-desc">ดึงรูปถ่ายจากมือถือให้ตรงระนาบด้วย 4-Point Homography</div>
+              <span class="mockup-tool-badge">AI Scanner</span>
+            </div>
+            <div class="mockup-tool-card">
+              <div class="mockup-tool-title">🔍 สแกนข้อความ (Searchable OCR)</div>
+              <div class="mockup-tool-desc">แปลงภาพสแกนให้กด Ctrl+F ค้นหาคำและคัดลอกได้ทันที</div>
+              <span class="mockup-tool-badge">Thai + Eng</span>
+            </div>
+            <div class="mockup-tool-card">
+              <div class="mockup-tool-title">🗜️ บีบอัดไฟล์ (Smart Compress)</div>
+              <div class="mockup-tool-desc">ลดขนาดไฟล์สูงสุด 90% พร้อมพรีวิวขนาดก่อนบันทึก</div>
+              <span class="mockup-tool-badge">Lossless Deflate</span>
+            </div>
+            <div class="mockup-tool-card">
+              <div class="mockup-tool-title">🔒 เข้ารหัสปลอดภัย (AES-256)</div>
+              <div class="mockup-tool-desc">ตั้งรหัสผ่านป้องกันการเปิดและลบ Metadata ความลับ</div>
+              <span class="mockup-tool-badge">Bank-Grade</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (app.id === 'mephoto') {
+      return `
+        <!-- mePhoto Studio Darkroom -->
+        <div class="mockup-menubar">
+          <span class="mockup-menu-item"><b>mePhoto Studio</b></span>
+          <span class="mockup-menu-item">File</span>
+          <span class="mockup-menu-item">Edit</span>
+          <span class="mockup-menu-item">Image</span>
+          <span class="mockup-menu-item">Layer</span>
+          <span class="mockup-menu-item">Filter</span>
+          <span class="mockup-menu-item">View</span>
+          <span class="mockup-menu-item">Help</span>
+        </div>
+        <div class="mockup-ribbon">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active">✋ Hand</span>
+            <span class="mockup-tool-chip">✂️ Perspective Crop</span>
+            <span class="mockup-tool-chip">🖌️ Retouch</span>
+            <span class="mockup-tool-chip">✨ AI Remove BG</span>
+          </div>
+          <div class="mockup-ribbon-center">
+            <span style="font-weight: 600; color: #f1f5f9;">Alpine_Landscape_RAW.dng</span>
+            <span class="mockup-tool-chip" style="margin-left: 12px;">Zoom: 67%</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="background: #2563eb; color: #fff;">⬇ Export High-Res PNG</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 60px 1fr 300px;">
+          <!-- Left Mini Toolbar -->
+          <div class="mockup-left-pane" style="align-items: center; gap: 14px;">
+            <span class="mockup-tool-chip active" style="padding: 8px;" title="Select">👆</span>
+            <span class="mockup-tool-chip" style="padding: 8px;" title="Crop">📐</span>
+            <span class="mockup-tool-chip" style="padding: 8px;" title="Brush">🖌️</span>
+            <span class="mockup-tool-chip" style="padding: 8px;" title="Eraser">🧹</span>
+            <span class="mockup-tool-chip" style="padding: 8px;" title="Text">🔤</span>
+            <span class="mockup-tool-chip" style="padding: 8px;" title="Color Picker">💧</span>
+          </div>
+          <!-- Center Photo Canvas -->
+          <div class="mockup-photo-stage">
+            <div class="mockup-photo-frame">
+              <img src="/hero_mesurv_panoramic.jpg" alt="Photo Preview" class="mockup-photo-img" onerror="this.src='/hero_mepdf_studio.jpg'">
+              <div class="mockup-crop-grid">
+                <div class="mockup-crop-corner" style="top: -7px; left: -7px;"></div>
+                <div class="mockup-crop-corner" style="top: -7px; right: -7px;"></div>
+                <div class="mockup-crop-corner" style="bottom: -7px; left: -7px;"></div>
+                <div class="mockup-crop-corner" style="bottom: -7px; right: -7px;"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Right Inspector Panel -->
+          <div class="mockup-right-pane">
+            <div class="mockup-pane-heading">📊 ฮิสโตแกรมสีสด (Real-time RGB)</div>
+            <div class="mockup-histogram">
+              <div class="mockup-hist-bar" style="height: 25%;"></div>
+              <div class="mockup-hist-bar" style="height: 45%;"></div>
+              <div class="mockup-hist-bar" style="height: 75%;"></div>
+              <div class="mockup-hist-bar" style="height: 90%;"></div>
+              <div class="mockup-hist-bar" style="height: 60%;"></div>
+              <div class="mockup-hist-bar" style="height: 40%;"></div>
+              <div class="mockup-hist-bar" style="height: 20%;"></div>
+            </div>
+            <div class="mockup-pane-heading" style="margin-top: 10px;">🎚️ ปรับแต่งแสง (Tone & Exposure)</div>
+            <div class="mockup-slider-row">
+              <div class="mockup-slider-head"><span>Exposure (การรับแสง)</span><span>+0.65 EV</span></div>
+              <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 65%;"></div></div>
+            </div>
+            <div class="mockup-slider-row">
+              <div class="mockup-slider-head"><span>Contrast (ความเปรียบต่าง)</span><span>+14</span></div>
+              <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 57%;"></div></div>
+            </div>
+            <div class="mockup-slider-row">
+              <div class="mockup-slider-head"><span>Highlights (ส่วนสว่าง)</span><span>-22</span></div>
+              <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 38%;"></div></div>
+            </div>
+            <div class="mockup-slider-row">
+              <div class="mockup-slider-head"><span>Shadows (ส่วนมืด)</span><span>+35</span></div>
+              <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 70%;"></div></div>
+            </div>
+            <div class="mockup-pane-heading" style="margin-top: 10px;">🎨 สีสันและไวท์บาลานซ์ (Color)</div>
+            <div class="mockup-slider-row">
+              <div class="mockup-slider-head"><span>Temperature (อุณหภูมิสี)</span><span>5600 K</span></div>
+              <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 56%;"></div></div>
+            </div>
+            <div class="mockup-slider-row">
+              <div class="mockup-slider-head"><span>Vibrance (ความสดสี)</span><span>+28</span></div>
+              <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 64%;"></div></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Default template for other creative apps (melight, mevector, mefilm, etc.)
+    return `
+      <div class="mockup-menubar">
+        <span class="mockup-menu-item"><b>${app.name}</b></span>
+        <span class="mockup-menu-item">File</span>
+        <span class="mockup-menu-item">Edit</span>
+        <span class="mockup-menu-item">Workspace</span>
+        <span class="mockup-menu-item">Help</span>
+      </div>
+      <div class="mockup-ribbon">
+        <div class="mockup-ribbon-left">
+          <span class="mockup-tool-chip active">🔨 Studio Workbench</span>
+          <span class="mockup-tool-chip">${app.artcraftEquivalent || 'Native Engine'}</span>
+        </div>
+        <div class="mockup-ribbon-right">
+          <span class="mockup-tool-chip" style="background: rgba(212,175,55,0.2); color: #d4af37; border-color: rgba(212,175,55,0.4);">
+            ✨ In Development Roadmap
+          </span>
+        </div>
+      </div>
+      <div class="mockup-cockpit-layout" style="grid-template-columns: 220px 1fr 260px;">
+        <div class="mockup-left-pane">
+          <div class="mockup-pane-heading">📁 Project Assets</div>
+          <div class="mockup-tool-card"><div class="mockup-tool-title">Track 01</div><div class="mockup-tool-desc">Master Timeline Stream</div></div>
+          <div class="mockup-tool-card"><div class="mockup-tool-title">Layers & Nodes</div><div class="mockup-tool-desc">Vector Curve Engine</div></div>
+        </div>
+        <div class="mockup-center-stage" style="flex-direction: column; gap: 14px;">
+          <div style="font-size: 48px;">${app.icon === 'film' ? '🎬' : (app.icon === 'vector' ? '✒️' : (app.icon === 'audio' ? '🎵' : '🎨'))}</div>
+          <h2 style="font-size: 20px; font-weight: 700; color: #f8fafc; margin: 0;">${app.name} Native Studio</h2>
+          <p style="color: #94a3b8; font-size: 13px; max-width: 480px; text-align: center; line-height: 1.6; margin: 0;">
+            ${app.description[this.lang]}
+          </p>
+          <div style="display: flex; gap: 8px; margin-top: 10px;">
+            <span class="mockup-tool-chip" style="border-color: ${app.accentColor}; color: ${app.accentColor};">
+              100% In-Device RAM Privacy
+            </span>
+            <span class="mockup-tool-chip">Fast GPU Hardware Acceleration</span>
+          </div>
+        </div>
+        <div class="mockup-right-pane">
+          <div class="mockup-pane-heading">⚙️ Engine Parameters</div>
+          <div class="mockup-tool-card"><div class="mockup-tool-title">Processing Seam</div><div class="mockup-tool-desc">Isolated Multi-Thread Worker</div></div>
+          <div class="mockup-tool-card"><div class="mockup-tool-title">Render Target</div><div class="mockup-tool-desc">DirectX 12 / WebGPU Native</div></div>
+        </div>
+      </div>
+    `;
+  }
+
   private renderHeader(): string {
     return `
     <header class="portal-header" role="banner">
@@ -1093,6 +1416,9 @@ class MeCraftsPortal {
           <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Repository</a>
           <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="footer-link">Releases (v3.2.1)</a>
           <a href="https://github.com/methastrategy/meCraft/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="footer-link">MIT License</a>
+          ${!this.currentSession ? `
+            <button type="button" class="footer-link btn-trigger-auth" id="footer-btn-open-auth">${this.t.signInBtn}</button>
+          ` : ''}
           <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="footer-link footer-link-gold">⬇ Download meCraft-Setup.exe</a>
         </nav>
         <p class="footer-copy">${this.t.footerCopyright}</p>
@@ -1217,11 +1543,13 @@ class MeCraftsPortal {
     }
 
     // Web Portal Auth Modal Open / Close
-    document.getElementById('btn-open-auth')?.addEventListener('click', () => {
-      this.isAuthModalOpen = true;
-      this.authError = '';
-      this.render();
-      this.attachListeners();
+    document.querySelectorAll('.btn-trigger-auth, #btn-open-auth, #hero-btn-open-auth, #footer-btn-open-auth').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.isAuthModalOpen = true;
+        this.authError = '';
+        this.render();
+        this.attachListeners();
+      });
     });
 
     document.getElementById('btn-close-auth-modal')?.addEventListener('click', () => {
@@ -1414,6 +1742,41 @@ class MeCraftsPortal {
         this.updateGrid();
       });
     });
+
+    // Desktop App UI Preview Modal listeners
+    this.bindPreviewButtons();
+
+    document.getElementById('btn-close-preview-x')?.addEventListener('click', () => {
+      this.closeDesktopPreview();
+    });
+    document.getElementById('modal-preview-backdrop')?.addEventListener('click', () => {
+      this.closeDesktopPreview();
+    });
+    document.getElementById('btn-close-preview-footer')?.addEventListener('click', () => {
+      this.closeDesktopPreview();
+    });
+  }
+
+  private closeDesktopPreview() {
+    this.isPreviewModalOpen = false;
+    this.previewAppId = null;
+    this.render();
+    this.attachListeners();
+  }
+
+  private bindPreviewButtons() {
+    document.querySelectorAll<HTMLButtonElement>('[data-preview-app]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const appId = btn.getAttribute('data-preview-app');
+        if (appId) {
+          this.previewAppId = appId;
+          this.isPreviewModalOpen = true;
+          this.render();
+          this.attachListeners();
+        }
+      });
+    });
   }
 
   private updateGrid() {
@@ -1428,6 +1791,7 @@ class MeCraftsPortal {
            <div class="apps-empty-icon">🔍</div>
            <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
          </div>`;
+    this.bindPreviewButtons();
   }
 }
 
