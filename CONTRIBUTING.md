@@ -23,6 +23,11 @@ Before contributing, please review our core engineering invariants:
    - Latin fonts MUST come BEFORE Thai fonts in font stacks (`'Plus Jakarta Sans', 'Inter', 'IBM Plex Sans Thai'`) to eliminate diacritic clipping and maintain optical vertical alignment.
    - Design tokens must be imported from `@mecraft/ui-tokens` as the single source of truth.
 
+5. **Architectural References:**
+   - Review [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) before altering cross-package interfaces.
+   - Review [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) before styling new UI surfaces.
+   - Review [docs/ROADMAP.md](docs/ROADMAP.md) for planned capabilities and milestones.
+
 ---
 
 ## 🚀 Quick Setup

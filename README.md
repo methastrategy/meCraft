@@ -13,17 +13,29 @@
 [![GitHub Stars](https://img.shields.io/github/stars/methastrategy/meCraft?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/methastrategy/meCraft?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/network)
 [![Tauri v2](https://img.shields.io/badge/Desktop-Tauri%20v2%20(Rust)-ea580c?style=for-the-badge&logo=tauri)](https://tauri.app/)
-[![Client-Side Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-blue?style=for-the-badge&logo=shield)](https://mecrafts.vercel.app)
+[![Client-Side Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-blue?style=for-the-badge&logo=shield)](SECURITY.md)
 [![Tests Passing](https://img.shields.io/badge/Tests-226%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 ---
 
 ### 🌐 Quick Access
-- 🚀 **Official Web Portal (Zero-Install):** [https://mecrafts.vercel.app](https://mecrafts.vercel.app)
+- 🚀 **Official Web Portal (Zero-Install):** [https://mecrafts.vercel.app](https://mecrafts.vercel.app)  
+  *(Deployment repository: [methastrategy/meCrafts-web](https://github.com/methastrategy/meCrafts-web))*
 - 📄 **mePDF Web Studio:** [https://mecrafts.vercel.app/mepdf/](https://mecrafts.vercel.app/mepdf/)
 - 🪄 **mePhoto Web Studio:** [https://mecrafts.vercel.app/mephoto/](https://mecrafts.vercel.app/mephoto/)
-- 💾 **Download Desktop (.exe):** [GitHub Releases](https://github.com/methastrategy/meCraft/releases)
+- 💾 **Download Desktop Installer (.exe):** [GitHub Releases](https://github.com/methastrategy/meCraft/releases)
+
+---
+
+## 📚 Documentation Index
+- 🏗️ **[System Architecture](docs/ARCHITECTURE.md)** — Monorepo Seams, Universal ClipBus, 4-Point Homography, and Worker Pipelines
+- 🎨 **[Design System Specification](docs/DESIGN_SYSTEM.md)** — Neue Klasse Luxury Dark Studio, OKLCH Tokens, Thai-Latin Typography
+- 🗺️ **[Ecosystem Master Roadmap](docs/ROADMAP.md)** — Work Breakdown Structure, Feature Gates, and Upcoming Apps (`meVector`, `meDoc`)
+- 🤝 **[Contributing Guidelines](CONTRIBUTING.md)** — Local Setup, Quality Gates, and Branch Conventions
+- 📝 **[Changelog](CHANGELOG.md)** — Semantic Versioning Release Notes
+- 🔒 **[Security & Privacy Policy](SECURITY.md)** — 100% In-Browser Privacy Guarantee & Vulnerability Disclosure
+- 📄 **[License (MIT)](LICENSE)** — Open Source License
 
 ---
 
@@ -46,8 +58,8 @@ flowchart TD
         Launcher["🚀 meCraft Launcher Hub\n(Desktop Window Manager & Web Portal)"]
         PDF["📄 mePDF Studio\n(Lossless Compression, AES-256, OCR, Merge/Split)"]
         Photo["🪄 mePhoto Studio\n(CamScanner-Grade Magic Color, Non-Destructive Deskew)"]
-        Vector["📐 meVector (Coming Soon)\n(Bézier SVG/PDF Graphic Workbench)"]
-        Doc["📝 meDoc (In Development)\n(Typewriter & Markdown Publication)"]
+        Vector["📐 meVector (Roadmap)\n(Bézier SVG/PDF Graphic Workbench)"]
+        Doc["📝 meDoc (Roadmap)\n(Typewriter & Markdown Publication)"]
     end
 
     Tokens --> Launcher
@@ -64,12 +76,29 @@ flowchart TD
 
 ---
 
+## ⚖️ Engineering Invariants & Non-Negotiables (กฎเหล็กที่ไม่สามารถประนีประนอมได้)
+
+1. **🛡️ 100% In-Browser & Local Sandbox Invariant:**
+   All document processing (PDF parsing, OCR, image deskew, and encryption) MUST execute on the local client device. Never transmit document bytes or images to remote servers.
+2. **🪶 Memory Ceiling & LRU Cache Invariant:**
+   DOM and JS heap memory must remain below 180MB when working on 100-page documents. The LRU thumbnail cache evicts pages at 120 items to eliminate iOS Safari canvas memory crashes.
+3. **🇹🇭 Thai-Latin Mixed-Script Typography Invariant:**
+   Latin typefaces MUST precede Thai fonts (`'Plus Jakarta Sans', 'Inter', 'IBM Plex Sans Thai'`). Thai text requires `letter-spacing: 0` and `line-height >= 1.70` to prevent diacritic clipping.
+4. **⚡ 120fps Compositor-Only Motion Invariant:**
+   All animations must bind to `transform` and `opacity` only. Never animate layout-triggering properties (`width`, `height`, `top`, `left`, `margin`).
+5. **👆 Decoupled 44px Hit-Target Invariant:**
+   Touch interactive targets on mobile and tablets must provide a minimum bounding hit-box of $\ge 44 \times 44\text{ px}$.
+6. **📦 Zero-Defect Monorepo Quality Gate:**
+   Every milestone requires 100% test pass rate (`npm test`, 226/226 tests) and zero TypeScript errors (`npm run typecheck`).
+
+---
+
 ## 📦 Application Suite Overview
 
 | Application | Workspace | Description | Technology Stack | Deployment | Status |
 |:---|:---|:---|:---|:---:|:---:|
-| **🚀 meCraft Launcher Hub** | `apps/mecraft-launcher` | Unified command portal, native process spawner (`DETACHED_PROCESS`), universal drag-and-drop auto-routing, and bilingual Thai/EN cockpit. | Tauri v2, Rust, Vite, TypeScript | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
-| **📄 mePDF Studio** | `apps/mepdf` | Complete client-side PDF engineering: Merge, Split, Dual-Engine Smart Compression (Lossless & Scanned), 256-bit AES encryption, and searchable OCR injection. | PDF.js, pdf-lib, Web Workers | Web + Windows (.exe) | **Stable** (`v3.1.0`) |
+| **🚀 meCraft Launcher Hub** | `apps/mecraft-launcher` | Unified command portal, native process spawner (`DETACHED_PROCESS`), universal drag-and-drop auto-routing, and bilingual Thai/EN cockpit. | Tauri v2, Rust, Vite, TypeScript | Web + Windows (.exe) | **Stable** (`v3.2.0`) |
+| **📄 mePDF Studio** | `apps/mepdf` | Complete client-side PDF engineering: Merge, Split, Dual-Engine Smart Compression (Lossless & Scanned), 256-bit AES encryption, and searchable OCR injection. | PDF.js, pdf-lib, Web Workers | Web + Windows (.exe) | **Stable** (`v3.2.0`) |
 | **🪄 mePhoto Studio** | `apps/mephoto` | CamScanner-grade document lab: 4-point homography perspective warp, adaptive Otsu binarization, Magic Color enhancement, and unsharp text sharpening. | Canvas API, `@mecraft/photo-core` | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
 | **📐 meVector** | `apps/mevector` | Precision Bézier vector illustrator, boolean path operations, and infinite-resolution SVG/PDF export. | Vector Canvas Engine | Planned | *Roadmap* |
 | **📝 meDoc** | `apps/medoc` | Distraction-free typewriter, live LaTeX formula rendering, bilingual grammar engine, and academic publishing. | Typography Engine | In Development | *Roadmap* |
@@ -90,31 +119,9 @@ flowchart TD
 
 ---
 
-## 🛠️ Shared Engineering Foundations
-
-### 1. `@mecraft/core-bridge`
-- **Universal Dual-Mode Bridge:** Detects Tauri desktop vs Web browser automatically. Supports native Rust subprocess spawning (`launch_app`) and zero-install Web tab routing.
-- **Universal ClipBus (`clip-bus.ts`):** Cross-application in-memory message and asset bus (via `BroadcastChannel` with `localStorage` fallback) enabling seamless 1-click photo-to-PDF handoffs.
-- **Universal Recent Projects:** Persistent document history across all applications with thumbnail preservation.
-
-### 2. `@mecraft/photo-core`
-- **4-Point Homography Perspective Warp:** Matrix calculation via Gaussian elimination with singular-matrix protection and sub-pixel bilinear interpolation.
-- **Adaptive Otsu Binarization:** Auto-threshold document extraction separating crisp text ink from uneven paper backgrounds and receipt shadows.
-- **Client-Side Invisible OCR Layer:** Generates invisible searchable text layers embedded on scanned PDFs with character bounding-box accuracy.
-
-### 3. `@mecraft/ui-tokens`
-- **OLED Dark Surface Design:** High-contrast `#06070a` OLED foundation with precision `#6366f1` (Indigo) and `#06b6d4` (Cyan) accents.
-- **Thai-Latin Mixed Typography:** Latin typeface priority (`"Inter", "IBM Plex Sans Thai"`) eliminating diacritic clipping and maintaining optical vertical alignment.
-
----
-
 ## 💻 Building & Packaging
 
-### Prerequisites
-- **Node.js** `>= 20.x`
-- **Rust Toolchain** `>= 1.78` (only required when building native Windows desktop binaries)
-
-### 1. Quick Start
+### Quick Start
 ```bash
 # Clone the repository
 git clone https://github.com/methastrategy/meCraft.git
@@ -130,132 +137,25 @@ npm test
 npm run typecheck
 ```
 
-### 2. Local Development Servers
+### Local Development
 ```bash
-# meCraft Launcher Hub (Web mode)
-npm run dev:launcher
-
-# mePDF Studio (Web mode)
-npm run dev:pdf
-
-# mePhoto Studio (Web mode)
-npm run dev:photo
+# Web development servers
+npm run dev:launcher   # Launcher Hub (http://localhost:5175)
+npm run dev:pdf        # mePDF Studio (http://localhost:5173)
+npm run dev:photo      # mePhoto Studio (http://localhost:5174)
 ```
 
-### 3. Native Windows Desktop Development (Tauri v2)
+### Production Build & Packaging
 ```bash
-# Launch Desktop Launcher with Rust hot-reload
-npm run desktop:launcher
-
-# Launch Desktop mePDF Studio
-npm run desktop:pdf
-
-# Launch Desktop mePhoto Studio
-npm run desktop:photo
-```
-
-### 4. Production Web Build (Vercel Multi-App Portal)
-```bash
-# Assembles unified root dist/ (Launcher at /, mePDF at /mepdf/, mePhoto at /mephoto/)
+# Assemble multi-app web distribution into dist/
 npm run build:web
-```
 
-### 5. Packaging Windows Executables (.exe)
-```bash
-# Build native release binary for launcher
-cd apps/mecraft-launcher
-npm run desktop:build
-
-# Build native release binary for mePDF Studio
-cd ../mepdf
-npm run desktop:build
-
-# Build native release binary for mePhoto Studio
-cd ../mephoto
-npm run desktop:build
-```
-> Generated binaries are placed in `src-tauri/target/release/` inside each application directory.
-
----
-
-## 🤖 Automated CI/CD & High-Speed Parallel Matrix Releases
-
-This repository includes an enterprise-grade GitHub Actions parallel matrix workflow at [`.github/workflows/build-and-release.yml`](.github/workflows/build-and-release.yml).
-
-### Parallel 3x Acceleration Matrix
-Instead of compiling applications sequentially (12–15 minutes), GitHub Actions executes a **3-stage parallel pipeline**:
-1. **Quality Gate (`verify`):** Runs tests (226 tests) and TypeScript typecheck across all 6 workspaces in parallel (< 1 min).
-2. **Parallel Matrix Compilation (`build-app`):** Automatically spins up **3 dedicated Windows VMs simultaneously** to compile `meCraft Launcher`, `mePDF Studio`, and `mePhoto Studio` in parallel (~3–4 min).
-3. **Atomic Release Publisher (`publish-release`):** Aggregates the unified `meCraft-Setup.exe` installer alongside in-app ecosystem runtime packages.
-
-### 📦 Single Unified Windows Installer Architecture (v3.2.0+)
-Users only need to download a single installer for the entire ecosystem:
-- **`meCraft-Setup.exe`**: Official setup wizard with Desktop & Start Menu shortcuts, automatic launch on completion (`hooks.nsh`), and 1-click in-app management.
-- **In-App Ecosystem**: `mePDF Studio` and `mePhoto Studio` are installed and launched directly from inside meCraft Hub with one click.
-
-### Granular Tag Triggers
-- **Full Suite Release:**
-  ```bash
-  git tag v3.2.0
-  git push origin v3.2.0
-  ```
-- **App-Specific Targeted Releases (Only builds the requested application):**
-  ```bash
-  # Release ONLY mePDF Studio (~3 min)
-  git tag mepdf-v3.1.0
-  git push origin mepdf-v3.1.0
-
-  # Release ONLY mePhoto Studio (~3 min)
-  git tag mephoto-v1.0.0
-  git push origin mephoto-v1.0.0
-
-  # Release ONLY meCraft Launcher (~2 min)
-  git tag launcher-v1.0.0
-  git push origin launcher-v1.0.0
-  ```
-
-### Release Formats
-- **Windows Installers (`.msi` / `setup.exe`):** Official setup wizards with Desktop & Start Menu shortcuts and automatic system file associations (`.pdf`, `.png`, `.jpg`).
-  - `mecraft-launcher-setup.exe` / `mecraft-launcher.msi`
-  - `mepdf-setup.exe` / `mepdf.msi`
-  - `mephoto-setup.exe` / `mephoto.msi`
-- **Portable Standalone Executables (`.exe` / `.zip`):** Single-file binaries with zero-install, zero-admin execution.
-  - `mecraft-launcher.exe` / `mecraft-launcher-windows-x64.zip`
-  - `mepdf.exe` / `mepdf-windows-x64.zip`
-  - `mephoto.exe` / `mephoto-windows-x64.zip`
-
----
-
-## 📂 Repository Architecture
-
-```text
-meCraft/
-├── apps/
-│   ├── mecraft-launcher/     # Desktop Ecosystem Hub & Web Portal (Tauri v2 + Vite + TS)
-│   ├── mepdf/                # Pure Client-Side PDF Engineering Studio
-│   └── mephoto/              # CamScanner-Grade Document & Photo Studio
-├── packages/
-│   ├── core-bridge/          # Universal IPC, ClipBus, Catalog & History manager
-│   ├── photo-core/           # 4-Point Homography, Otsu Binarizer & Searchable OCR
-│   └── ui-tokens/            # Shared OLED Design Tokens & Thai-Latin Typography
-├── scripts/
-│   └── build-web.js          # Unified Multi-App Web Assembler for Vercel
-├── public/                   # Static icons, favicons, and manifest assets
-├── .github/
-│   ├── ISSUE_TEMPLATE/       # Bug Report & Feature Request Templates
-│   ├── workflows/
-│   │   └── build-and-release.yml # Automated Windows Native Packaging & GitHub Release CI
-│   └── PULL_REQUEST_TEMPLATE.md  # Pull Request Verification Checklist
-├── CHANGELOG.md              # Keep a Changelog Release History
-├── CONTRIBUTING.md           # Contributor Guidelines & Privacy Invariants
-├── vercel.json               # Vercel Multi-App Rewrite & Header Configuration
-├── vitest.workspace.ts       # Unified Vitest Workspace Configuration
-├── package.json              # Monorepo Workspace Configuration
-└── README.md                 # Official Suite Documentation
+# Generate installer luxury dark bitmaps
+npm run generate:bitmaps
 ```
 
 ---
 
 ## 📄 License
 
-meCraft Suite is open-source software licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
+meCraft Suite is open-source software licensed under the **[MIT License](LICENSE)**.
