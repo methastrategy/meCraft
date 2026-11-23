@@ -177,6 +177,31 @@ describe('Phase 2B - Cloud & Auth Service Layer', () => {
       unsubscribe();
     });
 
+    it('synchronizes authentication state automatically when meCrafts Web Hub signs in', async () => {
+      const { saveAuthSession, clearAuthSession, createMockAuthSession } = await import('@mecraft/core-bridge');
+
+      let syncedUser: UserProfile | null = null;
+      const unsubscribe = authService.onAuthStateChange((user) => {
+        syncedUser = user;
+      });
+
+      // Simulate sign in from meCrafts Web Portal
+      const webSession = createMockAuthSession('web_synced@mecraft.dev', 'pro_monthly');
+      saveAuthSession(webSession);
+
+      expect(authService.isAuthenticated()).toBe(true);
+      expect(authService.getCurrentUser()?.email).toBe('web_synced@mecraft.dev');
+      expect(authService.getCurrentUser()?.tier).toBe('pro');
+      expect(syncedUser?.email).toBe('web_synced@mecraft.dev');
+
+      // Simulate sign out from meCrafts Web Portal
+      clearAuthSession();
+      expect(authService.isAuthenticated()).toBe(false);
+      expect(authService.getCurrentUser()).toBeNull();
+
+      unsubscribe();
+    });
+
     it('supports Magic Link and Password sign in flows', async () => {
       // Magic Link
       await authService.signInWithMagicLink('magic@mepdf.app');

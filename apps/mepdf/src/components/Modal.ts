@@ -36,6 +36,8 @@ import {
   showPdfToImagesModal,
   showConfirmModal,
   showPasswordPromptModal,
+  UpdateModalController,
+  type UpdateInfo,
 } from './modals';
 
 export { getDefaultSplitRange };
@@ -308,6 +310,11 @@ export class ModalManager implements ModalContext {
     password?: string
   ): void {
     showPdfToImagesModal(this, documentBytes, filename, password);
+  }
+
+  showUpdateModal(info?: Partial<UpdateInfo>): void {
+    const controller = new UpdateModalController(this);
+    controller.show(info);
   }
 }
 

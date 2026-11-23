@@ -9,3 +9,4 @@ export * from './ExtractTextModalController';
 export * from './ImagesToPdfModalController';
 export * from './PdfToImagesModalController';
 export * from './PromptModalController';
+export * from './UpdateModalController';

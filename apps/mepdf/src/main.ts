@@ -132,8 +132,8 @@ class MeCraftApp {
       },
     });
 
-    // Lock theme permanently to Neue Klasse Luxury
-    document.documentElement.setAttribute('data-theme', 'bmw');
+    // Lock theme permanently to Navy Black Pro Cockpit
+    document.documentElement.setAttribute('data-theme', 'navy-black');
 
     this.renderShell();
     this.initCockpitComponents();
@@ -146,14 +146,30 @@ class MeCraftApp {
   private renderShell(): void {
     const lang = getLanguage();
     this.appEl.innerHTML = `
+      <!-- In-App Auto-Update Notification Banner (AGY-style One-Click Update) -->
+      <div id="app-update-banner" class="app-update-banner" role="alert">
+        <div class="update-banner-content">
+          <span class="update-badge">UPDATE</span>
+          <span class="update-text" id="update-banner-text">🎉 มีการอัปเดตเวอร์ชันใหม่ <strong>v3.2.1</strong> สำหรับ mePDF Studio Pro พร้อมติดตั้ง</span>
+        </div>
+        <div class="update-banner-actions">
+          <button class="btn btn-primary btn-xs update-btn-pulse" id="update-banner-action-btn">
+            <i data-lucide="sparkles" style="width: 12px; height: 12px;"></i>
+            <span>อัปเดตทันที (Update Now)</span>
+          </button>
+          <button class="btn btn-ghost btn-xs update-banner-dismiss" id="update-banner-dismiss-btn" title="ปิด">✕</button>
+        </div>
+      </div>
+
       <!-- Desktop Studio Native-Grade Menu Bar -->
       <div id="app-menubar" class="app-menubar-container"></div>
 
-      <!-- Top Command Ribbon (BMW Neue Klasse Luxury Style) -->
+      <!-- Top Command Ribbon (Navy Black Pro Studio) -->
       <header class="command-ribbon navbar">
         <div class="ribbon-brand-section">
           <div class="ribbon-logo">
-            <span>meCraft</span>
+            <i data-lucide="file-text" style="width: 18px; height: 18px; color: #3b82f6;"></i>
+            <span>mePDF Pro</span>
           </div>
           <span class="ribbon-doc-info" id="ribbon-doc-info" style="display: none;"></span>
         </div>
@@ -436,6 +452,9 @@ class MeCraftApp {
       onOpenAboutModal: () => {
         this.showAboutModal();
       },
+      onCheckUpdates: () => {
+        modal.showUpdateModal();
+      },
       onToggleLanguage: () => {
         const nextLang = getLanguage() === 'th' ? 'en' : 'th';
         setLanguage(nextLang);
@@ -550,6 +569,21 @@ class MeCraftApp {
   }
 
   private initEventListeners(): void {
+    // In-App Auto-Update Banner actions
+    const updateBanner = this.appEl.querySelector<HTMLElement>('#app-update-banner');
+    const updateActionBtn = this.appEl.querySelector<HTMLButtonElement>('#update-banner-action-btn');
+    const updateDismissBtn = this.appEl.querySelector<HTMLButtonElement>('#update-banner-dismiss-btn');
+
+    updateActionBtn?.addEventListener('click', () => {
+      modal.showUpdateModal();
+    });
+
+    updateDismissBtn?.addEventListener('click', () => {
+      if (updateBanner) {
+        updateBanner.style.display = 'none';
+      }
+    });
+
     // Browse & Add files via Platform Bridge
     const ribbonAddBtn = this.appEl.querySelector('#ribbon-add-files-btn');
     ribbonAddBtn?.addEventListener('click', () => {

@@ -15,7 +15,11 @@ import {
   getTierBadge,
   isFeatureUnlocked,
   isOfflineGraceValid,
+  onAuthSessionChange,
+  exportAuthSyncCode,
+  importAuthSyncCode,
   escapeHtml,
+  TRANSLATIONS,
 } from '../src/main';
 
 describe('meCraft Launcher Core & Catalog Engine', () => {
@@ -330,6 +334,30 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       const clean = escapeHtml(maliciousPayload);
       expect(clean).not.toContain('<script>');
       expect(clean).toBe('&lt;script&gt;alert(&quot;pwned&quot;)&lt;/script&gt;&amp;&quot;&#39;');
+    });
+
+    it('contains complete bilingual translations for web auth and desktop synchronization', () => {
+      expect(TRANSLATIONS.en.signInBtn).toBe('Sign In');
+      expect(TRANSLATIONS.th.signInBtn).toBe('เข้าสู่ระบบ');
+      expect(TRANSLATIONS.en.signUpBtn).toBe('Create Account');
+      expect(TRANSLATIONS.th.signUpBtn).toBe('สมัครสมาชิก');
+      expect(TRANSLATIONS.en.syncDesktopBtn).toBe('Sync to Desktop');
+      expect(TRANSLATIONS.th.syncDesktopBtn).toBe('เชื่อมต่อ Desktop');
+    });
+
+    it('supports web-to-desktop handoff via exportAuthSyncCode and importAuthSyncCode', () => {
+      const webSession = createMockAuthSession('web_user@mecraft.dev', 'pro_monthly');
+      const syncCode = exportAuthSyncCode(webSession);
+
+      expect(syncCode).toMatch(/^MC3\./);
+
+      clearAuthSession();
+      expect(getAuthSession()).toBeNull();
+
+      const desktopSession = importAuthSyncCode(syncCode);
+      expect(desktopSession).not.toBeNull();
+      expect(desktopSession?.user.email).toBe('web_user@mecraft.dev');
+      expect(desktopSession?.user.tier).toBe('pro_monthly');
     });
   });
 });

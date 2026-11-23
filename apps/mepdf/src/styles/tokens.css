@@ -2,7 +2,9 @@
 
 :root {
   /* Layout Sizing & Header Viewport Tokens */
-  --ribbon-height: 100px;
+  --ribbon-height: 96px;
+  --menubar-height: 32px;
+  --statusbar-height: 28px;
 }
 
 @media (max-width: 900px) {
@@ -18,34 +20,37 @@
 }
 
 /* ========================================================
-   BMW NEUE KLASSE LUXURY COCKPIT THEME (DIRECTION A ENHANCED)
-   - Obsidian Chassis: #090a0f
-   - Precision Electric Blue & Laser Cyan
-   - Frosted Curved Glass Panels with 1px Highlight Rim
-   - German Ultra-Thin Hairlines & Tabular Precision
+   mePDF STUDIO PRO — NAVY BLACK COCKPIT THEME
+   - Ultra Deep Midnight Navy Chassis: #050811
+   - Rich Navy Blue Surface Base: #0e1628
+   - Elevated Cobalt Panels: #152038
+   - Precision Electric Blue & Laser Sky: #2563eb / #38bdf8
+   - Frosted Glass Panels with 1px Blue Hairline Rim
    ======================================================== */
+:root,
+[data-theme="navy-black"],
 [data-theme="bmw"] {
   color-scheme: dark;
 
-  /* Color Tokens - BMW Obsidian Chassis */
-  --bg-oled: #050608;
-  --bg-app: #090a0f;
-  --surface-base: #10121a;
-  --surface-raised: #161922;
-  --surface-overlay: rgba(22, 25, 34, 0.88);
-  --surface-active: #1f2330;
+  /* Color Tokens - Midnight Navy Black Chassis */
+  --bg-oled: #03050a;
+  --bg-app: #060913;
+  --surface-base: #0c1322;
+  --surface-raised: #121c32;
+  --surface-overlay: rgba(18, 28, 50, 0.92);
+  --surface-active: #1a2744;
 
-  /* German Precision Hairlines & Doppelrand */
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-medium: rgba(255, 255, 255, 0.14);
-  --border-focus: #5068f2;
+  /* Precision Blue-Tinged Hairlines & Doppelrand */
+  --border-subtle: rgba(96, 165, 250, 0.10);
+  --border-medium: rgba(96, 165, 250, 0.20);
+  --border-focus: #3b82f6;
 
-  /* Precision Electric Indigo & Laser Cyan Aura */
-  --primary: #4f5ff7;
-  --primary-hover: #6170fa;
-  --primary-active: #3e4ce3;
-  --primary-glow: rgba(79, 95, 247, 0.32);
-  --accent-cyan: #06b6d4;
+  /* Precision Electric Cobalt & Laser Sky Aura */
+  --primary: #2563eb;
+  --primary-hover: #3b82f6;
+  --primary-active: #1d4ed8;
+  --primary-glow: rgba(37, 99, 235, 0.38);
+  --accent-cyan: #38bdf8;
   --accent-on-primary: #ffffff;
 
   /* Functional Telemetry Accents */
@@ -58,25 +63,67 @@
   --warning-bg: rgba(245, 158, 11, 0.15);
 
   /* High-Contrast Luxury Typography */
-  --text-primary: #ffffff;
-  --text-secondary: #c5cdd9;
-  --text-muted: #8b97a8;
-  --text-inverse: #090a0f;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #8494ab;
+  --text-inverse: #060913;
 
-  /* BMW Curved Cockpit Glass Geometry */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
+  /* Acrobat Studio Glass Geometry */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
   --radius-full: 9999px;
-  --radius-outer: 16px;
+  --radius-outer: 12px;
   --radius-inner: max(0px, calc(var(--radius-outer) - 1px - 4px));
   --corner-r: max(0px, calc(var(--radius-md) - 1px - 4px));
 
-  /* Cockpit Elevation, Shadows & Rim Highlight */
-  --shadow-inner-rim: inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  --shadow-inner-subtle: inset 0 0.5px 0 rgba(255, 255, 255, 0.05);
+  /* Studio Elevation, Shadows & Rim Highlight */
+  --shadow-inner-rim: inset 0 1px 0 rgba(147, 197, 253, 0.15);
+  --shadow-inner-subtle: inset 0 0.5px 0 rgba(147, 197, 253, 0.08);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.6);
-  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.85);
-  --shadow-glow: 0 0 28px rgba(79, 95, 247, 0.35);
+  --shadow-md: 0 6px 18px rgba(3, 5, 10, 0.7);
+  --shadow-lg: 0 18px 44px rgba(3, 5, 10, 0.85);
+  --shadow-glow: 0 0 28px rgba(37, 99, 235, 0.35);
+}
+
+/* Optional Slate Light Mode for Document Printing Review */
+[data-theme="slate-light"] {
+  color-scheme: light;
+  --bg-oled: #e2e8f0;
+  --bg-app: #f1f5f9;
+  --surface-base: #ffffff;
+  --surface-raised: #f8fafc;
+  --surface-overlay: rgba(255, 255, 255, 0.94);
+  --surface-active: #e2e8f0;
+
+  --border-subtle: rgba(15, 23, 42, 0.10);
+  --border-medium: rgba(15, 23, 42, 0.20);
+  --border-focus: #2563eb;
+
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-active: #1e40af;
+  --primary-glow: rgba(37, 99, 235, 0.20);
+  --accent-cyan: #0284c7;
+  --accent-on-primary: #ffffff;
+
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --danger-bg: rgba(220, 38, 38, 0.10);
+  --success: #16a34a;
+  --success-bg: rgba(22, 163, 74, 0.10);
+  --warning: #d97706;
+  --warning-bg: rgba(217, 119, 6, 0.10);
+
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+
+  --shadow-inner-rim: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --shadow-inner-subtle: inset 0 0.5px 0 rgba(255, 255, 255, 0.5);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.15);
+  --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.20);
 }

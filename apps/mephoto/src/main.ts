@@ -8,7 +8,13 @@ import {
   type QuadCorners,
   type Point2D,
 } from '@mecraft/photo-core';
-import { clipBus, createLauncherBridge } from '@mecraft/core-bridge';
+import {
+  clipBus,
+  createLauncherBridge,
+  getAuthSession,
+  onAuthSessionChange,
+  type AuthSession,
+} from '@mecraft/core-bridge';
 import { downloadBlob } from './utils/file-utils';
 import type { PhotoDocumentItem, ViewportMode } from './core/types';
 
@@ -44,13 +50,21 @@ class MePhotoStudio {
   private pinTR!: SVGCircleElement;
   private pinBR!: SVGCircleElement;
   private pinBL!: SVGCircleElement;
+  private currentSession: AuthSession | null = null;
 
   constructor() {
+    this.currentSession = getAuthSession();
     this.appEl = document.getElementById('app')!;
     this.renderLayout();
     this.initCanvas();
     this.attachGlobalEvents();
     this.initClipBus();
+    this.updateUserIndicator();
+
+    onAuthSessionChange((session) => {
+      this.currentSession = session;
+      this.updateUserIndicator();
+    });
   }
 
   private processedClipBusIds = new Set<string>();
@@ -71,6 +85,23 @@ class MePhotoStudio {
         if (p.id) this.processedClipBusIds.add(p.id);
         void this.importFromDataUrl(p.dataUrl, p.name || 'mePhoto_Import.jpg');
       }
+    }
+  }
+
+  private updateUserIndicator() {
+    const container = document.getElementById('photo-user-container');
+    if (!container) return;
+    if (this.currentSession) {
+      const email = this.currentSession.user.email;
+      const initial = (this.currentSession.user.fullName || email).charAt(0).toUpperCase();
+      container.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px; margin-left: 8px; padding: 2px 8px 2px 4px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 9999px; font-size: 11px;">
+          <div style="width: 22px; height: 22px; border-radius: 50%; background: #d4af37; color: #000; font-weight: 700; display: flex; align-items: center; justify-content: center;">${initial}</div>
+          <span style="color: #f0f0f8; font-weight: 500; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${email}">${email}</span>
+        </div>
+      `;
+    } else {
+      container.innerHTML = '';
     }
   }
 
@@ -123,6 +154,7 @@ class MePhotoStudio {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Export Image
           </button>
+          <div id="photo-user-container"></div>
         </div>
       </header>
 

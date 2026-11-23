@@ -64,6 +64,7 @@ export interface MenuBarCallbacks {
   onEnhancePageImage?: () => void;
   onOpenHelpModal: () => void;
   onOpenAboutModal: () => void;
+  onCheckUpdates?: () => void;
   onToggleLanguage: () => void;
 }
 
@@ -254,9 +255,9 @@ export class MenuBar {
     this.container.innerHTML = `
       <div class="menubar-wrapper" role="menubar" aria-label="Main Menu">
         <!-- Brand / Studio Tag -->
-        <div class="menubar-brand" title="meCraft Studio Desktop">
-          <span class="menubar-brand-badge">meCraft</span>
-          <span class="menubar-studio-tag">STUDIO</span>
+        <div class="menubar-brand" title="meCraft mePDF Studio Pro — Native Document Studio">
+          <span class="menubar-brand-badge" style="color: #60a5fa; font-weight: 700;">meCraft mePDF</span>
+          <span class="menubar-studio-tag" style="background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3);">STUDIO</span>
         </div>
 
         <!-- Menu Bar Root Items -->
@@ -452,7 +453,13 @@ export class MenuBar {
               </button>
               <button class="menubar-menu-item" data-action="help-about" role="menuitem">
                 <i data-lucide="info" class="menu-icon"></i>
-                <span class="menu-label">${lang === 'th' ? 'เกี่ยวกับ meCraft Studio' : 'About meCraft Studio'}</span>
+                <span class="menu-label">${lang === 'th' ? 'เกี่ยวกับ mePDF Studio Pro' : 'About mePDF Studio Pro'}</span>
+              </button>
+              <div class="menubar-separator" role="separator"></div>
+              <button class="menubar-menu-item" data-action="check-updates" role="menuitem">
+                <i data-lucide="sparkles" class="menu-icon" style="color: #60a5fa;"></i>
+                <span class="menu-label">${lang === 'th' ? 'ตรวจสอบอัปเดต (Check for Updates)...' : 'Check for Updates...'}</span>
+                <span class="menu-badge" style="font-size: 10px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 2px 6px; border-radius: 4px; margin-left: auto;">NEW</span>
               </button>
             </div>
           </div>
@@ -607,6 +614,9 @@ export class MenuBar {
         break;
       case 'help-about':
         this.callbacks.onOpenAboutModal();
+        break;
+      case 'check-updates':
+        this.callbacks.onCheckUpdates?.();
         break;
     }
   }

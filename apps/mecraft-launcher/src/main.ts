@@ -11,6 +11,10 @@ import {
   getTierBadge,
   isFeatureUnlocked,
   isOfflineGraceValid,
+  onAuthSessionChange,
+  exportAuthSyncCode,
+  importAuthSyncCode,
+  checkUrlAuthHandoff,
   type AppCatalogItem,
   type RecentProject,
   type DownloadProgress,
@@ -80,6 +84,11 @@ export interface PortalTranslations {
   footerTagline: string;
   footerCopyright: string;
   appsCount: string;
+  signInBtn: string;
+  signUpBtn: string;
+  authModalTitle: string;
+  authModalSubtitle: string;
+  syncDesktopBtn: string;
 }
 
 const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
@@ -116,6 +125,11 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     footerTagline: 'Private-First Creative Workstation Suite for Windows',
     footerCopyright: '© 2024 MeStrategy. Open-Source under MIT License.',
     appsCount: '10 Apps',
+    signInBtn: 'Sign In',
+    signUpBtn: 'Create Account',
+    authModalTitle: 'meCraft Studio Account',
+    authModalSubtitle: 'Access Private Suite & Synchronize Entitlements',
+    syncDesktopBtn: 'Sync to Desktop',
   },
   th: {
     brandTitle: 'meCrafts',
@@ -150,6 +164,11 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     footerTagline: 'ชุดโปรแกรมสร้างสรรค์ที่ให้ความเป็นส่วนตัวก่อน สำหรับ Windows',
     footerCopyright: '© 2024 MeStrategy. Open-Source ภายใต้สัญญาอนุญาต MIT',
     appsCount: '10 โปรแกรม',
+    signInBtn: 'เข้าสู่ระบบ',
+    signUpBtn: 'สมัครสมาชิก',
+    authModalTitle: 'บัญชี meCraft Studio',
+    authModalSubtitle: 'เข้าใช้งานชุดโปรแกรมและเชื่อมต่อสิทธิ์การใช้งาน',
+    syncDesktopBtn: 'เชื่อมต่อ Desktop',
   },
 };
 
@@ -421,11 +440,24 @@ class MeCraftsPortal {
   private authTab: 'signin' | 'signup' = 'signin';
   private authError = '';
   private authLoading = false;
+  private isAuthModalOpen = false;
+  private isSyncModalOpen = false;
+  private syncCodeCopied = false;
+  private showSyncImport = false;
 
   constructor() {
-    this.currentSession = getAuthSession();
+    const urlSession = checkUrlAuthHandoff();
+    this.currentSession = urlSession || getAuthSession();
     this.appEl = document.getElementById('app')!;
     this.cleanUrlHash();
+
+    // Subscribe to cross-tab / cross-app real-time auth sync
+    onAuthSessionChange((session) => {
+      this.currentSession = session;
+      this.render();
+      this.attachListeners();
+    });
+
     this.render();
     this.attachListeners();
   }
@@ -475,6 +507,8 @@ class MeCraftsPortal {
         ${this.renderSpecs()}
       </main>
       ${this.renderFooter()}
+      ${this.renderAuthModal()}
+      ${this.renderSyncModal()}
     `;
   }
 
@@ -568,10 +602,148 @@ class MeCraftsPortal {
             </button>
           </div>
 
+          <!-- Desktop Sync Import Box -->
+          <div class="auth-sync-desktop-box">
+            <button type="button" class="btn-toggle-sync-import" id="btn-toggle-sync-import">
+              ${this.showSyncImport 
+                ? (this.lang === 'en' ? '▲ Hide Web Sync Input' : '▲ ซ่อนช่องกรอกรหัสจากเว็บ') 
+                : (this.lang === 'en' ? '📥 Or Paste Sync Code from meCrafts Web' : '📥 หรือวางรหัสเชื่อมต่อจาก meCrafts Web')}
+            </button>
+            <div class="sync-import-form" id="sync-import-drawer" style="${this.showSyncImport ? '' : 'display: none;'}">
+              <input type="text" id="input-sync-code" placeholder="MC3.xxx..." class="input-sync-code" spellcheck="false" />
+              <button type="button" id="btn-submit-sync-code" class="btn-submit-sync">
+                ${this.lang === 'en' ? 'Import & Sign In' : 'นำเข้าและเข้าสู่ระบบ'}
+              </button>
+            </div>
+          </div>
+
           <div class="auth-footer-terms">
             <span>${this.lang === 'en' ? 'By continuing, you agree to our 100% In-Device Privacy Policy.' : 'การเข้าใช้งานถือว่ายอมรับนโยบายความเป็นส่วนตัวในเครื่อง 100%'}</span>
           </div>
         </form>
+      </div>
+    </div>`;
+  }
+
+  private renderAuthModal(): string {
+    const isSignIn = this.authTab === 'signin';
+    return `
+    <div class="auth-modal-overlay ${this.isAuthModalOpen ? 'active' : ''}" id="auth-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-auth-title">
+      <div class="auth-modal-backdrop" id="modal-auth-backdrop"></div>
+      <div class="auth-gate-card auth-modal-card">
+        <button type="button" class="auth-modal-close" id="btn-close-auth-modal" aria-label="Close dialog">✕</button>
+        <div class="auth-brand">
+          <div class="auth-brand-emblem" aria-hidden="true">
+            <svg width="36" height="36" viewBox="0 0 32 32" fill="none">
+              <defs>
+                <linearGradient id="modal-auth-emblem-g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#d4af37"/>
+                  <stop offset="100%" stop-color="#f7d774"/>
+                </linearGradient>
+              </defs>
+              <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#modal-auth-emblem-g)" opacity="0.15"/>
+              <path d="M8 24 L16 8 L24 24" stroke="url(#modal-auth-emblem-g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <path d="M11 19 h10" stroke="url(#modal-auth-emblem-g)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h2 class="auth-title" id="modal-auth-title">${this.t.authModalTitle}</h2>
+          <p class="auth-subtitle">${this.t.authModalSubtitle}</p>
+        </div>
+
+        <div class="auth-tabs" role="tablist">
+          <button class="auth-tab ${isSignIn ? 'active' : ''}" id="modal-tab-signin" role="tab" aria-selected="${isSignIn}">
+            ${this.lang === 'en' ? 'Sign In' : 'เข้าสู่ระบบ'}
+          </button>
+          <button class="auth-tab ${!isSignIn ? 'active' : ''}" id="modal-tab-signup" role="tab" aria-selected="${!isSignIn}">
+            ${this.lang === 'en' ? 'Create Account' : 'สมัครสมาชิก'}
+          </button>
+        </div>
+
+        ${this.authError ? `
+          <div class="auth-alert error" role="alert">
+            <span class="alert-icon">⚠️</span>
+            <span>${escapeHtml(this.authError)}</span>
+          </div>
+        ` : ''}
+
+        <form id="modal-auth-form" class="auth-form">
+          <div class="form-group">
+            <label for="modal-auth-email">${this.lang === 'en' ? 'Email Address' : 'อีเมล'}</label>
+            <div class="input-wrapper">
+              <input type="email" id="modal-auth-email" placeholder="creator@example.com" required autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="modal-auth-password">${this.lang === 'en' ? 'Password' : 'รหัสผ่าน'}</label>
+              ${isSignIn ? `<a href="#forgot" id="modal-link-forgot-pwd" class="auth-link-sm">${this.lang === 'en' ? 'Forgot?' : 'ลืมรหัสผ่าน?'}</a>` : ''}
+            </div>
+            <div class="input-wrapper">
+              <input type="password" id="modal-auth-password" placeholder="••••••••" required minlength="6" autocomplete="${isSignIn ? 'current-password' : 'new-password'}" />
+              <button type="button" id="modal-btn-toggle-pwd" class="btn-toggle-pwd" aria-label="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+
+          ${!isSignIn ? `
+            <div class="form-group">
+              <label for="modal-auth-fullname">${this.lang === 'en' ? 'Full Name / Studio' : 'ชื่อ-นามสกุล หรือชื่อสตูดิโอ'}</label>
+              <div class="input-wrapper">
+                <input type="text" id="modal-auth-fullname" placeholder="John Doe" autocomplete="name" />
+              </div>
+            </div>
+          ` : ''}
+
+          <button type="submit" class="btn-auth-submit" id="modal-btn-auth-submit" ${this.authLoading ? 'disabled' : ''}>
+            ${this.authLoading 
+              ? (this.lang === 'en' ? 'Authenticating...' : 'กำลังประมวลผล...') 
+              : (isSignIn ? (this.lang === 'en' ? 'Sign In to meCraft' : 'เข้าสู่ระบบ meCraft') : (this.lang === 'en' ? 'Create Free Member Account' : 'สร้างบัญชีสมาชิกฟรี'))}
+          </button>
+
+          <div class="auth-divider"><span>${this.lang === 'en' ? 'OR CONTINUE WITH' : 'หรือเข้าใช้งานด้วย'}</span></div>
+
+          <button type="button" class="btn-auth-google" id="modal-btn-auth-google">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+            <span>Continue with Google</span>
+          </button>
+
+          <div class="auth-demo-box">
+            <button type="button" class="btn-auth-demo" id="modal-btn-auth-demo">
+              ⚡ ${this.lang === 'en' ? 'Quick Free Member Demo (Offline Bypass)' : 'เข้าสู่ระบบทดลองใช้งานทันที (Free Member)'}
+            </button>
+          </div>
+
+          <div class="auth-footer-terms">
+            <span>${this.lang === 'en' ? 'By continuing, you agree to our 100% In-Device Privacy Policy.' : 'การเข้าใช้งานถือว่ายอมรับนโยบายความเป็นส่วนตัวในเครื่อง 100%'}</span>
+          </div>
+        </form>
+      </div>
+    </div>`;
+  }
+
+  private renderSyncModal(): string {
+    const syncCode = this.currentSession ? exportAuthSyncCode(this.currentSession) : '';
+    return `
+    <div class="auth-modal-overlay ${this.isSyncModalOpen ? 'active' : ''}" id="sync-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-sync-title">
+      <div class="auth-modal-backdrop" id="modal-sync-backdrop"></div>
+      <div class="auth-gate-card auth-modal-card">
+        <button type="button" class="auth-modal-close" id="btn-close-sync-modal" aria-label="Close dialog">✕</button>
+        <div class="auth-brand">
+          <div class="auth-brand-emblem" aria-hidden="true" style="font-size:28px;">🔄</div>
+          <h2 class="auth-title" id="modal-sync-title">${this.lang === 'en' ? 'Sync with Desktop Launcher' : 'เชื่อมต่อบัญชีกับ Desktop'}</h2>
+          <p class="auth-subtitle">${this.lang === 'en' ? 'One-Click Handshake for Native Windows Desktop Launcher' : 'เชื่อมต่อบัญชีเข้ากับโปรแกรม meCraft บน Windows ทันที'}</p>
+        </div>
+
+        <div class="sync-code-section">
+          <label for="display-sync-code" class="sync-code-label">${this.lang === 'en' ? 'Your Instant Handshake Code:' : 'รหัสเชื่อมต่อด่วนของคุณ:'}</label>
+          <div class="sync-code-box">
+            <textarea readonly id="display-sync-code" class="sync-code-textarea" spellcheck="false">${escapeHtml(syncCode)}</textarea>
+            <button type="button" id="btn-copy-sync-code" class="btn-copy-code">
+              ${this.syncCodeCopied ? (this.lang === 'en' ? '✓ Copied to Clipboard!' : '✓ คัดลอกสำเร็จแล้ว!') : (this.lang === 'en' ? '📋 Copy Sync Code' : '📋 คัดลอกรหัสเชื่อมต่อ')}
+            </button>
+          </div>
+          <p class="sync-hint">${this.lang === 'en' ? 'Open meCraft Suite on your Windows PC, click "Paste Sync Code" on the login screen, and paste this code to sign in instantly.' : 'เปิดโปรแกรม meCraft บน Windows กดปุ่ม "วางรหัสเชื่อมต่อจาก meCrafts Web" เพื่อเข้าใช้งานได้ทันที'}</p>
+        </div>
       </div>
     </div>`;
   }
@@ -620,11 +792,24 @@ class MeCraftsPortal {
                   ${getTierBadge(this.currentSession.user.tier).label}
                 </span>
               </div>
+              <button class="btn-header-sync" id="btn-open-sync" title="${this.t.syncDesktopBtn}" aria-label="${this.t.syncDesktopBtn}">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                <span>${this.t.syncDesktopBtn}</span>
+              </button>
               <button class="btn-signout" id="btn-signout" title="${this.lang === 'en' ? 'Sign Out' : 'ออกจากระบบ'}" aria-label="Sign Out">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
               </button>
             </div>
-          ` : ''}
+          ` : `
+            <button class="portal-signin-btn" id="btn-open-auth" type="button" aria-label="${this.t.signInBtn}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                <polyline points="10 17 15 12 10 7"/>
+                <line x1="15" y1="12" x2="3" y2="12"/>
+              </svg>
+              <span>${this.t.signInBtn}</span>
+            </button>
+          `}
           <button class="portal-lang-btn" id="btn-lang" aria-label="Switch language">
             ${this.lang === 'en' ? '🇹🇭 TH' : '🇬🇧 EN'}
           </button>
@@ -983,8 +1168,184 @@ class MeCraftsPortal {
         alert(this.lang === 'en' ? 'Password reset link would be sent to your email.' : 'ระบบจะส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมลของคุณ');
       });
 
+      // Desktop Web Sync Import Drawer
+      document.getElementById('btn-toggle-sync-import')?.addEventListener('click', () => {
+        this.showSyncImport = !this.showSyncImport;
+        const drawer = document.getElementById('sync-import-drawer');
+        if (drawer) {
+          drawer.style.display = this.showSyncImport ? 'flex' : 'none';
+        }
+      });
+
+      document.getElementById('btn-submit-sync-code')?.addEventListener('click', () => {
+        const code = (document.getElementById('input-sync-code') as HTMLInputElement)?.value.trim();
+        if (!code) {
+          this.authError = this.lang === 'en' ? 'Please paste a valid sync code.' : 'กรุณากรอกรหัสเชื่อมต่อ';
+          this.render();
+          this.attachListeners();
+          return;
+        }
+        const session = importAuthSyncCode(code);
+        if (session) {
+          this.currentSession = session;
+          this.render();
+          this.attachListeners();
+        } else {
+          this.authError = this.lang === 'en' ? 'Invalid or expired sync code from meCrafts Web.' : 'รหัสเชื่อมต่อไม่ถูกต้องหรือหมดอายุแล้ว';
+          this.render();
+          this.attachListeners();
+        }
+      });
+
       return;
     }
+
+    // Web Portal Auth Modal Open / Close
+    document.getElementById('btn-open-auth')?.addEventListener('click', () => {
+      this.isAuthModalOpen = true;
+      this.authError = '';
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('btn-close-auth-modal')?.addEventListener('click', () => {
+      this.isAuthModalOpen = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('modal-auth-backdrop')?.addEventListener('click', () => {
+      this.isAuthModalOpen = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    // Web Portal Auth Modal Tabs
+    document.getElementById('modal-tab-signin')?.addEventListener('click', () => {
+      this.authTab = 'signin';
+      this.authError = '';
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('modal-tab-signup')?.addEventListener('click', () => {
+      this.authTab = 'signup';
+      this.authError = '';
+      this.render();
+      this.attachListeners();
+    });
+
+    // Web Portal Password Toggle
+    document.getElementById('modal-btn-toggle-pwd')?.addEventListener('click', () => {
+      const input = document.getElementById('modal-auth-password') as HTMLInputElement | null;
+      if (input) {
+        input.type = input.type === 'password' ? 'text' : 'password';
+      }
+    });
+
+    // Web Portal Form Submit
+    document.getElementById('modal-auth-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = (document.getElementById('modal-auth-email') as HTMLInputElement)?.value.trim();
+      const pwd = (document.getElementById('modal-auth-password') as HTMLInputElement)?.value;
+      const fullName = (document.getElementById('modal-auth-fullname') as HTMLInputElement)?.value.trim();
+
+      if (!email || !pwd || pwd.length < 6) {
+        this.authError = this.lang === 'en' ? 'Please provide a valid email and 6+ character password.' : 'กรุณากรอกอีเมลและรหัสผ่านอย่างน้อย 6 ตัวอักษร';
+        this.render();
+        this.attachListeners();
+        return;
+      }
+
+      this.authLoading = true;
+      this.authError = '';
+      this.render();
+      this.attachListeners();
+
+      setTimeout(() => {
+        const session = createMockAuthSession(email, 'free_member');
+        if (fullName) {
+          session.user.fullName = fullName;
+        }
+        saveAuthSession(session);
+        this.currentSession = session;
+        this.authLoading = false;
+        this.isAuthModalOpen = false;
+        this.render();
+        this.attachListeners();
+      }, 400);
+    });
+
+    // Web Portal Google & Demo Login
+    document.getElementById('modal-btn-auth-google')?.addEventListener('click', () => {
+      this.authLoading = true;
+      this.render();
+      this.attachListeners();
+      setTimeout(() => {
+        const session = createMockAuthSession('google.creator@mecraft.dev', 'free_member');
+        session.user.fullName = 'Google Creator';
+        saveAuthSession(session);
+        this.currentSession = session;
+        this.authLoading = false;
+        this.isAuthModalOpen = false;
+        this.render();
+        this.attachListeners();
+      }, 400);
+    });
+
+    document.getElementById('modal-btn-auth-demo')?.addEventListener('click', () => {
+      const session = createMockAuthSession('demo.creator@mecraft.dev', 'free_member');
+      saveAuthSession(session);
+      this.currentSession = session;
+      this.isAuthModalOpen = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('modal-link-forgot-pwd')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert(this.lang === 'en' ? 'Password reset instructions will be sent to your email.' : 'ระบบจะส่งคำแนะนำการรีเซ็ตรหัสผ่านไปยังอีเมลของคุณ');
+    });
+
+    // Sync to Desktop Modal Open / Close / Copy
+    document.getElementById('btn-open-sync')?.addEventListener('click', () => {
+      this.isSyncModalOpen = true;
+      this.syncCodeCopied = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('btn-close-sync-modal')?.addEventListener('click', () => {
+      this.isSyncModalOpen = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('modal-sync-backdrop')?.addEventListener('click', () => {
+      this.isSyncModalOpen = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('btn-copy-sync-code')?.addEventListener('click', () => {
+      const textarea = document.getElementById('display-sync-code') as HTMLTextAreaElement | null;
+      if (textarea) {
+        textarea.select();
+        if (typeof navigator !== 'undefined' && navigator.clipboard) {
+          navigator.clipboard.writeText(textarea.value).then(() => {
+            this.syncCodeCopied = true;
+            const btn = document.getElementById('btn-copy-sync-code');
+            if (btn) btn.textContent = this.lang === 'en' ? '✓ Copied to Clipboard!' : '✓ คัดลอกสำเร็จแล้ว!';
+          }).catch(() => {
+            // fallback
+            document.execCommand('copy');
+            this.syncCodeCopied = true;
+            const btn = document.getElementById('btn-copy-sync-code');
+            if (btn) btn.textContent = this.lang === 'en' ? '✓ Copied to Clipboard!' : '✓ คัดลอกสำเร็จแล้ว!';
+          });
+        }
+      }
+    });
 
     // Clean URL Invariant: Smooth scroll without updating or mutating browser URL with hash
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1068,6 +1429,10 @@ export {
   getTierBadge,
   isFeatureUnlocked,
   isOfflineGraceValid,
+  onAuthSessionChange,
+  exportAuthSyncCode,
+  importAuthSyncCode,
+  checkUrlAuthHandoff,
   escapeHtml,
   MeCraftsPortal,
 };
