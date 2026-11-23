@@ -33,28 +33,44 @@ export function escapeHtml(text: string): string {
 }
 
 /**
- * High-speed, zero-dependency token highlighter for common code blocks
+ * High-speed single-pass token highlighter for code blocks
+ * Immune to recursive HTML tag mangling
  */
 export function highlightCode(code: string, language: string = ''): string {
   const lang = language.toLowerCase().trim();
-  const escaped = escapeHtml(code);
-
   if (!lang || lang === 'text' || lang === 'plain') {
-    return escaped;
+    return escapeHtml(code);
   }
 
-  // Multi-language token regex patterns
-  return escaped
-    // Comments: // ... or # ... or /* ... */
-    .replace(/(\/\/[^\n]*|\/\*[\s\S]*?\*\/|#[^\n]*)/g, '<span class="hl-comment">$1</span>')
-    // String literals: "...", '...', `...`
-    .replace(/(["'`])((?:\\.|[^\\])*?)\1/g, '<span class="hl-string">$1$2$1</span>')
-    // Numeric constants
-    .replace(/\b(\d+(?:\.\d+)?(?:e[+-]?\d+)?|0x[0-9a-fA-F]+)\b/g, '<span class="hl-number">$1</span>')
-    // Common programming keywords
-    .replace(/\b(async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|false|finally|for|from|function|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|pub|public|return|static|super|switch|this|throw|true|try|typeof|type|var|void|while|with|yield|fn|def|struct|impl|match|select|where)\b/g, '<span class="hl-keyword">$1</span>')
-    // Builtin types and objects
-    .replace(/\b(boolean|number|string|symbol|any|unknown|never|void|object|Promise|Array|Map|Set|Record|Error|Math|JSON|console|document|window)\b/g, '<span class="hl-type">$1</span>');
+  // Token regex for single-pass lexing
+  const tokenRegex = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/|#[^\n]*)|(["'`])(?:\\.|[^\\])*?\2|\b(\d+(?:\.\d+)?(?:e[+-]?\d+)?|0x[0-9a-fA-F]+)\b|\b(async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|false|finally|for|from|function|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|pub|public|return|static|super|switch|this|throw|true|try|typeof|type|var|void|while|with|yield|fn|def|struct|impl|match|select|where)\b|\b(boolean|number|string|symbol|any|unknown|never|void|object|Promise|Array|Map|Set|Record|Error|Math|JSON|console|document|window)\b/g;
+
+  let result = '';
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = tokenRegex.exec(code)) !== null) {
+    result += escapeHtml(code.slice(lastIndex, match.index));
+    lastIndex = tokenRegex.lastIndex;
+
+    const [full, comment, stringQuote, num, keyword, builtinType] = match;
+    if (comment) {
+      result += `<span class="hl-comment">${escapeHtml(comment)}</span>`;
+    } else if (stringQuote) {
+      result += `<span class="hl-string">${escapeHtml(full)}</span>`;
+    } else if (num) {
+      result += `<span class="hl-number">${escapeHtml(num)}</span>`;
+    } else if (keyword) {
+      result += `<span class="hl-keyword">${escapeHtml(keyword)}</span>`;
+    } else if (builtinType) {
+      result += `<span class="hl-type">${escapeHtml(builtinType)}</span>`;
+    } else {
+      result += escapeHtml(full);
+    }
+  }
+
+  result += escapeHtml(code.slice(lastIndex));
+  return result;
 }
 
 /**
@@ -76,10 +92,10 @@ export function renderMathExpression(expr: string, displayMode: boolean): string
 /**
  * Pre-processes LaTeX math formulas in Markdown source before passing to marked:
  * 1. Display math: $$ ... $$
- * 2. Inline math: $ ... $
+ * 2. Inline math: $ ... $ (ignoring currency and escaped \$)
  */
 export function processMathInMarkdown(markdown: string): string {
-  // First, temporarily protect code blocks from math extraction
+  // Protect code blocks from math extraction
   const codeBlocks: string[] = [];
   const protectedMd = markdown.replace(/(```[\s\S]*?```|`[^`\n]+`)/g, (match) => {
     codeBlocks.push(match);
@@ -92,11 +108,12 @@ export function processMathInMarkdown(markdown: string): string {
     return `\n\n<div class="medoc-math-display">${rendered}</div>\n\n`;
   });
 
-  // Replace Inline Math: $ ... $ (ensuring not followed or preceded by $ or digits e.g. $100)
-  processed = processed.replace(/(^|[^\\])\$([^\$\n]+?)\$/g, (_, prefix, math) => {
-    // If it looks like currency (e.g. $10 or $20.50), leave it intact
+  // Replace Inline Math: $...$
+  // Standard math invariant: opening $ not followed by space, closing $ not preceded by space
+  processed = processed.replace(/(^|[^\$\\\w])\$([^\s\$](?:[^\$\n]*?[^\s\$])?)\$(?!\d)/g, (fullMatch, prefix, math) => {
+    // If it looks purely like a number (e.g. $100$), treat as currency
     if (/^\d+(?:\.\d+)?$/.test(math.trim())) {
-      return `${prefix}$${math}$`;
+      return fullMatch;
     }
     const rendered = renderMathExpression(math, false);
     return `${prefix}<span class="medoc-math-inline">${rendered}</span>`;
