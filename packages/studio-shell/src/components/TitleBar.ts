@@ -1,0 +1,95 @@
+/**
+ * @file TitleBar.ts
+ * Native Windows 11 Title Bar Simulation & Desktop Frame Controller
+ */
+
+export interface TitleBarOptions {
+  appName: string;
+  appIcon?: string;
+  appTag?: string;
+  documentTitle?: string;
+  isTauri?: boolean;
+  onMinimize?: () => void;
+  onMaximize?: () => void;
+  onClose?: () => void;
+}
+
+export class TitleBar {
+  private element: HTMLElement;
+  private options: TitleBarOptions;
+
+  constructor(options: TitleBarOptions) {
+    this.options = options;
+    this.element = document.createElement('div');
+    this.element.className = 'studio-titlebar';
+    this.element.setAttribute('data-tauri-drag-region', 'true');
+    this.render();
+    this.attachEvents();
+  }
+
+  public getElement(): HTMLElement {
+    return this.element;
+  }
+
+  public setDocumentTitle(title: string): void {
+    this.options.documentTitle = title;
+    const titleEl = this.element.querySelector('.titlebar-doc-name');
+    if (titleEl) {
+      titleEl.textContent = title ? `— [${title}]` : '';
+    }
+  }
+
+  private render(): void {
+    const { appName, appIcon, appTag, documentTitle } = this.options;
+    const iconHtml = appIcon ? `<span class="titlebar-app-icon">${appIcon}</span>` : '🎨';
+    const tagHtml = appTag ? `<span class="titlebar-app-tag">${appTag}</span>` : '<span class="titlebar-app-tag">STUDIO</span>';
+    const docText = documentTitle ? `— [${documentTitle}]` : '';
+
+    this.element.innerHTML = `
+      <div class="titlebar-left" data-tauri-drag-region="true">
+        ${iconHtml}
+        <span class="titlebar-app-name">${appName}</span>
+        ${tagHtml}
+        <span class="titlebar-doc-name">${docText}</span>
+        <span class="titlebar-native-pill">100% Native Desktop</span>
+      </div>
+      <div class="titlebar-controls">
+        <button type="button" class="titlebar-btn titlebar-btn-min" id="titlebar-btn-min" title="Minimize">─</button>
+        <button type="button" class="titlebar-btn titlebar-btn-max" id="titlebar-btn-max" title="Maximize">□</button>
+        <button type="button" class="titlebar-btn titlebar-btn-close" id="titlebar-btn-close" title="Close">✕</button>
+      </div>
+    `;
+  }
+
+  private attachEvents(): void {
+    this.element.querySelector('#titlebar-btn-min')?.addEventListener('click', () => {
+      if (this.options.onMinimize) {
+        this.options.onMinimize();
+      } else if (this.options.isTauri) {
+        import('@tauri-apps/api/window').then(({ getCurrentWindow }) => {
+          getCurrentWindow().minimize();
+        }).catch(() => {});
+      }
+    });
+
+    this.element.querySelector('#titlebar-btn-max')?.addEventListener('click', () => {
+      if (this.options.onMaximize) {
+        this.options.onMaximize();
+      } else if (this.options.isTauri) {
+        import('@tauri-apps/api/window').then(({ getCurrentWindow }) => {
+          getCurrentWindow().toggleMaximize();
+        }).catch(() => {});
+      }
+    });
+
+    this.element.querySelector('#titlebar-btn-close')?.addEventListener('click', () => {
+      if (this.options.onClose) {
+        this.options.onClose();
+      } else if (this.options.isTauri) {
+        import('@tauri-apps/api/window').then(({ getCurrentWindow }) => {
+          getCurrentWindow().close();
+        }).catch(() => {});
+      }
+    });
+  }
+}
