@@ -59,6 +59,7 @@ flowchart TD
         Launcher["🚀 meCraft Launcher Hub\n(Desktop Window Manager & Web Portal)"]
         PDF["📄 mePDF Studio\n(Lossless Compression, AES-256, OCR, Merge/Split)"]
         Photo["🪄 mePhoto Studio\n(CamScanner-Grade Magic Color, Non-Destructive Deskew)"]
+        Drop["🍩 meDrop Radial Converter\n(Zero-Window Radial Drag & Drop File Converter HUD)"]
         Vector["📐 meVector (Roadmap)\n(Bézier SVG/PDF Graphic Workbench)"]
         Doc["📝 meDoc (Roadmap)\n(Typewriter & Markdown Publication)"]
     end
@@ -66,13 +67,16 @@ flowchart TD
     Tokens --> Launcher
     Tokens --> PDF
     Tokens --> Photo
+    Tokens --> Drop
 
     Bridge --> Launcher
     Bridge --> PDF
     Bridge --> Photo
+    Bridge --> Drop
 
     PhotoCore --> Photo
     PhotoCore --> PDF
+    PhotoCore --> Drop
 ```
 
 ---
@@ -90,7 +94,7 @@ flowchart TD
 5. **👆 Decoupled 44px Hit-Target Invariant:**
    Touch interactive targets on mobile and tablets must provide a minimum bounding hit-box of $\ge 44 \times 44\text{ px}$.
 6. **📦 Zero-Defect Monorepo Quality Gate:**
-   Every milestone requires 100% test pass rate (`npm test`, 226/226 tests) and zero TypeScript errors (`npm run typecheck`).
+   Every milestone requires 100% test pass rate (`npm test`, 273/273 tests) and zero TypeScript errors (`npm run typecheck`).
 
 ---
 
@@ -101,6 +105,7 @@ flowchart TD
 | **🚀 meCraft Launcher Hub** | `apps/mecraft-launcher` | Unified command portal, native process spawner (`DETACHED_PROCESS`), universal drag-and-drop auto-routing, and bilingual Thai/EN cockpit. | Tauri v2, Rust, Vite, TypeScript | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
 | **📄 mePDF Studio** | `apps/mepdf` | Complete client-side PDF engineering: Merge, Split, Dual-Engine Smart Compression (Lossless & Scanned), 256-bit AES encryption, and searchable OCR injection. | PDF.js, pdf-lib, Web Workers | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
 | **🪄 mePhoto Studio** | `apps/mephoto` | CamScanner-grade document lab: 4-point homography perspective warp, adaptive Otsu binarization, Magic Color enhancement, and unsharp text sharpening. | Canvas API, `@mecraft/photo-core` | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
+| **🍩 meDrop Radial HUD** | `apps/medrop` | Zero-Window Radial Drag & Drop File Converter HUD. Hold Ctrl + Drag in Windows Explorer for instant contextual in-place conversion or ClipBus dispatch. | Tauri v2, Rust Hook, SVG Donut, Local RAM | Windows (.exe) + Web | **Stable** (`v1.0.0`) |
 | **📐 meVector** | `apps/mevector` | Precision Bézier vector illustrator, boolean path operations, and infinite-resolution SVG/PDF export. | Vector Canvas Engine | Planned | *Roadmap* |
 | **📝 meDoc** | `apps/medoc` | Distraction-free typewriter, live LaTeX formula rendering, bilingual grammar engine, and academic publishing. | Typography Engine | In Development | *Roadmap* |
 
