@@ -45,6 +45,24 @@ export class Cockpit {
     return this.rightPaneEl;
   }
 
+  public toggleLeft(): void {
+    if (this.leftPaneEl) {
+      this.leftPaneEl.classList.toggle('collapsed');
+      if (this.options.left?.onCollapseChange) {
+        this.options.left.onCollapseChange(this.leftPaneEl.classList.contains('collapsed'));
+      }
+    }
+  }
+
+  public toggleRight(): void {
+    if (this.rightPaneEl) {
+      this.rightPaneEl.classList.toggle('collapsed');
+      if (this.options.right?.onCollapseChange) {
+        this.options.right.onCollapseChange(this.rightPaneEl.classList.contains('collapsed'));
+      }
+    }
+  }
+
   public setCenterContent(content: HTMLElement | string): void {
     if (typeof content === 'string') {
       this.centerPaneEl.innerHTML = content;

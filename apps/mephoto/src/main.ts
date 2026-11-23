@@ -1,4 +1,5 @@
 import './styles/app.css';
+import '@mecraft/studio-shell/styles.css';
 import {
   createDefaultAdjustmentRecipe,
   renderRecipeToCanvas,
@@ -6,7 +7,6 @@ import {
   type PhotoAdjustmentRecipe,
   type PhotoFilterPreset,
   type QuadCorners,
-  type Point2D,
 } from '@mecraft/photo-core';
 import {
   clipBus,
@@ -15,10 +15,12 @@ import {
   onAuthSessionChange,
   type AuthSession,
 } from '@mecraft/core-bridge';
+import { StudioShell } from '@mecraft/studio-shell';
 import { downloadBlob } from './utils/file-utils';
 import type { PhotoDocumentItem, ViewportMode } from './core/types';
 
 class MePhotoStudio {
+  private shell!: StudioShell;
   private items: PhotoDocumentItem[] = [];
   private activeIndex = -1;
   private viewportMode: ViewportMode = 'processed';
@@ -43,7 +45,6 @@ class MePhotoStudio {
   private canvas!: HTMLCanvasElement;
   private ctx!: CanvasRenderingContext2D;
   private filmstripContainer!: HTMLElement;
-  private statusText!: HTMLElement;
   private perspectiveOverlay!: SVGSVGElement;
   private quadPolygon!: SVGPolygonElement;
   private pinTL!: SVGCircleElement;
@@ -51,12 +52,13 @@ class MePhotoStudio {
   private pinBR!: SVGCircleElement;
   private pinBL!: SVGCircleElement;
   private currentSession: AuthSession | null = null;
+  private processedClipBusIds = new Set<string>();
 
   constructor() {
     this.currentSession = getAuthSession();
     this.appEl = document.getElementById('app')!;
-    this.renderLayout();
-    this.initCanvas();
+    this.initShell();
+    this.initCanvasAndDOM();
     this.attachGlobalEvents();
     this.initClipBus();
     this.updateUserIndicator();
@@ -67,295 +69,367 @@ class MePhotoStudio {
     });
   }
 
-  private processedClipBusIds = new Set<string>();
+  private initShell(): void {
+    this.shell = new StudioShell({
+      appId: 'mephoto',
+      appName: 'mePhoto',
+      appTag: 'CamScanner Pro',
+      version: '1.0.0',
+      documentTitle: 'mePhoto Studio — CamScanner Pro Document Restoration & Photo Lab',
+      menu: [
+        {
+          id: 'file',
+          label: 'File',
+          items: [
+            { id: 'open', label: 'Open Images...', shortcut: 'Ctrl+O', action: () => this.triggerFileInput() },
+            { id: 'add-scan', label: 'Add Scan...', action: () => this.triggerFileInput() },
+            { id: 'sep1', divider: true, label: '' },
+            { id: 'export-pdf', label: 'Export as PDF', shortcut: 'Ctrl+S', action: () => this.exportAllAsPdf() },
+            { id: 'export-img', label: 'Export Image', action: () => this.exportActiveImage() },
+            { id: 'sep2', divider: true, label: '' },
+            { id: 'send-mepdf', label: 'Send to mePDF Workspace', action: () => this.sendToMePdf() },
+          ],
+        },
+        {
+          id: 'edit',
+          label: 'Edit',
+          items: [
+            { id: 'undo', label: 'Undo', shortcut: 'Ctrl+Z', action: () => this.undo() },
+            { id: 'redo', label: 'Redo', shortcut: 'Ctrl+Y', action: () => this.redo() },
+            { id: 'sep1', divider: true, label: '' },
+            { id: 'reset-recipe', label: 'Reset All Filters', action: () => this.resetFilters() },
+          ],
+        },
+        {
+          id: 'view',
+          label: 'View',
+          items: [
+            { id: 'zoom-in', label: 'Zoom In', shortcut: 'Ctrl++', action: () => this.adjustZoom(0.1) },
+            { id: 'zoom-out', label: 'Zoom Out', shortcut: 'Ctrl+-', action: () => this.adjustZoom(-0.1) },
+            { id: 'zoom-100', label: 'Actual Size (100%)', shortcut: 'Ctrl+0', action: () => this.setZoom(1.0) },
+            { id: 'sep1', divider: true, label: '' },
+            { id: 'toggle-left', label: 'Toggle Scans Filmstrip', action: () => this.shell.getCockpit().toggleLeft() },
+            { id: 'toggle-right', label: 'Toggle Inspector Panel', action: () => this.shell.getCockpit().toggleRight() },
+          ],
+        },
+        {
+          id: 'tools',
+          label: 'Tools',
+          items: [
+            { id: 'deskew', label: '4-Point Homography Perspective Deskew', action: () => this.togglePerspectiveQuadEditor() },
+            { id: 'ocr', label: 'Extract Text (Offline OCR)', action: () => this.extractTextOcr() },
+            { id: 'sep1', divider: true, label: '' },
+            { id: 'preset-magic', label: 'CamScanner Magic Color', action: () => this.applyFilterPreset('magic-color') },
+            { id: 'preset-otsu', label: 'Crisp B&W (Otsu Thresholding)', action: () => this.applyFilterPreset('bw-clean') },
+            { id: 'preset-gray', label: 'Grayscale Document', action: () => this.applyFilterPreset('grayscale') },
+          ],
+        },
+        {
+          id: 'help',
+          label: 'Help',
+          items: [
+            { id: 'check-update', label: 'Check for Updates...', badge: 'NEW', action: () => this.shell.showUpdateModal() },
+            { id: 'shortcuts', label: 'Keyboard Shortcuts', action: () => this.showShortcutsModal() },
+            { id: 'about', label: 'About mePhoto Studio', action: () => this.showAboutModal() },
+          ],
+        },
+      ],
+      ribbon: [
+        {
+          id: 'file-actions',
+          align: 'left',
+          tools: [
+            {
+              id: 'btn-open-files',
+              label: 'Open Images',
+              icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>',
+              action: () => this.triggerFileInput(),
+            },
+            {
+              id: 'btn-export-pdf',
+              label: 'Export PDF',
+              icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>',
+              action: () => this.exportAllAsPdf(),
+            },
+            {
+              id: 'btn-export-image',
+              label: 'Export Image',
+              icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>',
+              action: () => this.exportActiveImage(),
+            },
+            { id: 'sep-ribbon-1', type: 'separator' },
+            {
+              id: 'btn-undo',
+              label: 'Undo',
+              icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg>',
+              action: () => this.undo(),
+            },
+            {
+              id: 'btn-redo',
+              label: 'Redo',
+              icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"></path><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"></path></svg>',
+              action: () => this.redo(),
+            },
+            { id: 'sep-ribbon-2', type: 'separator' },
+            {
+              id: 'btn-zoom-out',
+              label: 'Zoom -',
+              icon: '🔍-',
+              action: () => this.adjustZoom(-0.1),
+            },
+            {
+              id: 'btn-zoom-in',
+              label: 'Zoom +',
+              icon: '🔍+',
+              action: () => this.adjustZoom(0.1),
+            },
+            {
+              id: 'btn-rotate-cw',
+              label: 'Rotate 90°',
+              icon: '↻',
+              action: () => this.rotateActiveCw(),
+            },
+            {
+              id: 'btn-reset-recipe',
+              label: 'Reset Filters',
+              icon: '↺',
+              action: () => this.resetFilters(),
+            },
+            { id: 'sep-ribbon-3', type: 'separator' },
+            {
+              id: 'btn-extract-text',
+              label: 'Extract Text (OCR)',
+              icon: '🔤',
+              action: () => this.extractTextOcr(),
+            },
+            {
+              id: 'btn-send-to-mepdf',
+              label: 'Send to mePDF',
+              icon: '✈️',
+              action: () => this.sendToMePdf(),
+            },
+          ],
+        },
+      ],
+      panes: {
+        left: {
+          title: 'Pages / Scans',
+          initialWidth: 180,
+          minWidth: 140,
+          collapsible: true,
+          content: `
+            <div class="photo-filmstrip-pane" style="display: flex; flex-direction: column; height: 100%; gap: 10px; padding: 12px 8px; box-sizing: border-box;">
+              <div class="filmstrip-thumb filmstrip-add" id="btn-add-more" style="flex-shrink: 0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Scan</span>
+              </div>
+              <div id="filmstrip-items" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1;"></div>
+            </div>
+          `,
+        },
+        center: {
+          content: `
+            <div class="photo-canvas-area" style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; background: radial-gradient(circle at center, #11151f 0%, #08090d 100%);">
+              <div class="viewport-canvas-container" id="canvas-container" style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                <div class="dropzone-overlay" id="empty-dropzone">
+                  <div style="width: 56px; height: 56px; border-radius: var(--radius-full); background: rgba(6, 182, 212, 0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-cyan);">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                  </div>
+                  <div>
+                    <div style="font-size: 15px; font-weight: 600; margin-bottom: 4px;">Drop document scans or photos here</div>
+                    <div style="font-size: 12px; color: var(--text-faint);">Supports PNG, JPG, WebP, TIFF & Camera captures</div>
+                  </div>
+                  <button class="btn-photo primary" id="btn-dropzone-select">Select Files</button>
+                </div>
+                
+                <div class="canvas-stage-wrapper" id="canvas-stage-wrapper" style="position: relative; display: inline-block;">
+                  <canvas id="photo-canvas" style="display: none;"></canvas>
+                  <svg id="perspective-overlay" class="perspective-overlay" style="display: none; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible;">
+                    <polygon id="quad-polygon" points="" fill="rgba(6, 182, 212, 0.2)" stroke="#06b6d4" stroke-width="2" stroke-dasharray="4 2" />
+                    <circle id="pin-tl" class="quad-pin" cx="0" cy="0" r="10" fill="#06b6d4" stroke="#ffffff" stroke-width="2.5" style="cursor: move; pointer-events: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));" />
+                    <circle id="pin-tr" class="quad-pin" cx="0" cy="0" r="10" fill="#06b6d4" stroke="#ffffff" stroke-width="2.5" style="cursor: move; pointer-events: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));" />
+                    <circle id="pin-br" class="quad-pin" cx="0" cy="0" r="10" fill="#06b6d4" stroke="#ffffff" stroke-width="2.5" style="cursor: move; pointer-events: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));" />
+                    <circle id="pin-bl" class="quad-pin" cx="0" cy="0" r="10" fill="#06b6d4" stroke="#ffffff" stroke-width="2.5" style="cursor: move; pointer-events: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          `,
+        },
+        right: {
+          title: 'Inspector & Adjustments',
+          initialWidth: 320,
+          minWidth: 260,
+          collapsible: true,
+          content: `
+            <div class="photo-inspector-pane" style="display: flex; flex-direction: column; height: 100%; overflow-y: auto;">
+              <div class="inspector-tabs">
+                <button class="inspector-tab-btn active" data-tab="presets">Presets</button>
+                <button class="inspector-tab-btn" data-tab="adjust">Adjustments</button>
+                <button class="inspector-tab-btn" data-tab="geometry">Geometry</button>
+              </div>
 
-  private initClipBus(): void {
-    clipBus.subscribe((msg) => {
-      if (msg.targetApp === 'mephoto' && msg.dataUrl) {
-        if (msg.id && this.processedClipBusIds.has(msg.id)) return;
-        if (msg.id) this.processedClipBusIds.add(msg.id);
-        void this.importFromDataUrl(msg.dataUrl, msg.name || 'mePhoto_Import.jpg');
-      }
+              <div class="inspector-body" id="tab-presets">
+                <div class="control-group">
+                  <label class="control-label">CamScanner Presets</label>
+                  <div class="preset-grid">
+                    <div class="preset-card active" data-preset="none">
+                      <div class="preset-card-name">Original</div>
+                      <div class="preset-card-desc">No filters</div>
+                    </div>
+                    <div class="preset-card" data-preset="magic-color">
+                      <div class="preset-card-name">Magic Color</div>
+                      <div class="preset-card-desc">Vibrant & crisp text</div>
+                    </div>
+                    <div class="preset-card" data-preset="bw-clean">
+                      <div class="preset-card-name">Crisp B&W</div>
+                      <div class="preset-card-desc">Otsu thresholding</div>
+                    </div>
+                    <div class="preset-card" data-preset="grayscale">
+                      <div class="preset-card-name">Grayscale</div>
+                      <div class="preset-card-desc">Even balanced tone</div>
+                    </div>
+                    <div class="preset-card" data-preset="sepia">
+                      <div class="preset-card-name">Sepia</div>
+                      <div class="preset-card-desc">Archive vintage</div>
+                    </div>
+                    <div class="preset-card" data-preset="invert">
+                      <div class="preset-card-name">Invert</div>
+                      <div class="preset-card-desc">Negative polarity</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="inspector-body" id="tab-adjust" style="display: none;">
+                <div class="control-group">
+                  <div class="control-label">
+                    <span>Brightness</span>
+                    <span class="control-value" id="val-brightness">0</span>
+                  </div>
+                  <input type="range" id="slider-brightness" min="-100" max="100" value="0" />
+                </div>
+
+                <div class="control-group">
+                  <div class="control-label">
+                    <span>Contrast</span>
+                    <span class="control-value" id="val-contrast">0</span>
+                  </div>
+                  <input type="range" id="slider-contrast" min="-100" max="100" value="0" />
+                </div>
+
+                <div class="control-group">
+                  <div class="control-label">
+                    <span>Saturation</span>
+                    <span class="control-value" id="val-saturation">0</span>
+                  </div>
+                  <input type="range" id="slider-saturation" min="-100" max="100" value="0" />
+                </div>
+
+                <div class="control-group">
+                  <div class="control-label">
+                    <span>Unsharp Mask (Sharpness)</span>
+                    <span class="control-value" id="val-sharpness">0</span>
+                  </div>
+                  <input type="range" id="slider-sharpness" min="0" max="100" value="0" />
+                </div>
+              </div>
+
+              <div class="inspector-body" id="tab-geometry" style="display: none;">
+                <div class="control-group">
+                  <div class="control-label">
+                    <span>Deskew Fine Angle</span>
+                    <span class="control-value" id="val-fine-angle">0.0°</span>
+                  </div>
+                  <input type="range" id="slider-fine-angle" min="-45" max="45" step="0.5" value="0" />
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                  <button class="btn-photo" id="btn-flip-h" style="flex: 1;">Flip Horiz</button>
+                  <button class="btn-photo" id="btn-flip-v" style="flex: 1;">Flip Vert</button>
+                </div>
+
+                <div class="control-group" style="margin-top: 16px; border-top: 1px solid var(--border-subtle); padding-top: 14px;">
+                  <div class="control-label" style="font-weight: 600; color: var(--accent-cyan); display: flex; align-items: center; justify-content: space-between;">
+                    <span>4-Point Perspective Deskew</span>
+                    <span class="photo-brand-badge">CamScanner</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
+                    Drag the 4 corner pins on the document canvas to rectify quadrilateral perspective distortion.
+                  </div>
+                  <div style="display: flex; gap: 8px;">
+                    <button class="btn-photo primary" id="btn-toggle-quad" style="flex: 1;">Edit Pins</button>
+                    <button class="btn-photo" id="btn-reset-quad" style="flex: 1;">Reset Corners</button>
+                  </div>
+                  <button class="btn-photo" id="btn-apply-deskew" style="width: 100%; margin-top: 8px;" disabled>
+                    Apply 4-Point Homography
+                  </button>
+                </div>
+              </div>
+            </div>
+          `,
+        },
+      },
+      statusBar: {
+        showPrivacyBadge: true,
+        items: [
+          { id: 'status-msg', align: 'left', content: 'Ready — Drop document scans or photos here' },
+          { id: 'status-info', align: 'center', content: 'No document loaded' },
+        ],
+      },
+      update: {
+        currentVersion: '1.0.0',
+        latestVersion: '1.0.0',
+        releaseDate: '2026-11-23',
+        changelog: [
+          'Unified Shared Studio Shell architecture with 3-Pane Cockpit',
+          '4-point projective homography deskew with live draggable pins',
+          'CamScanner-grade image filter presets & Otsu binarization',
+          'High-speed offline OCR and instant ClipBus sync to mePDF',
+          '100% In-Device RAM Privacy verification',
+        ],
+      },
     });
 
-    const pending = clipBus.consumePending('mephoto');
-    for (const p of pending) {
-      if (p.dataUrl) {
-        if (p.id && this.processedClipBusIds.has(p.id)) continue;
-        if (p.id) this.processedClipBusIds.add(p.id);
-        void this.importFromDataUrl(p.dataUrl, p.name || 'mePhoto_Import.jpg');
-      }
-    }
-  }
+    this.shell.mount(this.appEl);
 
-  private updateUserIndicator() {
-    const container = document.getElementById('photo-user-container');
-    if (!container) return;
-    if (this.currentSession) {
-      const email = this.currentSession.user.email;
-      const initial = (this.currentSession.user.fullName || email).charAt(0).toUpperCase();
-      container.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px; margin-left: 8px; padding: 2px 8px 2px 4px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 9999px; font-size: 11px;">
-          <div style="width: 22px; height: 22px; border-radius: 50%; background: #d4af37; color: #000; font-weight: 700; display: flex; align-items: center; justify-content: center;">${initial}</div>
-          <span style="color: #f0f0f8; font-weight: 500; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${email}">${email}</span>
+    // Append hidden file input
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.id = 'file-input';
+    input.multiple = true;
+    input.accept = 'image/*';
+    input.style.display = 'none';
+    this.appEl.appendChild(input);
+
+    // Append OCR Result Modal
+    const modalContainer = document.createElement('div');
+    modalContainer.id = 'ocr-modal';
+    modalContainer.style.cssText = 'display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 1000; align-items: center; justify-content: center;';
+    modalContainer.innerHTML = `
+      <div style="background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-md); width: 540px; max-width: 90vw; padding: 20px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent-cyan);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Extracted Text (Client-Side OCR)
+          </div>
+          <button class="btn-icon" id="btn-close-ocr">✕</button>
         </div>
-      `;
-    } else {
-      container.innerHTML = '';
-    }
-  }
-
-  public async importFromDataUrl(dataUrl: string, name = 'mePhoto_Import.jpg'): Promise<void> {
-    try {
-      const res = await fetch(dataUrl);
-      const blob = await res.blob();
-      const file = new File([blob], name, { type: blob.type || 'image/jpeg' });
-      await this.loadFiles([file]);
-    } catch (err) {
-      console.error('[mePhoto] Failed to import from dataUrl:', err);
-    }
-  }
-
-  private renderLayout() {
-    this.appEl.innerHTML = `
-      <header class="photo-header">
-        <div class="photo-brand">
-          <div class="photo-brand-logo">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
-              <circle cx="12" cy="13" r="3"></circle>
-            </svg>
-          </div>
-          <div class="photo-brand-title">
-            mePhoto Studio
-            <span class="photo-brand-badge">CamScanner Pro</span>
-          </div>
-        </div>
-
-        <div class="photo-nav-actions">
-          <input type="file" id="file-input" multiple accept="image/*" style="display: none;" />
-          <button class="btn-photo" id="btn-open-files">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            Open Images
-          </button>
-          <button class="btn-photo" id="btn-extract-text" disabled title="Recognize and extract text from photo offline">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Extract Text (OCR)
-          </button>
-          <button class="btn-photo" id="btn-send-to-mepdf" disabled title="Send current scan to mePDF workspace via ClipBus">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-            Send to mePDF
-          </button>
-          <button class="btn-photo primary" id="btn-export-pdf" disabled>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Export as PDF
-          </button>
-          <button class="btn-photo" id="btn-export-image" disabled>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Export Image
-          </button>
-          <div id="photo-user-container"></div>
-        </div>
-      </header>
-
-      <div class="photo-workspace">
-        <aside class="photo-filmstrip" id="photo-filmstrip">
-          <div class="filmstrip-header">Pages / Scans</div>
-          <div class="filmstrip-thumb filmstrip-add" id="btn-add-more">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span>Add Scan</span>
-          </div>
-          <div id="filmstrip-items" style="display: flex; flex-direction: column; gap: 8px;"></div>
-        </aside>
-
-        <main class="photo-canvas-area">
-          <div class="canvas-toolbar">
-            <button class="btn-icon" id="btn-undo" title="Undo (Ctrl+Z)" disabled>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg>
-            </button>
-            <button class="btn-icon" id="btn-redo" title="Redo (Ctrl+Y)" disabled>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"></path><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"></path></svg>
-            </button>
-            <div style="width: 1px; height: 16px; background: var(--border-subtle); margin: 0 4px;"></div>
-            <button class="btn-icon" id="btn-zoom-out" title="Zoom Out">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            </button>
-            <span id="zoom-label" style="font-size: 11px; font-family: var(--font-mono); min-width: 44px; text-align: center;">100%</span>
-            <button class="btn-icon" id="btn-zoom-in" title="Zoom In">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            </button>
-            <div style="width: 1px; height: 16px; background: var(--border-subtle); margin: 0 4px;"></div>
-            <button class="btn-icon" id="btn-rotate-cw" title="Rotate 90°">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-            </button>
-            <button class="btn-icon" id="btn-reset-recipe" title="Reset Filters">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
-            </button>
-          </div>
-
-          <div class="viewport-canvas-container" id="canvas-container">
-            <div class="dropzone-overlay" id="empty-dropzone">
-              <div style="width: 56px; height: 56px; border-radius: var(--radius-full); background: rgba(6, 182, 212, 0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-cyan);">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
-              </div>
-              <div>
-                <div style="font-size: 15px; font-weight: 600; margin-bottom: 4px;">Drop document scans or photos here</div>
-                <div style="font-size: 12px; color: var(--text-faint);">Supports PNG, JPG, WebP, TIFF & Camera captures</div>
-              </div>
-              <button class="btn-photo primary" id="btn-dropzone-select">Select Files</button>
-            </div>
-            
-            <div class="canvas-stage-wrapper" id="canvas-stage-wrapper" style="position: relative; display: inline-block;">
-              <canvas id="photo-canvas" style="display: none;"></canvas>
-              <svg id="perspective-overlay" class="perspective-overlay" style="display: none; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible;">
-                <polygon id="quad-polygon" points="" fill="rgba(6, 182, 212, 0.2)" stroke="#06b6d4" stroke-width="2" stroke-dasharray="4 2" />
-                <circle id="pin-tl" class="quad-pin" cx="0" cy="0" r="10" fill="#06b6d4" stroke="#ffffff" stroke-width="2.5" style="cursor: move; pointer-events: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));" />
-                <circle id="pin-tr" class="quad-pin" cx="0" cy="0" r="10" fill="#06b6d4" stroke="#ffffff" stroke-width="2.5" style="cursor: move; pointer-events: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));" />
-                <circle id="pin-br" class="quad-pin" cx="0" cy="0" r="10" fill="#06b6d4" stroke="#ffffff" stroke-width="2.5" style="cursor: move; pointer-events: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));" />
-                <circle id="pin-bl" class="quad-pin" cx="0" cy="0" r="10" fill="#06b6d4" stroke="#ffffff" stroke-width="2.5" style="cursor: move; pointer-events: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));" />
-              </svg>
-            </div>
-          </div>
-        </main>
-
-        <aside class="photo-inspector">
-          <div class="inspector-tabs">
-            <button class="inspector-tab-btn active" data-tab="presets">Presets</button>
-            <button class="inspector-tab-btn" data-tab="adjust">Adjustments</button>
-            <button class="inspector-tab-btn" data-tab="geometry">Geometry</button>
-          </div>
-
-          <div class="inspector-body" id="tab-presets">
-            <div class="control-group">
-              <label class="control-label">CamScanner Presets</label>
-              <div class="preset-grid">
-                <div class="preset-card active" data-preset="none">
-                  <div class="preset-card-name">Original</div>
-                  <div class="preset-card-desc">No filters</div>
-                </div>
-                <div class="preset-card" data-preset="magic-color">
-                  <div class="preset-card-name">Magic Color</div>
-                  <div class="preset-card-desc">Vibrant & crisp text</div>
-                </div>
-                <div class="preset-card" data-preset="bw-clean">
-                  <div class="preset-card-name">Crisp B&W</div>
-                  <div class="preset-card-desc">Otsu thresholding</div>
-                </div>
-                <div class="preset-card" data-preset="grayscale">
-                  <div class="preset-card-name">Grayscale</div>
-                  <div class="preset-card-desc">Even balanced tone</div>
-                </div>
-                <div class="preset-card" data-preset="sepia">
-                  <div class="preset-card-name">Sepia</div>
-                  <div class="preset-card-desc">Archive vintage</div>
-                </div>
-                <div class="preset-card" data-preset="invert">
-                  <div class="preset-card-name">Invert</div>
-                  <div class="preset-card-desc">Negative polarity</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="inspector-body" id="tab-adjust" style="display: none;">
-            <div class="control-group">
-              <div class="control-label">
-                <span>Brightness</span>
-                <span class="control-value" id="val-brightness">0</span>
-              </div>
-              <input type="range" id="slider-brightness" min="-100" max="100" value="0" />
-            </div>
-
-            <div class="control-group">
-              <div class="control-label">
-                <span>Contrast</span>
-                <span class="control-value" id="val-contrast">0</span>
-              </div>
-              <input type="range" id="slider-contrast" min="-100" max="100" value="0" />
-            </div>
-
-            <div class="control-group">
-              <div class="control-label">
-                <span>Saturation</span>
-                <span class="control-value" id="val-saturation">0</span>
-              </div>
-              <input type="range" id="slider-saturation" min="-100" max="100" value="0" />
-            </div>
-
-            <div class="control-group">
-              <div class="control-label">
-                <span>Unsharp Mask (Sharpness)</span>
-                <span class="control-value" id="val-sharpness">0</span>
-              </div>
-              <input type="range" id="slider-sharpness" min="0" max="100" value="0" />
-            </div>
-          </div>
-
-          <div class="inspector-body" id="tab-geometry" style="display: none;">
-            <div class="control-group">
-              <div class="control-label">
-                <span>Deskew Fine Angle</span>
-                <span class="control-value" id="val-fine-angle">0.0°</span>
-              </div>
-              <input type="range" id="slider-fine-angle" min="-45" max="45" step="0.5" value="0" />
-            </div>
-
-            <div style="display: flex; gap: 8px; margin-top: 10px;">
-              <button class="btn-photo" id="btn-flip-h" style="flex: 1;">Flip Horiz</button>
-              <button class="btn-photo" id="btn-flip-v" style="flex: 1;">Flip Vert</button>
-            </div>
-
-            <div class="control-group" style="margin-top: 16px; border-top: 1px solid var(--border-subtle); padding-top: 14px;">
-              <div class="control-label" style="font-weight: 600; color: var(--accent-cyan); display: flex; align-items: center; justify-content: space-between;">
-                <span>4-Point Perspective Deskew</span>
-                <span class="photo-brand-badge">CamScanner</span>
-              </div>
-              <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
-                Drag the 4 corner pins on the document canvas to rectify quadrilateral perspective distortion.
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <button class="btn-photo primary" id="btn-toggle-quad" style="flex: 1;">Edit Pins</button>
-                <button class="btn-photo" id="btn-reset-quad" style="flex: 1;">Reset Corners</button>
-              </div>
-              <button class="btn-photo" id="btn-apply-deskew" style="width: 100%; margin-top: 8px;" disabled>
-                Apply 4-Point Homography
-              </button>
-            </div>
-          </div>
-        </aside>
-      </div>
-
-      <!-- OCR Result Modal -->
-      <div id="ocr-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 100; align-items: center; justify-content: center;">
-        <div style="background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-md); width: 540px; max-width: 90vw; padding: 20px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: 14px;">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent-cyan);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-              Extracted Text (Client-Side OCR)
-            </div>
-            <button class="btn-icon" id="btn-close-ocr">✕</button>
-          </div>
-          <div id="ocr-meta" style="font-size: 12px; color: var(--text-muted);"></div>
-          <textarea id="ocr-text-result" style="width: 100%; height: 220px; background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-mono); font-size: 13px; padding: 10px; resize: vertical;" readonly></textarea>
-          <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button class="btn-photo" id="btn-copy-ocr">Copy to Clipboard</button>
-            <button class="btn-photo primary" id="btn-done-ocr">Done</button>
-          </div>
+        <div id="ocr-meta" style="font-size: 12px; color: var(--text-muted);"></div>
+        <textarea id="ocr-text-result" style="width: 100%; height: 220px; background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-mono); font-size: 13px; padding: 10px; resize: vertical;" readonly></textarea>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button class="btn-photo" id="btn-copy-ocr">Copy to Clipboard</button>
+          <button class="btn-photo primary" id="btn-done-ocr">Done</button>
         </div>
       </div>
-
-      <footer class="photo-status-bar">
-        <span id="status-left">Ready</span>
-        <span id="status-right">mePhoto Studio v1.0.0</span>
-      </footer>
     `;
+    this.appEl.appendChild(modalContainer);
   }
 
-  private initCanvas() {
+  private initCanvasAndDOM() {
     this.canvas = document.getElementById('photo-canvas') as HTMLCanvasElement;
     this.ctx = this.canvas.getContext('2d')!;
     this.filmstripContainer = document.getElementById('filmstrip-items')!;
-    this.statusText = document.getElementById('status-left')!;
 
     this.perspectiveOverlay = document.getElementById('perspective-overlay') as unknown as SVGSVGElement;
     this.quadPolygon = document.getElementById('quad-polygon') as unknown as SVGPolygonElement;
@@ -363,26 +437,29 @@ class MePhotoStudio {
     this.pinTR = document.getElementById('pin-tr') as unknown as SVGCircleElement;
     this.pinBR = document.getElementById('pin-br') as unknown as SVGCircleElement;
     this.pinBL = document.getElementById('pin-bl') as unknown as SVGCircleElement;
+
+    this.updateUndoRedoButtons();
+    this.updateUI();
+  }
+
+  private triggerFileInput(): void {
+    const fileInput = document.getElementById('file-input') as HTMLInputElement | null;
+    fileInput?.click();
   }
 
   private attachGlobalEvents() {
-    const fileInput = document.getElementById('file-input') as HTMLInputElement;
-    document.getElementById('btn-open-files')?.addEventListener('click', () => fileInput.click());
-    document.getElementById('btn-add-more')?.addEventListener('click', () => fileInput.click());
-    document.getElementById('btn-dropzone-select')?.addEventListener('click', () => fileInput.click());
+    const fileInput = document.getElementById('file-input') as HTMLInputElement | null;
+    document.getElementById('btn-add-more')?.addEventListener('click', () => this.triggerFileInput());
+    document.getElementById('btn-dropzone-select')?.addEventListener('click', () => this.triggerFileInput());
 
-    fileInput.addEventListener('change', (e) => {
+    fileInput?.addEventListener('change', (e) => {
       const files = (e.target as HTMLInputElement).files;
       if (files && files.length > 0) {
         this.loadFiles(Array.from(files));
       }
     });
 
-    // Undo / Redo buttons
-    document.getElementById('btn-undo')?.addEventListener('click', () => this.undo());
-    document.getElementById('btn-redo')?.addEventListener('click', () => this.redo());
-
-    // Keyboard Shortcuts (Ctrl+Z, Ctrl+Y)
+    // Global keyboard shortcuts (Ctrl+Z, Ctrl+Y)
     window.addEventListener('keydown', (e) => {
       const activeTag = document.activeElement?.tagName.toLowerCase();
       if (activeTag === 'input' || activeTag === 'textarea') return;
@@ -398,11 +475,6 @@ class MePhotoStudio {
         e.preventDefault();
         this.redo();
       }
-    });
-
-    // Extract Text (OCR) button
-    document.getElementById('btn-extract-text')?.addEventListener('click', () => {
-      this.extractTextOcr();
     });
 
     // OCR Modal buttons
@@ -423,11 +495,6 @@ class MePhotoStudio {
         btn.textContent = 'Copied!';
         setTimeout(() => (btn.textContent = 'Copy to Clipboard'), 2000);
       }
-    });
-
-    // Send to mePDF (ClipBus) button
-    document.getElementById('btn-send-to-mepdf')?.addEventListener('click', () => {
-      this.sendToMePdf();
     });
 
     // Tab buttons
@@ -540,55 +607,26 @@ class MePhotoStudio {
     // Pin dragging events
     this.attachPinDraggingEvents();
 
-    // Rotate CW
-    document.getElementById('btn-rotate-cw')?.addEventListener('click', () => {
-      if (this.activeIndex >= 0) {
-        this.pushUndoState();
-        const item = this.items[this.activeIndex];
-        item.coarseRotation = (item.coarseRotation + 90) % 360;
-        item.recipe.rotation = item.coarseRotation + item.fineAngle;
-        this.renderActiveItem();
-      }
-    });
-
-    // Reset recipe
-    document.getElementById('btn-reset-recipe')?.addEventListener('click', () => {
-      if (this.activeIndex >= 0) {
-        this.pushUndoState();
-        this.items[this.activeIndex].recipe = createDefaultAdjustmentRecipe();
-        this.items[this.activeIndex].coarseRotation = 0;
-        this.items[this.activeIndex].fineAngle = 0;
-        this.renderActiveItem();
-      }
-    });
-
-    // Export image
-    document.getElementById('btn-export-image')?.addEventListener('click', () => {
-      this.exportActiveImage();
-    });
-
-    // Export PDF
-    document.getElementById('btn-export-pdf')?.addEventListener('click', () => {
-      this.exportAllAsPdf();
-    });
-
-    // Drag and drop
-    const dropzone = document.getElementById('canvas-container')!;
-    dropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    });
-    dropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (e.dataTransfer?.files?.length) {
-        this.loadFiles(Array.from(e.dataTransfer.files));
-      }
-    });
+    // Drag and drop in canvas container
+    const dropzone = document.getElementById('canvas-container');
+    if (dropzone) {
+      dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.dataTransfer?.files?.length) {
+          this.loadFiles(Array.from(e.dataTransfer.files));
+        }
+      });
+    }
   }
 
   private attachPinDraggingEvents() {
-    const bindPin = (el: SVGCircleElement, key: keyof QuadCorners) => {
+    const bindPin = (el: SVGCircleElement | null, key: keyof QuadCorners) => {
+      if (!el) return;
       el.addEventListener('mousedown', (e) => {
         e.stopPropagation();
         this.draggingPin = key;
@@ -620,7 +658,7 @@ class MePhotoStudio {
       this.activeQuad[this.draggingPin] = { x: normX, y: normY };
       this.updatePerspectiveOverlayVisuals();
 
-      const btnApply = document.getElementById('btn-apply-deskew') as HTMLButtonElement;
+      const btnApply = document.getElementById('btn-apply-deskew') as HTMLButtonElement | null;
       if (btnApply) btnApply.disabled = false;
     });
 
@@ -632,19 +670,19 @@ class MePhotoStudio {
   private togglePerspectiveQuadEditor() {
     if (this.activeIndex < 0) return;
     this.isQuadEditing = !this.isQuadEditing;
-    const btnToggle = document.getElementById('btn-toggle-quad') as HTMLButtonElement;
-    const btnApply = document.getElementById('btn-apply-deskew') as HTMLButtonElement;
+    const btnToggle = document.getElementById('btn-toggle-quad') as HTMLButtonElement | null;
+    const btnApply = document.getElementById('btn-apply-deskew') as HTMLButtonElement | null;
 
     if (this.isQuadEditing) {
       if (btnToggle) btnToggle.textContent = 'Close Pins';
       this.perspectiveOverlay.style.display = 'block';
       this.updatePerspectiveOverlayVisuals();
       if (btnApply) btnApply.disabled = false;
-      this.statusText.textContent = 'Drag 4 pins to align corners with document quadrilateral.';
+      this.shell.updateStatus('status-msg', 'Drag 4 pins to align corners with document quadrilateral.');
     } else {
       if (btnToggle) btnToggle.textContent = 'Edit Pins';
       this.perspectiveOverlay.style.display = 'none';
-      this.statusText.textContent = 'Corners editing paused.';
+      this.shell.updateStatus('status-msg', 'Corners editing paused.');
     }
   }
 
@@ -661,7 +699,7 @@ class MePhotoStudio {
       this.renderActiveItem();
     }
     this.updatePerspectiveOverlayVisuals();
-    this.statusText.textContent = 'Reset perspective corners to document boundary.';
+    this.shell.updateStatus('status-msg', 'Reset perspective corners to document boundary.');
   }
 
   private applyPerspectiveHomographyDeskew() {
@@ -676,16 +714,17 @@ class MePhotoStudio {
 
     this.isQuadEditing = false;
     this.perspectiveOverlay.style.display = 'none';
-    const btnToggle = document.getElementById('btn-toggle-quad') as HTMLButtonElement;
+    const btnToggle = document.getElementById('btn-toggle-quad') as HTMLButtonElement | null;
     if (btnToggle) btnToggle.textContent = 'Edit Pins';
-    const btnApply = document.getElementById('btn-apply-deskew') as HTMLButtonElement;
+    const btnApply = document.getElementById('btn-apply-deskew') as HTMLButtonElement | null;
     if (btnApply) btnApply.disabled = true;
 
     this.renderActiveItem();
-    this.statusText.textContent = 'Applied 4-point homography projective deskew!';
+    this.shell.updateStatus('status-msg', 'Applied 4-point homography projective deskew!');
   }
 
   private updatePerspectiveOverlayVisuals() {
+    if (!this.canvas) return;
     const rect = this.canvas.getBoundingClientRect();
     const w = rect.width;
     const h = rect.height;
@@ -695,19 +734,19 @@ class MePhotoStudio {
     const pBR = { x: this.activeQuad.bottomRight.x * w, y: this.activeQuad.bottomRight.y * h };
     const pBL = { x: this.activeQuad.bottomLeft.x * w, y: this.activeQuad.bottomLeft.y * h };
 
-    this.pinTL.setAttribute('cx', String(pTL.x));
-    this.pinTL.setAttribute('cy', String(pTL.y));
+    this.pinTL?.setAttribute('cx', String(pTL.x));
+    this.pinTL?.setAttribute('cy', String(pTL.y));
 
-    this.pinTR.setAttribute('cx', String(pTR.x));
-    this.pinTR.setAttribute('cy', String(pTR.y));
+    this.pinTR?.setAttribute('cx', String(pTR.x));
+    this.pinTR?.setAttribute('cy', String(pTR.y));
 
-    this.pinBR.setAttribute('cx', String(pBR.x));
-    this.pinBR.setAttribute('cy', String(pBR.y));
+    this.pinBR?.setAttribute('cx', String(pBR.x));
+    this.pinBR?.setAttribute('cy', String(pBR.y));
 
-    this.pinBL.setAttribute('cx', String(pBL.x));
-    this.pinBL.setAttribute('cy', String(pBL.y));
+    this.pinBL?.setAttribute('cx', String(pBL.x));
+    this.pinBL?.setAttribute('cy', String(pBL.y));
 
-    this.quadPolygon.setAttribute(
+    this.quadPolygon?.setAttribute(
       'points',
       `${pTL.x},${pTL.y} ${pTR.x},${pTR.y} ${pBR.x},${pBR.y} ${pBL.x},${pBL.y}`
     );
@@ -777,7 +816,7 @@ class MePhotoStudio {
     }
   }
 
-  private undo() {
+  public undo() {
     if (this.activeIndex < 0 || this.undoStack.length === 0) return;
     const current = JSON.parse(JSON.stringify(this.items[this.activeIndex]!.recipe));
     const previous = this.undoStack.pop()!;
@@ -786,10 +825,10 @@ class MePhotoStudio {
     this.syncInspectorToActiveRecipe();
     this.renderActiveItem();
     this.updateUndoRedoButtons();
-    this.statusText.textContent = 'Undo applied.';
+    this.shell.updateStatus('status-msg', 'Undo applied.');
   }
 
-  private redo() {
+  public redo() {
     if (this.activeIndex < 0 || this.redoStack.length === 0) return;
     const current = JSON.parse(JSON.stringify(this.items[this.activeIndex]!.recipe));
     const next = this.redoStack.pop()!;
@@ -798,20 +837,57 @@ class MePhotoStudio {
     this.syncInspectorToActiveRecipe();
     this.renderActiveItem();
     this.updateUndoRedoButtons();
-    this.statusText.textContent = 'Redo applied.';
+    this.shell.updateStatus('status-msg', 'Redo applied.');
   }
 
   private updateUndoRedoButtons() {
-    const btnUndo = document.getElementById('btn-undo') as HTMLButtonElement;
-    const btnRedo = document.getElementById('btn-redo') as HTMLButtonElement;
-    if (btnUndo) btnUndo.disabled = this.undoStack.length === 0;
-    if (btnRedo) btnRedo.disabled = this.redoStack.length === 0;
+    this.shell.setToolDisabled('btn-undo', this.undoStack.length === 0);
+    this.shell.setToolDisabled('btn-redo', this.redoStack.length === 0);
+  }
+
+  // --- Zoom & View Controls ---
+  private adjustZoom(delta: number) {
+    this.zoom = Math.max(0.2, Math.min(3.0, Number((this.zoom + delta).toFixed(2))));
+    if (this.canvas) {
+      this.canvas.style.transform = `scale(${this.zoom})`;
+    }
+    this.shell.updateStatus('status-msg', `Zoom: ${Math.round(this.zoom * 100)}%`);
+  }
+
+  private setZoom(val: number) {
+    this.zoom = val;
+    if (this.canvas) {
+      this.canvas.style.transform = `scale(${this.zoom})`;
+    }
+    this.shell.updateStatus('status-msg', `Zoom: 100%`);
+  }
+
+  private rotateActiveCw() {
+    if (this.activeIndex >= 0) {
+      this.pushUndoState();
+      const item = this.items[this.activeIndex];
+      item.coarseRotation = (item.coarseRotation + 90) % 360;
+      item.recipe.rotation = item.coarseRotation + item.fineAngle;
+      this.renderActiveItem();
+    }
+  }
+
+  private resetFilters() {
+    if (this.activeIndex >= 0) {
+      this.pushUndoState();
+      this.items[this.activeIndex].recipe = createDefaultAdjustmentRecipe();
+      this.items[this.activeIndex].coarseRotation = 0;
+      this.items[this.activeIndex].fineAngle = 0;
+      this.syncInspectorToActiveRecipe();
+      this.renderActiveItem();
+      this.shell.updateStatus('status-msg', 'Filters reset to default.');
+    }
   }
 
   // --- OCR Extraction ---
-  private async extractTextOcr() {
+  public async extractTextOcr() {
     if (this.activeIndex < 0) return;
-    this.statusText.textContent = 'Running offline OCR recognition...';
+    this.shell.updateStatus('status-msg', 'Running offline OCR recognition...');
 
     try {
       const imgData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
@@ -825,18 +901,18 @@ class MePhotoStudio {
       txt.value = res.text || '[No text detected in this image]';
       modal.style.display = 'flex';
 
-      this.statusText.textContent = `OCR complete: ${res.words.length} words detected.`;
+      this.shell.updateStatus('status-msg', `OCR complete: ${res.words.length} words detected.`);
     } catch (err: any) {
       console.error(err);
-      this.statusText.textContent = `OCR error: ${err.message}`;
+      this.shell.updateStatus('status-msg', `OCR error: ${err.message}`);
     }
   }
 
   // --- Inter-App Pipeline (ClipBus) ---
-  private async sendToMePdf() {
+  public async sendToMePdf() {
     if (this.activeIndex < 0) return;
     const item = this.items[this.activeIndex];
-    this.statusText.textContent = `Transferring "${item.name}" to mePDF...`;
+    this.shell.updateStatus('status-msg', `Transferring "${item.name}" to mePDF...`);
 
     try {
       const dataUrl = this.canvas.toDataURL('image/jpeg', 0.95);
@@ -852,10 +928,10 @@ class MePhotoStudio {
       const bridge = createLauncherBridge();
       await bridge.launchApp({ appId: 'mepdf' });
 
-      this.statusText.textContent = `Scan "${item.name}" transferred to mePDF workspace!`;
+      this.shell.updateStatus('status-msg', `Scan "${item.name}" transferred to mePDF workspace!`);
     } catch (err: any) {
       console.error(err);
-      this.statusText.textContent = `ClipBus transfer failed: ${err.message}`;
+      this.shell.updateStatus('status-msg', `ClipBus transfer failed: ${err.message}`);
     }
   }
 
@@ -892,6 +968,17 @@ class MePhotoStudio {
     this.updateUI();
   }
 
+  public async importFromDataUrl(dataUrl: string, name = 'mePhoto_Import.jpg'): Promise<void> {
+    try {
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      const file = new File([blob], name, { type: blob.type || 'image/jpeg' });
+      await this.loadFiles([file]);
+    } catch (err) {
+      console.error('[mePhoto] Failed to import from dataUrl:', err);
+    }
+  }
+
   private selectIndex(idx: number) {
     if (idx < 0 || idx >= this.items.length) return;
     this.activeIndex = idx;
@@ -903,7 +990,7 @@ class MePhotoStudio {
     this.updateUI();
   }
 
-  private applyFilterPreset(preset: PhotoFilterPreset) {
+  public applyFilterPreset(preset: PhotoFilterPreset) {
     this.pushUndoState();
     this.updateActiveRecipe({ filterPreset: preset });
   }
@@ -920,7 +1007,7 @@ class MePhotoStudio {
   private async renderActiveItem() {
     if (this.activeIndex < 0) return;
     const item = this.items[this.activeIndex];
-    this.statusText.textContent = `Processing ${item.name}...`;
+    this.shell.updateStatus('status-msg', `Processing ${item.name}...`);
 
     const img = new Image();
     await new Promise<void>((resolve) => {
@@ -942,28 +1029,31 @@ class MePhotoStudio {
       this.updatePerspectiveOverlayVisuals();
     }
 
-    this.statusText.textContent = `${item.name} (${this.canvas.width} x ${this.canvas.height}) - Ready`;
+    this.shell.updateStatus('status-msg', `${item.name} — Ready`);
+    this.shell.updateStatus('status-info', `${item.name} · ${this.canvas.width} x ${this.canvas.height} px · RGB`);
   }
 
   private updateUI() {
     const hasItems = this.items.length > 0;
-    (document.getElementById('btn-export-pdf') as HTMLButtonElement).disabled = !hasItems;
-    (document.getElementById('btn-export-image') as HTMLButtonElement).disabled = !hasItems;
-    (document.getElementById('btn-extract-text') as HTMLButtonElement).disabled = !hasItems;
-    (document.getElementById('btn-send-to-mepdf') as HTMLButtonElement).disabled = !hasItems;
+    this.shell.setToolDisabled('btn-export-pdf', !hasItems);
+    this.shell.setToolDisabled('btn-export-image', !hasItems);
+    this.shell.setToolDisabled('btn-extract-text', !hasItems);
+    this.shell.setToolDisabled('btn-send-to-mepdf', !hasItems);
 
     // Render filmstrip
-    this.filmstripContainer.innerHTML = '';
-    this.items.forEach((item, idx) => {
-      const thumb = document.createElement('div');
-      thumb.className = `filmstrip-thumb ${idx === this.activeIndex ? 'active' : ''}`;
-      thumb.innerHTML = `<img src="${item.thumbnailUrl}" alt="${item.name}" />`;
-      thumb.addEventListener('click', () => this.selectIndex(idx));
-      this.filmstripContainer.appendChild(thumb);
-    });
+    if (this.filmstripContainer) {
+      this.filmstripContainer.innerHTML = '';
+      this.items.forEach((item, idx) => {
+        const thumb = document.createElement('div');
+        thumb.className = `filmstrip-thumb ${idx === this.activeIndex ? 'active' : ''}`;
+        thumb.innerHTML = `<img src="${item.thumbnailUrl}" alt="${item.name}" />`;
+        thumb.addEventListener('click', () => this.selectIndex(idx));
+        this.filmstripContainer.appendChild(thumb);
+      });
+    }
   }
 
-  private async exportActiveImage() {
+  public async exportActiveImage() {
     if (this.activeIndex < 0) return;
     const item = this.items[this.activeIndex];
     this.canvas.toBlob((blob) => {
@@ -973,9 +1063,9 @@ class MePhotoStudio {
     }, 'image/png');
   }
 
-  private async exportAllAsPdf() {
+  public async exportAllAsPdf() {
     if (this.items.length === 0) return;
-    this.statusText.textContent = 'Generating multi-page PDF...';
+    this.shell.updateStatus('status-msg', 'Generating multi-page PDF...');
     try {
       const { PDFDocument } = await import('pdf-lib');
       const pdfDoc = await PDFDocument.create();
@@ -1004,11 +1094,74 @@ class MePhotoStudio {
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: 'application/pdf' });
       downloadBlob(blob, `mePhoto_Document_${Date.now()}.pdf`);
-      this.statusText.textContent = 'PDF Export Complete!';
+      this.shell.updateStatus('status-msg', 'PDF Export Complete!');
     } catch (err: any) {
       console.error(err);
-      this.statusText.textContent = `PDF Export Error: ${err.message}`;
+      this.shell.updateStatus('status-msg', `PDF Export Error: ${err.message}`);
     }
+  }
+
+  private initClipBus(): void {
+    clipBus.subscribe((msg) => {
+      if (msg.targetApp === 'mephoto' && msg.dataUrl) {
+        if (msg.id && this.processedClipBusIds.has(msg.id)) return;
+        if (msg.id) this.processedClipBusIds.add(msg.id);
+        void this.importFromDataUrl(msg.dataUrl, msg.name || 'mePhoto_Import.jpg');
+      }
+    });
+
+    const pending = clipBus.consumePending('mephoto');
+    for (const p of pending) {
+      if (p.dataUrl) {
+        if (p.id && this.processedClipBusIds.has(p.id)) continue;
+        if (p.id) this.processedClipBusIds.add(p.id);
+        void this.importFromDataUrl(p.dataUrl, p.name || 'mePhoto_Import.jpg');
+      }
+    }
+  }
+
+  private updateUserIndicator() {
+    if (!this.currentSession) return;
+    const email = this.currentSession.user.email;
+    this.shell.updateStatus('status-info', `👤 ${email} · 100% In-Device Privacy`);
+  }
+
+  private showShortcutsModal() {
+    this.shell.modal({
+      title: 'mePhoto Studio — Keyboard Shortcuts',
+      body: `
+        <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+          <div><kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono);">Ctrl + O</kbd> — Open Images</div>
+          <div><kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono);">Ctrl + S</kbd> — Export as Multi-Page PDF</div>
+          <div><kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono);">Ctrl + Z</kbd> — Undo Adjustments</div>
+          <div><kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono);">Ctrl + Y</kbd> — Redo Adjustments</div>
+          <div><kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono);">Ctrl + +</kbd> — Zoom In</div>
+          <div><kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono);">Ctrl + -</kbd> — Zoom Out</div>
+          <div><kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono);">Ctrl + 0</kbd> — Actual Size (100%)</div>
+        </div>
+      `,
+    });
+  }
+
+  private showAboutModal() {
+    this.shell.modal({
+      title: 'About mePhoto Studio',
+      body: `
+        <div style="text-align: center; padding: 12px 0;">
+          <div style="font-size: 18px; font-weight: 700; color: #06b6d4; margin-bottom: 6px;">mePhoto Studio v1.0.0</div>
+          <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">CamScanner-Grade Document Restoration & Photo Lab</div>
+          <div style="font-size: 12px; color: var(--text-faint); line-height: 1.6;">
+            Powered by 4-Point Homography Perspective Rectification, Otsu Adaptive Binarization, and Offline Client-Side OCR.
+            <br>Built upon the unified <strong>meCraft Shared Studio Shell</strong>.
+            <br><span style="color: #10b981; font-weight: 600;">🛡️ 100% In-Device RAM Privacy Guaranteed.</span>
+          </div>
+        </div>
+      `,
+    });
+  }
+
+  public getShell(): StudioShell {
+    return this.shell;
   }
 }
 

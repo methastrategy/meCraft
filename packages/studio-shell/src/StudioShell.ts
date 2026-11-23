@@ -49,6 +49,38 @@ export class StudioShell {
     this.buildShell();
   }
 
+  public getCockpit(): Cockpit {
+    return this.cockpit;
+  }
+
+  public getStatusBar(): StatusBar | undefined {
+    return this.statusBar;
+  }
+
+  public getCommandRibbon(): CommandRibbon | undefined {
+    return this.commandRibbon;
+  }
+
+  public getUpdateModal(): UpdateModal | undefined {
+    return this.updateModal;
+  }
+
+  public getTitleBar(): TitleBar | undefined {
+    return this.titleBar;
+  }
+
+  public getMenuBar(): MenuBar | undefined {
+    return this.menuBar;
+  }
+
+  public getModalManager(): typeof ModalManager {
+    return ModalManager;
+  }
+
+  public getToastManager(): typeof ToastManager {
+    return ToastManager;
+  }
+
   public getRootElement(): HTMLElement {
     return this.rootEl;
   }
