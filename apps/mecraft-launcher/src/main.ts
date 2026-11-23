@@ -794,6 +794,7 @@ class MeCraftsPortal {
       ${this.renderAuthModal()}
       ${this.renderSyncModal()}
       ${this.renderDesktopPreviewModal()}
+      ${this.renderFullscreenMockupModal()}
     `;
   }
 
