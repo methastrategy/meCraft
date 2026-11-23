@@ -1757,3 +1757,624 @@ input { font-family: var(--font-sans); }
   line-height: 1.5;
   margin: 0;
 }
+
+
+/* ========================================================
+   100% NATIVE DESKTOP APP UI PREVIEW OVERLAY SYSTEM
+   ======================================================== */
+
+.app-btn-preview {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(18, 28, 50, 0.75);
+  border: 1px solid rgba(96, 165, 250, 0.32);
+  border-radius: var(--radius-md);
+  color: #93c5fd;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--dur-fast) ease;
+  margin-bottom: 6px;
+  text-decoration: none;
+  user-select: none;
+}
+
+.app-btn-preview:hover {
+  background: rgba(37, 99, 235, 0.28);
+  border-color: #60a5fa;
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+.desktop-preview-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.desktop-preview-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.desktop-preview-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 6, 14, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.desktop-preview-window {
+  position: relative;
+  width: 1180px;
+  max-width: 96vw;
+  height: 800px;
+  max-height: 94vh;
+  background: #060913;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: popWindow 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popWindow {
+  from {
+    transform: scale(0.96) translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Windows 11 Desktop Titlebar */
+.desktop-window-titlebar {
+  height: 40px;
+  background: #091022;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.window-titlebar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.window-app-icon {
+  display: flex;
+  align-items: center;
+}
+
+.window-app-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.window-title-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.window-native-pill {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.window-titlebar-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.win-ctrl-btn {
+  width: 32px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 120ms ease;
+}
+
+.win-ctrl-btn:hover {
+  background: rgba(255, 255, 255, 0.10);
+  color: #ffffff;
+}
+
+.win-ctrl-btn.win-close:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* Window Content Body */
+.desktop-window-body {
+  flex: 1;
+  background: #04070f;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Mockup Common Elements */
+.mockup-menubar {
+  height: 32px;
+  background: #070c18;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 16px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.mockup-menu-item {
+  color: #cbd5e1;
+  cursor: default;
+}
+
+.mockup-menu-item:hover {
+  color: #ffffff;
+}
+
+.mockup-ribbon {
+  height: 52px;
+  background: #0a1124;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  font-size: 12px;
+  gap: 12px;
+}
+
+.mockup-ribbon-left,
+.mockup-ribbon-center,
+.mockup-ribbon-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mockup-tool-chip {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mockup-tool-chip.active {
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+/* 3-Pane Layout */
+.mockup-cockpit-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 200px 1fr 280px;
+  overflow: hidden;
+  height: calc(100% - 84px);
+}
+
+.mockup-left-pane {
+  background: #080e1c;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.mockup-pane-heading {
+  font-size: 11px;
+  font-weight: 700;
+  color: #60a5fa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.mockup-thumbnail-card {
+  background: #0f182d;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.mockup-thumbnail-card.active {
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+}
+
+.mockup-thumb-page {
+  height: 80px;
+  background: #ffffff;
+  border-radius: 3px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.mockup-doc-line {
+  height: 4px;
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.mockup-doc-line.title {
+  width: 60%;
+  height: 6px;
+  background: #1e293b;
+}
+
+.mockup-doc-line.short {
+  width: 45%;
+}
+
+.mockup-thumb-label {
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+/* Center Document Stage */
+.mockup-center-stage {
+  background: #03060e;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  position: relative;
+}
+
+.mockup-pdf-sheet {
+  width: 440px;
+  min-height: 580px;
+  background: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.85);
+  padding: 32px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: #0f172a;
+}
+
+.mockup-sheet-header {
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 10px;
+}
+
+.mockup-sheet-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+}
+
+.mockup-sheet-meta {
+  font-size: 10px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mockup-sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #334155;
+}
+
+.mockup-sheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+  margin: 6px 0;
+}
+
+.mockup-sheet-table th,
+.mockup-sheet-table td {
+  border: 1px solid #cbd5e1;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.mockup-sheet-table th {
+  background: #f1f5f9;
+  font-weight: 700;
+}
+
+.mockup-sheet-sign {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 18px;
+  border-top: 1px dashed #cbd5e1;
+  font-size: 10px;
+  color: #475569;
+}
+
+.mockup-sign-line {
+  width: 140px;
+  border-bottom: 1px solid #0f172a;
+  height: 24px;
+}
+
+/* Right Tool Drawer */
+.mockup-right-pane {
+  background: #091022;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.mockup-tool-card {
+  background: #0e172e;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mockup-tool-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mockup-tool-desc {
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.mockup-tool-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(37, 99, 235, 0.25);
+  color: #60a5fa;
+  width: fit-content;
+}
+
+/* Photo Studio Mockup Elements */
+.mockup-photo-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #05070f;
+  position: relative;
+  overflow: hidden;
+}
+
+.mockup-photo-frame {
+  width: 520px;
+  height: 360px;
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.8);
+  position: relative;
+}
+
+.mockup-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mockup-crop-grid {
+  position: absolute;
+  inset: 0;
+  border: 2px dashed #3b82f6;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+.mockup-crop-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #3b82f6;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+.mockup-histogram {
+  height: 70px;
+  background: #080e1c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.mockup-hist-bar {
+  flex: 1;
+  background: linear-gradient(to top, #3b82f6, #60a5fa);
+  border-radius: 1px;
+}
+
+.mockup-slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  color: #cbd5e1;
+}
+
+.mockup-slider-head {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mockup-slider-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  position: relative;
+}
+
+.mockup-slider-thumb {
+  position: absolute;
+  top: -4px;
+  width: 12px;
+  height: 12px;
+  background: #3b82f6;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+}
+
+/* Preview Window Footer */
+.desktop-preview-footer {
+  height: 52px;
+  background: #070c18;
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  flex-shrink: 0;
+}
+
+.preview-footer-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.preview-pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.preview-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-preview-download {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #d4af37 0%, #b8960c 100%);
+  color: #000000;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 120ms ease;
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+.btn-preview-download:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.45);
+}
+
+.btn-preview-close {
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.btn-preview-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
