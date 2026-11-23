@@ -21,6 +21,7 @@ import {
   type AuthSession,
   type SubscriptionTier,
 } from '@mecraft/core-bridge';
+import { supabase } from './supabase';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PORTAL INVARIANT: This file is the OFFICIAL SHOWCASE & DISCOVERY WEB PORTAL.
@@ -460,16 +461,240 @@ class MeCraftsPortal {
       this.attachListeners();
     });
 
+    // Check & subscribe to live Supabase session if client is configured
+    if (supabase) {
+      supabase.auth.getSession().then(({ data: { session }, error }) => {
+        if (!error && session?.user && !this.currentSession) {
+          this.syncSupabaseSession(session);
+        }
+      }).catch((err) => {
+        console.warn('[meCraft:auth] Session check error:', err);
+      });
+
+      supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+          if (session?.user) {
+            this.syncSupabaseSession(session);
+          }
+        } else if (event === 'SIGNED_OUT') {
+          if (this.currentSession && !this.currentSession.isOfflineMode) {
+            clearAuthSession();
+            this.currentSession = null;
+            this.render();
+            this.attachListeners();
+          }
+        }
+      });
+    }
+
     this.render();
     this.attachListeners();
   }
 
   private cleanUrlHash() {
     if (typeof window !== 'undefined' && window.location.hash) {
+      if (window.location.hash.includes('access_token=') || window.location.hash.includes('refresh_token=')) {
+        return;
+      }
       try {
         history.replaceState(null, '', window.location.pathname + window.location.search);
       } catch {}
     }
+  }
+
+  private async syncSupabaseSession(supabaseSession: { user: any; access_token: string; refresh_token: string; expires_at?: number }) {
+    let tier: SubscriptionTier = 'free_member';
+    let fullName = supabaseSession.user.user_metadata?.full_name || supabaseSession.user.email?.split('@')[0] || 'meCraft User';
+    let avatarUrl = supabaseSession.user.user_metadata?.avatar_url;
+
+    if (supabase) {
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name, tier, avatar_url')
+          .eq('id', supabaseSession.user.id)
+          .maybeSingle();
+
+        if (profile) {
+          if (profile.tier) tier = profile.tier as SubscriptionTier;
+          if (profile.full_name) fullName = profile.full_name;
+          if (profile.avatar_url) avatarUrl = profile.avatar_url;
+        }
+      } catch (e) {
+        console.warn('[meCraft:auth] Profile lookup skipped:', e);
+      }
+    }
+
+    const session: AuthSession = {
+      user: {
+        id: supabaseSession.user.id,
+        email: supabaseSession.user.email || '',
+        fullName,
+        tier,
+        avatarUrl,
+      },
+      token: supabaseSession.access_token,
+      refreshToken: supabaseSession.refresh_token,
+      expiresAt: supabaseSession.expires_at ? supabaseSession.expires_at * 1000 : Date.now() + 30 * 24 * 3600 * 1000,
+      offlineGraceExpiresAt: Date.now() + 30 * 24 * 3600 * 1000,
+      deviceSignature: 'portal-web-session',
+      isOfflineMode: false,
+    };
+
+    saveAuthSession(session);
+    this.currentSession = session;
+    this.authLoading = false;
+    this.isAuthModalOpen = false;
+    this.authError = '';
+
+    if (typeof window !== 'undefined' && window.location.hash) {
+      try {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch {}
+    }
+
+    this.render();
+    this.attachListeners();
+  }
+
+  private async handleAuthSubmit(email: string, pwd: string, fullName?: string) {
+    this.authLoading = true;
+    this.authError = '';
+    this.render();
+    this.attachListeners();
+
+    try {
+      if (supabase) {
+        if (this.authTab === 'signin') {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password: pwd,
+          });
+          if (error) throw error;
+          if (data.session) {
+            await this.syncSupabaseSession(data.session);
+            return;
+          }
+        } else {
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password: pwd,
+            options: {
+              data: {
+                full_name: fullName || email.split('@')[0],
+              },
+            },
+          });
+          if (error) throw error;
+          if (data.session) {
+            await this.syncSupabaseSession(data.session);
+            return;
+          } else if (data.user) {
+            this.authLoading = false;
+            this.authError = this.lang === 'en'
+              ? 'Registration successful! If confirmation is required, please check your email.'
+              : 'สร้างบัญชีสำเร็จแล้ว! กรุณาตรวจสอบอีเมลหากต้องการการยืนยัน';
+            this.render();
+            this.attachListeners();
+            return;
+          }
+        }
+      } else {
+        const session = createMockAuthSession(email, 'free_member');
+        if (fullName) {
+          session.user.fullName = fullName;
+        }
+        saveAuthSession(session);
+        this.currentSession = session;
+        this.authLoading = false;
+        this.isAuthModalOpen = false;
+        this.render();
+        this.attachListeners();
+      }
+    } catch (err: any) {
+      this.authLoading = false;
+      this.authError = err?.message || (this.lang === 'en' ? 'Authentication failed. Please verify credentials.' : 'การยืนยันตัวตนล้มเหลว กรุณาตรวจสอบข้อมูล');
+      this.render();
+      this.attachListeners();
+    }
+  }
+
+  private async handleGoogleAuth() {
+    this.authLoading = true;
+    this.authError = '';
+    this.render();
+    this.attachListeners();
+
+    try {
+      if (supabase) {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: window.location.origin + window.location.pathname,
+          },
+        });
+        if (error) throw error;
+      } else {
+        const session = createMockAuthSession('google.creator@mecraft.dev', 'free_member');
+        session.user.fullName = 'Google Creator';
+        saveAuthSession(session);
+        this.currentSession = session;
+        this.authLoading = false;
+        this.isAuthModalOpen = false;
+        this.render();
+        this.attachListeners();
+      }
+    } catch (err: any) {
+      this.authLoading = false;
+      this.authError = err?.message || (this.lang === 'en' ? 'Google authentication failed.' : 'เข้าสู่ระบบด้วย Google ไม่สำเร็จ');
+      this.render();
+      this.attachListeners();
+    }
+  }
+
+  private async handlePasswordReset(email: string) {
+    if (!email) {
+      this.authError = this.lang === 'en' ? 'Please enter your email address to reset password.' : 'กรุณาระบุอีเมลเพื่อรีเซ็ตรหัสผ่าน';
+      this.render();
+      this.attachListeners();
+      return;
+    }
+    if (supabase) {
+      try {
+        this.authLoading = true;
+        this.render();
+        this.attachListeners();
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin,
+        });
+        this.authLoading = false;
+        if (error) throw error;
+        alert(this.lang === 'en' ? `Password reset link sent to ${email}` : `ส่งลิงก์รีเซ็ตรหัสผ่านไปยัง ${email} แล้ว`);
+        this.render();
+        this.attachListeners();
+      } catch (err: any) {
+        this.authLoading = false;
+        this.authError = err?.message || 'Failed to send reset email';
+        this.render();
+        this.attachListeners();
+      }
+    } else {
+      alert(this.lang === 'en' ? `Password reset link would be sent to ${email}` : `ระบบจะส่งลิงก์รีเซ็ตรหัสผ่านไปยัง ${email}`);
+    }
+  }
+
+  private async handleSignOut() {
+    if (supabase) {
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        console.warn('[meCraft:auth] Sign out error:', e);
+      }
+    }
+    clearAuthSession();
+    this.currentSession = null;
+    this.render();
+    this.attachListeners();
   }
 
   private get t(): PortalTranslations {
@@ -1463,38 +1688,11 @@ class MeCraftsPortal {
           return;
         }
 
-        this.authLoading = true;
-        this.authError = '';
-        this.render();
-        this.attachListeners();
-
-        // Perform authentication
-        setTimeout(() => {
-          const session = createMockAuthSession(email, 'free_member');
-          if (fullName) {
-            session.user.fullName = fullName;
-          }
-          saveAuthSession(session);
-          this.currentSession = session;
-          this.authLoading = false;
-          this.render();
-          this.attachListeners();
-        }, 400);
+        this.handleAuthSubmit(email, pwd, fullName);
       });
 
       document.getElementById('btn-auth-google')?.addEventListener('click', () => {
-        this.authLoading = true;
-        this.render();
-        this.attachListeners();
-        setTimeout(() => {
-          const session = createMockAuthSession('google.creator@mecraft.dev', 'free_member');
-          session.user.fullName = 'Google Creator';
-          saveAuthSession(session);
-          this.currentSession = session;
-          this.authLoading = false;
-          this.render();
-          this.attachListeners();
-        }, 400);
+        this.handleGoogleAuth();
       });
 
       document.getElementById('btn-auth-demo')?.addEventListener('click', () => {
@@ -1507,7 +1705,8 @@ class MeCraftsPortal {
 
       document.getElementById('link-forgot-pwd')?.addEventListener('click', (e) => {
         e.preventDefault();
-        alert(this.lang === 'en' ? 'Password reset link would be sent to your email.' : 'ระบบจะส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมลของคุณ');
+        const email = (document.getElementById('auth-email') as HTMLInputElement)?.value.trim();
+        this.handlePasswordReset(email);
       });
 
       // Desktop Web Sync Import Drawer
@@ -1601,40 +1800,12 @@ class MeCraftsPortal {
         return;
       }
 
-      this.authLoading = true;
-      this.authError = '';
-      this.render();
-      this.attachListeners();
-
-      setTimeout(() => {
-        const session = createMockAuthSession(email, 'free_member');
-        if (fullName) {
-          session.user.fullName = fullName;
-        }
-        saveAuthSession(session);
-        this.currentSession = session;
-        this.authLoading = false;
-        this.isAuthModalOpen = false;
-        this.render();
-        this.attachListeners();
-      }, 400);
+      this.handleAuthSubmit(email, pwd, fullName);
     });
 
     // Web Portal Google & Demo Login
     document.getElementById('modal-btn-auth-google')?.addEventListener('click', () => {
-      this.authLoading = true;
-      this.render();
-      this.attachListeners();
-      setTimeout(() => {
-        const session = createMockAuthSession('google.creator@mecraft.dev', 'free_member');
-        session.user.fullName = 'Google Creator';
-        saveAuthSession(session);
-        this.currentSession = session;
-        this.authLoading = false;
-        this.isAuthModalOpen = false;
-        this.render();
-        this.attachListeners();
-      }, 400);
+      this.handleGoogleAuth();
     });
 
     document.getElementById('modal-btn-auth-demo')?.addEventListener('click', () => {
@@ -1648,7 +1819,8 @@ class MeCraftsPortal {
 
     document.getElementById('modal-link-forgot-pwd')?.addEventListener('click', (e) => {
       e.preventDefault();
-      alert(this.lang === 'en' ? 'Password reset instructions will be sent to your email.' : 'ระบบจะส่งคำแนะนำการรีเซ็ตรหัสผ่านไปยังอีเมลของคุณ');
+      const email = (document.getElementById('modal-auth-email') as HTMLInputElement)?.value.trim();
+      this.handlePasswordReset(email);
     });
 
     // Sync to Desktop Modal Open / Close / Copy
@@ -1711,11 +1883,8 @@ class MeCraftsPortal {
     });
 
     // Authenticated state listeners
-    document.getElementById('btn-signout')?.addEventListener('click', () => {
-      clearAuthSession();
-      this.currentSession = null;
-      this.render();
-      this.attachListeners();
+    document.getElementById('btn-signout')?.addEventListener('click', async () => {
+      await this.handleSignOut();
     });
 
     // Language toggle

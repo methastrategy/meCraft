@@ -359,5 +359,16 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(desktopSession?.user.email).toBe('web_user@mecraft.dev');
       expect(desktopSession?.user.tier).toBe('pro_monthly');
     });
+
+    it('detects live Supabase configuration and initializes client', async () => {
+      const { isLiveSupabaseConfigured, supabase } = await import('../src/supabase');
+      // If .env is loaded or configured, client should be ready
+      const isConfigured = isLiveSupabaseConfigured();
+      expect(typeof isConfigured).toBe('boolean');
+      if (isConfigured) {
+        expect(supabase).not.toBeNull();
+        expect(supabase?.auth).toBeDefined();
+      }
+    });
   });
 });
