@@ -10,9 +10,15 @@ import './styles/theme-teal.css';
 
 import { WriterApp } from './components/WriterApp.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+function init() {
   const root = document.getElementById('app');
-  if (root) {
+  if (root && !root.hasChildNodes()) {
     new WriterApp(root);
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
