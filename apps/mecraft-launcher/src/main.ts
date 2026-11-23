@@ -2005,7 +2005,7 @@ class MeCraftsPortal {
         <div class="hero-glow hero-glow-cyan"></div>
       </div>
       <div class="portal-hero-inner">
-        <div class="hero-pill" aria-label="Suite version">${this.t.appsCount} · v1.0.0 · Windows</div>
+        <div class="hero-pill" aria-label="Suite version">${this.t.appsCount} · Windows</div>
         <h1 class="hero-title" id="hero-title">${this.t.heroTitle}</h1>
         <p class="hero-subtitle">${this.t.heroSubtitle}</p>
         <div class="hero-badges" role="list" aria-label="Key features">
