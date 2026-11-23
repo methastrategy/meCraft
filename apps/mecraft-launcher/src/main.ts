@@ -412,6 +412,7 @@ function escapeHtml(str: string): string {
 
 // ─── Main Portal Class ────────────────────────────────────────────────────────
 class MeCraftsPortal {
+  private bridge = createLauncherBridge();
   private lang: 'en' | 'th' = 'en';
   private searchQuery = '';
   private activeFilter: AppCategory | 'all' = 'all';
@@ -424,8 +425,17 @@ class MeCraftsPortal {
   constructor() {
     this.currentSession = getAuthSession();
     this.appEl = document.getElementById('app')!;
+    this.cleanUrlHash();
     this.render();
     this.attachListeners();
+  }
+
+  private cleanUrlHash() {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      try {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch {}
+    }
   }
 
   private get t(): PortalTranslations {
@@ -448,7 +458,9 @@ class MeCraftsPortal {
   }
 
   private render() {
-    if (!this.currentSession) {
+    // In Tauri desktop environment, enforce member auth gate.
+    // On the public showcase web portal, allow immediate access to discovery & downloads.
+    if (this.bridge.isTauri() && !this.currentSession) {
       this.appEl.innerHTML = this.renderAuthGate();
       return;
     }
@@ -888,8 +900,8 @@ class MeCraftsPortal {
   }
 
   private attachListeners() {
-    // If unauthenticated, handle auth portal events
-    if (!this.currentSession) {
+    // If in desktop and unauthenticated, handle auth portal events
+    if (this.bridge.isTauri() && !this.currentSession) {
       document.getElementById('tab-signin')?.addEventListener('click', () => {
         this.authTab = 'signin';
         this.authError = '';
@@ -973,6 +985,25 @@ class MeCraftsPortal {
 
       return;
     }
+
+    // Clean URL Invariant: Smooth scroll without updating or mutating browser URL with hash
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', (e) => {
+        const href = anchor.getAttribute('href');
+        if (!href || href === '#') {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+
+        const targetId = href.replace(/^#/, '');
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
 
     // Authenticated state listeners
     document.getElementById('btn-signout')?.addEventListener('click', () => {
