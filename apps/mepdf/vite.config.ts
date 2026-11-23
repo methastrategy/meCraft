@@ -3,10 +3,9 @@ import { fileURLToPath, URL } from 'node:url';
 import fs from 'node:fs';
 import { VitePWA } from 'vite-plugin-pwa';
 
-const rootPath = fs.realpathSync(fileURLToPath(new URL('.', import.meta.url)));
+const rootPath = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
-  root: rootPath,
   base: './',
   plugins: [
     VitePWA({

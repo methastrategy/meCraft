@@ -1,11 +1,7 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
-import fs from 'node:fs';
-
-const rootPath = fs.realpathSync(fileURLToPath(new URL('.', import.meta.url)));
 
 export default defineConfig({
-  root: rootPath,
   base: './',
   resolve: {
     alias: {

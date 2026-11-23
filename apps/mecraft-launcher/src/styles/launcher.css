@@ -2626,6 +2626,23 @@ input { font-family: var(--font-sans); }
 .pill-emblem {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.pill-emblem .app-3d-emblem {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.studio-nav-pill:hover .pill-emblem .app-3d-emblem,
+.studio-nav-pill.active .pill-emblem .app-3d-emblem {
+  transform: scale(1.15);
 }
 
 .pill-emblem svg {
@@ -2694,15 +2711,28 @@ input { font-family: var(--font-sans); }
 }
 
 .spotlight-emblem {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.12);
   flex-shrink: 0;
+  padding: 4px;
+}
+
+.spotlight-emblem .app-3d-emblem {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.studio-spotlight-card:hover .spotlight-emblem .app-3d-emblem {
+  transform: scale(1.14) translateY(-2px);
 }
 
 .spotlight-emblem svg {
@@ -3278,15 +3308,28 @@ input { font-family: var(--font-sans); }
 }
 
 .eco-card-emblem {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
+  padding: 3px;
+}
+
+.eco-card-emblem .app-3d-emblem {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.45));
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ecosystem-card:hover .eco-card-emblem .app-3d-emblem {
+  transform: scale(1.15) translateY(-2px);
 }
 
 .eco-card-emblem svg {
@@ -3487,3 +3530,130 @@ input { font-family: var(--font-sans); }
     padding: 10px;
   }
 }
+
+/* ── Thai Mythology 3D Visual Suite & Emblems ─────────────── */
+.app-emblem-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.app-3d-emblem {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.45));
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease;
+}
+
+.hero-guardians-panorama {
+  margin: 36px auto 12px auto;
+  max-width: 980px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.hero-guardians-img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 40px rgba(0, 0, 0, 0.85));
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  transition: transform 0.4s var(--ease-out), filter 0.4s ease;
+}
+
+.hero-guardians-img:hover {
+  transform: scale(1.02);
+  filter: drop-shadow(0 20px 48px rgba(212, 175, 55, 0.3));
+}
+
+.manifesto-seal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+}
+
+.manifesto-seal-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 14px rgba(212, 175, 55, 0.5));
+}
+
+.specs-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  margin-top: 36px;
+  padding: 24px 32px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(212, 175, 55, 0.05) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.specs-box-showcase {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  max-width: 620px;
+}
+
+.specs-box-img {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.7));
+  flex-shrink: 0;
+  transition: transform 0.35s var(--ease-spring);
+}
+
+.specs-box-showcase:hover .specs-box-img {
+  transform: scale(1.08) rotate(-3deg);
+}
+
+.specs-box-desc h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.specs-box-desc p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.specs-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+@media (max-width: 960px) {
+  .specs-cta-row {
+    flex-direction: column;
+    text-align: center;
+  }
+  .specs-box-showcase {
+    flex-direction: column;
+    text-align: center;
+  }
+  .specs-actions {
+    justify-content: center;
+  }
+}
+
