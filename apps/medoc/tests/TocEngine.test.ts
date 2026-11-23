@@ -15,12 +15,16 @@ describe('meDoc Studio — TocEngine', () => {
     });
 
     it('supports Thai language characters in slugs', () => {
-      expect(slugify('บทที่ 1 บทนำ')).toBe('บทท-1-บทนำ');
+      expect(slugify('บทที่ 1 บทนำ')).toBe('บทที่-1-บทนำ');
     });
 
     it('cleans inline markdown links, bolding, and code markers', () => {
       expect(cleanHeadingText('**Bold Title** with [Link](http://example.com)')).toBe('Bold Title with Link');
       expect(cleanHeadingText('`code` and *italic*')).toBe('code and italic');
+    });
+
+    it('returns empty string gracefully for blank text in slugify', () => {
+      expect(slugify('   ')).toBe('');
     });
   });
 

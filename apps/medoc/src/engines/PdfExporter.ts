@@ -284,7 +284,7 @@ export async function exportMarkdownToPdf(
  */
 export function downloadPdf(bytes: Uint8Array, filename: string = 'document.pdf'): void {
   if (typeof window === 'undefined' || !window.document) return;
-  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const blob = new Blob([bytes as any], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;

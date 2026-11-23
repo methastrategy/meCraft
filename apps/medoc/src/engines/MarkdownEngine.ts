@@ -164,13 +164,24 @@ export async function renderMarkdown(markdown: string, options: RenderOptions = 
   };
 
   // Custom table styling
-  renderer.table = ({ header, rows }: { header: string; rows: string }) => {
-    return `<div class="medoc-table-wrapper"><table class="medoc-table"><thead>${header}</thead><tbody>${rows}</tbody></table></div>`;
+  renderer.table = function (token: any): string {
+    let headerHtml = '';
+    if (token.header) {
+      headerHtml = '<tr>' + token.header.map((cell: any) => `<th>${this.parser?.parseInline(cell.tokens) || cell.text}</th>`).join('') + '</tr>';
+    }
+    let bodyHtml = '';
+    if (token.rows) {
+      bodyHtml = token.rows.map((row: any) => {
+        return '<tr>' + row.map((cell: any) => `<td>${this.parser?.parseInline(cell.tokens) || cell.text}</td>`).join('') + '</tr>';
+      }).join('');
+    }
+    return `<div class="medoc-table-wrapper"><table class="medoc-table"><thead>${headerHtml}</thead><tbody>${bodyHtml}</tbody></table></div>`;
   };
 
   // Custom blockquote styling
-  renderer.blockquote = ({ text }: { text: string }) => {
-    return `<blockquote class="medoc-quote">${text}</blockquote>`;
+  renderer.blockquote = function (token: any): string {
+    const body = this.parser?.parse(token.tokens) || token.text || '';
+    return `<blockquote class="medoc-quote">${body}</blockquote>`;
   };
 
   marked.setOptions({
