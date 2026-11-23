@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "meCraft",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "identifier": "com.mecraft.launcher",
   "build": {
     "frontendDist": "../dist",
@@ -41,7 +41,10 @@
         "installerHooks": "hooks.nsh",
         "startMenuFolder": "meCraft",
         "installMode": "both",
-        "languages": ["English", "Thai"],
+        "languages": [
+          "English",
+          "Thai"
+        ],
         "displayLanguageSelector": false,
         "sidebarImage": "icons/installer-sidebar.bmp",
         "headerImage": "icons/installer-header.bmp"

@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.1] — 2026-11-23
+### Added
+- **Luxury Dark NSIS Installer Branding**: Custom 24-bit Obsidian sidebar and header bitmaps replacing standard NSIS defaults.
+- **Dual Install Mode**: Configured `installMode: "both"` allowing user to choose between Per-User (`AppData\Local`) and All-Users (`Program Files`).
+- **Desktop Shortcut Lifecycle**: NSIS post-install script (`hooks.nsh`) creates a Desktop Shortcut automatically and cleans up on uninstall.
+- **Pure Program Manager Hub**: Refocused meCraft Desktop Hub into a streamlined Application Store & Manager for downloading, installing, updating, and launching apps without editor clutter.
+
+
 ## [3.2.0] — 2026-11-23
 ### Added
 - **Single Unified Windows Installer (`meCraft-Setup.exe`)**: All-in-one setup wizard with NSIS auto-launch hook (`hooks.nsh`) for zero-friction post-install execution.
@@ -38,7 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Linear Studio Dark Cockpit**: Utilitarian dark mode user interface with Thai-Latin typography calibration and keyboard shortcuts.
 - **100% In-Browser Privacy Sandbox**: Guarantee of zero cloud upload, zero remote telemetry, and complete offline availability.
 
-[Unreleased]: https://github.com/methastrategy/meCraft/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/methastrategy/meCraft/compare/v3.2.1...HEAD
+[3.2.1]: https://github.com/methastrategy/meCraft/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/methastrategy/meCraft/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/methastrategy/meCraft/compare/v1.0.0...v3.1.0
 [1.0.0]: https://github.com/methastrategy/meCraft/releases/tag/v1.0.0

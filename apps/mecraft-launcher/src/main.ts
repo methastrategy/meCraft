@@ -180,7 +180,7 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     navPrivacy: 'Privacy Architecture',
     navRoadmap: 'Future Pipeline',
     navSpecs: 'Specs & Downloads',
-    heroPill: 'v3.2.0 • 100% Client-Side In-Browser & Native Desktop Workstation Suite',
+    heroPill: 'v3.2.1 • 100% Client-Side In-Browser & Native Desktop Workstation Suite',
     heroTitle: 'The Private-First Creative & Document Workstation Suite',
     heroSubtitle: 'Professional-grade client-side PDF engineering, CamScanner-grade document lab, and non-destructive image enhancement. Zero telemetry. Zero file uploads. 100% private in-browser WebAssembly & native Windows performance.',
     heroCtaLaunchPdf: 'Launch mePDF Studio',
@@ -336,7 +336,7 @@ export const TRANSLATIONS: Record<'en' | 'th', LauncherTranslations> = {
     navPrivacy: 'สถาปัตยกรรมความปลอดภัย',
     navRoadmap: 'แผนงานในอนาคต',
     navSpecs: 'สเปกและดาวน์โหลด',
-    heroPill: 'เวอร์ชัน 3.2.0 • สตูดิโอเอกสารและกราฟิก ประมวลผลในเครื่อง 100% ไร้คลาวด์',
+    heroPill: 'เวอร์ชัน 3.2.1 • สตูดิโอเอกสารและกราฟิก ประมวลผลในเครื่อง 100% ไร้คลาวด์',
     heroTitle: 'ชุดสตูดิโอจัดการเอกสารและภาพถ่าย ประมวลผลในเครื่อง 100% ไร้คลาวด์',
     heroSubtitle: 'รวมสตูดิโอวิศวกรรมเอกสาร PDF ระดับโปร, ห้องแล็บสแกนเอกสารด้วย Homography 4 จุด และแต่งภาพโดยไม่สูญเสียความละเอียด ปลอดภัยในเครื่อง 100% ไม่ส่งข้อมูลออกภายนอก',
     heroCtaLaunchPdf: 'เปิดใช้งาน mePDF Studio',
@@ -667,7 +667,7 @@ class MeCraftLauncher {
         </nav>
 
         <div class="launcher-nav-right">
-          <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe" class="btn-action primary-gold" download="meCraft-Setup.exe" id="header-btn-download-mecraft" style="height: 36px; padding: 0 16px; font-size: 13px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 700; white-space: nowrap;">
+          <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Setup.exe" class="btn-action primary-gold" download="meCraft-Setup.exe" id="header-btn-download-mecraft" style="height: 36px; padding: 0 16px; font-size: 13px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 700; white-space: nowrap;">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             <span id="nav-download-label">${this.currentLang === 'th' ? 'ดาวน์โหลด meCraft (.exe)' : 'Download meCraft (.exe)'}</span>
           </a>
@@ -701,7 +701,7 @@ class MeCraftLauncher {
             <p class="hero-subtitle" id="hero-subtitle">${t.heroSubtitle}</p>
 
             <div class="spotlight-actions-row" style="margin-bottom: 24px; align-items: center; gap: 12px;">
-              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe" download="meCraft-Setup.exe" class="btn-action primary-gold" id="hero-btn-download-direct" style="min-height: 48px; padding: 0 24px; font-weight: 800; font-size: 15px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.45);">
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Setup.exe" download="meCraft-Setup.exe" class="btn-action primary-gold" id="hero-btn-download-direct" style="min-height: 48px; padding: 0 24px; font-weight: 800; font-size: 15px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.45);">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 <span id="hero-btn-download-label">${this.currentLang === 'th' ? 'ดาวน์โหลด meCraft สำหรับ Windows (.exe)' : 'Download meCraft for Windows (.exe)'}</span>
               </a>
@@ -716,7 +716,7 @@ class MeCraftLauncher {
                 <span id="hero-btn-mephoto">${t.heroCtaLaunchPhoto}</span>
               </button>
 
-              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Portable.exe" download="meCraft-Portable.exe" class="btn-header" style="min-height: 48px; padding: 0 16px; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Portable.exe" download="meCraft-Portable.exe" class="btn-header" style="min-height: 48px; padding: 0 16px; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
                 <span>${this.currentLang === 'th' ? 'รุ่นพกพา (Portable .exe)' : 'Portable (.exe)'}</span>
               </a>
@@ -859,7 +859,7 @@ class MeCraftLauncher {
             <div style="display: flex; flex-direction: column; gap: 10px;">
               <div style="display: flex; align-items: center; gap: 10px;">
                 <span class="section-eyebrow amber">OFFICIAL WINDOWS SUITE</span>
-                <span class="bento-metric-pill" style="color: var(--gold-hover);">v3.2.0 Production</span>
+                <span class="bento-metric-pill" style="color: var(--gold-hover);">v3.2.1 Production</span>
               </div>
               <h3 style="font-size: 24px; font-weight: 800; color: #ffffff; margin: 0;">meCraft Workstation — Desktop Hub</h3>
               <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0; max-width: 720px;">
@@ -869,11 +869,11 @@ class MeCraftLauncher {
               </p>
             </div>
             <div style="display: flex; flex-direction: column; gap: 10px; min-width: 250px;">
-              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe" download="meCraft-Setup.exe" class="btn-action primary-gold" style="min-height: 46px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; font-size: 14px;">
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Setup.exe" download="meCraft-Setup.exe" class="btn-action primary-gold" style="min-height: 46px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; font-size: 14px;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 <span>${this.currentLang === 'th' ? 'ดาวน์โหลดตัวติดตั้ง (14.8 MB)' : 'Download Setup.exe (14.8 MB)'}</span>
               </a>
-              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Portable.exe" download="meCraft-Portable.exe" class="btn-header" style="min-height: 40px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px;">
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Portable.exe" download="meCraft-Portable.exe" class="btn-header" style="min-height: 40px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
                 <span>${this.currentLang === 'th' ? 'รุ่นพกพา Portable.exe (25.4 MB)' : 'Download Portable (25.4 MB)'}</span>
               </a>
@@ -1097,7 +1097,7 @@ class MeCraftLauncher {
                 <span class="spec-feature-item">✓ No Admin Rights</span>
                 <span class="spec-feature-item">✓ USB Flash Drive Ready</span>
               </div>
-              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Portable.exe" download="meCraft-Portable.exe" class="btn-action" style="background: rgba(255,255,255,0.08); margin-top: 14px; text-decoration: none; text-align: center; font-size: 13px; font-weight: 600;">⬇️ ${this.currentLang === 'th' ? 'ดาวน์โหลด Portable (.exe)' : 'Download Portable (.exe)'}</a>
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Portable.exe" download="meCraft-Portable.exe" class="btn-action" style="background: rgba(255,255,255,0.08); margin-top: 14px; text-decoration: none; text-align: center; font-size: 13px; font-weight: 600;">⬇️ ${this.currentLang === 'th' ? 'ดาวน์โหลด Portable (.exe)' : 'Download Portable (.exe)'}</a>
             </div>
 
             <div class="spec-card" style="border-color: rgba(212, 175, 55, 0.4); background: linear-gradient(180deg, rgba(212, 175, 55, 0.05) 0%, var(--surface-card) 100%);">
@@ -1109,7 +1109,7 @@ class MeCraftLauncher {
                 <span class="spec-feature-item">✓ File Associations</span>
                 <span class="spec-feature-item">✓ Clean Uninstaller</span>
               </div>
-              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe" download="meCraft-Setup.exe" class="btn-action primary-gold" style="margin-top: 14px; text-decoration: none; text-align: center; font-size: 13px; font-weight: 800;">⬇️ ${this.currentLang === 'th' ? 'ดาวน์โหลด Setup.exe' : 'Download Setup.exe'}</a>
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Setup.exe" download="meCraft-Setup.exe" class="btn-action primary-gold" style="margin-top: 14px; text-decoration: none; text-align: center; font-size: 13px; font-weight: 800;">⬇️ ${this.currentLang === 'th' ? 'ดาวน์โหลด Setup.exe' : 'Download Setup.exe'}</a>
             </div>
 
             <div class="spec-card">
@@ -1121,7 +1121,7 @@ class MeCraftLauncher {
                 <span class="spec-feature-item">✓ Silent Deploy msiexec /qn</span>
                 <span class="spec-feature-item">✓ IT Policy Management</span>
               </div>
-              <a href="https://github.com/methastrategy/meCraft/releases/tag/v3.2.0" target="_blank" rel="noopener noreferrer" class="btn-header" style="margin-top: 14px; text-decoration: none; text-align: center; font-size: 13px;">${this.currentLang === 'th' ? 'ดู Releases บน GitHub' : 'View GitHub Releases'}</a>
+              <a href="https://github.com/methastrategy/meCraft/releases/tag/v3.2.1" target="_blank" rel="noopener noreferrer" class="btn-header" style="margin-top: 14px; text-decoration: none; text-align: center; font-size: 13px;">${this.currentLang === 'th' ? 'ดู Releases บน GitHub' : 'View GitHub Releases'}</a>
             </div>
           </div>
         </section>
@@ -1178,8 +1178,8 @@ class MeCraftLauncher {
           <div>
             <div class="footer-col-title">${t.footerColCommunity}</div>
             <ul class="footer-links-list">
-              <li><a class="footer-link" href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe" download="meCraft-Setup.exe" style="color: var(--gold-hover); font-weight: 600;">⬇️ Download meCraft-Setup.exe</a></li>
-              <li><a class="footer-link" href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Portable.exe" download="meCraft-Portable.exe">⬇️ Download Portable (.exe)</a></li>
+              <li><a class="footer-link" href="https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Setup.exe" download="meCraft-Setup.exe" style="color: var(--gold-hover); font-weight: 600;">⬇️ Download meCraft-Setup.exe</a></li>
+              <li><a class="footer-link" href="https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Portable.exe" download="meCraft-Portable.exe">⬇️ Download Portable (.exe)</a></li>
               <li><a class="footer-link" href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer">All GitHub Releases</a></li>
               <li><a class="footer-link" href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer">GitHub Monorepo</a></li>
               <li><a class="footer-link" href="https://mecrafts.vercel.app">Vercel Web Portal</a></li>
@@ -1617,7 +1617,7 @@ class MeCraftLauncher {
     // Hero download button
     document.getElementById('hero-btn-download')?.addEventListener('click', () => {
       const app = this.catalog.find((a) => a.id === 'mepdf') || this.catalog[0];
-      const installerUrl = `https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe`;
+      const installerUrl = `https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Setup.exe`;
       this.showWebDownloadModal(app, installerUrl);
     });
 
@@ -1787,7 +1787,7 @@ class MeCraftLauncher {
     if (!app) return;
 
     if (!this.bridge.isTauri()) {
-      const installerUrl = `https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe`;
+      const installerUrl = `https://github.com/methastrategy/meCraft/releases/download/v3.2.1/meCraft-Setup.exe`;
       if (typeof document !== 'undefined') {
         const a = document.createElement('a');
         a.href = installerUrl;
@@ -1869,7 +1869,7 @@ class MeCraftLauncher {
             </div>
           </div>
           <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-top: 1px solid var(--border-subtle);">
-            <a href="https://github.com/methastrategy/meCraft/releases/tag/v3.2.0" target="_blank" rel="noopener noreferrer" style="font-size: 12px; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px;">
+            <a href="https://github.com/methastrategy/meCraft/releases/tag/v3.2.1" target="_blank" rel="noopener noreferrer" style="font-size: 12px; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px;">
               <span>${t.viewAllReleases}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             </a>
@@ -1958,7 +1958,7 @@ class MeCraftLauncher {
           <div class="modal-header">
             <div class="modal-title-group">
               <div class="modal-title" id="settings-dialog-title">${t.settingsTitle}</div>
-              <div class="modal-subtitle">meCrafts Official Portal v3.2.0 • Ecosystem Health & Privacy Diagnostics</div>
+              <div class="modal-subtitle">meCrafts Official Portal v3.2.1 • Ecosystem Health & Privacy Diagnostics</div>
             </div>
             <button class="btn-more" id="btn-close-modal" aria-label="Close settings dialog">✕</button>
           </div>
