@@ -2925,6 +2925,186 @@ input { font-family: var(--font-sans); }
   display: flex;
   flex-direction: column;
   background: #090e1a;
+  position: relative;
+}
+
+/* ── In-Development Blueprint & Wireframe Styling ─────────── */
+.desktop-window-body.body-is-wireframe {
+  position: relative;
+  background-color: #060914 !important;
+  background-image: 
+    linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at center, rgba(30, 58, 138, 0.18) 0%, transparent 75%);
+  background-size: 20px 20px, 20px 20px, 100% 100%;
+}
+
+/* Blur & dither inner elements for in-development mockups */
+.desktop-window-body.body-is-wireframe > :not(.blueprint-overlay) {
+  filter: blur(2.5px) grayscale(40%) contrast(0.9);
+  opacity: 0.52;
+  pointer-events: none;
+  user-select: none;
+  transition: filter 240ms ease, opacity 240ms ease;
+}
+
+.desktop-preview-window:hover .desktop-window-body.body-is-wireframe > :not(.blueprint-overlay) {
+  filter: blur(1.5px) grayscale(20%) contrast(0.95);
+  opacity: 0.68;
+}
+
+.blueprint-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+  padding: 24px;
+}
+
+.blueprint-cad-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cad-crosshair {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(96, 165, 250, 0.45);
+}
+
+.cad-crosshair.ch-tl { top: 8px; left: 10px; }
+.cad-crosshair.ch-tr { top: 8px; right: 10px; }
+.cad-crosshair.ch-bl { bottom: 8px; left: 10px; }
+.cad-crosshair.ch-br { bottom: 8px; right: 10px; }
+
+.cad-spec-label {
+  position: absolute;
+  top: 10px;
+  left: 32px;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 1.2px;
+  color: rgba(96, 165, 250, 0.55);
+}
+
+.cad-res-label {
+  position: absolute;
+  bottom: 10px;
+  right: 32px;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 1.2px;
+  color: rgba(96, 165, 250, 0.55);
+}
+
+.blueprint-stamp-box {
+  pointer-events: auto;
+  background: rgba(9, 14, 28, 0.88);
+  border: 1px solid rgba(59, 130, 246, 0.38);
+  border-radius: 12px;
+  padding: 20px 22px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.85), 0 0 32px rgba(59, 130, 246, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.blueprint-stamp-icon {
+  font-size: 26px;
+  line-height: 1;
+  flex-shrink: 0;
+  background: rgba(59, 130, 246, 0.14);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 10px;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blueprint-stamp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.blueprint-stamp-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.blueprint-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 8px #f59e0b;
+  animation: pulseDot 1.8s ease-in-out infinite;
+}
+
+.blueprint-stamp-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #fbbf24;
+}
+
+.blueprint-stamp-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.blueprint-stamp-desc {
+  font-size: 11.5px;
+  color: #94a3b8;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.blueprint-stamp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.bp-tag {
+  font-size: 10px;
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-family: var(--font-mono);
+}
+
+.pill-indev-wireframe {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+}
+
+.dot-amber {
+  background: #f59e0b !important;
+  box-shadow: 0 0 6px #f59e0b !important;
 }
 
 .desktop-preview-statusbar {

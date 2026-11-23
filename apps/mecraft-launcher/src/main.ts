@@ -1039,17 +1039,22 @@ class MeCraftsPortal {
   }
 
   private renderDesktopPreviewInline(app: ShowcaseApp): string {
+    const isIndev = app.status === 'in-dev';
     const docExt = app.id === 'mepdf' ? 'pdf' : (app.id === 'mephoto' ? 'dng' : (app.id === 'mevector' ? 'svg' : (app.id === 'mefilm' ? 'proj' : (app.id === 'melight' ? 'raw' : (app.id === 'memotion' ? 'motion' : (app.id === 'medesign' ? 'design' : (app.id === 'meaudio' ? 'wav' : (app.id === 'medoc' ? 'doc' : '3d'))))))));
-    const sampleDocName = this.lang === 'th' ? `ชิ้นงานออกแบบ_2026.${docExt}` : `Creative_Project_Master.${docExt}`;
+    const sampleDocName = isIndev
+      ? (this.lang === 'th' ? `ภาพร่างโครงสร้าง_Draft.${docExt}` : `Architecture_Draft.${docExt}`)
+      : (this.lang === 'th' ? `ชิ้นงานออกแบบ_2026.${docExt}` : `Creative_Project_Master.${docExt}`);
 
     return `
-    <div class="desktop-preview-window" id="desktop-preview-window-${app.id}">
+    <div class="desktop-preview-window ${isIndev ? 'window-is-wireframe' : 'window-is-production'}" id="desktop-preview-window-${app.id}">
       <!-- Native Windows Title Bar -->
       <div class="desktop-window-titlebar">
         <div class="window-titlebar-left">
           <div class="window-app-icon">${getAppIcon(app.icon, app.accentColor)}</div>
-          <span class="window-title-text" id="preview-window-title-${app.id}">${app.name} — [${sampleDocName}] - Windows Native Desktop</span>
-          <span class="window-native-pill">100% Native Desktop App</span>
+          <span class="window-title-text" id="preview-window-title-${app.id}">${app.name} — [${sampleDocName}] - ${isIndev ? (this.lang === 'th' ? 'ภาพร่างโครงร่างต้นแบบ (WIP)' : 'Architecture Schematic (WIP)') : 'Windows Native Desktop'}</span>
+          <span class="window-native-pill ${isIndev ? 'pill-indev-wireframe' : ''}">
+            ${isIndev ? (this.lang === 'th' ? 'ภาพร่างต้นแบบ (R&D)' : 'Concept Wireframe (WIP)') : '100% Native Desktop App'}
+          </span>
         </div>
         <div class="window-titlebar-controls" aria-hidden="true">
           <button class="win-ctrl-btn" type="button" tabindex="-1" title="Minimize">─</button>
@@ -1059,20 +1064,61 @@ class MeCraftsPortal {
       </div>
 
       <!-- Realistic Desktop Application Body -->
-      <div class="desktop-window-body" id="preview-window-body-${app.id}">
+      <div class="desktop-window-body ${isIndev ? 'body-is-wireframe' : ''}" id="preview-window-body-${app.id}">
         ${this.renderAppDesktopMockup(app)}
+        
+        ${isIndev ? `
+          <!-- Blueprint / Wireframe Blur & Schematic Overlay for In-Development Studios -->
+          <div class="blueprint-overlay" aria-label="Conceptual wireframe overlay">
+            <div class="blueprint-cad-grid" aria-hidden="true">
+              <span class="cad-crosshair ch-tl">+</span>
+              <span class="cad-crosshair ch-tr">+</span>
+              <span class="cad-crosshair ch-bl">+</span>
+              <span class="cad-crosshair ch-br">+</span>
+              <div class="cad-spec-label">ARCHITECTURE SCHEMATIC · TAURI v2 RUST CORE · IN DEVELOPMENT</div>
+              <div class="cad-res-label">1920 × 1080 [BLUEPRINT CONCEPT]</div>
+            </div>
+
+            <div class="blueprint-stamp-box">
+              <div class="blueprint-stamp-icon" aria-hidden="true">📐</div>
+              <div class="blueprint-stamp-info">
+                <div class="blueprint-stamp-header">
+                  <span class="blueprint-pulse-dot"></span>
+                  <span class="blueprint-stamp-badge">
+                    ${this.lang === 'th' ? 'โครงร่างสถาปัตยกรรม (Architecture Wireframe)' : 'Architecture Blueprint & Wireframe'}
+                  </span>
+                </div>
+                <h4 class="blueprint-stamp-title">
+                  ${this.lang === 'th' ? `${app.name} กำลังอยู่ในช่วงวิจัยและพัฒนา` : `${app.name} is in Active Development`}
+                </h4>
+                <p class="blueprint-stamp-desc">
+                  ${this.lang === 'th'
+                    ? 'ภาพจำลองนี้เป็นเพียงแนวคิดโครงสร้างและอินเทอร์เฟซต้นแบบ ซอฟต์แวร์จริงกำลังได้รับการพัฒนาและคอมไพล์ด้วย Rust/Tauri v2'
+                    : 'This view depicts an early conceptual schematic and UI wireframe. The native desktop engine is actively being engineered.'}
+                </p>
+                <div class="blueprint-stamp-tags">
+                  <span class="bp-tag">✦ Planned v0.1.0 Alpha</span>
+                  <span class="bp-tag">✦ 100% In-Device RAM</span>
+                  <span class="bp-tag">✦ MIT Open Source</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ` : ''}
       </div>
 
-      <!-- Windows Native Status Bar (Clean, Zero Download Buttons) -->
+      <!-- Windows Native Status Bar -->
       <div class="desktop-preview-statusbar">
         <div class="statusbar-left">
-          <span class="statusbar-dot"></span>
-          <span>Ready · Hardware Acceleration (DirectX 12 / Vulkan) · 0 KB network</span>
+          <span class="statusbar-dot ${isIndev ? 'dot-amber' : ''}"></span>
+          <span>${isIndev
+            ? (this.lang === 'th' ? 'สถานะ: กำลังพัฒนาสถาปัตยกรรม · แผนงานเปิดตัว v0.1.0' : 'Status: Architecture Phase · Target Milestone v0.1.0 Alpha')
+            : 'Ready · Hardware Acceleration (DirectX 12 / Vulkan) · 0 KB network'}</span>
         </div>
         <div class="statusbar-right">
-          <span>Memory: 24.8 MB</span>
+          <span>${isIndev ? 'Roadmap: In Development' : 'Memory: 24.8 MB'}</span>
           <span class="statusbar-divider">|</span>
-          <span>UTF-8</span>
+          <span>${isIndev ? 'Rust / Tauri v2' : 'UTF-8'}</span>
           <span class="statusbar-divider">|</span>
           <span>100% In-Device RAM</span>
         </div>
@@ -2011,8 +2057,10 @@ class MeCraftsPortal {
         <div class="studio-spotlight-preview">
           <div class="spotlight-preview-bar">
             <div class="preview-bar-left">
-              <span class="preview-bar-dot" aria-hidden="true"></span>
-              <span class="preview-bar-label">${this.lang === 'th' ? 'หน้าต่างจำลองซอฟต์แวร์จริงบน Windows 11 (Desktop Simulator)' : 'Live Native Desktop Simulator (Windows 11 x64)'}</span>
+              <span class="preview-bar-dot ${!isActive ? 'dot-amber' : ''}" aria-hidden="true"></span>
+              <span class="preview-bar-label">${isActive
+                ? (this.lang === 'th' ? 'หน้าต่างจำลองซอฟต์แวร์จริงบน Windows 11 (Desktop Simulator)' : 'Live Native Desktop Simulator (Windows 11 x64)')
+                : (this.lang === 'th' ? 'โครงร่างภาพร่างต้นแบบสถาปัตยกรรม (Conceptual Blueprint Wireframe)' : 'Conceptual Architecture Blueprint & Wireframe (WIP)')}</span>
             </div>
             <button type="button" class="btn-inspect-modal" id="btn-inspect-modal" title="${this.lang === 'th' ? 'ขยายดูเต็มจอ' : 'Inspect Fullscreen'}">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
