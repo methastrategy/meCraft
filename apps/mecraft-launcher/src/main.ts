@@ -1753,10 +1753,6 @@ class MeCraftsPortal {
                   ${getTierBadge(this.currentSession.user.tier).label}
                 </span>
               </div>
-              <button class="btn-header-sync" id="btn-open-sync" title="${this.t.syncDesktopBtn}" aria-label="${this.t.syncDesktopBtn}">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-                <span>${this.t.syncDesktopBtn}</span>
-              </button>
               <button class="btn-signout" id="btn-signout" title="${this.lang === 'en' ? 'Sign Out' : 'ออกจากระบบ'}" aria-label="Sign Out">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
               </button>
