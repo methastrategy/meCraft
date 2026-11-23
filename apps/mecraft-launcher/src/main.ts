@@ -593,6 +593,7 @@ class MeCraftLauncher {
   private catalog: AppCatalogItem[] = getDefaultCatalog();
   private recentProjects: RecentProject[] = [];
   private activeFilter = 'all';
+  private activeHeroTab: 'mepdf' | 'mephoto' | 'mecraft' = 'mepdf';
   private downloadingApps = new Map<string, DownloadProgress>();
   private activeMenuAppId: string | null = null;
   private currentLang: 'en' | 'th' = 'en';
@@ -611,7 +612,9 @@ class MeCraftLauncher {
   private async init() {
     this.renderSkeleton();
     await this.refreshStatuses();
+    await this.loadRecentProjects();
     this.renderCatalog();
+    this.renderRecentProjects();
     this.attachEventListeners();
   }
 
@@ -635,30 +638,39 @@ class MeCraftLauncher {
 
   private renderSkeleton() {
     const t = this.t;
-    const installedCount = this.catalog.filter((a) => a.status === 'installed').length;
-    const totalCount = this.catalog.length;
-    const isDesktop = this.bridge.isTauri();
 
     this.appEl.innerHTML = `
       <!-- Sticky Navigation Bar -->
       <header class="launcher-header">
         <div class="launcher-brand">
           <div class="launcher-logo" style="overflow: hidden; border-radius: var(--radius-sm); position: relative;">
-            <img src="./assets/branding/mecraft-hub-emblem.jpg" alt="meCraft" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
+            <img src="./assets/branding/mecraft-hub-emblem.jpg" alt="meCrafts" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
             </svg>
           </div>
           <div class="launcher-title-group">
             <div class="launcher-title">
-              <span id="header-brand-title">meCraft</span>
-              <span class="launcher-version-badge" id="header-brand-badge">${this.currentLang === 'th' ? 'ระบบจัดการโปรแกรม' : 'Program Manager'}</span>
+              <span id="header-brand-title">${t.brandTitle}</span>
+              <span class="launcher-version-badge" id="header-brand-badge">${t.brandTag}</span>
             </div>
-            <div class="launcher-subtitle" id="header-brand-subtitle">${this.currentLang === 'th' ? 'ศูนย์กลางติดตั้งและจัดการโปรแกรมในเครื่อง' : 'Application Hub & Program Manager'}</div>
+            <div class="launcher-subtitle" id="header-brand-subtitle">${t.brandSubtitle}</div>
           </div>
         </div>
 
+        <nav class="launcher-nav-center" aria-label="Portal Navigation">
+          <a class="portal-nav-link" href="#showcase-products" id="nav-products">${t.navProducts}</a>
+          <a class="portal-nav-link" href="#hub-dropzone" id="nav-dropzone">${t.navDropzone}</a>
+          <a class="portal-nav-link" href="#privacy-architecture" id="nav-privacy">${t.navPrivacy}</a>
+          <a class="portal-nav-link" href="#future-ecosystem" id="nav-roadmap">${t.navRoadmap}</a>
+          <a class="portal-nav-link" href="#spec-matrix" id="nav-specs">${t.navSpecs}</a>
+        </nav>
+
         <div class="launcher-nav-right">
+          <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe" class="btn-action primary-gold" download="meCraft-Setup.exe" id="header-btn-download-mecraft" style="height: 36px; padding: 0 16px; font-size: 13px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 700; white-space: nowrap;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span id="nav-download-label">${this.currentLang === 'th' ? 'ดาวน์โหลด meCraft (.exe)' : 'Download meCraft (.exe)'}</span>
+          </a>
           <div class="network-badge">
             <div class="network-dot"></div>
             <span id="header-network-label">${t.networkConnected}</span>
@@ -674,78 +686,512 @@ class MeCraftLauncher {
         </div>
       </header>
 
-      <!-- Main Manager Content -->
-      <main class="launcher-content hub-manager-layout">
-        <!-- Dashboard Header & Status Strip -->
-        <section class="hub-dashboard-section">
-          <div class="hub-dashboard-card">
-            <div class="hub-dashboard-main">
-              <div class="hub-dashboard-badge">
-                <span class="hub-badge-dot"></span>
-                <span>${this.currentLang === 'th' ? 'ศูนย์ดาวน์โหลดและจัดการโปรแกรม' : 'Desktop Application Hub'}</span>
+      <!-- Main Portal Content -->
+      <main class="launcher-content">
+        <!-- 1. Hero Showcase Section -->
+        <section class="launcher-hero">
+          <div class="hero-content">
+            <div class="hero-header-row">
+              <div class="hero-pill">
+                <span class="hero-pill-dot"></span>
+                <span id="hero-pill-text">${t.heroPill}</span>
               </div>
-              <h1 class="hub-dashboard-title" id="dashboard-title">
-                ${this.currentLang === 'th' ? 'ศูนย์รวมและติดตั้งโปรแกรม meCraft' : 'meCraft Applications Hub'}
-              </h1>
-              <p class="hub-dashboard-subtitle" id="dashboard-subtitle">
-                ${this.currentLang === 'th' ? 'ดาวน์โหลด ติดตั้ง อัปเดต และเปิดใช้งานโปรแกรมในเครือ meCraft ทั้งหมดบนคอมพิวเตอร์ของคุณ' : 'Download, install, update, and manage official meCraft workstation programs on your computer.'}
-              </p>
             </div>
+            <h1 class="hero-title" id="hero-title">${t.heroTitle}</h1>
+            <p class="hero-subtitle" id="hero-subtitle">${t.heroSubtitle}</p>
 
-            <div class="hub-dashboard-controls">
-              <button class="btn-dashboard-action" id="btn-dashboard-open-folder" title="${t.openFolder}">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                <span>${t.openFolder}</span>
+            <div class="spotlight-actions-row" style="margin-bottom: 24px; align-items: center; gap: 12px;">
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe" download="meCraft-Setup.exe" class="btn-action primary-gold" id="hero-btn-download-direct" style="min-height: 48px; padding: 0 24px; font-weight: 800; font-size: 15px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.45);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span id="hero-btn-download-label">${this.currentLang === 'th' ? 'ดาวน์โหลด meCraft สำหรับ Windows (.exe)' : 'Download meCraft for Windows (.exe)'}</span>
+              </a>
+
+              <button class="btn-action" data-action="open-web" data-app-id="mepdf" style="min-height: 48px; padding: 0 20px; font-weight: 700; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.4); color: #818cf8;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                <span id="hero-btn-mepdf">${t.heroCtaLaunchPdf}</span>
               </button>
-              <button class="btn-dashboard-action" id="btn-dashboard-check-updates" title="${t.checkUpdates}">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-                <span>${t.checkUpdates}</span>
+
+              <button class="btn-action" data-action="open-web" data-app-id="mephoto" style="min-height: 48px; padding: 0 20px; font-weight: 700; background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.4); color: var(--accent-cyan);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                <span id="hero-btn-mephoto">${t.heroCtaLaunchPhoto}</span>
               </button>
-            </div>
-          </div>
 
-          <!-- Quick Metrics Bar -->
-          <div class="hub-metrics-bar">
-            <div class="metric-pill-item">
-              <span class="metric-pill-dot emerald"></span>
-              <span class="metric-pill-label">${this.currentLang === 'th' ? 'สถานะในเครื่อง:' : 'Installed:'}</span>
-              <strong class="metric-pill-val" id="metric-installed-count">${installedCount} / ${totalCount} ${this.currentLang === 'th' ? 'โปรแกรม' : 'Apps'}</strong>
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Portable.exe" download="meCraft-Portable.exe" class="btn-header" style="min-height: 48px; padding: 0 16px; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                <span>${this.currentLang === 'th' ? 'รุ่นพกพา (Portable .exe)' : 'Portable (.exe)'}</span>
+              </a>
             </div>
 
-            <div class="metric-pill-item">
-              <span class="metric-pill-dot cyan"></span>
-              <span class="metric-pill-label">${this.currentLang === 'th' ? 'ตำแหน่งติดตั้ง:' : 'Storage:'}</span>
-              <span class="metric-pill-code">AppData\\Local\\meCraft\\apps</span>
+            <div class="hero-badges" id="hero-badges">
+              <div class="hero-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>${t.badgePrivacy}</span>
+              </div>
+              <div class="hero-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                <span>${t.badgeDesktop}</span>
+              </div>
+              <div class="hero-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                <span>${t.badgeOcr}</span>
+              </div>
+              <div class="hero-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span>${t.badgeHomography}</span>
+              </div>
             </div>
 
-            <div class="metric-pill-item">
-              <span class="metric-pill-dot purple"></span>
-              <span class="metric-pill-label">${this.currentLang === 'th' ? 'ระบบ:' : 'Runtime:'}</span>
-              <strong class="metric-pill-val">${isDesktop ? 'Windows 64-bit' : 'Web Portal'}</strong>
+            <!-- Interactive Spotlight Showcase Box -->
+            <div class="hero-spotlight-wrapper">
+              <div class="hero-preview-tabs" role="tablist">
+                <button class="hero-tab-btn active" data-tab="mepdf" id="tab-spotlight-pdf">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                  <span>${t.spotlightTabPdf}</span>
+                </button>
+                <button class="hero-tab-btn" data-tab="mephoto" id="tab-spotlight-photo">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                  <span>${t.spotlightTabPhoto}</span>
+                </button>
+                <button class="hero-tab-btn" data-tab="mecraft" id="tab-spotlight-craft">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                  <span>${t.spotlightTabCraft}</span>
+                </button>
+              </div>
+
+              <div class="hero-spotlight-box">
+                <div class="hero-spotlight-window-header">
+                  <div class="window-dots">
+                    <span class="window-dot close"></span>
+                    <span class="window-dot min"></span>
+                    <span class="window-dot max"></span>
+                  </div>
+                  <div class="window-title-address" id="spotlight-address-bar">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <span>https://mecrafts.vercel.app/mepdf/</span>
+                  </div>
+                </div>
+
+                <div class="hero-spotlight-display" id="hero-spotlight-display">
+                  <div class="spotlight-media-container">
+                    <img src="./hero_mepdf_studio.jpg" alt="mePDF Studio" class="spotlight-img" id="spotlight-preview-img" onerror="this.src='./assets/branding/mecraft-hero-banner.jpg'" />
+                  </div>
+                  <div class="spotlight-info-panel">
+                    <div class="spotlight-badge-title">
+                      <div class="spotlight-app-name" id="spotlight-name">mePDF Studio</div>
+                      <span class="section-eyebrow" id="spotlight-eyebrow">DOCUMENT COCKPIT</span>
+                    </div>
+                    <div class="spotlight-app-tagline" id="spotlight-tagline">${t.showcasePdfSubtitle}</div>
+                    <div class="spotlight-app-desc" id="spotlight-desc">${t.pdfFeature1Desc}</div>
+                    <div class="spotlight-feature-bullets" id="spotlight-bullets">
+                      <div class="spotlight-bullet-item">
+                        <svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>${t.pdfFeature1Title}</span>
+                      </div>
+                      <div class="spotlight-bullet-item">
+                        <svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>${t.pdfFeature2Title}</span>
+                      </div>
+                      <div class="spotlight-bullet-item">
+                        <svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>${t.pdfFeature4Title}</span>
+                      </div>
+                    </div>
+                    <div class="spotlight-actions-row">
+                      <button class="btn-action primary-gold" id="spotlight-btn-open" data-action="open-web" data-app-id="mepdf">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        <span id="spotlight-btn-text">${t.openWebStudio}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <!-- Applications Catalog Section -->
-        <section class="hub-catalog-section">
+        <!-- 2. Universal Drop Zone (Try It Live) -->
+        <section class="hub-drop-section" id="hub-dropzone-section">
+          <div class="hub-dropzone" id="hub-dropzone" role="region" aria-label="Universal Drop Zone">
+            <input type="file" id="hub-file-input" accept=".pdf,image/png,image/jpeg,image/webp,image/jpg,image/bmp,image/svg+xml" style="display: none;" />
+            <div class="hub-dropzone-inner">
+              <div class="hub-dropzone-icons">
+                <div class="drop-icon-chip pdf">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                  <span>PDF</span>
+                </div>
+                <div class="drop-icon-chip connector">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+                <div class="drop-icon-chip photo">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                  <span>PHOTO</span>
+                </div>
+              </div>
+
+              <div class="hub-dropzone-text">
+                <div class="hub-dropzone-title" id="dropzone-title">${t.dropZoneTitle}</div>
+                <div class="hub-dropzone-subtitle" id="dropzone-subtitle">${t.dropZoneSubtitle}</div>
+                <div style="font-size: 11px; color: var(--accent-emerald); font-family: var(--font-mono); margin-top: 4px;" id="dropzone-pledge">${t.dropZonePledge}</div>
+              </div>
+
+              <button class="btn-hub-browse" id="btn-browse-hub">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span id="btn-browse-hub-text">${t.dropZoneBtn}</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Core Products Showcase (mePDF, mePhoto, meCraft) -->
+        <section class="showcase-section" id="showcase-products">
+          <div class="section-eyebrow-row">
+            <span class="section-eyebrow">${t.showcasePdfEyebrow}</span>
+            <span class="section-eyebrow cyan">${t.showcasePhotoEyebrow}</span>
+          </div>
+
+          <div class="section-header-block">
+            <h2 class="section-headline">${this.currentLang === 'th' ? 'ผลิตภัณฑ์หลักในตระกูล meCrafts' : 'Flagship Ecosystem Products'}</h2>
+            <p class="section-description">${this.currentLang === 'th' ? 'ออกแบบทางวิศวกรรมเพื่อมอบประสบการณ์การทำงานระดับโปร ปลอดภัย ไม่ส่งไฟล์ขึ้นคลาวด์' : 'Precision engineering built for zero-cloud document processing, image forensics, and creative workflow.'}</p>
+          </div>
+
+          <!-- Featured meCraft Desktop Suite Download Banner -->
+          <div class="mecraft-hub-featured-box" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(18, 24, 38, 0.95) 100%); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: var(--radius-lg); padding: 32px; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); margin-bottom: 24px;">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="section-eyebrow amber">OFFICIAL WINDOWS SUITE</span>
+                <span class="bento-metric-pill" style="color: var(--gold-hover);">v3.2.0 Production</span>
+              </div>
+              <h3 style="font-size: 24px; font-weight: 800; color: #ffffff; margin: 0;">meCraft Workstation — Desktop Hub</h3>
+              <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0; max-width: 720px;">
+                ${this.currentLang === 'th' 
+                  ? 'โปรแกรมเดสก์ท็อปรวมศูนย์เครื่องมือทั้งหมดของ meCraft ติดตั้งเพียงไฟล์เดียวจบ ได้ทั้ง mePDF Studio, mePhoto Studio พร้อมระบบลากวางไฟล์อัตโนมัติ และประมวลผลออฟไลน์ในเครื่อง 100% ไม่ส่งข้อมูลออกนอกเครื่อง' 
+                  : 'The complete offline desktop workstation suite for Windows. Install once to get mePDF Studio, mePhoto Studio, automatic file routing, and 100% client-side privacy.'}
+              </p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px; min-width: 250px;">
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe" download="meCraft-Setup.exe" class="btn-action primary-gold" style="min-height: 46px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; font-size: 14px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>${this.currentLang === 'th' ? 'ดาวน์โหลดตัวติดตั้ง (14.8 MB)' : 'Download Setup.exe (14.8 MB)'}</span>
+              </a>
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Portable.exe" download="meCraft-Portable.exe" class="btn-header" style="min-height: 40px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                <span>${this.currentLang === 'th' ? 'รุ่นพกพา Portable.exe (25.4 MB)' : 'Download Portable (25.4 MB)'}</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- mePDF Bento Showcase -->
+          <div class="bento-showcase-grid">
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                </div>
+                <span class="bento-metric-pill">Dual Engine</span>
+              </div>
+              <h3 class="bento-card-title">${t.pdfFeature1Title}</h3>
+              <p class="bento-card-desc">${t.pdfFeature1Desc}</p>
+            </div>
+
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+                <span class="bento-metric-pill">AES-256</span>
+              </div>
+              <h3 class="bento-card-title">${t.pdfFeature2Title}</h3>
+              <p class="bento-card-desc">${t.pdfFeature2Desc}</p>
+            </div>
+
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                </div>
+                <span class="bento-metric-pill">Offline OCR</span>
+              </div>
+              <h3 class="bento-card-title">${t.pdfFeature4Title}</h3>
+              <p class="bento-card-desc">${t.pdfFeature4Desc}</p>
+            </div>
+          </div>
+
+          <!-- mePhoto Bento Showcase -->
+          <div class="bento-showcase-grid" style="margin-top: 10px;">
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper cyan">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                </div>
+                <span class="bento-metric-pill">Homography</span>
+              </div>
+              <h3 class="bento-card-title">${t.photoFeature1Title}</h3>
+              <p class="bento-card-desc">${t.photoFeature1Desc}</p>
+            </div>
+
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper cyan">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 0 0 20z"></path></svg>
+                </div>
+                <span class="bento-metric-pill">Otsu B&W</span>
+              </div>
+              <h3 class="bento-card-title">${t.photoFeature2Title}</h3>
+              <p class="bento-card-desc">${t.photoFeature2Desc}</p>
+            </div>
+
+            <div class="bento-card">
+              <div class="bento-card-header">
+                <div class="bento-icon-wrapper cyan">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+                </div>
+                <span class="bento-metric-pill">Magic Color</span>
+              </div>
+              <h3 class="bento-card-title">${t.photoFeature3Title}</h3>
+              <p class="bento-card-desc">${t.photoFeature3Desc}</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Interactive Apps Catalog Grid -->
+        <section class="showcase-section" id="apps-catalog-section">
           <div class="section-header">
             <div class="section-title">
-              <span id="catalog-section-title">${this.currentLang === 'th' ? 'โปรแกรมทั้งหมด' : 'Applications Catalog'}</span>
-              <span class="section-badge" id="catalog-count">${totalCount} Programs</span>
+              <span id="catalog-section-title">${t.catalogTitle}</span>
+              <span class="section-badge" id="catalog-count">${t.catalogCount(this.catalog.length)}</span>
             </div>
           </div>
 
           <div class="filter-bar" role="tablist" aria-label="Applications filter">
             <button class="filter-tab active" role="tab" aria-selected="true" data-filter="all" id="filter-all">${t.filterAll}</button>
             <button class="filter-tab" role="tab" aria-selected="false" data-filter="installed" id="filter-installed">${t.filterInstalled}</button>
-            <button class="filter-tab" role="tab" aria-selected="false" data-filter="available" id="filter-available">${this.currentLang === 'th' ? 'ยังไม่ได้ติดตั้ง' : 'Available to Install'}</button>
             <button class="filter-tab" role="tab" aria-selected="false" data-filter="document" id="filter-doc">${t.filterDoc}</button>
             <button class="filter-tab" role="tab" aria-selected="false" data-filter="graphics" id="filter-graphics">${t.filterGraphics}</button>
           </div>
 
           <div class="apps-grid" id="apps-grid"></div>
         </section>
+
+        <!-- 5. Future Ecosystem & Roadmap ("และอื่นๆในภายหลัง") -->
+        <section class="showcase-section" id="future-ecosystem">
+          <div class="section-eyebrow-row">
+            <span class="section-eyebrow emerald">${t.roadmapEyebrow}</span>
+          </div>
+
+          <div class="section-header-block">
+            <h2 class="section-headline">${t.roadmapTitle}</h2>
+            <p class="section-description">${t.roadmapSubtitle}</p>
+          </div>
+
+          <div class="roadmap-grid" id="roadmap-grid">
+            ${ROADMAP_ITEMS.map((item) => {
+              const statusClass = item.status === 'in-dev' ? 'in-dev' : item.status === 'coming-soon' ? 'coming-soon' : 'active-sister';
+              const statusLabel = item.status === 'in-dev' ? t.statusInDev : item.status === 'coming-soon' ? t.statusComingSoon : t.statusSister;
+              const tagline = this.currentLang === 'th' ? item.taglineTh : item.taglineEn;
+              const desc = this.currentLang === 'th' ? item.descTh : item.descEn;
+
+              return `
+                <div class="roadmap-card">
+                  <div class="roadmap-banner-wrapper">
+                    <img src="${item.image}" alt="${item.name}" class="roadmap-banner-img" onerror="this.src='./assets/branding/mecraft-hero-banner.jpg'" />
+                    <span class="roadmap-status-chip ${statusClass}">${statusLabel}</span>
+                  </div>
+                  <div class="roadmap-body">
+                    <div class="roadmap-app-header">
+                      <span class="roadmap-app-title">${item.name}</span>
+                      <span class="roadmap-app-category">${item.category}</span>
+                    </div>
+                    <div class="roadmap-app-tagline">${tagline}</div>
+                    <div class="roadmap-app-desc">${desc}</div>
+                    <div class="roadmap-tags">
+                      ${item.tags.map((tag) => `<span class="app-tag">${tag}</span>`).join('')}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </section>
+
+        <!-- 6. Zero-Cloud Privacy Architecture Breakdown -->
+        <section class="showcase-section" id="privacy-architecture">
+          <div class="section-eyebrow-row">
+            <span class="section-eyebrow amber">${t.privacyEyebrow}</span>
+          </div>
+
+          <div class="section-header-block">
+            <h2 class="section-headline">${t.privacyTitle}</h2>
+            <p class="section-description">${t.privacySubtitle}</p>
+          </div>
+
+          <div class="privacy-table-container">
+            <table class="privacy-table">
+              <thead>
+                <tr>
+                  <th style="width: 25%;">${t.privacyColMetric}</th>
+                  <th style="width: 37.5%;">${t.privacyColCloud}</th>
+                  <th style="width: 37.5%;">${t.privacyColMecraft}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-metric-title">${t.privacyRow1Metric}</td>
+                  <td><div class="cell-saas-risk"><span>✕</span><span>${t.privacyRow1Cloud}</span></div></td>
+                  <td><div class="cell-mecraft-winner"><span>✓</span><span>${t.privacyRow1Mecraft}</span></div></td>
+                </tr>
+                <tr>
+                  <td class="cell-metric-title">${t.privacyRow2Metric}</td>
+                  <td><div class="cell-saas-risk"><span>✕</span><span>${t.privacyRow2Cloud}</span></div></td>
+                  <td><div class="cell-mecraft-winner"><span>✓</span><span>${t.privacyRow2Mecraft}</span></div></td>
+                </tr>
+                <tr>
+                  <td class="cell-metric-title">${t.privacyRow3Metric}</td>
+                  <td><div class="cell-saas-risk"><span>✕</span><span>${t.privacyRow3Cloud}</span></div></td>
+                  <td><div class="cell-mecraft-winner"><span>✓</span><span>${t.privacyRow3Mecraft}</span></div></td>
+                </tr>
+                <tr>
+                  <td class="cell-metric-title">${t.privacyRow4Metric}</td>
+                  <td><div class="cell-saas-risk"><span>✕</span><span>${t.privacyRow4Cloud}</span></div></td>
+                  <td><div class="cell-mecraft-winner"><span>✓</span><span>${t.privacyRow4Mecraft}</span></div></td>
+                </tr>
+                <tr>
+                  <td class="cell-metric-title">${t.privacyRow5Metric}</td>
+                  <td><div class="cell-saas-risk"><span>✕</span><span>${t.privacyRow5Cloud}</span></div></td>
+                  <td><div class="cell-mecraft-winner"><span>✓</span><span>${t.privacyRow5Mecraft}</span></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 7. Cross-Platform Specifications & Downloads Matrix -->
+        <section class="showcase-section" id="spec-matrix">
+          <div class="section-eyebrow-row">
+            <span class="section-eyebrow">${t.specsEyebrow}</span>
+          </div>
+
+          <div class="section-header-block">
+            <h2 class="section-headline">${t.specsTitle}</h2>
+            <p class="section-description">${t.specsSubtitle}</p>
+          </div>
+
+          <div class="spec-matrix-grid">
+            <div class="spec-card">
+              <span class="spec-card-badge">WEB / PWA</span>
+              <h3 class="spec-card-title">${t.specPwaTitle}</h3>
+              <p class="spec-card-desc">${t.specPwaDesc}</p>
+              <div class="spec-feature-list">
+                <span class="spec-feature-item">✓ Zero Install</span>
+                <span class="spec-feature-item">✓ Offline Service Worker</span>
+                <span class="spec-feature-item">✓ Chromium / Safari / Firefox</span>
+              </div>
+              <a href="#hub-dropzone" class="btn-action" style="margin-top: 14px; text-decoration: none; text-align: center; font-size: 13px;">${this.currentLang === 'th' ? 'เปิดใช้งานบนเว็บ' : 'Launch Web Studio'}</a>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-card-badge">PORTABLE</span>
+              <h3 class="spec-card-title">${t.specExeTitle}</h3>
+              <p class="spec-card-desc">${t.specExeDesc}</p>
+              <div class="spec-feature-list">
+                <span class="spec-feature-item">✓ Single Executable</span>
+                <span class="spec-feature-item">✓ No Admin Rights</span>
+                <span class="spec-feature-item">✓ USB Flash Drive Ready</span>
+              </div>
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Portable.exe" download="meCraft-Portable.exe" class="btn-action" style="background: rgba(255,255,255,0.08); margin-top: 14px; text-decoration: none; text-align: center; font-size: 13px; font-weight: 600;">⬇️ ${this.currentLang === 'th' ? 'ดาวน์โหลด Portable (.exe)' : 'Download Portable (.exe)'}</a>
+            </div>
+
+            <div class="spec-card" style="border-color: rgba(212, 175, 55, 0.4); background: linear-gradient(180deg, rgba(212, 175, 55, 0.05) 0%, var(--surface-card) 100%);">
+              <span class="spec-card-badge" style="color: var(--gold-hover);">RECOMMENDED INSTALLER</span>
+              <h3 class="spec-card-title">${t.specNsisTitle}</h3>
+              <p class="spec-card-desc">${t.specNsisDesc}</p>
+              <div class="spec-feature-list">
+                <span class="spec-feature-item">✓ Desktop & Start Menu</span>
+                <span class="spec-feature-item">✓ File Associations</span>
+                <span class="spec-feature-item">✓ Clean Uninstaller</span>
+              </div>
+              <a href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe" download="meCraft-Setup.exe" class="btn-action primary-gold" style="margin-top: 14px; text-decoration: none; text-align: center; font-size: 13px; font-weight: 800;">⬇️ ${this.currentLang === 'th' ? 'ดาวน์โหลด Setup.exe' : 'Download Setup.exe'}</a>
+            </div>
+
+            <div class="spec-card">
+              <span class="spec-card-badge">ENTERPRISE</span>
+              <h3 class="spec-card-title">${t.specMsiTitle}</h3>
+              <p class="spec-card-desc">${t.specMsiDesc}</p>
+              <div class="spec-feature-list">
+                <span class="spec-feature-item">✓ Active Directory GPO</span>
+                <span class="spec-feature-item">✓ Silent Deploy msiexec /qn</span>
+                <span class="spec-feature-item">✓ IT Policy Management</span>
+              </div>
+              <a href="https://github.com/methastrategy/meCraft/releases/tag/v3.2.0" target="_blank" rel="noopener noreferrer" class="btn-header" style="margin-top: 14px; text-decoration: none; text-align: center; font-size: 13px;">${this.currentLang === 'th' ? 'ดู Releases บน GitHub' : 'View GitHub Releases'}</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. Universal Recent Projects -->
+        <section class="showcase-section" id="recents-section">
+          <div class="section-header">
+            <div class="section-title">
+              <span id="recents-section-title">${t.recentProjectsTitle}</span>
+              <span class="section-badge" id="recent-count">${t.recentCount(this.recentProjects.length)}</span>
+            </div>
+            <button class="btn-header" id="btn-clear-recents" aria-label="Clear Recent Projects" style="display: none;">${t.clearHistory}</button>
+          </div>
+          <div id="recent-projects-list"></div>
+        </section>
       </main>
+
+      <!-- Global Portal Footer -->
+      <footer class="portal-footer">
+        <div class="footer-top-grid">
+          <div class="footer-brand-col">
+            <div class="footer-brand-title">
+              <div class="launcher-logo" style="width: 28px; height: 28px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+              </div>
+              <span>meCrafts</span>
+            </div>
+            <p class="footer-brand-desc">${t.footerBrandDesc}</p>
+          </div>
+
+          <div>
+            <div class="footer-col-title">${t.footerColProducts}</div>
+            <ul class="footer-links-list">
+              <li><a class="footer-link" href="#showcase-products">mePDF Studio</a></li>
+              <li><a class="footer-link" href="#showcase-products">mePhoto Studio</a></li>
+              <li><a class="footer-link" href="#showcase-products">meCraft Hub</a></li>
+              <li><a class="footer-link" href="#future-ecosystem">meVector</a></li>
+              <li><a class="footer-link" href="#future-ecosystem">meDoc</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-col-title">${t.footerColArch}</div>
+            <ul class="footer-links-list">
+              <li><a class="footer-link" href="#privacy-architecture">100% In-Browser Privacy</a></li>
+              <li><a class="footer-link" href="#privacy-architecture">WebAssembly & Workers</a></li>
+              <li><a class="footer-link" href="#privacy-architecture">AES-256 Encryption</a></li>
+              <li><a class="footer-link" href="#spec-matrix">Cross-Platform Matrix</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-col-title">${t.footerColCommunity}</div>
+            <ul class="footer-links-list">
+              <li><a class="footer-link" href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe" download="meCraft-Setup.exe" style="color: var(--gold-hover); font-weight: 600;">⬇️ Download meCraft-Setup.exe</a></li>
+              <li><a class="footer-link" href="https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Portable.exe" download="meCraft-Portable.exe">⬇️ Download Portable (.exe)</a></li>
+              <li><a class="footer-link" href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer">All GitHub Releases</a></li>
+              <li><a class="footer-link" href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer">GitHub Monorepo</a></li>
+              <li><a class="footer-link" href="https://mecrafts.vercel.app">Vercel Web Portal</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom-row">
+          <span>${t.footerRights}</span>
+          <span style="font-family: var(--font-mono); font-size: 11px;">Built with WebAssembly • Canvas 2D • Tauri v2 • Vite</span>
+        </div>
+      </footer>
 
       <div id="modal-container"></div>
     `;
@@ -757,7 +1203,6 @@ class MeCraftLauncher {
 
     const filtered = this.catalog.filter((app) => {
       if (this.activeFilter === 'installed') return app.status === 'installed';
-      if (this.activeFilter === 'available') return app.status !== 'installed';
       if (this.activeFilter === 'document') return app.category === 'document' || app.category === 'writing';
       if (this.activeFilter === 'graphics') return app.category === 'graphics';
       return true;
@@ -774,10 +1219,9 @@ class MeCraftLauncher {
     const thaiMeta = APP_THAI_METADATA[app.id];
     const tagline = (this.currentLang === 'th' && thaiMeta?.tagline) || app.tagline;
     const description = (this.currentLang === 'th' && thaiMeta?.description) || app.description;
-    const isInstalled = app.status === 'installed';
 
     return `
-      <div class="app-card ${isInstalled ? 'is-installed' : ''}" data-app-id="${app.id}">
+      <div class="app-card" data-app-id="${app.id}">
         <div class="app-card-glow" style="background: ${app.color};"></div>
         
         <div class="app-card-top">
@@ -792,22 +1236,12 @@ class MeCraftLauncher {
             </div>
             <div class="app-card-tagline">${tagline}</div>
           </div>
-          <div class="app-card-status-pill">
-            ${
-              isInstalled
-                ? `<span class="badge-status-pill installed"><span class="dot green"></span>${this.currentLang === 'th' ? 'ติดตั้งแล้ว' : 'Installed'}</span>`
-                : (app.comingSoon || app.inDevelopment)
-                  ? `<span class="badge-status-pill in-dev"><span class="dot amber"></span>${this.t.inDevelopment}</span>`
-                  : `<span class="badge-status-pill not-installed"><span class="dot gray"></span>${app.sizeFormatted || 'Ready'}</span>`
-            }
-          </div>
         </div>
 
         <div class="app-card-desc">${description}</div>
 
         <div class="app-card-tags">
           ${app.tags.map((t: string) => `<span class="app-tag">${t}</span>`).join('')}
-          ${app.sizeFormatted ? `<span class="app-tag size-tag">💾 ${app.sizeFormatted}</span>` : ''}
         </div>
 
         <div class="app-card-action">
@@ -838,15 +1272,25 @@ class MeCraftLauncher {
       `;
     }
 
-    if (app.comingSoon || app.inDevelopment) {
+    if (app.comingSoon) {
       return `
-        <button class="btn-action disabled full-width" disabled>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-          <span>${t.inDevelopment}</span>
+        <button class="btn-action disabled" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          ${t.comingSoon}
         </button>
       `;
     }
 
+    if (app.inDevelopment) {
+      return `
+        <button class="btn-action disabled" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+          ${t.inDevelopment}
+        </button>
+      `;
+    }
+
+    // Dual-Action Launch for ready apps (mePDF, mePhoto)
     const isMenuOpen = this.activeMenuAppId === app.id;
     const isDesktop = this.bridge.isTauri();
 
@@ -856,6 +1300,68 @@ class MeCraftLauncher {
           <div class="desktop-action-group full-width">
             <button class="btn-action btn-action-desktop launch primary-gold" data-action="launch" data-app-id="${app.id}" aria-label="${t.launchDesktop} for ${app.name}">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <span>${t.launchDesktop}</span>
+            </button>
+            <button class="btn-more" data-action="more" data-app-id="${app.id}" title="${t.moreOptions}" aria-label="${t.moreOptions} for ${app.name}" aria-haspopup="menu" aria-expanded="${isMenuOpen}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+            </button>
+            ${
+              isMenuOpen
+                ? `
+              <div class="context-menu" role="menu" aria-label="${app.name} options" data-menu-id="${app.id}">
+                <button class="context-menu-item" role="menuitem" data-menu-action="open-folder" data-app-id="${app.id}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                  ${t.openFolder}
+                </button>
+                <button class="context-menu-item" role="menuitem" data-menu-action="check-updates" data-app-id="${app.id}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  ${t.checkUpdates}
+                </button>
+                <button class="context-menu-item" role="menuitem" data-menu-action="open-web-fallback" data-app-id="${app.id}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  ${t.openWebStudio}
+                </button>
+                <div style="height: 1px; background: var(--border-subtle); margin: 4px 0;"></div>
+                <button class="context-menu-item danger" role="menuitem" data-menu-action="uninstall" data-app-id="${app.id}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  ${t.uninstall}
+                </button>
+              </div>
+            `
+                : ''
+            }
+          </div>
+        `;
+      }
+
+      return `
+        <button class="btn-action btn-action-desktop install primary-emerald full-width" data-action="install" data-app-id="${app.id}" aria-label="${t.installDesktop(app.sizeFormatted || 'v' + app.version)} for ${app.name}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>${t.installDesktop(app.sizeFormatted || 'v' + app.version)}</span>
+        </button>
+      `;
+    }
+
+    // Web Browser Mode: Dual-Action Launch for ready apps
+    return `
+      <div class="card-action-dual">
+        <button class="btn-action btn-action-web" data-action="open-web" data-app-id="${app.id}" title="100% In-Browser Private Execution • 0 Install Required" aria-label="${t.openWebStudio} for ${app.name}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span>${t.openWebStudio}</span>
+        </button>
+
+        ${
+          app.status === 'installed'
+            ? `
+          <div class="desktop-action-group">
+            <button class="btn-action btn-action-desktop launch" data-action="launch" data-app-id="${app.id}" aria-label="${t.launchDesktop} for ${app.name}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
               </svg>
               <span>${t.launchDesktop}</span>
@@ -885,34 +1391,80 @@ class MeCraftLauncher {
                 : ''
             }
           </div>
-        `;
-      }
-
-      return `
-        <button class="btn-action btn-action-desktop install primary-emerald full-width" data-action="install" data-app-id="${app.id}" aria-label="${t.installDesktop(app.sizeFormatted || 'v' + app.version)} for ${app.name}">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          <span>${t.installDesktop(app.sizeFormatted || 'v' + app.version)}</span>
-        </button>
-      `;
-    }
-
-    // Web Browser Mode: Download for Windows as Primary, subtle Try Web Demo as secondary
-    return `
-      <div class="web-action-container full-width">
-        <button class="btn-action btn-action-desktop install primary-emerald full-width" data-action="install" data-app-id="${app.id}">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          <span>${this.currentLang === 'th' ? `ดาวน์โหลดโปรแกรม (${app.sizeFormatted || 'Windows'})` : `Get Application (${app.sizeFormatted || 'Windows'})`}</span>
-        </button>
-        <button class="btn-action-web-subtle" data-action="open-web" data-app-id="${app.id}" title="${t.openWebStudio}">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-          <span>${t.openWebStudio}</span>
-        </button>
+        `
+            : `
+          <button class="btn-action btn-action-desktop install" data-action="install" data-app-id="${app.id}" aria-label="${t.installDesktop(app.sizeFormatted || 'v' + app.version)} for ${app.name}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>${t.installDesktop(app.sizeFormatted || 'v' + app.version)}</span>
+          </button>
+        `
+        }
       </div>
     `;
   }
 
   private renderRecentProjects() {
-    // Kept for backward compatibility with bridge tests
+    const t = this.t;
+    const container = document.getElementById('recent-projects-list');
+    const badge = document.getElementById('recent-count');
+    const clearBtn = document.getElementById('btn-clear-recents');
+    if (!container) return;
+
+    if (badge) badge.textContent = t.recentCount(this.recentProjects.length);
+    if (clearBtn) clearBtn.style.display = this.recentProjects.length > 0 ? 'flex' : 'none';
+
+    if (this.recentProjects.length === 0) {
+      container.innerHTML = `
+        <div class="empty-recents">
+          ${t.emptyRecents}
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="recent-projects-list">
+        ${this.recentProjects
+          .map(
+            (p: RecentProject) => `
+          <div class="recent-project-card" role="button" tabindex="0" aria-label="Open ${p.name} with ${p.appId.toUpperCase()}" data-recent-id="${p.id}" data-app-id="${p.appId}" data-path="${p.path}">
+            <div class="recent-project-icon">
+              ${p.appId === 'mepdf' ? this.getAppIconSvg('FileText') : this.getAppIconSvg('Camera')}
+            </div>
+            <div class="recent-project-info">
+              <div class="recent-project-name" title="${p.name} (${p.path})">${p.name}</div>
+              <div class="recent-project-meta">
+                <span>${p.appId.toUpperCase()}</span>
+                <span>•</span>
+                <span>${p.sizeBytes ? formatBytes(p.sizeBytes) : 'Document'}</span>
+                <span>•</span>
+                <span>${new Date(p.lastOpened).toLocaleDateString()}</span>
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join('')}
+      </div>
+    `;
+
+    container.querySelectorAll('.recent-project-card').forEach((card: Element) => {
+      const launch = () => {
+        const appId = card.getAttribute('data-app-id');
+        const path = card.getAttribute('data-path');
+        if (appId && path) {
+          this.bridge.launchApp({ appId, filePath: path, target: 'web' });
+        }
+      };
+      card.addEventListener('click', launch);
+      card.addEventListener('keydown', (e: Event) => {
+        const keyEvent = e as KeyboardEvent;
+        if (keyEvent.key === 'Enter' || keyEvent.key === ' ') {
+          keyEvent.preventDefault();
+          launch();
+        }
+      });
+    });
   }
 
   private attachCardEvents() {
@@ -980,7 +1532,95 @@ class MeCraftLauncher {
     });
   }
 
+  private switchHeroTab(tab: 'mepdf' | 'mephoto' | 'mecraft') {
+    this.activeHeroTab = tab;
+    const t = this.t;
+
+    // Update active tab buttons
+    document.querySelectorAll('.hero-tab-btn').forEach((btn) => {
+      const match = btn.getAttribute('data-tab') === tab;
+      btn.classList.toggle('active', match);
+    });
+
+    const addressBar = document.getElementById('spotlight-address-bar');
+    const previewImg = document.getElementById('spotlight-preview-img') as HTMLImageElement | null;
+    const appName = document.getElementById('spotlight-name');
+    const eyebrow = document.getElementById('spotlight-eyebrow');
+    const tagline = document.getElementById('spotlight-tagline');
+    const desc = document.getElementById('spotlight-desc');
+    const bullets = document.getElementById('spotlight-bullets');
+    const actionBtn = document.getElementById('spotlight-btn-open');
+
+    if (tab === 'mepdf') {
+      if (addressBar) addressBar.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>https://mecrafts.vercel.app/mepdf/</span>`;
+      if (previewImg) previewImg.src = './hero_mepdf_studio.jpg';
+      if (appName) appName.textContent = 'mePDF Studio';
+      if (eyebrow) { eyebrow.className = 'section-eyebrow'; eyebrow.textContent = t.showcasePdfEyebrow; }
+      if (tagline) tagline.textContent = t.showcasePdfSubtitle;
+      if (desc) desc.textContent = t.pdfFeature1Desc;
+      if (bullets) {
+        bullets.innerHTML = `
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.pdfFeature1Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.pdfFeature2Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.pdfFeature4Title}</span></div>
+        `;
+      }
+      if (actionBtn) {
+        actionBtn.setAttribute('data-app-id', 'mepdf');
+      }
+    } else if (tab === 'mephoto') {
+      if (addressBar) addressBar.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>https://mecrafts.vercel.app/mephoto/</span>`;
+      if (previewImg) previewImg.src = './assets/branding/mephoto-studio-emblem.jpg';
+      if (appName) appName.textContent = 'mePhoto Studio';
+      if (eyebrow) { eyebrow.className = 'section-eyebrow cyan'; eyebrow.textContent = t.showcasePhotoEyebrow; }
+      if (tagline) tagline.textContent = t.showcasePhotoSubtitle;
+      if (desc) desc.textContent = t.photoFeature1Desc;
+      if (bullets) {
+        bullets.innerHTML = `
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.photoFeature1Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.photoFeature2Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.photoFeature3Title}</span></div>
+        `;
+      }
+      if (actionBtn) {
+        actionBtn.setAttribute('data-app-id', 'mephoto');
+      }
+    } else {
+      if (addressBar) addressBar.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>https://mecrafts.vercel.app/</span>`;
+      if (previewImg) previewImg.src = './assets/branding/mecraft-hero-banner.jpg';
+      if (appName) appName.textContent = 'meCraft Hub';
+      if (eyebrow) { eyebrow.className = 'section-eyebrow emerald'; eyebrow.textContent = t.showcaseHubEyebrow; }
+      if (tagline) tagline.textContent = t.showcaseHubSubtitle;
+      if (desc) desc.textContent = t.hubFeature1Desc;
+      if (bullets) {
+        bullets.innerHTML = `
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.hubFeature1Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.hubFeature2Title}</span></div>
+          <div class="spotlight-bullet-item"><svg class="spotlight-bullet-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${t.hubFeature4Title}</span></div>
+        `;
+      }
+      if (actionBtn) {
+        actionBtn.setAttribute('data-app-id', 'mepdf');
+      }
+    }
+  }
+
   private attachEventListeners() {
+    // Hero preview tabs
+    document.querySelectorAll('.hero-tab-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const tab = (e.currentTarget as HTMLElement).getAttribute('data-tab') as 'mepdf' | 'mephoto' | 'mecraft';
+        if (tab) this.switchHeroTab(tab);
+      });
+    });
+
+    // Hero download button
+    document.getElementById('hero-btn-download')?.addEventListener('click', () => {
+      const app = this.catalog.find((a) => a.id === 'mepdf') || this.catalog[0];
+      const installerUrl = `https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe`;
+      this.showWebDownloadModal(app, installerUrl);
+    });
+
     // Filter tabs
     document.querySelectorAll('.filter-tab').forEach((tab: Element) => {
       tab.addEventListener('click', (e: Event) => {
@@ -996,21 +1636,11 @@ class MeCraftLauncher {
       });
     });
 
-    // Dashboard Quick Action: Open Apps Folder
-    document.getElementById('btn-dashboard-open-folder')?.addEventListener('click', async () => {
-      const dir = 'C:\\Users\\User\\AppData\\Local\\meCraft\\apps';
-      this.showFolderModal('meCraft Apps', dir);
-    });
-
-    // Dashboard Quick Action: Check Updates
-    document.getElementById('btn-dashboard-check-updates')?.addEventListener('click', async () => {
-      await this.refreshStatuses();
-      this.renderCatalog();
-      const installed = this.catalog.filter((a) => a.status === 'installed');
-      const msg = this.currentLang === 'th'
-        ? `ตรวจสอบเวอร์ชันโปรแกรมล่าสุดเรียบร้อยแล้ว: ติดตั้งอยู่ ${installed.length} โปรแกรม ทุกโปรแกรมเป็นเวอร์ชันล่าสุด`
-        : `Update check completed: ${installed.length} programs installed. All programs are running the latest releases.`;
-      this.showNoticeModal(this.currentLang === 'th' ? 'สถานะการอัปเดต' : 'Update Check', msg);
+    // Clear Recents
+    document.getElementById('btn-clear-recents')?.addEventListener('click', async () => {
+      await this.bridge.clearRecentProjects();
+      await this.loadRecentProjects();
+      this.renderRecentProjects();
     });
 
     // Settings Modal
@@ -1024,6 +1654,62 @@ class MeCraftLauncher {
       this.applyLanguage();
     });
 
+    // Universal Drop Zone Drag & Drop
+    const dropzone = document.getElementById('hub-dropzone');
+    const fileInput = document.getElementById('hub-file-input') as HTMLInputElement | null;
+    const browseBtn = document.getElementById('btn-browse-hub');
+
+    if (dropzone) {
+      ['dragenter', 'dragover'].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (e: Event) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.add('drag-active');
+        });
+      });
+
+      ['dragleave', 'dragend', 'drop'].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (e: Event) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.remove('drag-active');
+        });
+      });
+
+      dropzone.addEventListener('drop', (e: DragEvent) => {
+        const files = e.dataTransfer?.files;
+        if (files && files.length > 0) {
+          const file = files[0];
+          if (file) {
+            void this.handleDroppedFile(file);
+          }
+        }
+      });
+
+      dropzone.addEventListener('click', (e: MouseEvent) => {
+        if (e.target !== browseBtn && !browseBtn?.contains(e.target as Node)) {
+          fileInput?.click();
+        }
+      });
+    }
+
+    if (browseBtn && fileInput) {
+      browseBtn.addEventListener('click', (e: MouseEvent) => {
+        e.stopPropagation();
+        fileInput.click();
+      });
+    }
+
+    if (fileInput) {
+      fileInput.addEventListener('change', () => {
+        const file = fileInput.files?.[0];
+        if (file) {
+          void this.handleDroppedFile(file);
+        }
+        fileInput.value = '';
+      });
+    }
+
     // Dismiss context menu on global click
     document.addEventListener('click', () => {
       if (this.activeMenuAppId) {
@@ -1036,6 +1722,8 @@ class MeCraftLauncher {
   private applyLanguage() {
     this.renderSkeleton();
     this.renderCatalog();
+    this.renderRecentProjects();
+    this.switchHeroTab(this.activeHeroTab);
     this.attachEventListeners();
   }
 
@@ -1066,6 +1754,7 @@ class MeCraftLauncher {
       });
 
       await this.loadRecentProjects();
+      this.renderRecentProjects();
 
       await this.bridge.launchApp({
         appId: targetApp,
@@ -1087,7 +1776,7 @@ class MeCraftLauncher {
     if (!res.success) {
       this.showNoticeModal(
         this.t.launchErrorTitle(appId.toUpperCase()),
-        res.error || 'Could not launch native desktop binary.',
+        res.error || 'Could not launch native desktop binary. You can also click "Open Web Studio" for instant 0-install in-browser execution.',
         true
       );
     }
@@ -1097,7 +1786,6 @@ class MeCraftLauncher {
     const app = this.catalog.find((a: AppCatalogItem) => a.id === appId);
     if (!app) return;
 
-    // On Web Browser: trigger download of the single official meCraft-Setup.exe installer
     if (!this.bridge.isTauri()) {
       const installerUrl = `https://github.com/methastrategy/meCraft/releases/download/v3.2.0/meCraft-Setup.exe`;
       if (typeof document !== 'undefined') {
@@ -1115,7 +1803,6 @@ class MeCraftLauncher {
       return;
     }
 
-    // In Native Windows Desktop Mode: 1-click in-app background download & install into meCraft!
     const releaseUrl = `https://github.com/methastrategy/meCraft/releases/download/v${app.version}/${app.releaseAssetPattern}`;
 
     this.downloadingApps.set(appId, {
@@ -1196,7 +1883,34 @@ class MeCraftLauncher {
     document.getElementById('btn-close-download-modal')?.addEventListener('click', close);
     document.getElementById('btn-close-download-done')?.addEventListener('click', close);
     document.getElementById('download-overlay')?.addEventListener('click', (e) => {
-      if ((e.target as HTMLElement).id === 'download-overlay') close();
+      if (e.target === document.getElementById('download-overlay')) close();
+    });
+  }
+
+  private showNoticeModal(title: string, message: string, isError = false) {
+    const container = document.getElementById('modal-container');
+    if (!container) return;
+    container.innerHTML = `
+      <div class="modal-overlay" id="notice-overlay">
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="notice-dialog-title" style="max-width: 440px;">
+          <div class="modal-header">
+            <div class="modal-title" id="notice-dialog-title">${title}</div>
+            <button class="btn-more" id="btn-close-notice-modal" aria-label="Close dialog">✕</button>
+          </div>
+          <div class="modal-body selectable" style="padding: 16px 0; color: ${isError ? '#ef4444' : 'var(--text-primary)'};">
+            ${message}
+          </div>
+          <div class="modal-footer">
+            <button class="btn-header primary" id="btn-notice-done" aria-label="Acknowledge and close">${this.t.doneBtn}</button>
+          </div>
+        </div>
+      </div>
+    `;
+    const closeNotice = () => { container.innerHTML = ''; };
+    document.getElementById('btn-close-notice-modal')?.addEventListener('click', closeNotice);
+    document.getElementById('btn-notice-done')?.addEventListener('click', closeNotice);
+    document.getElementById('notice-overlay')?.addEventListener('click', (ev: MouseEvent) => {
+      if (ev.target === ev.currentTarget) closeNotice();
     });
   }
 
@@ -1204,7 +1918,6 @@ class MeCraftLauncher {
     const t = this.t;
     const container = document.getElementById('modal-container');
     if (!container) return;
-
     container.innerHTML = `
       <div class="modal-overlay" id="folder-overlay">
         <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="folder-dialog-title" style="max-width: 480px;">
@@ -1212,147 +1925,148 @@ class MeCraftLauncher {
             <div class="modal-title" id="folder-dialog-title">${appId.toUpperCase()} ${t.openFolder}</div>
             <button class="btn-more" id="btn-close-folder-modal" aria-label="Close dialog">✕</button>
           </div>
-          <div class="modal-body">
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">
-              ${t.storageDirLabel}
-            </p>
-            <div style="background: var(--bg-surface); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 12px; color: var(--text-primary); word-break: break-all;">
-              <span id="folder-path-display">${directory}</span>
-              <button class="btn-header" id="btn-copy-folder-path" style="margin-left: 8px; flex-shrink: 0; padding: 4px 8px; font-size: 11px;">
-                ${t.copyPathBtn}
-              </button>
-            </div>
+          <div class="modal-body" style="padding: 16px 0;">
+            <p style="margin: 0 0 8px 0; font-size: 13px; color: var(--text-secondary);">${t.storageDirLabel}:</p>
+            <input type="text" readonly value="${directory}" class="selectable" id="folder-path-input" style="width: 100%; padding: 8px 12px; background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-mono); font-size: 12px;" />
           </div>
-          <div class="modal-footer">
-            <button class="btn-header" id="btn-close-folder-done" style="padding: 0 16px;">${t.doneBtn}</button>
+          <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button class="btn-header" id="btn-copy-folder" aria-label="${t.copyPathBtn}">${t.copyPathBtn}</button>
+            <button class="btn-header primary" id="btn-folder-done" aria-label="${t.doneBtn}">${t.doneBtn}</button>
           </div>
         </div>
       </div>
     `;
-
-    const close = () => { container.innerHTML = ''; };
-    document.getElementById('btn-close-folder-modal')?.addEventListener('click', close);
-    document.getElementById('btn-close-folder-done')?.addEventListener('click', close);
-    document.getElementById('folder-overlay')?.addEventListener('click', (e) => {
-      if ((e.target as HTMLElement).id === 'folder-overlay') close();
+    const closeFolder = () => { container.innerHTML = ''; };
+    document.getElementById('btn-close-folder-modal')?.addEventListener('click', closeFolder);
+    document.getElementById('btn-folder-done')?.addEventListener('click', closeFolder);
+    document.getElementById('btn-copy-folder')?.addEventListener('click', () => {
+      navigator.clipboard?.writeText(directory);
+      const copyBtn = document.getElementById('btn-copy-folder');
+      if (copyBtn) copyBtn.textContent = t.copiedBtn;
     });
-
-    document.getElementById('btn-copy-folder-path')?.addEventListener('click', () => {
-      if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        void navigator.clipboard.writeText(directory);
-        const copyBtn = document.getElementById('btn-copy-folder-path');
-        if (copyBtn) copyBtn.textContent = t.copiedBtn;
-      }
-    });
-  }
-
-  private showNoticeModal(title: string, message: string, isError = false) {
-    const container = document.getElementById('modal-container');
-    if (!container) return;
-    const t = this.t;
-
-    container.innerHTML = `
-      <div class="modal-overlay" id="notice-overlay">
-        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="notice-dialog-title" style="max-width: 440px;">
-          <div class="modal-header">
-            <div class="modal-title" id="notice-dialog-title" style="color: ${isError ? 'var(--accent-red)' : 'var(--primary)'};">
-              ${title}
-            </div>
-            <button class="btn-more" id="btn-close-notice-modal" aria-label="Close dialog">✕</button>
-          </div>
-          <div class="modal-body" style="font-size: 13px; line-height: 1.6; color: var(--text-primary);">
-            ${message}
-          </div>
-          <div class="modal-footer">
-            <button class="btn-header" id="btn-close-notice-done" style="padding: 0 16px;">${t.doneBtn}</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    const close = () => { container.innerHTML = ''; };
-    document.getElementById('btn-close-notice-modal')?.addEventListener('click', close);
-    document.getElementById('btn-close-notice-done')?.addEventListener('click', close);
-    document.getElementById('notice-overlay')?.addEventListener('click', (e) => {
-      if ((e.target as HTMLElement).id === 'notice-overlay') close();
+    document.getElementById('folder-overlay')?.addEventListener('click', (ev: MouseEvent) => {
+      if (ev.target === ev.currentTarget) closeFolder();
     });
   }
 
   private showSettingsModal() {
     const t = this.t;
-    const container = document.getElementById('modal-container');
-    if (!container) return;
-
-    const isDesktop = this.bridge.isTauri();
-
+    const container = document.getElementById('modal-container')!;
     container.innerHTML = `
       <div class="modal-overlay" id="settings-overlay">
-        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-dialog-title">
+        <div class="modal-dialog settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-dialog-title">
           <div class="modal-header">
-            <div class="modal-title" id="settings-dialog-title">${t.settingsTitle}</div>
-            <button class="btn-more" id="btn-close-modal" aria-label="Close dialog">✕</button>
+            <div class="modal-title-group">
+              <div class="modal-title" id="settings-dialog-title">${t.settingsTitle}</div>
+              <div class="modal-subtitle">meCrafts Official Portal v3.2.0 • Ecosystem Health & Privacy Diagnostics</div>
+            </div>
+            <button class="btn-more" id="btn-close-modal" aria-label="Close settings dialog">✕</button>
           </div>
-          <div class="modal-body">
-            <div class="setting-item">
-              <div class="setting-label">${t.storageDirLabel}</div>
-              <div class="setting-desc" style="font-family: var(--font-mono); font-size: 11px; word-break: break-all;">
-                C:\\Users\\User\\AppData\\Local\\meCraft\\apps
+
+          <div class="modal-body settings-body">
+            <!-- Section 1: System Health Check -->
+            <div class="settings-section">
+              <div class="settings-section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                <span>${t.healthTitle}</span>
+              </div>
+
+              <div class="health-grid">
+                <div class="health-card active">
+                  <div class="health-card-top">
+                    <span class="health-dot ready"></span>
+                    <span class="health-app-name">mePDF Studio</span>
+                    <span class="health-badge ready">v3.1.0 Ready</span>
+                  </div>
+                  <div class="health-desc">Client-Side PDF Engine • AES-256 Crypto • Searchable OCR Layer Injection</div>
+                </div>
+
+                <div class="health-card active">
+                  <div class="health-card-top">
+                    <span class="health-dot ready"></span>
+                    <span class="health-app-name">mePhoto Studio</span>
+                    <span class="health-badge ready">v1.0.0 Ready</span>
+                  </div>
+                  <div class="health-desc">4-Point Homography Deskew • Adaptive Otsu B&W • Magic Color • ClipBus Relay</div>
+                </div>
+
+                <div class="health-card draft">
+                  <div class="health-card-top">
+                    <span class="health-dot draft"></span>
+                    <span class="health-app-name">meVector</span>
+                    <span class="health-badge draft">v0.1.0 Pipeline</span>
+                  </div>
+                  <div class="health-desc">Bézier Curve Engine • SVG Vector Workbench • Node Pen Operations</div>
+                </div>
+
+                <div class="health-card draft">
+                  <div class="health-card-top">
+                    <span class="health-dot draft"></span>
+                    <span class="health-app-name">meDoc</span>
+                    <span class="health-badge draft">v0.1.0 Pipeline</span>
+                  </div>
+                  <div class="health-desc">Distraction-Free Zen Typewriter • Markdown LaTeX Math Preview</div>
+                </div>
+              </div>
+
+              <div class="health-runtime-box">
+                <span class="runtime-tag">${t.runtimeLabel}:</span>
+                <strong>${this.bridge.isTauri() ? t.runtimeTauri : t.runtimeWeb}</strong>
               </div>
             </div>
 
-            <div class="setting-item">
-              <div class="setting-label">${t.runtimeLabel}</div>
-              <div class="setting-desc">${isDesktop ? t.runtimeTauri : t.runtimeWeb}</div>
-            </div>
-
-            <div class="setting-item">
-              <div class="setting-label">${t.healthTitle}</div>
-              <div class="setting-desc" style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-emerald);"></span>
-                  <span>mePDF Studio: ${t.statusHealthy}</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-emerald);"></span>
-                  <span>mePhoto Studio: ${t.statusHealthy}</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-amber);"></span>
-                  <span>meVector: ${t.statusDraft}</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-amber);"></span>
-                  <span>meDoc: ${t.statusDraft}</span>
-                </div>
+            <!-- Section 2: Privacy Guarantee -->
+            <div class="settings-section privacy-box">
+              <div class="privacy-box-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>${t.privacyGuaranteeTitle}</span>
               </div>
+              <p class="privacy-box-desc">${t.privacyGuaranteeText}</p>
             </div>
 
-            <div class="setting-item" style="border: 1px solid rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.05); padding: 12px; border-radius: var(--radius-sm);">
-              <div class="setting-label" style="color: var(--accent-emerald);">${t.privacyGuaranteeTitle}</div>
-              <div class="setting-desc" style="color: var(--text-primary); font-size: 12px; margin-top: 4px;">
-                ${t.privacyGuaranteeText}
+            <!-- Section 3: Storage & Preferences -->
+            <div class="settings-section">
+              <div>
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">${t.storageDirLabel}</label>
+                <input type="text" readonly value="%LOCALAPPDATA%\\meCraft\\apps\\" class="selectable" style="width: 100%; padding: 8px 12px; background: var(--surface-base); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-mono); font-size: 12px;" />
+              </div>
+              <div style="margin-top: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="checkbox" checked />
+                  <span>${t.autoCheckLabel}</span>
+                </label>
+              </div>
+              <div style="margin-top: 6px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="checkbox" checked />
+                  <span>${t.hwAccelLabel}</span>
+                </label>
               </div>
             </div>
           </div>
+
           <div class="modal-footer">
-            <button class="btn-header" id="btn-close-settings-done" style="padding: 0 16px;">${t.doneBtn}</button>
+            <button class="btn-header primary" id="btn-modal-done" aria-label="Save settings and close">${t.doneBtn}</button>
           </div>
         </div>
       </div>
     `;
 
-    const close = () => { container.innerHTML = ''; };
+    const close = () => {
+      container.innerHTML = '';
+    };
+
     document.getElementById('btn-close-modal')?.addEventListener('click', close);
-    document.getElementById('btn-close-settings-done')?.addEventListener('click', close);
-    document.getElementById('settings-overlay')?.addEventListener('click', (e) => {
-      if ((e.target as HTMLElement).id === 'settings-overlay') close();
+    document.getElementById('btn-modal-done')?.addEventListener('click', close);
+    document.getElementById('settings-overlay')?.addEventListener('click', (e: MouseEvent) => {
+      if (e.target === e.currentTarget) close();
     });
   }
 
-  private getAppIconSvg(iconName: string): string {
-    switch (iconName) {
+  private getAppIconSvg(icon: string): string {
+    switch (icon) {
       case 'FileText':
-        return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+        return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>`;
       case 'Camera':
         return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>`;
       case 'PenTool':
@@ -1360,12 +2074,16 @@ class MeCraftLauncher {
       case 'BookOpen':
         return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>`;
       default:
-        return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>`;
+        return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>`;
     }
   }
 }
 
 // Bootstrap
 if (typeof document !== 'undefined') {
-  new MeCraftLauncher();
+  window.addEventListener('DOMContentLoaded', () => {
+    new MeCraftLauncher();
+  });
 }
+
+export { MeCraftLauncher };
