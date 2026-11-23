@@ -477,7 +477,7 @@ class MeCraftsPortal {
             this.syncSupabaseSession(session);
           }
         } else if (event === 'SIGNED_OUT') {
-          if (this.currentSession && !this.currentSession.isOfflineMode) {
+          if (this.currentSession) {
             clearAuthSession();
             this.currentSession = null;
             this.render();
@@ -502,16 +502,17 @@ class MeCraftsPortal {
     }
   }
 
-  private async syncSupabaseSession(supabaseSession: { user: any; access_token: string; refresh_token: string; expires_at?: number }) {
+  private async syncSupabaseSession(supabaseSession: { user: any; access_token: string; refresh_token?: string; expires_at?: number }) {
     let tier: SubscriptionTier = 'free_member';
     let fullName = supabaseSession.user.user_metadata?.full_name || supabaseSession.user.email?.split('@')[0] || 'meCraft User';
-    let avatarUrl = supabaseSession.user.user_metadata?.avatar_url;
+    let avatarUrl = supabaseSession.user.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(supabaseSession.user.email || 'user')}`;
+    let createdAt = supabaseSession.user.created_at || new Date().toISOString();
 
     if (supabase) {
       try {
         const { data: profile } = await supabase
           .from('profiles')
-          .select('full_name, tier, avatar_url')
+          .select('full_name, tier, avatar_url, created_at')
           .eq('id', supabaseSession.user.id)
           .maybeSingle();
 
@@ -519,12 +520,14 @@ class MeCraftsPortal {
           if (profile.tier) tier = profile.tier as SubscriptionTier;
           if (profile.full_name) fullName = profile.full_name;
           if (profile.avatar_url) avatarUrl = profile.avatar_url;
+          if (profile.created_at) createdAt = profile.created_at;
         }
       } catch (e) {
         console.warn('[meCraft:auth] Profile lookup skipped:', e);
       }
     }
 
+    const now = Date.now();
     const session: AuthSession = {
       user: {
         id: supabaseSession.user.id,
@@ -532,13 +535,13 @@ class MeCraftsPortal {
         fullName,
         tier,
         avatarUrl,
+        createdAt,
       },
-      token: supabaseSession.access_token,
+      accessToken: supabaseSession.access_token,
       refreshToken: supabaseSession.refresh_token,
-      expiresAt: supabaseSession.expires_at ? supabaseSession.expires_at * 1000 : Date.now() + 30 * 24 * 3600 * 1000,
-      offlineGraceExpiresAt: Date.now() + 30 * 24 * 3600 * 1000,
-      deviceSignature: 'portal-web-session',
-      isOfflineMode: false,
+      expiresAt: supabaseSession.expires_at ? supabaseSession.expires_at * 1000 : now + 30 * 24 * 3600 * 1000,
+      issuedAt: now,
+      offlineGracePeriodDays: 30,
     };
 
     saveAuthSession(session);
