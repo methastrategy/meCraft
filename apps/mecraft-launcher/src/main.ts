@@ -499,6 +499,8 @@ class MeCraftsPortal {
   private showSyncImport = false;
   private isPreviewModalOpen = false;
   private previewAppId: string | null = null;
+  private activeStudioId: string = 'mepdf';
+  private isFullscreenMockupOpen = false;
 
   constructor() {
     const urlSession = checkUrlAuthHandoff();
