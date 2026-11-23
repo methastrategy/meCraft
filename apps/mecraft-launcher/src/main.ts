@@ -50,6 +50,8 @@ export interface ShowcaseApp {
   glowColor: string;
   icon: string;
   keywords: string[];
+  specs?: { en: string[]; th: string[] };
+  enginePill?: { en: string; th: string };
 }
 
 export interface PortalTranslations {
@@ -199,6 +201,11 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     glowColor: 'rgba(99,102,241,0.3)',
     icon: 'pdf',
     keywords: ['pdf', 'merge', 'split', 'compress', 'encrypt', 'ocr', 'aes', 'document'],
+    enginePill: { en: '100% In-Device RAM · Tauri v2 Native', th: 'ประมวลผลบน RAM 100% · Tauri v2 Native' },
+    specs: {
+      en: ['4-Point Deskew & Local Otsu Binarization', 'Lossless Deflate & Scanned PDF Compression', 'Client-Side Searchable OCR Text Injection', 'AES-256 Bank-Grade Encryption & Sanitization', 'Visual Page Cockpit: Drag, Split, Merge'],
+      th: ['ปรับระนาบ 4-Point Deskew & ลบเงา Otsu ท้องถิ่น', 'บีบอัดเอกสาร Lossless Deflate สูงสุด 90%', 'ฝังข้อความ OCR ค้นหาคำได้ในเครื่อง 100%', 'เข้ารหัสความปลอดภัยระดับธนาคาร AES-256', 'จัดระเบียบหน้า ลากสลับ/แยก/รวมไฟล์อิสระ'],
+    },
   },
   {
     id: 'mephoto',
@@ -223,6 +230,11 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     glowColor: 'rgba(6,182,212,0.3)',
     icon: 'photo',
     keywords: ['photo', 'image', 'scanner', 'ocr', 'homography', 'perspective', 'color', 'restore'],
+    enginePill: { en: 'WebAssembly OpenCV · Hardware GPU', th: 'WebAssembly OpenCV · GPU เร่งความเร็ว' },
+    specs: {
+      en: ['4-Point Homography Perspective Correction', 'Adaptive Local Otsu Shadow Eradication', 'Magic Color Document Photo Enhancement', 'Non-Destructive RAW High-Bit Processing', 'Batch Multi-Document Scan Restoration'],
+      th: ['ดึงภาพถ่ายเอียงให้ตรงระนาบ 4-Point Homography', 'กำจัดเงาดำบนกระดาษด้วย Adaptive Otsu', 'เร่งความสดใสและคมชัดด้วย Magic Color', 'โปรเซสเซอร์ภาพ RAW แบบไม่ทำลายคุณภาพ', 'แต่งภาพและกู้เอกสารพร้อมกันแบบชุด'],
+    },
   },
   {
     id: 'mevector',
@@ -245,6 +257,11 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     glowColor: 'rgba(168,85,247,0.3)',
     icon: 'vector',
     keywords: ['vector', 'svg', 'bezier', 'illustration', 'path', 'node', 'icon', 'design'],
+    enginePill: { en: 'Precision Bézier Engine · SVG 2.0', th: 'เครื่องยนต์ Bézier ความแม่นยำสูง · SVG 2.0' },
+    specs: {
+      en: ['Resolution-Independent Bézier Splines', 'Sub-Pixel Node & Tangent Manipulation', 'Boolean Geometry (Unite, Minus, Intersect)', 'Clean SVG 2.0 & Vector PDF Exporter', 'Hardware-Accelerated Path Tessellation'],
+      th: ['วาดเส้น Bézier คมชัดทุกระดับความละเอียด', 'ดัดแปลง Node ปรับแขนความโค้งแม่นยำ', 'ตรรกะรูปทรง Boolean รวม/ตัด/เจาะรู', 'ส่งออก SVG 2.0 และ PDF Vector ไม่แตก', 'เรนเดอร์เส้นพาธด้วย GPU ความเร็วสูง'],
+    },
   },
   {
     id: 'mefilm',
@@ -267,6 +284,11 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     glowColor: 'rgba(245,158,11,0.3)',
     icon: 'film',
     keywords: ['video', 'film', 'timeline', 'edit', 'mp4', 'transition', 'cut', 'render'],
+    enginePill: { en: 'Hardware NVENC / QuickSync MP4', th: 'ฮาร์ดแวร์เรนเดอร์ NVENC / QuickSync' },
+    specs: {
+      en: ['Multi-Track Non-Linear Timeline Slicer', 'Lossless Keyframe Trimming Without Re-encode', 'GPU Hardware-Accelerated 4K MP4 Export', 'Multi-Layer Transitions & Color LUTs', 'Multi-Audio Track Mixing & Waveforms'],
+      th: ['ตัดต่อวิดีโอหลายแทร็กบนไทม์ไลน์อิสระ', 'ตัดซอยคลิปตาม Keyframe โดยไม่เสียคุณภาพ', 'เรนเดอร์ 4K MP4 ด้วยฮาร์ดแวร์ GPU', 'ใส่ทรานซิชันและเกรดสีภาพยนตร์ด้วย LUTs', 'ซิงค์แทร็กเสียงหลายช่องสัญญาณ'],
+    },
   },
   {
     id: 'melight',
@@ -289,6 +311,11 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     glowColor: 'rgba(16,185,129,0.3)',
     icon: 'light',
     keywords: ['raw', 'lightroom', 'photo', 'color', 'grading', 'hdr', 'exposure', 'darkroom'],
+    enginePill: { en: '16-Bit RAW Pipeline · Non-Destructive', th: 'ไพป์ไลน์ RAW 16-Bit · ปรับสีไม่ทำลายภาพ' },
+    specs: {
+      en: ['High Dynamic Range (HDR) Tone-Mapping', 'Parametric RGB Curves & Exposure Calibration', 'Zero-Loss Demosaicing & Sensor Profiles', 'HSL Selective Color Adjustment Wheels', 'Instant Recipe Presets & Batch Grading'],
+      th: ['เกลี่ยแสงมืด/สว่างด้วย HDR Tone-Mapping', 'ปรับ Parametric RGB Curves และแสงละเอียด', 'ถอดรหัสเซนเซอร์ภาพ RAW 16-Bit ไร้ Noise', 'วงล้อปรับสี HSL แยกรายเฉดสีอย่างแม่นยำ', 'บันทึกสูตร Preset และคัดลอกโทนสีแบบชุด'],
+    },
   },
   {
     id: 'memotion',
@@ -311,6 +338,11 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     glowColor: 'rgba(236,72,153,0.3)',
     icon: 'motion',
     keywords: ['motion', 'animation', 'keyframe', 'effects', 'vfx', 'typography', 'particle'],
+    enginePill: { en: 'Kinetic Motion · 120fps Easing Graph', th: 'กราฟิกเคลื่อนไหว · กราฟ Easing 120fps' },
+    specs: {
+      en: ['Timeline-Based Layer Keyframe Motion', 'Kinetic Typography & Text Motion Presets', 'Physics-Driven 2D Particle System', 'Vector Path Morphing & Easing Graph Editor', 'Alpha Channel Transparent Video Export'],
+      th: ['แอนิเมชันเลเยอร์บนไทม์ไลน์ด้วย Keyframe', 'ตัวอักษรเคลื่อนไหว Kinetic Typography สำเร็จรูป', 'เอฟเฟกต์อนุภาค Particle จำลองฟิสิกส์', 'ดัดรูปทรงเวกเตอร์ Morphing พร้อมกราฟ Easing', 'ส่งออกวิดีโอพื้นหลังโปร่งใส Alpha Channel'],
+    },
   },
   {
     id: 'medesign',
@@ -333,6 +365,11 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     glowColor: 'rgba(249,115,22,0.3)',
     icon: 'design',
     keywords: ['layout', 'indesign', 'publish', 'magazine', 'print', 'cmyk', 'brochure', 'grid'],
+    enginePill: { en: 'Modular Grid · CMYK Print Pre-Flight', th: 'โมดูลาร์กริด · ตรวจสอบงานพิมพ์ CMYK' },
+    specs: {
+      en: ['12-Column Modular Editorial Grid Engine', 'CMYK FOGRA39 & Swatch Color Profiles', 'Master Pages & Linked Flow Text Frames', 'Print Bleed, Margins & Slug Management', 'Standards-Compliant PDF/X-1a Publishing'],
+      th: ['จัดเลย์เอาต์สิ่งพิมพ์บน Modular Grid 12 คอลัมน์', 'โปรไฟล์สีมาตรฐานงานพิมพ์ CMYK FOGRA39', 'ระบบ Master Pages และเฟรมข้อความเชื่อมต่อกัน', 'คุมระยะตัดตก Bleed และขอบกระดาษพิมพ์', 'ส่งออกไฟล์งานพิมพ์มาตรฐานสากล PDF/X-1a'],
+    },
   },
   {
     id: 'meaudio',
@@ -355,6 +392,11 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     glowColor: 'rgba(132,204,22,0.3)',
     icon: 'audio',
     keywords: ['audio', 'sound', 'daw', 'podcast', 'noise', 'mastering', 'music', 'wav', 'mp3'],
+    enginePill: { en: '32-Bit Float DSP · Spectral Noise AI', th: 'DSP 32-Bit Float · กำจัด Noise แบบสเปกตรัม' },
+    specs: {
+      en: ['Multi-Track Digital Audio Workstation Engine', 'AI Spectral Noise Reduction & Hum Eradication', 'Multi-Band Parametric EQ & Dynamics Comp', 'Podcast Multi-Mic Auto-Leveling Cockpit', 'Lossless 32-Bit Float WAV & FLAC Mastering'],
+      th: ['ห้องบันทึกและมิกซ์เสียงดิจิทัลหลายแทร็ก', 'ลบเสียงฮัมและเสียงรบกวนด้วย Spectral De-Noise', 'ปรับแต่งเสียงด้วย Parametric EQ และ Compressor', 'บาลานซ์เสียงไมค์ Podcast หลายตัวอัตโนมัติ', 'ส่งออกไฟล์เสียงคุณภาพสูง 32-Bit Float WAV/FLAC'],
+    },
   },
   {
     id: 'medoc',
@@ -377,6 +419,11 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     glowColor: 'rgba(99,102,241,0.25)',
     icon: 'doc',
     keywords: ['markdown', 'word', 'document', 'latex', 'writing', 'typewriter', 'research', 'publish'],
+    enginePill: { en: 'Zen Typewriter · Live KaTeX Math', th: 'Zen พิมพ์สมาธิ · แสดงสมการ KaTeX สด' },
+    specs: {
+      en: ['Distraction-Free Zen Markdown Typewriter', 'Real-Time KaTeX LaTeX Mathematical Rendering', 'Academic Footnotes, Citations & References', 'One-Click Publication-Grade PDF Generator', 'Live Outline Tree for Long-Form Manuscripts'],
+      th: ['พื้นที่เขียนงานสไตล์ Zen สบายตา ไร้สิ่งรบกวน', 'เรนเดอร์สูตรคณิตศาสตร์ KaTeX LaTeX แบบสด', 'ระบบแทรกเชิงอรรถและเอกสารอ้างอิงทางวิชาการ', 'แปลงบทความเป็น PDF จัดหน้าสวยงามในคลิกเดียว', 'โครงสร้าง Outline นำทางเอกสารขนาดยาว'],
+    },
   },
   {
     id: 'me3d',
@@ -399,6 +446,11 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     glowColor: 'rgba(6,182,212,0.25)',
     icon: '3d',
     keywords: ['3d', 'blender', 'model', 'mesh', 'pbr', 'gltf', 'obj', 'spatial', 'scene'],
+    enginePill: { en: 'WebGPU Spatial · PBR Material Lab', th: 'มิติพื้นที่ WebGPU · ห้องทดลอง PBR Material' },
+    specs: {
+      en: ['Subdivision Polygon Mesh Modeling Workbench', 'PBR Metallic/Roughness Material Staging', 'Real-Time HDRI Environmental Scene Lighting', 'GLTF 2.0, OBJ & STL 3D Print Geometry Export', 'Hardware WebGPU Spatial Viewport Gizmo'],
+      th: ['ปั้นโมเดลโพลีกอน Polygon Mesh ความแม่นยำสูง', 'จัดวางพื้นผิววัสดุ PBR เสมือนจริง', 'จำลองแสงสตูดิโอและแสง HDRI แบบเรียลไทม์', 'ส่งออกไฟล์สำหรับ 3D Print และเกม (GLTF/OBJ/STL)', 'Viewport 3 มิติเร่งความเร็วด้วย WebGPU'],
+    },
   },
 ];
 
