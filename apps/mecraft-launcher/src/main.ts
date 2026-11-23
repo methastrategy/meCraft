@@ -2278,7 +2278,7 @@ class MeCraftsPortal {
       style="--card-accent: ${app.accentColor}; --card-glow: ${app.glowColor};"
     >
       <div class="eco-card-top">
-        <div class="eco-card-emblem" aria-hidden="true">${getAppIcon(app.icon, app.accentColor)}</div>
+        <div class="eco-card-emblem" aria-hidden="true">${getAppIcon(app.id, app.accentColor)}</div>
         <div class="eco-card-meta">
           <span class="eco-cat-tag" style="color: ${app.accentColor};">${catLabel}</span>
           <span class="eco-status-pill ${isAppActive ? 'status-active' : 'status-indev'}">
@@ -2307,7 +2307,7 @@ class MeCraftsPortal {
       <div class="fullscreen-modal-container">
         <div class="fullscreen-modal-header">
           <div class="fullscreen-modal-title">
-            <span class="window-app-icon">${getAppIcon(activeApp.icon, activeApp.accentColor)}</span>
+            <span class="window-app-icon">${getAppIcon(activeApp.id, activeApp.accentColor)}</span>
             <span>${activeApp.name} — ${this.lang === 'th' ? 'หน้าต่างจำลองซอฟต์แวร์จริงบน Windows 11' : 'Native Desktop UI Inspector'}</span>
           </div>
           <button type="button" class="fullscreen-modal-close" id="btn-close-fullscreen-modal" aria-label="Close fullscreen view">✕</button>
@@ -2369,7 +2369,10 @@ class MeCraftsPortal {
           </div>
           <div class="manifesto-col manifesto-col-good" role="columnheader">
             <div class="manifesto-col-head">
-              <span class="manifesto-col-icon" aria-hidden="true">🔒</span>
+              <span class="manifesto-col-icon manifesto-seal-icon" aria-hidden="true">
+                <img src="./branding/privacy-seal.png" class="manifesto-seal-img" alt="100% In-Device Privacy Seal" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='inline-block';}" />
+                <span class="manifesto-seal-fallback" style="display:none;">🔒</span>
+              </span>
               <h3>${this.t.col2Title}</h3>
             </div>
             <ul class="manifesto-list" role="list">
@@ -2413,9 +2416,21 @@ class MeCraftsPortal {
           `).join('')}
         </div>
         <div class="specs-cta-row">
-          <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="hero-cta-secondary">
-            ${this.lang === 'en' ? 'View All Releases & Source on GitHub →' : 'ดูประวัติ Releases และ Source Code บน GitHub →'}
-          </a>
+          <div class="specs-box-showcase">
+            <img src="./branding/suite-installer-box.png" class="specs-box-img" alt="meCraft Suite Windows Package" loading="lazy" />
+            <div class="specs-box-desc">
+              <h4>${this.lang === 'th' ? 'meCraft Master Suite สำหรับ Windows 11 / 10' : 'meCraft Master Suite for Windows 11 / 10'}</h4>
+              <p>${this.lang === 'th' ? 'รวมครบทั้ง 11 โปรแกรมในตัวติดตั้งเดียว ติดตั้งออฟไลน์ 100% ไร้โฆษณา ไร้การติดตาม' : 'All 11 standalone studios bundled in one lightweight offline installer. Zero ads, zero telemetry.'}</p>
+            </div>
+          </div>
+          <div class="specs-actions">
+            <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="hero-cta-primary">
+              ${this.lang === 'en' ? 'Download Suite (.exe) — 14.8 MB' : 'ดาวน์โหลด Suite (.exe) — 14.8 MB'}
+            </a>
+            <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="hero-cta-secondary">
+              ${this.lang === 'en' ? 'View All Releases & Source on GitHub →' : 'ดูประวัติ Releases และ Source Code บน GitHub →'}
+            </a>
+          </div>
         </div>
       </div>
     </section>`;
