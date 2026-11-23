@@ -73,7 +73,7 @@ export interface PortalTranslations {
   appsCount: string;
 }
 
-const TRANSLATIONS: Record<'en' | 'th', PortalTranslations> = {
+const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
   en: {
     brandTitle: 'meCrafts',
     brandSubtitle: 'Official Creative Suite',
@@ -404,7 +404,7 @@ class MeCraftsPortal {
   }
 
   private get t(): PortalTranslations {
-    return TRANSLATIONS[this.lang];
+    return PORTAL_I18N[this.lang];
   }
 
   private filteredApps(): ShowcaseApp[] {
@@ -792,4 +792,32 @@ class MeCraftsPortal {
 export { getDefaultCatalog, createLauncherBridge, formatBytes, formatSpeed };
 export type { AppCatalogItem, RecentProject, DownloadProgress };
 
-new MeCraftsPortal();
+// ── Backward-compat exports for existing test suite ────────────────────────
+export const TRANSLATIONS = {
+  en: {
+    ...PORTAL_I18N.en,
+    badgePrivacy: '100% In-Device Privacy',
+    openWebStudio: 'Open Web Studio',
+  },
+  th: {
+    ...PORTAL_I18N.th,
+    badgePrivacy: 'ความเป็นส่วนตัว 100%',
+    openWebStudio: 'เปิด Web Studio',
+  },
+};
+
+export const APP_THAI_METADATA: Record<string, { tagline: string; description: string }> = {
+  mepdf: {
+    tagline: SHOWCASE_APPS.find(a => a.id === 'mepdf')!.tagline.th,
+    description: SHOWCASE_APPS.find(a => a.id === 'mepdf')!.description.th,
+  },
+  mephoto: {
+    tagline: SHOWCASE_APPS.find(a => a.id === 'mephoto')!.tagline.th,
+    description: SHOWCASE_APPS.find(a => a.id === 'mephoto')!.description.th,
+  },
+};
+
+// Boot only in browser context (not in Node/Vitest test runner)
+if (typeof document !== 'undefined') {
+  new MeCraftsPortal();
+}
