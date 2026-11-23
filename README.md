@@ -14,7 +14,7 @@
 [![GitHub Forks](https://img.shields.io/github/forks/methastrategy/meCraft?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/network)
 [![Tauri v2](https://img.shields.io/badge/Desktop-Tauri%20v2%20(Rust)-ea580c?style=for-the-badge&logo=tauri)](https://tauri.app/)
 [![Client-Side Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-blue?style=for-the-badge&logo=shield)](SECURITY.md)
-[![Tests Passing](https://img.shields.io/badge/Tests-273%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
+[![Tests Passing](https://img.shields.io/badge/Tests-313%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 ---
@@ -25,6 +25,7 @@
 - 📄 **mePDF Web Studio:** [https://mecrafts.vercel.app/mepdf/](https://mecrafts.vercel.app/mepdf/)
 - 🪄 **mePhoto Web Studio:** [https://mecrafts.vercel.app/mephoto/](https://mecrafts.vercel.app/mephoto/)
 - 🍩 **meDrop Radial Converter (Zero-Window HUD):** [https://mecrafts.vercel.app/medrop/](https://mecrafts.vercel.app/medrop/)
+- 📝 **meDoc Markdown Studio:** [https://mecrafts.vercel.app/medoc/](https://mecrafts.vercel.app/medoc/)
 - 💾 **Download Desktop Installer (.exe):** [GitHub Releases](https://github.com/methastrategy/meCraft/releases)
 
 ---
@@ -60,19 +61,21 @@ flowchart TD
         PDF["📄 mePDF Studio\n(Lossless Compression, AES-256, OCR, Merge/Split)"]
         Photo["🪄 mePhoto Studio\n(CamScanner-Grade Magic Color, Non-Destructive Deskew)"]
         Drop["🍩 meDrop Radial Converter\n(Zero-Window Radial Drag & Drop File Converter HUD)"]
+        Doc["📝 meDoc Studio\n(Distraction-Free Typewriter, KaTeX & Mermaid Studio)"]
         Vector["📐 meVector (Roadmap)\n(Bézier SVG/PDF Graphic Workbench)"]
-        Doc["📝 meDoc (Roadmap)\n(Typewriter & Markdown Publication)"]
     end
 
     Tokens --> Launcher
     Tokens --> PDF
     Tokens --> Photo
     Tokens --> Drop
+    Tokens --> Doc
 
     Bridge --> Launcher
     Bridge --> PDF
     Bridge --> Photo
     Bridge --> Drop
+    Bridge --> Doc
 
     PhotoCore --> Photo
     PhotoCore --> PDF
@@ -94,7 +97,7 @@ flowchart TD
 5. **👆 Decoupled 44px Hit-Target Invariant:**
    Touch interactive targets on mobile and tablets must provide a minimum bounding hit-box of $\ge 44 \times 44\text{ px}$.
 6. **📦 Zero-Defect Monorepo Quality Gate:**
-   Every milestone requires 100% test pass rate (`npm test`, 273/273 tests) and zero TypeScript errors (`npm run typecheck`).
+   Every milestone requires 100% test pass rate (`npm test`, 313/313 tests) and zero TypeScript errors (`npm run typecheck`).
 
 ---
 
@@ -106,8 +109,8 @@ flowchart TD
 | **📄 mePDF Studio** | `apps/mepdf` | Complete client-side PDF engineering: Merge, Split, Dual-Engine Smart Compression (Lossless & Scanned), 256-bit AES encryption, and searchable OCR injection. | PDF.js, pdf-lib, Web Workers | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
 | **🪄 mePhoto Studio** | `apps/mephoto` | CamScanner-grade document lab: 4-point homography perspective warp, adaptive Otsu binarization, Magic Color enhancement, and unsharp text sharpening. | Canvas API, `@mecraft/photo-core` | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
 | **🍩 meDrop Radial HUD** | `apps/medrop` | Zero-Window Radial Drag & Drop File Converter HUD. Hold Ctrl + Drag in Windows Explorer for instant contextual in-place conversion or ClipBus dispatch. | Tauri v2, Rust Hook, SVG Donut, Local RAM | Windows (.exe) + Web | **Stable** (`v1.0.0`) |
+| **📝 meDoc Studio** | `apps/medoc` | Distraction-free typewriter, live KaTeX LaTeX formula rendering, inline Mermaid diagrams, split-view layout, and instant zero-cloud PDF publishing. | marked, KaTeX, Mermaid, pdf-lib, TypeScript | Web + Windows (.exe) | **Stable** (`v1.0.0`) |
 | **📐 meVector** | `apps/mevector` | Precision Bézier vector illustrator, boolean path operations, and infinite-resolution SVG/PDF export. | Vector Canvas Engine | Planned | *Roadmap* |
-| **📝 meDoc** | `apps/medoc` | Distraction-free typewriter, live LaTeX formula rendering, bilingual grammar engine, and academic publishing. | Typography Engine | In Development | *Roadmap* |
 
 ---
 

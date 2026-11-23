@@ -436,25 +436,28 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     category: 'document',
     categoryLabel: { en: 'Document', th: 'เอกสาร' },
     tagline: {
-      en: 'Zen Focus Markdown Typewriter & Research Suite',
-      th: 'เครื่องพิมพ์ Markdown แบบ Zen Focus และชุดการวิจัย',
+      en: 'Distraction-Free Markdown Typewriter & KaTeX Studio',
+      th: 'เครื่องพิมพ์ Markdown แบบสมาธิ เรนเดอร์สมการ KaTeX และส่งออก PDF ในเครื่อง',
     },
     description: {
-      en: 'Distraction-free typography, live KaTeX LaTeX equation rendering, and publication document generation.',
-      th: 'ตัวพิมพ์ไร้สิ่งรบกวน, เรนเดอร์สมการ LaTeX KaTeX แบบ Live และสร้างเอกสารสิ่งพิมพ์',
+      en: 'Distraction-free typography, split-view real-time Markdown, live KaTeX LaTeX equations, inline Mermaid diagrams, and instant zero-cloud PDF generation.',
+      th: 'ตัวพิมพ์ไร้สิ่งรบกวน, หน้าต่างแยกซ้าย-ขวาพิมพ์ Markdown และสมการ KaTeX สด, ไดอะแกรม Mermaid เวกเตอร์ และสร้างเอกสารสิ่งพิมพ์ PDF ในเครื่อง 100%',
     },
-    status: 'in-dev',
+    status: 'active',
     version: 'v1.0.0',
+    exeName: 'meDoc.exe',
+    exeSize: '~19.2 MB',
+    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meDoc.exe',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'WordCraft / Microsoft Word',
-    accentColor: '#6366f1',
-    glowColor: 'rgba(99,102,241,0.25)',
+    artcraftEquivalent: 'WordCraft / Microsoft Word / Typora',
+    accentColor: '#0d9488',
+    glowColor: 'rgba(13,148,136,0.3)',
     icon: 'doc',
-    keywords: ['markdown', 'word', 'document', 'latex', 'writing', 'typewriter', 'research', 'publish'],
-    enginePill: { en: 'Zen Typewriter · Live KaTeX Math', th: 'Zen พิมพ์สมาธิ · แสดงสมการ KaTeX สด' },
+    keywords: ['markdown', 'word', 'document', 'latex', 'writing', 'typewriter', 'katex', 'mermaid', 'pdf'],
+    enginePill: { en: 'Client-Side Markdown · KaTeX Math · Mermaid', th: 'Markdown ในเครื่อง 100% · สมการ KaTeX · ไดอะแกรม Mermaid' },
     specs: {
-      en: ['Distraction-Free Zen Markdown Typewriter', 'Real-Time KaTeX LaTeX Mathematical Rendering', 'Academic Footnotes, Citations & References', 'One-Click Publication-Grade PDF Generator', 'Live Outline Tree for Long-Form Manuscripts'],
-      th: ['พื้นที่เขียนงานสไตล์ Zen สบายตา ไร้สิ่งรบกวน', 'เรนเดอร์สูตรคณิตศาสตร์ KaTeX LaTeX แบบสด', 'ระบบแทรกเชิงอรรถและเอกสารอ้างอิงทางวิชาการ', 'แปลงบทความเป็น PDF จัดหน้าสวยงามในคลิกเดียว', 'โครงสร้าง Outline นำทางเอกสารขนาดยาว'],
+      en: ['Split-View Real-Time Markdown & KaTeX Engine', 'Inline Mermaid Vector Diagrams & Syntax Highlighting', 'Distraction-Free Zen Fullscreen Focus Mode', 'Client-Side Instant PDF Publishing via pdf-lib', 'Local-First Vault & Dynamic Outline Heading Jump'],
+      th: ['หน้าต่างแยกซ้าย-ขวาพิมพ์ Markdown และ KaTeX สด', 'เรนเดอร์ Mermaid ไดอะแกรมเวกเตอร์และเน้นสีโค้ด', 'โหมด Zen ไร้สิ่งรบกวนเขียนงานสบายตาระดับสมาธิ', 'สร้าง PDF สิ่งพิมพ์ในหน่วยความจำเครื่องผ่าน pdf-lib', 'ระบบจัดเก็บไฟล์ในเครื่องและกระโดดตามหัวข้อ Outline'],
     },
   },
   {
@@ -1073,12 +1076,14 @@ class MeCraftsPortal {
 
   private renderDesktopPreviewInline(app: ShowcaseApp): string {
     const isIndev = app.status === 'in-dev';
-    const docExt = app.id === 'mepdf' ? 'pdf' : (app.id === 'mephoto' ? 'dng' : (app.id === 'medrop' ? 'pdf' : (app.id === 'mevector' ? 'svg' : (app.id === 'mefilm' ? 'proj' : (app.id === 'melight' ? 'raw' : (app.id === 'memotion' ? 'motion' : (app.id === 'medesign' ? 'design' : (app.id === 'meaudio' ? 'wav' : (app.id === 'medoc' ? 'doc' : '3d')))))))));
+    const docExt = app.id === 'mepdf' ? 'pdf' : (app.id === 'mephoto' ? 'dng' : (app.id === 'medrop' ? 'pdf' : (app.id === 'medoc' ? 'md' : (app.id === 'mevector' ? 'svg' : (app.id === 'mefilm' ? 'proj' : (app.id === 'melight' ? 'raw' : (app.id === 'memotion' ? 'motion' : (app.id === 'medesign' ? 'design' : (app.id === 'meaudio' ? 'wav' : '3d')))))))));
     const sampleDocName = app.id === 'medrop'
       ? (this.lang === 'th' ? 'รายงานประจำปี_2026.pdf [Ctrl + Drag]' : 'Annual_Report_2026.pdf [Ctrl + Drag]')
-      : (isIndev
-        ? (this.lang === 'th' ? `ภาพร่างโครงสร้าง_Draft.${docExt}` : `Architecture_Draft.${docExt}`)
-        : (this.lang === 'th' ? `ชิ้นงานออกแบบ_2026.${docExt}` : `Creative_Project_Master.${docExt}`));
+      : (app.id === 'medoc'
+        ? (this.lang === 'th' ? 'บทความวิจัย_KaTeX_2026.md' : 'Quantum_Research_Notes.md')
+        : (isIndev
+          ? (this.lang === 'th' ? `ภาพร่างโครงสร้าง_Draft.${docExt}` : `Architecture_Draft.${docExt}`)
+          : (this.lang === 'th' ? `ชิ้นงานออกแบบ_2026.${docExt}` : `Creative_Project_Master.${docExt}`)));
 
     return `
     <div class="desktop-preview-window ${isIndev ? 'window-is-wireframe' : 'window-is-production'}" id="desktop-preview-window-${app.id}">
@@ -1433,6 +1438,76 @@ class MeCraftsPortal {
           <div style="position: absolute; bottom: 20px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(59, 130, 246, 0.4); padding: 8px 20px; border-radius: 20px; font-size: 12px; color: #cbd5e1; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(8px); box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
             <span style="color: #60a5fa; font-size: 14px;">⚡</span>
             <span><b>Drop on slice</b> to convert &amp; save in-place beside original file</span>
+          </div>
+        </div>
+      `;
+    }
+
+    if (app.id === 'medoc') {
+      return `
+        <!-- meDoc Studio Pro (Dark Teal Writer Cockpit) -->
+        <div class="mockup-menubar" style="border-bottom: 1px solid rgba(20, 184, 166, 0.2);">
+          <span class="mockup-menu-item" style="color: #14b8a6;"><b>meDoc Studio</b></span>
+          <span class="mockup-menu-item">File</span>
+          <span class="mockup-menu-item">Edit</span>
+          <span class="mockup-menu-item">Format</span>
+          <span class="mockup-menu-item">View</span>
+          <span class="mockup-menu-item">KaTeX Math</span>
+          <span class="mockup-menu-item">Mermaid</span>
+          <span class="mockup-menu-item">Help</span>
+        </div>
+        <div class="mockup-ribbon" style="background: rgba(14, 22, 28, 0.95); border-bottom: 1px solid rgba(20, 184, 166, 0.2);">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active" style="background: #0d9488; color: #fff;">📄 Outline</span>
+            <span class="mockup-tool-chip" style="border-color: #0d9488; color: #5eead4;">🗂️ Local Vault</span>
+            <span class="mockup-tool-chip" style="border-color: rgba(20,184,166,0.3); color: #94a3b8;">⊞ Zen Mode</span>
+          </div>
+          <div class="mockup-ribbon-center">
+            <span style="font-weight: 600; color: #f1f5f9;">Quantum_Mechanics_Paper.md</span>
+            <span class="mockup-tool-chip" style="margin-left: 12px; border-color: rgba(20,184,166,0.3); color: #5eead4;">1,420 words</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="background: #0d9488; color: #fff;">⬇ Export Clean PDF</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 190px 1fr 1fr; background: #070b0e;">
+          <!-- Left: Document Outline -->
+          <div class="mockup-left-pane" style="background: #0e161c; border-right: 1px solid rgba(20, 184, 166, 0.15); padding: 12px; gap: 8px;">
+            <div class="mockup-pane-heading" style="color: #14b8a6; font-size: 10px;">DOCUMENT OUTLINE</div>
+            <div class="mockup-page-chip active" style="background: rgba(13, 148, 136, 0.15); border-color: #0d9488; color: #5eead4; font-size: 11px;">1. Executive Summary</div>
+            <div class="mockup-page-chip" style="padding-left: 18px; font-size: 10px; color: #94a3b8;">1.1 System Invariants</div>
+            <div class="mockup-page-chip" style="padding-left: 18px; font-size: 10px; color: #94a3b8;">1.2 Privacy Guarantees</div>
+            <div class="mockup-page-chip" style="color: #cbd5e1; font-size: 11px;">2. KaTeX Equations</div>
+            <div class="mockup-page-chip" style="padding-left: 18px; font-size: 10px; color: #94a3b8;">2.1 Schrödinger Evolution</div>
+            <div class="mockup-page-chip" style="color: #cbd5e1; font-size: 11px;">3. Mermaid Architecture</div>
+            <div class="mockup-page-chip" style="color: #cbd5e1; font-size: 11px;">4. Benchmark Telemetry</div>
+          </div>
+          <!-- Center: Markdown Code/Editor Pane -->
+          <div style="background: #070b0e; border-right: 1px solid rgba(20, 184, 166, 0.15); padding: 16px; font-family: monospace; font-size: 11px; line-height: 20px; color: #cbd5e1; overflow: hidden; display: flex; gap: 12px;">
+            <div style="color: #475569; user-select: none; text-align: right; width: 18px;">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15</div>
+            <div style="flex: 1; overflow: hidden;">
+              <span style="color: #f472b6;">---</span><br>
+              <span style="color: #38bdf8;">title</span>: <span style="color: #34d399;">"Quantum Computing"</span><br>
+              <span style="color: #38bdf8;">tags</span>: [<span style="color: #fbbf24;">physics</span>, <span style="color: #fbbf24;">math</span>]<br>
+              <span style="color: #f472b6;">---</span><br><br>
+              <span style="color: #14b8a6; font-weight: bold;"># Quantum State Dynamics</span><br>
+              The state evolution obeys:<br><br>
+              <span style="color: #fbbf24;">$$i\hbar \frac{\partial}{\partial t} |\Psi(t)\rangle = \hat{H} |\Psi(t)\rangle$$</span><br><br>
+              <span style="color: #14b8a6; font-weight: bold;">## Density Operator Matrix</span><br>
+              $$\rho = \sum_i p_i |\psi_i\rangle\langle\psi_i|$$
+            </div>
+          </div>
+          <!-- Right: Rendered Typographic Preview Pane -->
+          <div style="background: #090e13; padding: 20px; overflow: hidden; color: #f1f5f9;">
+            <h1 style="font-size: 16px; font-weight: 700; color: #14b8a6; margin-bottom: 8px; border-bottom: 1px solid rgba(20,184,166,0.2); padding-bottom: 4px;">Quantum State Dynamics</h1>
+            <p style="font-size: 11px; color: #94a3b8; line-height: 1.6; margin-bottom: 10px;">The time-dependent state evolution of closed quantum systems obeys:</p>
+            <div style="background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(20, 184, 166, 0.25); border-radius: 6px; padding: 10px; text-align: center; margin-bottom: 12px; font-family: 'Times New Roman', serif; font-size: 13px; color: #5eead4;">
+              <i>iħ</i> ∂/∂t |Ψ(t)⟩ = Ĥ |Ψ(t)⟩
+            </div>
+            <h2 style="font-size: 13px; font-weight: 600; color: #ffffff; margin-bottom: 6px;">Density Operator Matrix</h2>
+            <div style="background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(20, 184, 166, 0.25); border-radius: 6px; padding: 10px; text-align: center; font-family: 'Times New Roman', serif; font-size: 13px; color: #5eead4;">
+              ρ = ∑ p<sub>i</sub> |ψ<sub>i</sub>⟩⟨ψ<sub>i</sub>|
+            </div>
           </div>
         </div>
       `;
