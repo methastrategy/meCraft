@@ -1,4 +1,11 @@
 import { supabase } from './supabase-client';
+import {
+  saveAuthSession,
+  getAuthSession,
+  clearAuthSession,
+  onAuthSessionChange,
+  type AuthSession,
+} from '@mecraft/core-bridge';
 
 export type SubscriptionTier = 'free' | 'pro' | 'enterprise';
 
@@ -30,6 +37,11 @@ class AuthService {
       const { data } = await supabase.auth.getSession();
       if (data?.session?.user) {
         await this.loadUserProfile(data.session.user);
+      } else {
+        const hubSession = getAuthSession();
+        if (hubSession) {
+          this.applyHubSession(hubSession);
+        }
       }
     } catch (err) {
       console.warn('Failed to load initial auth session:', err);
@@ -41,10 +53,44 @@ class AuthService {
       if (session?.user) {
         await this.loadUserProfile(session.user);
       } else {
-        this.currentUser = null;
-        this.notifyListeners();
+        const hubSession = getAuthSession();
+        if (hubSession) {
+          this.applyHubSession(hubSession);
+        } else {
+          this.currentUser = null;
+          this.notifyListeners();
+        }
       }
     });
+
+    // Real-time synchronization across meCraft tabs and Web Hub
+    onAuthSessionChange((hubSession) => {
+      if (hubSession) {
+        this.applyHubSession(hubSession);
+      } else {
+        if (this.currentUser) {
+          this.currentUser = null;
+          this.notifyListeners();
+        }
+      }
+    });
+  }
+
+  private applyHubSession(hubSession: AuthSession): void {
+    const isPro = hubSession.user?.tier === 'lifetime' ||
+                  hubSession.user?.tier === 'pro_monthly' ||
+                  hubSession.user?.tier === 'pro_yearly';
+    this.currentUser = {
+      id: hubSession.user.id,
+      email: hubSession.user.email,
+      fullName: hubSession.user.fullName,
+      avatarUrl: hubSession.user.avatarUrl,
+      tier: isPro ? 'pro' : 'free',
+      storageUsedBytes: this.currentUser?.storageUsedBytes || 0,
+      storageLimitBytes: isPro ? PRO_STORAGE_LIMIT : FREE_STORAGE_LIMIT,
+      createdAt: hubSession.user.createdAt || new Date().toISOString(),
+    };
+    this.notifyListeners();
   }
 
   private async loadUserProfile(authUser: any): Promise<UserProfile | null> {
@@ -103,6 +149,23 @@ class AuthService {
         storageLimitBytes: FREE_STORAGE_LIMIT,
         createdAt: new Date().toISOString(),
       };
+    }
+
+    if (this.currentUser) {
+      saveAuthSession({
+        user: {
+          id: this.currentUser.id,
+          email: this.currentUser.email,
+          fullName: this.currentUser.fullName,
+          avatarUrl: this.currentUser.avatarUrl,
+          tier: this.currentUser.tier === 'pro' ? 'pro_monthly' : 'free_member',
+          createdAt: this.currentUser.createdAt,
+        },
+        accessToken: authUser.access_token || `jwt_${Date.now()}`,
+        issuedAt: Date.now(),
+        expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+        offlineGracePeriodDays: 30,
+      });
     }
 
     this.notifyListeners();
@@ -222,6 +285,7 @@ class AuthService {
   }
 
   async signOut(): Promise<void> {
+    clearAuthSession();
     const { error } = await supabase.auth.signOut();
     this.currentUser = null;
     this.notifyListeners();

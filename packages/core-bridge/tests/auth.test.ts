@@ -7,6 +7,9 @@ import {
   isFeatureUnlocked,
   getTierBadge,
   createMockAuthSession,
+  onAuthSessionChange,
+  exportAuthSyncCode,
+  importAuthSyncCode,
   DEFAULT_OFFLINE_GRACE_DAYS,
   type AuthSession
 } from '../src/auth';
@@ -105,6 +108,55 @@ describe('meCraft Auth & Entitlements Engine (@mecraft/core-bridge)', () => {
       const lifetimeBadge = getTierBadge('lifetime');
       expect(lifetimeBadge.label).toBe('LIFETIME PRO');
       expect(lifetimeBadge.isPro).toBe(true);
+    });
+  });
+
+  describe('Real-Time Cross-App & Desktop Synchronization', () => {
+    it('notifies listeners when session is saved or cleared', () => {
+      const received: (AuthSession | null)[] = [];
+      const unsubscribe = onAuthSessionChange((session) => {
+        received.push(session);
+      });
+
+      const mock = createMockAuthSession('sync_user@mecraft.dev', 'pro_monthly');
+      saveAuthSession(mock);
+      expect(received.length).toBe(1);
+      expect(received[0]?.user.email).toBe('sync_user@mecraft.dev');
+
+      clearAuthSession();
+      expect(received.length).toBe(2);
+      expect(received[1]).toBeNull();
+
+      unsubscribe();
+      saveAuthSession(mock);
+      // Listener should not receive after unsubscribe
+      expect(received.length).toBe(2);
+    });
+
+    it('exports and imports portable sync codes accurately', () => {
+      const original = createMockAuthSession('web_creator@mecraft.dev', 'lifetime');
+      const syncCode = exportAuthSyncCode(original);
+      expect(syncCode).toMatch(/^MC3\./);
+
+      // Clear current session
+      clearAuthSession();
+      expect(getAuthSession()).toBeNull();
+
+      // Import the code
+      const restored = importAuthSyncCode(syncCode);
+      expect(restored).not.toBeNull();
+      expect(restored?.user.email).toBe('web_creator@mecraft.dev');
+      expect(restored?.user.tier).toBe('lifetime');
+
+      // Verify it was persisted to storage
+      const inStorage = getAuthSession();
+      expect(inStorage?.user.email).toBe('web_creator@mecraft.dev');
+    });
+
+    it('rejects invalid or corrupted sync codes gracefully', () => {
+      expect(importAuthSyncCode('')).toBeNull();
+      expect(importAuthSyncCode('MC3.invalid_base64_payload')).toBeNull();
+      expect(importAuthSyncCode('not_a_code')).toBeNull();
     });
   });
 });

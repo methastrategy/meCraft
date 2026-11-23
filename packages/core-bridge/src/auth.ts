@@ -40,7 +40,9 @@ export type FeatureId =
 export const AUTH_STORAGE_KEY = 'mecraft_auth_session_v3';
 export const DEFAULT_OFFLINE_GRACE_DAYS = 30;
 
-// Universal storage access (browser localStorage / node memory)
+/**
+ * Universal storage access (browser localStorage / node memory)
+ */
 const memoryStorage = new Map<string, string>();
 
 function getStorageItem(key: string): string | null {
@@ -78,6 +80,84 @@ function removeStorageItem(key: string): void {
     }
   }
   memoryStorage.delete(key);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Real-Time Cross-App & Cross-Tab Synchronization Bus
+// ─────────────────────────────────────────────────────────────────────────────
+export type AuthChangeListener = (session: AuthSession | null) => void;
+const authChangeListeners = new Set<AuthChangeListener>();
+
+let authBroadcastChannel: BroadcastChannel | null = null;
+let isChannelInitialized = false;
+
+function initAuthSyncChannel(): void {
+  if (isChannelInitialized || typeof window === 'undefined') return;
+  isChannelInitialized = true;
+
+  if (typeof BroadcastChannel !== 'undefined') {
+    try {
+      authBroadcastChannel = new BroadcastChannel('mecraft_auth_sync');
+      authBroadcastChannel.onmessage = (event) => {
+        if (event.data && event.data.type === 'AUTH_STATE_CHANGED') {
+          const newSession = event.data.session as AuthSession | null;
+          notifyListeners(newSession, false);
+        }
+      };
+    } catch {
+      // safe fallback if BroadcastChannel is restricted
+    }
+  }
+
+  // Cross-tab storage event
+  window.addEventListener('storage', (e) => {
+    if (e.key === AUTH_STORAGE_KEY) {
+      const session = getAuthSession();
+      notifyListeners(session, false);
+    }
+  });
+}
+
+function notifyListeners(session: AuthSession | null, broadcast = true): void {
+  authChangeListeners.forEach((listener) => {
+    try {
+      listener(session);
+    } catch (err) {
+      console.warn('[core-bridge:auth] Error in authChangeListener:', err);
+    }
+  });
+
+  if (broadcast) {
+    if (authBroadcastChannel) {
+      try {
+        authBroadcastChannel.postMessage({
+          type: 'AUTH_STATE_CHANGED',
+          session,
+          timestamp: Date.now(),
+        });
+      } catch {
+        // Broadcast failed
+      }
+    }
+    if (typeof window !== 'undefined') {
+      try {
+        window.dispatchEvent(new CustomEvent('mecraft:auth-change', { detail: session }));
+      } catch {
+        // CustomEvent failed
+      }
+    }
+  }
+}
+
+/**
+ * Subscribe to real-time authentication session changes across tabs & apps
+ */
+export function onAuthSessionChange(listener: AuthChangeListener): () => void {
+  initAuthSyncChannel();
+  authChangeListeners.add(listener);
+  return () => {
+    authChangeListeners.delete(listener);
+  };
 }
 
 /**
@@ -140,11 +220,12 @@ export function getTierBadge(tier: SubscriptionTier): { label: string; color: st
 }
 
 /**
- * Save auth session to universal storage
+ * Save auth session to universal storage and broadcast to all listening tabs/apps
  */
 export function saveAuthSession(session: AuthSession): void {
   try {
     setStorageItem(AUTH_STORAGE_KEY, JSON.stringify(session));
+    notifyListeners(session, true);
   } catch (err) {
     console.warn('[core-bridge:auth] Failed to persist auth session:', err);
   }
@@ -174,11 +255,12 @@ export function getAuthSession(): AuthSession | null {
 }
 
 /**
- * Clear auth session (Sign Out)
+ * Clear auth session (Sign Out) and notify all listening tabs/apps
  */
 export function clearAuthSession(): void {
   try {
     removeStorageItem(AUTH_STORAGE_KEY);
+    notifyListeners(null, true);
   } catch (err) {
     console.warn('[core-bridge:auth] Failed to clear auth session:', err);
   }
@@ -206,4 +288,102 @@ export function createMockAuthSession(
     expiresAt: now + 30 * 24 * 60 * 60 * 1000,
     offlineGracePeriodDays: DEFAULT_OFFLINE_GRACE_DAYS,
   };
+}
+
+/**
+ * Export an auth session as a portable Base64 sync code.
+ * Used to synchronize web signin with desktop launcher or other devices.
+ */
+export function exportAuthSyncCode(session?: AuthSession | null): string {
+  const targetSession = session || getAuthSession();
+  if (!targetSession) return '';
+  try {
+    const payload = JSON.stringify({
+      v: 3,
+      u: targetSession.user,
+      tok: targetSession.accessToken,
+      rtok: targetSession.refreshToken,
+      iat: targetSession.issuedAt,
+      exp: targetSession.expiresAt,
+    });
+    if (typeof Buffer !== 'undefined') {
+      return `MC3.${Buffer.from(payload, 'utf-8').toString('base64')}`;
+    } else if (typeof btoa !== 'undefined') {
+      return `MC3.${btoa(encodeURIComponent(payload))}`;
+    }
+    return '';
+  } catch (err) {
+    console.warn('[core-bridge:auth] Failed to export sync code:', err);
+    return '';
+  }
+}
+
+/**
+ * Import and activate an auth session from a Base64 sync code.
+ */
+export function importAuthSyncCode(code: string): AuthSession | null {
+  if (!code || typeof code !== 'string') return null;
+  const cleanCode = code.trim();
+  const rawBase64 = cleanCode.startsWith('MC3.') ? cleanCode.slice(4) : cleanCode;
+
+  try {
+    let jsonStr = '';
+    if (typeof Buffer !== 'undefined') {
+      jsonStr = Buffer.from(rawBase64, 'base64').toString('utf-8');
+    } else if (typeof atob !== 'undefined') {
+      try {
+        jsonStr = decodeURIComponent(atob(rawBase64));
+      } catch {
+        jsonStr = atob(rawBase64);
+      }
+    }
+
+    const data = JSON.parse(jsonStr);
+    if (!data || !data.u || !data.u.email) return null;
+
+    const session: AuthSession = {
+      user: data.u,
+      accessToken: data.tok || `synced_jwt_${Date.now()}`,
+      refreshToken: data.rtok,
+      issuedAt: data.iat || Date.now(),
+      expiresAt: data.exp || (Date.now() + 30 * 24 * 60 * 60 * 1000),
+      offlineGracePeriodDays: DEFAULT_OFFLINE_GRACE_DAYS,
+    };
+
+    if (!isOfflineGraceValid(session)) {
+      console.warn('[core-bridge:auth] Imported sync code has expired past 30-day grace period');
+      return null;
+    }
+
+    saveAuthSession(session);
+    return session;
+  } catch (err) {
+    console.warn('[core-bridge:auth] Failed to import auth sync code:', err);
+    return null;
+  }
+}
+
+/**
+ * Checks URL search params or hash for `mecraft_token` or `sync_code`
+ * to seamlessly auto-sign-in from deep link or web redirect.
+ */
+export function checkUrlAuthHandoff(): AuthSession | null {
+  if (typeof window === 'undefined' || !window.location) return null;
+
+  try {
+    const url = new URL(window.location.href);
+    const token = url.searchParams.get('mecraft_token') || url.searchParams.get('sync_code');
+    if (token) {
+      const session = importAuthSyncCode(token);
+      if (session) {
+        url.searchParams.delete('mecraft_token');
+        url.searchParams.delete('sync_code');
+        window.history.replaceState({}, document.title, url.toString());
+        return session;
+      }
+    }
+  } catch {
+    // safe
+  }
+  return null;
 }
