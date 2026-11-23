@@ -1,0 +1,562 @@
+/**
+ * @file theme-teal.css
+ * meDoc Studio — Dark Teal Typography & Writer Styles
+ * Compliant with Thai-Latin typography invariants & 120fps motion
+ */
+
+:root {
+  --medoc-bg-canvas: #070b0e;
+  --medoc-bg-surface: #0e161c;
+  --medoc-bg-card: #141f27;
+  --medoc-bg-hover: #1b2934;
+  --medoc-border: rgba(20, 184, 166, 0.18);
+  --medoc-border-focus: #0d9488;
+  --medoc-accent: #0d9488;
+  --medoc-accent-light: #14b8a6;
+  --medoc-accent-glow: rgba(20, 184, 166, 0.25);
+  --medoc-accent-dim: rgba(13, 148, 136, 0.12);
+  --medoc-text-main: #f1f5f9;
+  --medoc-text-muted: #8e9fae;
+  --medoc-text-sub: #5d6f7e;
+  --medoc-danger: #ef4444;
+  --medoc-font-sans: "Inter", "IBM Plex Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --medoc-font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--medoc-bg-canvas);
+  color: var(--medoc-text-main);
+  font-family: var(--medoc-font-sans);
+  font-size: 14px;
+  line-height: 1.7;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* App Shell Layout */
+.medoc-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--medoc-bg-canvas);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header / Top Bar */
+.medoc-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 0 16px;
+  background: var(--medoc-bg-surface);
+  border-bottom: 1px solid var(--medoc-border);
+  z-index: 20;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.medoc-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.medoc-logo-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--medoc-accent), #0f766e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow: 0 0 12px var(--medoc-accent-glow);
+}
+
+.medoc-brand-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--medoc-text-main);
+  letter-spacing: -0.02em;
+}
+
+.medoc-doc-title-input {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--medoc-text-main);
+  font-family: var(--medoc-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 10px;
+  max-width: 260px;
+  outline: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.medoc-doc-title-input:hover {
+  background: var(--medoc-bg-card);
+  border-color: var(--medoc-border);
+}
+
+.medoc-doc-title-input:focus {
+  background: var(--medoc-bg-card);
+  border-color: var(--medoc-accent);
+}
+
+.medoc-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Standard Buttons with 44px outer touch boundary */
+.medoc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--medoc-bg-card);
+  border: 1px solid var(--medoc-border);
+  color: var(--medoc-text-main);
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.medoc-btn:hover {
+  background: var(--medoc-bg-hover);
+  border-color: var(--medoc-accent-light);
+}
+
+.medoc-btn:active {
+  transform: scale(0.98);
+}
+
+.medoc-btn-primary {
+  background: var(--medoc-accent);
+  border-color: var(--medoc-accent-light);
+  color: #ffffff;
+  box-shadow: 0 2px 8px var(--medoc-accent-glow);
+}
+
+.medoc-btn-primary:hover {
+  background: var(--medoc-accent-light);
+  border-color: #2dd4bf;
+}
+
+.medoc-btn-icon {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Segmented View Switcher */
+.medoc-segmented {
+  display: inline-flex;
+  background: var(--medoc-bg-canvas);
+  border: 1px solid var(--medoc-border);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.medoc-segmented-item {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--medoc-text-muted);
+  border: none;
+  background: transparent;
+  transition: all 0.15s ease;
+}
+
+.medoc-segmented-item.active {
+  background: var(--medoc-accent);
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+/* Main 3-Pane Body */
+.medoc-workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Left Sidebar */
+.medoc-sidebar {
+  width: 250px;
+  background: var(--medoc-bg-surface);
+  border-right: 1px solid var(--medoc-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+.medoc-sidebar.collapsed {
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+  border-right: none;
+}
+
+.medoc-sidebar-header {
+  padding: 12px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--medoc-accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.medoc-sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.medoc-toc-item {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 4px;
+  color: var(--medoc-text-muted);
+  font-size: 12px;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.medoc-toc-item:hover {
+  background: var(--medoc-bg-card);
+  color: var(--medoc-text-main);
+}
+
+.medoc-toc-item.level-1 { font-weight: 600; color: var(--medoc-text-main); margin-top: 4px; }
+.medoc-toc-item.level-2 { padding-left: 20px; }
+.medoc-toc-item.level-3 { padding-left: 30px; font-size: 11px; color: var(--medoc-text-sub); }
+
+.medoc-doc-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--medoc-text-muted);
+  font-size: 12px;
+  transition: all 0.15s ease;
+}
+
+.medoc-doc-list-item:hover {
+  background: var(--medoc-bg-card);
+  color: var(--medoc-text-main);
+}
+
+.medoc-doc-list-item.active {
+  background: var(--medoc-accent-dim);
+  border: 1px solid var(--medoc-accent);
+  color: #ffffff;
+}
+
+/* Editor Pane */
+.medoc-editor-pane {
+  flex: 1;
+  display: flex;
+  background: var(--medoc-bg-canvas);
+  position: relative;
+  overflow: hidden;
+  border-right: 1px solid var(--medoc-border);
+}
+
+.medoc-gutter {
+  width: 44px;
+  padding: 24px 8px;
+  text-align: right;
+  font-family: var(--medoc-font-mono);
+  font-size: 12px;
+  line-height: 24px;
+  color: var(--medoc-text-sub);
+  user-select: none;
+  background: rgba(0, 0, 0, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.medoc-textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 24px 32px;
+  font-family: var(--medoc-font-mono);
+  font-size: 13.5px;
+  line-height: 24px;
+  color: var(--medoc-text-main);
+  resize: none;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  tab-size: 2;
+}
+
+.medoc-textarea::selection {
+  background: var(--medoc-accent-glow);
+}
+
+/* Preview Pane */
+.medoc-preview-pane {
+  flex: 1;
+  background: #090e13;
+  overflow-y: auto;
+  padding: 40px 48px;
+  position: relative;
+}
+
+.medoc-preview-container {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* Preview Typography */
+.medoc-preview-container h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--medoc-accent-light);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--medoc-border);
+}
+
+.medoc-preview-container h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+
+.medoc-preview-container h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-top: 22px;
+  margin-bottom: 10px;
+}
+
+.medoc-preview-container p {
+  margin-bottom: 16px;
+  color: #cbd5e1;
+}
+
+.medoc-preview-container a {
+  color: var(--medoc-accent-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.medoc-preview-container ul, .medoc-preview-container ol {
+  margin-bottom: 16px;
+  padding-left: 24px;
+  color: #cbd5e1;
+}
+
+.medoc-preview-container li {
+  margin-bottom: 6px;
+}
+
+.medoc-preview-container hr {
+  border: none;
+  height: 1px;
+  background: var(--medoc-border);
+  margin: 28px 0;
+}
+
+.medoc-quote {
+  border-left: 3px solid var(--medoc-accent);
+  background: var(--medoc-accent-dim);
+  padding: 12px 18px;
+  border-radius: 4px;
+  margin: 18px 0;
+  color: #e2e8f0;
+  font-style: italic;
+}
+
+/* Math Containers */
+.medoc-math-display {
+  display: flex;
+  justify-content: center;
+  padding: 16px 20px;
+  margin: 20px 0;
+  background: rgba(13, 148, 136, 0.08);
+  border: 1px solid var(--medoc-border);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.medoc-math-inline {
+  display: inline-block;
+  padding: 0 3px;
+  color: #5eead4;
+}
+
+/* Code Blocks */
+.medoc-code-block {
+  background: #06090c;
+  border: 1px solid var(--medoc-border);
+  border-radius: 6px;
+  padding: 16px;
+  margin: 18px 0;
+  overflow-x: auto;
+  font-family: var(--medoc-font-mono);
+  font-size: 12.5px;
+  line-height: 20px;
+}
+
+.hl-keyword { color: #f472b6; font-weight: 600; }
+.hl-string { color: #34d399; }
+.hl-comment { color: #64748b; font-style: italic; }
+.hl-number { color: #fbbf24; }
+.hl-type { color: #38bdf8; }
+
+/* Tables */
+.medoc-table-wrapper {
+  overflow-x: auto;
+  margin: 20px 0;
+}
+
+.medoc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.medoc-table th, .medoc-table td {
+  padding: 10px 14px;
+  border: 1px solid var(--medoc-border);
+  text-align: left;
+}
+
+.medoc-table th {
+  background: var(--medoc-bg-card);
+  color: var(--medoc-accent-light);
+  font-weight: 600;
+}
+
+.medoc-table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Status Bar */
+.medoc-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 16px;
+  background: var(--medoc-bg-surface);
+  border-top: 1px solid var(--medoc-border);
+  font-size: 11.5px;
+  color: var(--medoc-text-muted);
+  z-index: 20;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.medoc-status-left, .medoc-status-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.medoc-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--medoc-accent-dim);
+  border: 1px solid var(--medoc-accent);
+  color: var(--medoc-accent-light);
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+/* Zen Mode Overlay */
+.medoc-shell.zen-mode .medoc-topbar,
+.medoc-shell.zen-mode .medoc-statusbar,
+.medoc-shell.zen-mode .medoc-sidebar,
+.medoc-shell.zen-mode .medoc-gutter,
+.medoc-shell.zen-mode .medoc-preview-pane {
+  display: none !important;
+}
+
+.medoc-shell.zen-mode .medoc-editor-pane {
+  border-right: none;
+  justify-content: center;
+}
+
+.medoc-shell.zen-mode .medoc-textarea {
+  max-width: 72ch;
+  font-size: 16px;
+  line-height: 28px;
+  padding: 80px 20px;
+}
+
+.medoc-zen-exit-pill {
+  display: none;
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  background: rgba(14, 22, 28, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--medoc-border);
+  color: var(--medoc-text-muted);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.15s ease;
+}
+
+.medoc-shell.zen-mode .medoc-zen-exit-pill {
+  display: block;
+}
+
+.medoc-zen-exit-pill:hover {
+  background: var(--medoc-accent);
+  color: #ffffff;
+  border-color: var(--medoc-accent-light);
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="oled-black">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>meDoc Studio — Distraction-Free Pro Writing & KaTeX Typography</title>
+    <meta name="description" content="meDoc Studio: 100% In-Device Markdown Typewriter with KaTeX math, Mermaid diagrams, clean PDF export, and distraction-free Zen mode." />
+    <meta name="author" content="Metha Triparpanchit" />
+    <meta name="theme-color" content="#070b0e" />
+
+    <!-- Google Fonts: Inter + IBM Plex Sans Thai + JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <style>
+      :focus-visible {
+        outline: 2px solid #0d9488;
+        outline-offset: 2px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
