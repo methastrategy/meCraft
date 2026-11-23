@@ -1032,59 +1032,46 @@ class MeCraftsPortal {
   }
 
   private renderDesktopPreviewModal(): string {
-    if (!this.isPreviewModalOpen || !this.previewAppId) {
-      return '';
-    }
-    const app = SHOWCASE_APPS.find(a => a.id === this.previewAppId) || SHOWCASE_APPS[0];
-    const docExt = app.id === 'mepdf' ? 'pdf' : (app.id === 'mephoto' ? 'dng' : (app.id === 'mevector' ? 'svg' : (app.id === 'mefilm' ? 'proj' : 'doc')));
-    const sampleDocName = this.lang === 'th' ? `สัญญาจ้างงาน_2026.${docExt}` : `Creative_Project_Master.${docExt}`;
+    return '';
+  }
+
+  private renderDesktopPreviewInline(app: ShowcaseApp): string {
+    const docExt = app.id === 'mepdf' ? 'pdf' : (app.id === 'mephoto' ? 'dng' : (app.id === 'mevector' ? 'svg' : (app.id === 'mefilm' ? 'proj' : (app.id === 'melight' ? 'raw' : (app.id === 'memotion' ? 'motion' : (app.id === 'medesign' ? 'design' : (app.id === 'meaudio' ? 'wav' : (app.id === 'medoc' ? 'doc' : '3d'))))))));
+    const sampleDocName = this.lang === 'th' ? `ชิ้นงานออกแบบ_2026.${docExt}` : `Creative_Project_Master.${docExt}`;
 
     return `
-    <div class="desktop-preview-overlay active" id="desktop-preview-overlay" role="dialog" aria-modal="true" aria-label="Desktop Preview">
-      <div class="desktop-preview-backdrop" id="modal-preview-backdrop"></div>
-      
-      <div class="desktop-preview-window">
-        <!-- Native Windows Title Bar -->
-        <div class="desktop-window-titlebar">
-          <div class="window-titlebar-left">
-            <div class="window-app-icon">${getAppIcon(app.icon, app.accentColor)}</div>
-            <span class="window-title-text">${app.name} — [${sampleDocName}] - Windows Native Desktop</span>
-            <span class="window-native-pill">100% Native Desktop App</span>
-          </div>
-          <div class="window-titlebar-controls">
-            <button class="win-ctrl-btn" type="button" title="Minimize">─</button>
-            <button class="win-ctrl-btn" type="button" title="Maximize">□</button>
-            <button class="win-ctrl-btn win-close" id="btn-close-preview-x" type="button" title="Close Preview">✕</button>
-          </div>
+    <div class="desktop-preview-window" id="desktop-preview-window">
+      <!-- Native Windows Title Bar -->
+      <div class="desktop-window-titlebar">
+        <div class="window-titlebar-left">
+          <div class="window-app-icon">${getAppIcon(app.icon, app.accentColor)}</div>
+          <span class="window-title-text" id="preview-window-title">${app.name} — [${sampleDocName}] - Windows Native Desktop</span>
+          <span class="window-native-pill">100% Native Desktop App</span>
         </div>
-
-        <!-- Realistic Desktop Application Body -->
-        <div class="desktop-window-body">
-          ${this.renderAppDesktopMockup(app)}
+        <div class="window-titlebar-controls" aria-hidden="true">
+          <button class="win-ctrl-btn" type="button" tabindex="-1" title="Minimize">─</button>
+          <button class="win-ctrl-btn" type="button" tabindex="-1" title="Maximize">□</button>
+          <button class="win-ctrl-btn win-close" type="button" tabindex="-1" title="Close">✕</button>
         </div>
+      </div>
 
-        <!-- Window Guidance & Download Footer -->
-        <div class="desktop-preview-footer">
-          <div class="preview-footer-info">
-            <span class="preview-pulse-dot"></span>
-            <span>${this.lang === 'th' 
-              ? 'หน้าต่างจำลองเหมือนโปรแกรมที่ติดตั้งลงเครื่อง 100% — รันออฟไลน์ ไร้เว็บเบราว์เซอร์ เร็วระดับฮาร์ดแวร์จริง' 
-              : '100% True-to-life Native Desktop Interface preview — Pure offline, in-device execution'}</span>
-          </div>
-          <div class="preview-footer-actions">
-            ${app.downloadUrl ? `
-              <a href="${app.downloadUrl}" download="${app.exeName}" class="btn-preview-download">
-                ⬇ ${this.lang === 'th' ? 'ดาวน์โหลดตัวติดตั้ง' : 'Download .exe'} (${app.exeSize || '14.8 MB'})
-              </a>
-            ` : `
-              <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="btn-preview-download">
-                ⬇ ${this.lang === 'th' ? 'ดาวน์โหลด meCraft Suite' : 'Download Suite'} (14.8 MB)
-              </a>
-            `}
-            <button class="btn-preview-close" id="btn-close-preview-footer" type="button">
-              ${this.lang === 'th' ? 'ปิดหน้าต่างพรีวิว' : 'Close Preview'}
-            </button>
-          </div>
+      <!-- Realistic Desktop Application Body -->
+      <div class="desktop-window-body" id="preview-window-body">
+        ${this.renderAppDesktopMockup(app)}
+      </div>
+
+      <!-- Windows Native Status Bar (Clean, Zero Download Buttons) -->
+      <div class="desktop-preview-statusbar">
+        <div class="statusbar-left">
+          <span class="statusbar-dot"></span>
+          <span>Ready · Hardware Acceleration (DirectX 12 / Vulkan) · 0 KB network</span>
+        </div>
+        <div class="statusbar-right">
+          <span>Memory: 24.8 MB</span>
+          <span class="statusbar-divider">|</span>
+          <span>UTF-8</span>
+          <span class="statusbar-divider">|</span>
+          <span>100% In-Device RAM</span>
         </div>
       </div>
     </div>`;
@@ -1306,7 +1293,388 @@ class MeCraftsPortal {
       `;
     }
 
-    // Default template for other creative apps (melight, mevector, mefilm, etc.)
+    if (app.id === 'mevector') {
+      return `
+        <!-- meVector Studio (Bézier Path Illustrator) -->
+        <div class="mockup-menubar">
+          <span class="mockup-menu-item"><b>meVector Studio</b></span>
+          <span class="mockup-menu-item">File</span>
+          <span class="mockup-menu-item">Edit</span>
+          <span class="mockup-menu-item">Object</span>
+          <span class="mockup-menu-item">Path</span>
+          <span class="mockup-menu-item">Vector</span>
+          <span class="mockup-menu-item">View</span>
+          <span class="mockup-menu-item">Help</span>
+        </div>
+        <div class="mockup-ribbon">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active">↖ Selection (V)</span>
+            <span class="mockup-tool-chip">✒️ Pen (P)</span>
+            <span class="mockup-tool-chip">Node Edit (A)</span>
+            <span class="mockup-tool-chip">Boolean: Unite / Cut</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="border-color: #a855f7; color: #c084fc;">SVG 2.0 Vector</span>
+            <span class="mockup-tool-chip" style="background: #9333ea; color: #fff;">⬇ Export SVG</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 200px 1fr 260px;">
+          <div class="mockup-left-pane">
+            <div class="mockup-pane-heading">📑 Layers &amp; Groups</div>
+            <div class="mockup-tool-card active"><div class="mockup-tool-title">◆ Path: Logo_Crown_Glyph</div><div class="mockup-tool-desc">16 Bézier Nodes (Smooth)</div></div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">◇ Path: Accent_Aura_Ring</div><div class="mockup-tool-desc">Gradient Stroke 2.5px</div></div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">◇ Group: Isometric_Grid</div><div class="mockup-tool-desc">Locked Guide Surface</div></div>
+          </div>
+          <div class="mockup-center-stage" style="background: radial-gradient(circle, #0e1226 0%, #060814 100%);">
+            <svg width="340" height="280" viewBox="0 0 340 280" fill="none">
+              <path d="M70 210 C70 120, 140 60, 170 60 C200 60, 270 120, 270 210 Z" stroke="#a855f7" stroke-width="2.5" fill="rgba(168,85,247,0.1)"/>
+              <line x1="170" y1="60" x2="110" y2="40" stroke="#c084fc" stroke-width="1.2" stroke-dasharray="3 3"/>
+              <line x1="170" y1="60" x2="230" y2="40" stroke="#c084fc" stroke-width="1.2" stroke-dasharray="3 3"/>
+              <circle cx="170" cy="60" r="5" fill="#c084fc"/>
+              <circle cx="110" cy="40" r="4" fill="#f43f5e"/>
+              <circle cx="230" cy="40" r="4" fill="#f43f5e"/>
+              <circle cx="70" cy="210" r="4" fill="#c084fc"/>
+              <circle cx="270" cy="210" r="4" fill="#c084fc"/>
+            </svg>
+          </div>
+          <div class="mockup-right-pane">
+            <div class="mockup-pane-heading">⚙️ Path Coordinates &amp; Nodes</div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">Anchor (X, Y)</div><div class="mockup-tool-desc">X: 170.00 px · Y: 60.00 px</div></div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">Tangent Curvature</div><div class="mockup-tool-desc">Angle: 18.4° · Length: 63.2 px</div></div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">Boolean Engine</div><div class="mockup-tool-desc">Unite · Subtract · Exclude · Intersect</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (app.id === 'mefilm') {
+      return `
+        <!-- meFilm Studio (Video NLE Timeline) -->
+        <div class="mockup-menubar">
+          <span class="mockup-menu-item"><b>meFilm Studio</b></span>
+          <span class="mockup-menu-item">File</span>
+          <span class="mockup-menu-item">Edit</span>
+          <span class="mockup-menu-item">Sequence</span>
+          <span class="mockup-menu-item">Clip</span>
+          <span class="mockup-menu-item">Audio</span>
+          <span class="mockup-menu-item">Render</span>
+        </div>
+        <div class="mockup-ribbon">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active">✂️ Razor (C)</span>
+            <span class="mockup-tool-chip">Ripple Trim</span>
+            <span class="mockup-tool-chip">Slip &amp; Slide</span>
+          </div>
+          <div class="mockup-ribbon-center">
+            <span style="font-weight: 600; color: #f59e0b;">00:02:14:18 / 00:05:40:00</span>
+            <span class="mockup-tool-chip" style="margin-left: 10px;">4K 60fps NVENC</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="background: #d97706; color: #fff;">⬇ Render MP4</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 1fr; grid-template-rows: 240px 1fr; gap: 8px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #03050a; padding: 10px; border-radius: 6px;">
+            <div style="background: #090e1c; border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 13px;">
+              Source Footage: Take_04_A_Cam.mov
+            </div>
+            <div style="background: #090e1c; border: 1px solid rgba(245,158,11,0.3); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 13px; font-weight: 600;">
+              Program Output: 4K Cinema Sequence (Rec.709)
+            </div>
+          </div>
+          <div style="background: #070c18; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; gap: 8px; font-size: 12px; color: #94a3b8;">
+              <span style="width: 40px; font-weight: 600;">V2</span>
+              <div style="flex: 1; height: 26px; background: rgba(59,130,246,0.3); border: 1px solid #3b82f6; border-radius: 4px; display: flex; align-items: center; padding: 0 10px; color: #93c5fd;">Title_Cinematic_LowerThird.png</div>
+            </div>
+            <div style="display: flex; gap: 8px; font-size: 12px; color: #94a3b8;">
+              <span style="width: 40px; font-weight: 600;">V1</span>
+              <div style="flex: 1; height: 32px; background: rgba(245,158,11,0.25); border: 1px solid #f59e0b; border-radius: 4px; display: flex; align-items: center; padding: 0 10px; color: #fde68a;">4K_Drone_Flight_Bangkok.mp4 [00:00:00 - 00:04:15]</div>
+            </div>
+            <div style="display: flex; gap: 8px; font-size: 12px; color: #94a3b8;">
+              <span style="width: 40px; font-weight: 600;">A1</span>
+              <div style="flex: 1; height: 28px; background: rgba(16,185,129,0.25); border: 1px solid #10b981; border-radius: 4px; display: flex; align-items: center; padding: 0 10px; color: #a7f3d0;">Master_Voice_Podcast_Dialogue.wav (Normalized -14 LUFS)</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (app.id === 'melight') {
+      return `
+        <!-- meLight Studio (RAW Photo Lab) -->
+        <div class="mockup-menubar">
+          <span class="mockup-menu-item"><b>meLight Studio</b></span>
+          <span class="mockup-menu-item">File</span>
+          <span class="mockup-menu-item">Develop</span>
+          <span class="mockup-menu-item">Presets</span>
+          <span class="mockup-menu-item">Color</span>
+          <span class="mockup-menu-item">Export</span>
+        </div>
+        <div class="mockup-ribbon">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active">🌓 Split Before / After</span>
+            <span class="mockup-tool-chip">HDR Tone Mapping</span>
+            <span class="mockup-tool-chip">Temp: 5600K</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="background: #059669; color: #fff;">⬇ Export 16-Bit TIFF</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 1fr 280px;">
+          <div class="mockup-center-stage" style="position: relative; background: #020617; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 85%; height: 80%; background: linear-gradient(90deg, #1e293b 50%, #047857 50%); border-radius: 6px; display: flex; align-items: center; justify-content: space-around; color: #f8fafc; font-weight: 600; border: 1px solid rgba(255,255,255,0.15);">
+              <span>BEFORE (Flat RAW)</span>
+              <span>AFTER (HDR Graded)</span>
+            </div>
+          </div>
+          <div class="mockup-right-pane">
+            <div class="mockup-pane-heading">🎛️ Parametric Tone Curves</div>
+            <div class="mockup-slider-row"><div class="mockup-slider-head"><span>Dynamic Range</span><span>+1.4 EV</span></div><div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 72%;"></div></div></div>
+            <div class="mockup-slider-row"><div class="mockup-slider-head"><span>De-Noise Threshold</span><span>18%</span></div><div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 36%;"></div></div></div>
+            <div class="mockup-slider-row"><div class="mockup-slider-head"><span>Color Temperature</span><span>5600 K</span></div><div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 55%;"></div></div></div>
+            <div class="mockup-pane-heading" style="margin-top: 10px;">🎨 HSL Color Wheels</div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">Shadows: Cyan / Blue (+12)</div><div class="mockup-tool-desc">Highlights: Warm Gold (+8)</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (app.id === 'memotion') {
+      return `
+        <!-- meMotion Studio (Keyframe VFX) -->
+        <div class="mockup-menubar">
+          <span class="mockup-menu-item"><b>meMotion Studio</b></span>
+          <span class="mockup-menu-item">File</span>
+          <span class="mockup-menu-item">Composition</span>
+          <span class="mockup-menu-item">Layer</span>
+          <span class="mockup-menu-item">Effect</span>
+          <span class="mockup-menu-item">Keyframe</span>
+        </div>
+        <div class="mockup-ribbon">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active">💠 Keyframe Mode</span>
+            <span class="mockup-tool-chip">📈 Speed Graph</span>
+            <span class="mockup-tool-chip">✨ Particle System</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="background: #db2777; color: #fff;">⬇ Render ProRes 4444</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 1fr; grid-template-rows: 240px 1fr; gap: 8px;">
+          <div class="mockup-center-stage" style="background: radial-gradient(circle, #2d0b1f 0%, #090207 100%); display: flex; align-items: center; justify-content: center;">
+            <div style="font-size: 32px; font-weight: 800; color: #f472b6; letter-spacing: 2px;">
+              KINETIC MOTION GRAPHICS
+            </div>
+          </div>
+          <div style="background: #0c0409; border: 1px solid rgba(236,72,153,0.25); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; gap: 10px; font-size: 12px; color: #f472b6;">
+              <span style="width: 140px; font-weight: 600;">◆ Title_Scale_Transform</span>
+              <div style="flex: 1; height: 24px; background: rgba(236,72,153,0.15); border: 1px solid #ec4899; border-radius: 4px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; font-size: 11px;">
+                <span>◆ Keyframe [0.0s]</span>
+                <span style="color:#fbcfe8;">Bezier Ease-Out Graph</span>
+                <span>◆ Keyframe [1.8s]</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; font-size: 12px; color: #94a3b8;">
+              <span style="width: 140px; font-weight: 600;">◆ Particle_Aura_Emitter</span>
+              <div style="flex: 1; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; display: flex; align-items: center; padding: 0 14px; font-size: 11px;">
+                <span>Velocity: 240 px/s · Gravity: 9.8 · Life: 120 frames</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (app.id === 'medesign') {
+      return `
+        <!-- meDesign Studio (InDesign / Editorial) -->
+        <div class="mockup-menubar">
+          <span class="mockup-menu-item"><b>meDesign Studio</b></span>
+          <span class="mockup-menu-item">File</span>
+          <span class="mockup-menu-item">Layout</span>
+          <span class="mockup-menu-item">Type</span>
+          <span class="mockup-menu-item">Object</span>
+          <span class="mockup-menu-item">Pre-Flight</span>
+        </div>
+        <div class="mockup-ribbon">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active">📐 12-Column Grid</span>
+            <span class="mockup-tool-chip">CMYK FOGRA39</span>
+            <span class="mockup-tool-chip">Bleed: 3mm</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="background: #ea580c; color: #fff;">⬇ Export PDF/X-1a</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 1fr 260px;">
+          <div class="mockup-center-stage" style="background: #030712; padding: 18px; display: flex; gap: 14px; justify-content: center;">
+            <div style="width: 45%; height: 90%; background: #ffffff; color: #0f172a; padding: 16px; border-radius: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 16px; font-weight: 800; border-bottom: 2px solid #0f172a; padding-bottom: 4px;">ARCHITECTURAL MONOGRAPH</div>
+              <div style="height: 60px; background: #e2e8f0; border-radius: 2px;"></div>
+              <div style="font-size: 10px; line-height: 1.5; color: #475569;">Column 01: Modular typography grid ensures consistent vertical rhythm across double-page editorial spreads.</div>
+            </div>
+            <div style="width: 45%; height: 90%; background: #ffffff; color: #0f172a; padding: 16px; border-radius: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 16px; font-weight: 800; border-bottom: 2px solid #0f172a; padding-bottom: 4px;">GLOBAL PERSPECTIVE</div>
+              <div style="font-size: 10px; line-height: 1.5; color: #475569;">Column 02: CMYK color separation verified. 300 DPI high-resolution vector assets embedded natively.</div>
+              <div style="margin-top: auto; font-size: 9px; font-weight: 600; text-align: right;">Page 24</div>
+            </div>
+          </div>
+          <div class="mockup-right-pane">
+            <div class="mockup-pane-heading">✅ Pre-Flight Verification</div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">Resolution Audit</div><div class="mockup-tool-desc">300 DPI Minimum: PASSED ✅</div></div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">Color Profile</div><div class="mockup-tool-desc">ISO Coated v2 (ECI): CMYK ✅</div></div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">Overset Text</div><div class="mockup-tool-desc">0 Overflow Frames Detected ✅</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (app.id === 'meaudio') {
+      return `
+        <!-- meAudio Studio (DAW / Spectral) -->
+        <div class="mockup-menubar">
+          <span class="mockup-menu-item"><b>meAudio Studio</b></span>
+          <span class="mockup-menu-item">File</span>
+          <span class="mockup-menu-item">Edit</span>
+          <span class="mockup-menu-item">Track</span>
+          <span class="mockup-menu-item">DSP Effects</span>
+          <span class="mockup-menu-item">Mastering</span>
+        </div>
+        <div class="mockup-ribbon">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active">🔴 Record</span>
+            <span class="mockup-tool-chip">AI Spectral De-Noise</span>
+            <span class="mockup-tool-chip">Compressor</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="background: #65a30d; color: #fff;">⬇ Export 32-Bit FLAC</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 1fr 240px;">
+          <div style="display: flex; flex-direction: column; gap: 8px; background: #050b06; padding: 14px; border-radius: 6px;">
+            <div style="display: flex; gap: 8px; font-size: 12px; color: #84cc16;">
+              <span style="width: 90px; font-weight: 600;">Track 1: Vocal</span>
+              <div style="flex: 1; height: 44px; background: rgba(132,204,22,0.15); border: 1px solid #84cc16; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #bef264;">
+                |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; font-size: 12px; color: #38bdf8;">
+              <span style="width: 90px; font-weight: 600;">Track 2: Foley</span>
+              <div style="flex: 1; height: 44px; background: rgba(56,189,248,0.15); border: 1px solid #38bdf8; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #7dd3fc;">
+                ||||...||||||.....||||||||||||...|||||||.....||||||||||||||||||...|||||||||.....||||||||
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; font-size: 12px; color: #a855f7;">
+              <span style="width: 90px; font-weight: 600;">Track 3: BGM</span>
+              <div style="flex: 1; height: 44px; background: rgba(168,85,247,0.15); border: 1px solid #a855f7; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #d8b4fe;">
+                |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+              </div>
+            </div>
+          </div>
+          <div class="mockup-right-pane">
+            <div class="mockup-pane-heading">📊 Master Loudness (LUFS)</div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">Integrated Target</div><div class="mockup-tool-desc">-14.0 LUFS (EBU R128)</div></div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">True Peak dB</div><div class="mockup-tool-desc">-1.0 dBTP Clean Headroom</div></div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">Spectral De-Noise</div><div class="mockup-tool-desc">Hum: Eradicated · SNR: +28dB</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (app.id === 'medoc') {
+      return `
+        <!-- meDoc Studio (Markdown + KaTeX Typewriter) -->
+        <div class="mockup-menubar">
+          <span class="mockup-menu-item"><b>meDoc Studio</b></span>
+          <span class="mockup-menu-item">File</span>
+          <span class="mockup-menu-item">Edit</span>
+          <span class="mockup-menu-item">Markdown</span>
+          <span class="mockup-menu-item">KaTeX Math</span>
+          <span class="mockup-menu-item">Export</span>
+        </div>
+        <div class="mockup-ribbon">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active">☯ Zen Mode</span>
+            <span class="mockup-tool-chip">Live KaTeX Formula</span>
+            <span class="mockup-tool-chip">BibTeX Citations</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="background: #4f46e5; color: #fff;">⬇ Render Academic PDF</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 1fr 1fr; gap: 14px; padding: 14px;">
+          <div style="background: #090d1e; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 14px; font-family: monospace; font-size: 12px; color: #a5b4fc; line-height: 1.8;">
+            <span style="color: #6366f1;"># Quantum Algorithmic Complexity</span><br>
+            The Gaussian integral is defined as:<br>
+            $$\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}$$<br>
+            - **Privacy Guarantee**: 100% In-Device Memory Execution.<br>
+            - **Zero Network Egress**: 0 bytes sent outside machine.
+          </div>
+          <div style="background: #ffffff; color: #0f172a; border-radius: 6px; padding: 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 18px; font-weight: 800; color: #1e1b4b; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px;">Quantum Algorithmic Complexity</div>
+            <div style="font-size: 13px; color: #334155; line-height: 1.6;">The Gaussian integral is defined as:</div>
+            <div style="font-size: 18px; text-align: center; margin: 10px 0; font-family: serif; color: #0284c7; background: #f0fdf4; padding: 8px; border-radius: 4px;">
+              ∫<sub>-∞</sub><sup>∞</sup> e<sup>-x²</sup> dx = √π
+            </div>
+            <div style="font-size: 11px; color: #64748b;">• <b>Privacy Guarantee</b>: 100% In-Device Memory Execution.<br>• <b>Zero Network Egress</b>: 0 bytes sent outside machine.</div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (app.id === 'me3d') {
+      return `
+        <!-- me3D Studio (Spatial 3D & PBR Lab) -->
+        <div class="mockup-menubar">
+          <span class="mockup-menu-item"><b>me3D Studio</b></span>
+          <span class="mockup-menu-item">File</span>
+          <span class="mockup-menu-item">Mesh</span>
+          <span class="mockup-menu-item">Modify</span>
+          <span class="mockup-menu-item">Shading</span>
+          <span class="mockup-menu-item">Render</span>
+        </div>
+        <div class="mockup-ribbon">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active">Perspective View</span>
+            <span class="mockup-tool-chip">PBR Material Shading</span>
+            <span class="mockup-tool-chip">HDRI Lighting</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="background: #0891b2; color: #fff;">⬇ Export GLTF 2.0</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout" style="grid-template-columns: 1fr 260px;">
+          <div class="mockup-center-stage" style="background: radial-gradient(circle, #0e1c26 0%, #03070b 100%); position: relative; display: flex; align-items: center; justify-content: center;">
+            <svg width="280" height="220" viewBox="0 0 280 220" fill="none">
+              <line x1="40" y1="180" x2="80" y2="180" stroke="#ef4444" stroke-width="2.5"/>
+              <line x1="40" y1="180" x2="40" y2="140" stroke="#22c55e" stroke-width="2.5"/>
+              <line x1="40" y1="180" x2="16" y2="200" stroke="#3b82f6" stroke-width="2.5"/>
+              <polygon points="140,40 220,80 220,160 140,200 60,160 60,80" stroke="#06b6d4" stroke-width="2" fill="rgba(6,182,212,0.15)"/>
+              <line x1="140" y1="40" x2="140" y2="200" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <line x1="60" y1="80" x2="220" y2="160" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <line x1="220" y1="80" x2="60" y2="160" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <circle cx="140" cy="40" r="4" fill="#38bdf8"/>
+              <circle cx="220" cy="80" r="4" fill="#38bdf8"/>
+              <circle cx="220" cy="160" r="4" fill="#38bdf8"/>
+              <circle cx="140" cy="200" r="4" fill="#38bdf8"/>
+              <circle cx="60" cy="160" r="4" fill="#38bdf8"/>
+              <circle cx="60" cy="80" r="4" fill="#38bdf8"/>
+            </svg>
+          </div>
+          <div class="mockup-right-pane">
+            <div class="mockup-pane-heading">🧊 PBR Material Staging</div>
+            <div class="mockup-slider-row"><div class="mockup-slider-head"><span>Metallic Roughness</span><span>0.82</span></div><div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 82%;"></div></div></div>
+            <div class="mockup-slider-row"><div class="mockup-slider-head"><span>Subsurface Scatter</span><span>0.15</span></div><div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 20%;"></div></div></div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">Normal Map</div><div class="mockup-tool-desc">Tangent Space 4096 x 4096</div></div>
+            <div class="mockup-tool-card"><div class="mockup-tool-title">WebGPU Pipeline</div><div class="mockup-tool-desc">Hardware Vulkan / DirectX 12</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Default template for other creative apps
     return `
       <div class="mockup-menubar">
         <span class="mockup-menu-item"><b>${app.name}</b></span>
@@ -1326,30 +1694,8 @@ class MeCraftsPortal {
           </span>
         </div>
       </div>
-      <div class="mockup-cockpit-layout" style="grid-template-columns: 220px 1fr 260px;">
-        <div class="mockup-left-pane">
-          <div class="mockup-pane-heading">📁 Project Assets</div>
-          <div class="mockup-tool-card"><div class="mockup-tool-title">Track 01</div><div class="mockup-tool-desc">Master Timeline Stream</div></div>
-          <div class="mockup-tool-card"><div class="mockup-tool-title">Layers & Nodes</div><div class="mockup-tool-desc">Vector Curve Engine</div></div>
-        </div>
-        <div class="mockup-center-stage" style="flex-direction: column; gap: 14px;">
-          <div style="font-size: 48px;">${app.icon === 'film' ? '🎬' : (app.icon === 'vector' ? '✒️' : (app.icon === 'audio' ? '🎵' : '🎨'))}</div>
-          <h2 style="font-size: 20px; font-weight: 700; color: #f8fafc; margin: 0;">${app.name} Native Studio</h2>
-          <p style="color: #94a3b8; font-size: 13px; max-width: 480px; text-align: center; line-height: 1.6; margin: 0;">
-            ${app.description[this.lang]}
-          </p>
-          <div style="display: flex; gap: 8px; margin-top: 10px;">
-            <span class="mockup-tool-chip" style="border-color: ${app.accentColor}; color: ${app.accentColor};">
-              100% In-Device RAM Privacy
-            </span>
-            <span class="mockup-tool-chip">Fast GPU Hardware Acceleration</span>
-          </div>
-        </div>
-        <div class="mockup-right-pane">
-          <div class="mockup-pane-heading">⚙️ Engine Parameters</div>
-          <div class="mockup-tool-card"><div class="mockup-tool-title">Processing Seam</div><div class="mockup-tool-desc">Isolated Multi-Thread Worker</div></div>
-          <div class="mockup-tool-card"><div class="mockup-tool-title">Render Target</div><div class="mockup-tool-desc">DirectX 12 / WebGPU Native</div></div>
-        </div>
+      <div class="mockup-cockpit-layout" style="display:flex; align-items:center; justify-content:center; padding: 40px; color: #94a3b8;">
+        ${app.description[this.lang]}
       </div>
     `;
   }
@@ -1419,9 +1765,9 @@ class MeCraftsPortal {
           <button class="portal-lang-btn" id="btn-lang" aria-label="Switch language">
             ${this.lang === 'en' ? '🇹🇭 TH' : '🇬🇧 EN'}
           </button>
-          <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="portal-cta-btn" id="header-cta">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            ${this.t.headerCta}
+          <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="portal-cta-btn portal-cta-btn-sm" id="header-cta" title="${this.lang === 'th' ? 'ดาวน์โหลดตัวติดตั้ง meCraft Suite สำหรับ Windows (14.8 MB)' : 'Download meCraft Suite Installer for Windows (14.8 MB)'}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>${this.lang === 'th' ? 'ดาวน์โหลด .exe' : 'Download .exe'}</span>
           </a>
         </div>
       </div>
@@ -1455,13 +1801,14 @@ class MeCraftsPortal {
           `).join('')}
         </div>
         <div class="hero-ctas">
-          <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="hero-cta-primary" id="hero-cta-primary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            ${this.t.heroCta1}
+          <a href="#apps-grid" class="hero-cta-primary" id="hero-cta-explore">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>${this.lang === 'th' ? 'สำรวจ 10 สตูดิโอ & ดูพรีวิวสด' : 'Explore All 10 Studios & Live Preview'}</span>
           </a>
-          <a href="#apps-grid" class="hero-cta-secondary">
-            ${this.t.heroCta2}
-          </a>
+          <div class="hero-topright-hint">
+            <span class="hero-hint-arrow" aria-hidden="true">↗</span>
+            <span>${this.lang === 'th' ? 'ดาวน์โหลดตัวติดตั้งสำหรับ Windows ได้ที่มุมขวาบน' : 'Download Windows installer anytime from top-right corner'}</span>
+          </div>
         </div>
         ${!this.currentSession ? `
           <div class="hero-member-bar">
@@ -1472,7 +1819,7 @@ class MeCraftsPortal {
             </button>
           </div>
         ` : ''}
-        <p class="hero-meta">meCraft-Setup.exe · 14.8 MB · Windows 10/11 64-bit · MIT License</p>
+        <p class="hero-meta">Windows 10/11 64-bit · 100% In-Device Privacy · Zero Cloud Uploads · MIT License</p>
       </div>
     </section>`;
   }
@@ -1518,28 +1865,62 @@ class MeCraftsPortal {
 
   private renderAppsGrid(): string {
     const apps = this.filteredApps();
+    const activeApp = SHOWCASE_APPS.find(a => a.id === this.previewAppId) || apps[0] || SHOWCASE_APPS[0];
+
     return `
     <section class="portal-apps-section" id="apps-grid" aria-labelledby="apps-title">
       <div class="portal-section-inner">
-        <div class="apps-grid" role="list" aria-label="meCrafts application catalog">
-          ${apps.length > 0 ? apps.map(app => this.renderAppCard(app)).join('') : `
-            <div class="apps-empty" role="status">
-              <div class="apps-empty-icon" aria-hidden="true">🔍</div>
-              <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
+        <div class="showcase-header">
+          <div class="showcase-header-left">
+            <div class="section-eyebrow" aria-hidden="true">10 CREATIVE &amp; DOCUMENT WORKSTATIONS</div>
+            <h2 class="section-title" id="apps-title">${this.lang === 'th' ? 'คลังโปรแกรมสตูดิโอ &amp; ค็อกพิทพรีวิวสด' : 'The Creative Workstation Suite &amp; Live Desktop Cockpit'}</h2>
+            <p class="section-subtitle">${this.lang === 'th' ? 'แสดงข้อมูลฟีเจอร์และสเปกโปรแกรมทางด้านซ้าย พร้อมพรีวิวหน้าต่างซอฟต์แวร์จริงบน Windows ด้านขวา' : 'Inspect deep specifications on the left, with real-time native Windows desktop window previews on the right.'}</p>
+          </div>
+          <div class="showcase-header-pill">
+            <span class="pulse-indicator"></span>
+            <span>100% In-Device Memory · Zero-Cloud</span>
+          </div>
+        </div>
+
+        <div class="showcase-split-container">
+          <!-- Left Column: App Cards (Details, Specs, Highlights) -->
+          <div class="showcase-cards-col" role="list" aria-label="meCrafts application catalog" id="showcase-cards-list">
+            ${apps.length > 0 ? apps.map(app => this.renderAppCard(app, app.id === activeApp.id)).join('') : `
+              <div class="apps-empty" role="status">
+                <div class="apps-empty-icon" aria-hidden="true">🔍</div>
+                <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
+              </div>
+            `}
+          </div>
+
+          <!-- Right Column: Sticky Large Native Desktop Window Preview -->
+          <div class="showcase-preview-col">
+            <div class="showcase-preview-sticky">
+              <div class="preview-col-badge">
+                <span class="preview-col-dot" aria-hidden="true"></span>
+                <span class="preview-col-label">${this.lang === 'th' ? 'พรีวิวหน้าต่างโปรแกรมจริง (Windows Native Desktop Preview)' : 'Live Native Desktop UI Preview (Windows 11 x64)'}</span>
+                <span class="preview-col-appname" id="preview-col-appname">${activeApp.name}</span>
+              </div>
+              <div id="inline-preview-mount">
+                ${this.renderDesktopPreviewInline(activeApp)}
+              </div>
             </div>
-          `}
+          </div>
         </div>
       </div>
     </section>`;
   }
 
-  private renderAppCard(app: ShowcaseApp): string {
+  private renderAppCard(app: ShowcaseApp, isSelected: boolean = false): string {
     const isActive = app.status === 'active';
     const catLabel = app.categoryLabel[this.lang];
     const tagline = app.tagline[this.lang];
     const desc = app.description[this.lang];
+    const engineText = app.enginePill ? app.enginePill[this.lang] : '100% In-Device Memory';
+    const specsList = app.specs ? app.specs[this.lang] : [];
+
     return `
-    <article class="app-card ${isActive ? 'app-card-active' : 'app-card-indev'}" role="listitem" style="--card-accent: ${app.accentColor}; --card-glow: ${app.glowColor};">
+    <article class="app-card ${isActive ? 'app-card-active' : 'app-card-indev'} ${isSelected ? 'selected' : ''}" data-app-id="${app.id}" role="listitem" tabindex="0" aria-selected="${isSelected}" style="--card-accent: ${app.accentColor}; --card-glow: ${app.glowColor};">
       <div class="app-card-header">
         <div class="app-card-emblem" aria-hidden="true" style="background: radial-gradient(circle, ${app.glowColor} 0%, transparent 70%);">
           ${getAppIcon(app.icon, app.accentColor)}
@@ -1560,28 +1941,31 @@ class MeCraftsPortal {
         <h3 class="app-name">${app.name}</h3>
         <p class="app-tagline">${tagline}</p>
         <p class="app-desc">${desc}</p>
-        ${app.artcraftEquivalent ? `<p class="app-equivalent" aria-label="Inspired by">✦ ${app.artcraftEquivalent}</p>` : ''}
+        
+        <div class="app-engine-badge">
+          <span>⚡</span>
+          <span>${engineText}</span>
+        </div>
+
+        ${specsList.length > 0 ? `
+          <div class="app-specs-list" aria-label="Program specifications">
+            ${specsList.map(s => `<span class="app-spec-tag">✦ ${escapeHtml(s)}</span>`).join('')}
+          </div>
+        ` : ''}
+
+        ${app.artcraftEquivalent ? `<p class="app-equivalent" aria-label="Inspired by">✧ ${app.artcraftEquivalent}</p>` : ''}
       </div>
 
-      <div class="app-card-footer">
-        <button type="button" class="app-btn app-btn-preview" data-preview-app="${app.id}" title="${this.lang === 'th' ? 'ดูตัวอย่างหน้าต่างโปรแกรมเหมือนติดตั้งลงเครื่อง 100%' : 'Preview true Native Desktop UI'}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          <span>${this.lang === 'th' ? '👁️ แสดงตัวอย่างโปรแกรม (Preview)' : '👁️ Preview Desktop UI'}</span>
-        </button>
-        ${isActive ? `
-          <a href="${app.downloadUrl}" download="${app.exeName}" class="app-btn app-btn-primary" aria-label="Download ${app.name} ${app.exeName}">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            ${this.t.btnDownloadExe}
-            ${app.exeSize ? `<span class="app-btn-size">${app.exeSize}</span>` : ''}
-          </a>
-          <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="app-btn app-btn-secondary" aria-label="Download full meCraft Suite">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            ${this.t.btnDownloadSuite}
-          </a>
+      <div class="app-card-state-bar">
+        ${isSelected ? `
+          <div class="app-card-state active-preview">
+            <span class="active-pulse"></span>
+            <span>${this.lang === 'th' ? '✓ กำลังพรีวิวหน้าต่างนี้ทางด้านขวา' : '✓ Displayed in Side Preview'}</span>
+          </div>
         ` : `
-          <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="app-btn app-btn-indev" aria-label="Download meCraft to get notified when ${app.name} launches">
-            ${this.t.btnInDev}
-          </a>
+          <div class="app-card-state hover-preview">
+            <span>${this.lang === 'th' ? '👁️ คลิกเพื่อแสดงหน้าต่างโปรแกรมนี้ข้างๆ →' : '👁️ Click to preview this desktop UI →'}</span>
+          </div>
         `}
       </div>
     </article>`;
@@ -1672,12 +2056,8 @@ class MeCraftsPortal {
           `).join('')}
         </div>
         <div class="specs-cta-row">
-          <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="hero-cta-primary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            ${this.t.heroCta1}
-          </a>
           <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="hero-cta-secondary">
-            ${this.lang === 'en' ? 'View All Releases on GitHub →' : 'ดู Releases ทั้งหมดบน GitHub →'}
+            ${this.lang === 'en' ? 'View All Releases & Source on GitHub →' : 'ดูประวัติ Releases และ Source Code บน GitHub →'}
           </a>
         </div>
       </div>
@@ -1699,7 +2079,7 @@ class MeCraftsPortal {
           ${!this.currentSession ? `
             <button type="button" class="footer-link btn-trigger-auth" id="footer-btn-open-auth">${this.t.signInBtn}</button>
           ` : ''}
-          <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="footer-link footer-link-gold">⬇ Download meCraft-Setup.exe</a>
+          <a href="#hero" class="footer-link">${this.lang === 'en' ? 'Back to Top ↑' : 'กลับสู่ด้านบน ↑'}</a>
         </nav>
         <p class="footer-copy">${this.t.footerCopyright}</p>
       </div>
@@ -1967,55 +2347,89 @@ class MeCraftsPortal {
       });
     });
 
-    // Desktop App UI Preview Modal listeners
-    this.bindPreviewButtons();
-
-    document.getElementById('btn-close-preview-x')?.addEventListener('click', () => {
-      this.closeDesktopPreview();
-    });
-    document.getElementById('modal-preview-backdrop')?.addEventListener('click', () => {
-      this.closeDesktopPreview();
-    });
-    document.getElementById('btn-close-preview-footer')?.addEventListener('click', () => {
-      this.closeDesktopPreview();
-    });
+    // Desktop App UI Preview Selection listeners
+    this.bindCardSelection();
   }
 
-  private closeDesktopPreview() {
-    this.isPreviewModalOpen = false;
-    this.previewAppId = null;
-    this.render();
-    this.attachListeners();
-  }
-
-  private bindPreviewButtons() {
-    document.querySelectorAll<HTMLButtonElement>('[data-preview-app]').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
+  private bindCardSelection() {
+    document.querySelectorAll<HTMLElement>('.app-card[data-app-id]').forEach((card) => {
+      const onSelect = (e: Event) => {
         e.preventDefault();
-        const appId = btn.getAttribute('data-preview-app');
-        if (appId) {
-          this.previewAppId = appId;
-          this.isPreviewModalOpen = true;
-          this.render();
-          this.attachListeners();
+        const appId = card.getAttribute('data-app-id');
+        if (!appId || appId === this.previewAppId) return;
+        this.selectApp(appId);
+      };
+
+      card.addEventListener('click', onSelect);
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          onSelect(e);
         }
       });
     });
   }
 
+  private selectApp(appId: string) {
+    this.previewAppId = appId;
+    const app = SHOWCASE_APPS.find(a => a.id === appId);
+    if (!app) return;
+
+    // Update active class on cards
+    document.querySelectorAll<HTMLElement>('.app-card').forEach((c) => {
+      const isCur = c.getAttribute('data-app-id') === appId;
+      c.classList.toggle('selected', isCur);
+      c.setAttribute('aria-selected', isCur ? 'true' : 'false');
+      const stateBar = c.querySelector('.app-card-state-bar');
+      if (stateBar) {
+        stateBar.innerHTML = isCur ? `
+          <div class="app-card-state active-preview">
+            <span class="active-pulse"></span>
+            <span>${this.lang === 'th' ? '✓ กำลังพรีวิวหน้าต่างนี้ทางด้านขวา' : '✓ Displayed in Side Preview'}</span>
+          </div>
+        ` : `
+          <div class="app-card-state hover-preview">
+            <span>${this.lang === 'th' ? '👁️ คลิกเพื่อแสดงหน้าต่างโปรแกรมนี้ข้างๆ →' : '👁️ Click to preview this desktop UI →'}</span>
+          </div>
+        `;
+      }
+    });
+
+    // Update the inline preview mount smoothly
+    const mount = document.getElementById('inline-preview-mount');
+    if (mount) {
+      mount.innerHTML = this.renderDesktopPreviewInline(app);
+    }
+    const titleEl = document.getElementById('preview-col-appname');
+    if (titleEl) {
+      titleEl.textContent = app.name;
+    }
+  }
+
   private updateGrid() {
-    const section = document.getElementById('apps-grid');
-    if (!section) return;
-    const grid = section.querySelector('.apps-grid');
-    if (!grid) return;
+    const list = document.getElementById('showcase-cards-list');
+    if (!list) return;
     const apps = this.filteredApps();
-    grid.innerHTML = apps.length > 0
-      ? apps.map(app => this.renderAppCard(app)).join('')
+    
+    // If current selected app is filtered out, select the first visible app
+    if (apps.length > 0 && !apps.some(a => a.id === this.previewAppId)) {
+      this.previewAppId = apps[0].id;
+      const mount = document.getElementById('inline-preview-mount');
+      if (mount) {
+        mount.innerHTML = this.renderDesktopPreviewInline(apps[0]);
+      }
+      const titleEl = document.getElementById('preview-col-appname');
+      if (titleEl) {
+        titleEl.textContent = apps[0].name;
+      }
+    }
+
+    list.innerHTML = apps.length > 0
+      ? apps.map(app => this.renderAppCard(app, app.id === this.previewAppId)).join('')
       : `<div class="apps-empty" role="status">
            <div class="apps-empty-icon">🔍</div>
            <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
          </div>`;
-    this.bindPreviewButtons();
+    this.bindCardSelection();
   }
 }
 
