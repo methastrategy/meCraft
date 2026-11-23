@@ -52,6 +52,10 @@ copyDir(path.join(rootDir, 'apps/mepdf/dist'), path.join(distDir, 'mepdf'));
 console.log('[build-web] Assembling mePhoto Studio into dist/mephoto...');
 copyDir(path.join(rootDir, 'apps/mephoto/dist'), path.join(distDir, 'mephoto'));
 
+// Subpath (/medrop) -> meDrop Radial Converter
+console.log('[build-web] Assembling meDrop Radial Converter into dist/medrop...');
+copyDir(path.join(rootDir, 'apps/medrop/dist'), path.join(distDir, 'medrop'));
+
 // Public assets if available
 const publicDir = path.join(rootDir, 'public');
 if (fs.existsSync(publicDir)) {
@@ -63,4 +67,5 @@ console.log('[build-web] Multi-app dist assembled:');
 console.log(`  - /         -> Launcher Web Hub (${fs.existsSync(path.join(distDir, 'index.html')) ? 'OK' : 'MISSING'})`);
 console.log(`  - /mepdf/   -> mePDF Studio (${fs.existsSync(path.join(distDir, 'mepdf/index.html')) ? 'OK' : 'MISSING'})`);
 console.log(`  - /mephoto/ -> mePhoto Studio (${fs.existsSync(path.join(distDir, 'mephoto/index.html')) ? 'OK' : 'MISSING'})`);
+console.log(`  - /medrop/  -> meDrop Radial Converter (${fs.existsSync(path.join(distDir, 'medrop/index.html')) ? 'OK' : 'MISSING'})`);
 console.log('[build-web] Done! Ready for Vercel deployment.');

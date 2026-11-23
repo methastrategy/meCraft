@@ -30,7 +30,7 @@ import { supabase } from './supabase';
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type AppStatus = 'active' | 'in-dev';
-export type AppCategory = 'document' | 'photo' | 'vector' | 'video' | 'audio';
+export type AppCategory = 'document' | 'photo' | 'vector' | 'video' | 'audio' | 'utility';
 
 export interface ShowcaseApp {
   id: string;
@@ -70,6 +70,7 @@ export interface PortalTranslations {
   filterAll: string;
   filterDocument: string;
   filterPhoto: string;
+  filterUtility: string;
   filterVector: string;
   filterVideo: string;
   filterAudio: string;
@@ -100,17 +101,18 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     brandSubtitle: 'Official Creative Suite',
     headerCta: 'Download Suite (.exe)',
     heroTitle: 'The Private-First Creative & Document Workstation Suite',
-    heroSubtitle: '100% Client-Side Local Execution. Zero-Cloud Uploads. Native Windows Desktop Engine. 10 Purpose-Built Creative Tools — All Free, Forever.',
+    heroSubtitle: '100% Client-Side Local Execution. Zero-Cloud Uploads. Native Windows Desktop Engine. 11 Purpose-Built Creative Tools & Utilities — All Free, Forever.',
     heroBadge1: '100% In-Device Privacy',
     heroBadge2: 'Zero Telemetry',
     heroBadge3: 'Open-Source',
     heroBadge4: 'Native Windows Performance',
     heroCta1: 'Download meCraft Suite for Windows',
-    heroCta2: 'Browse All 10 Programs ↓',
+    heroCta2: 'Browse All 11 Programs ↓',
     searchPlaceholder: 'Search programs, features, file types…',
-    filterAll: 'All (10)',
+    filterAll: 'All (11)',
     filterDocument: 'Document',
     filterPhoto: 'Photo & Color',
+    filterUtility: 'Utility',
     filterVector: 'Vector & Design',
     filterVideo: 'Video & Motion',
     filterAudio: 'Audio & 3D',
@@ -127,7 +129,7 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     specsSubtitle: 'Built for Windows. Engineered for speed.',
     footerTagline: 'Private-First Creative Workstation Suite for Windows',
     footerCopyright: '© 2024 MeStrategy. Open-Source under MIT License.',
-    appsCount: '10 Apps',
+    appsCount: '11 Apps',
     signInBtn: 'Sign In',
     signUpBtn: 'Create Account',
     authModalTitle: 'meCraft Studio Account',
@@ -139,17 +141,18 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     brandSubtitle: 'ชุดโปรแกรมสร้างสรรค์ทางการ',
     headerCta: 'ดาวน์โหลด Suite (.exe)',
     heroTitle: 'ชุดโปรแกรมสร้างสรรค์และเอกสารที่ให้ความเป็นส่วนตัวก่อน',
-    heroSubtitle: 'ประมวลผล 100% บนเครื่อง ไม่อัปโหลดไฟล์ไปที่ Cloud เครื่องยนต์ Windows Desktop จริง โปรแกรมสร้างสรรค์เฉพาะทาง 10 ตัว — ฟรีทั้งหมด ตลอดชีวิต',
+    heroSubtitle: 'ประมวลผล 100% บนเครื่อง ไม่อัปโหลดไฟล์ไปที่ Cloud เครื่องยนต์ Windows Desktop จริง โปรแกรมสร้างสรรค์และเครื่องมือเฉพาะทาง 11 ตัว — ฟรีทั้งหมด ตลอดชีวิต',
     heroBadge1: 'ความเป็นส่วนตัว 100%',
     heroBadge2: 'ไม่มีการเก็บข้อมูล',
     heroBadge3: 'Open-Source',
     heroBadge4: 'ประสิทธิภาพ Windows จริง',
     heroCta1: 'ดาวน์โหลด meCraft Suite สำหรับ Windows',
-    heroCta2: 'ดูโปรแกรมทั้ง 10 ตัว ↓',
+    heroCta2: 'ดูโปรแกรมทั้ง 11 ตัว ↓',
     searchPlaceholder: 'ค้นหาโปรแกรม ฟีเจอร์ ประเภทไฟล์…',
-    filterAll: 'ทั้งหมด (10)',
+    filterAll: 'ทั้งหมด (11)',
     filterDocument: 'เอกสาร',
     filterPhoto: 'ภาพและสี',
+    filterUtility: 'เครื่องมือเสริม',
     filterVector: 'เวกเตอร์และดีไซน์',
     filterVideo: 'วิดีโอและโมชัน',
     filterAudio: 'เสียงและ 3D',
@@ -166,7 +169,7 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     specsSubtitle: 'สร้างสำหรับ Windows วิศวกรรมเพื่อความเร็ว',
     footerTagline: 'ชุดโปรแกรมสร้างสรรค์ที่ให้ความเป็นส่วนตัวก่อน สำหรับ Windows',
     footerCopyright: '© 2024 MeStrategy. Open-Source ภายใต้สัญญาอนุญาต MIT',
-    appsCount: '10 โปรแกรม',
+    appsCount: '11 โปรแกรม',
     signInBtn: 'เข้าสู่ระบบ',
     signUpBtn: 'สมัครสมาชิก',
     authModalTitle: 'บัญชี meCraft Studio',
@@ -234,6 +237,35 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     specs: {
       en: ['4-Point Homography Perspective Correction', 'Adaptive Local Otsu Shadow Eradication', 'Magic Color Document Photo Enhancement', 'Non-Destructive RAW High-Bit Processing', 'Batch Multi-Document Scan Restoration'],
       th: ['ดึงภาพถ่ายเอียงให้ตรงระนาบ 4-Point Homography', 'กำจัดเงาดำบนกระดาษด้วย Adaptive Otsu', 'เร่งความสดใสและคมชัดด้วย Magic Color', 'โปรเซสเซอร์ภาพ RAW แบบไม่ทำลายคุณภาพ', 'แต่งภาพและกู้เอกสารพร้อมกันแบบชุด'],
+    },
+  },
+  {
+    id: 'medrop',
+    name: 'meDrop Radial Converter',
+    category: 'utility',
+    categoryLabel: { en: 'Utility & Hub', th: 'เครื่องมือและศูนย์กลาง' },
+    tagline: {
+      en: 'Zero-Window Radial Drag & Drop File Converter HUD',
+      th: 'เครื่องมือแปลงไฟล์ทรงวงแหวน Radial HUD บนเคอร์เซอร์เมาส์ทันที',
+    },
+    description: {
+      en: 'Hold Ctrl and drag any file in Windows Explorer: instant radial donut menu converts images, PDFs, vectors & documents locally in RAM, or transfers to meCraft studios.',
+      th: 'เพียงลากไฟล์ใน Windows Explorer พร้อมกด Ctrl: เมนูวงแหวนรอบเมาส์จะแปลงไฟล์ภาพ, PDF, เวกเตอร์, เอกสารใน RAM ทันที หรือส่งต่อเข้าสู่สตูดิโอ meCraft',
+    },
+    status: 'active',
+    version: 'v1.0.0',
+    exeName: 'meDrop.exe',
+    exeSize: '~18.5 MB',
+    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meDrop.exe',
+    suiteDownloadUrl: SUITE_DOWNLOAD_URL,
+    accentColor: '#3b82f6',
+    glowColor: 'rgba(59,130,246,0.3)',
+    icon: 'drop',
+    keywords: ['drop', 'convert', 'radial', 'donut', 'hud', 'converter', 'drag', 'zero-window', 'local-first'],
+    enginePill: { en: 'Zero-Window HUD · Low-Latency Rust Hook', th: 'Zero-Window HUD · Rust Hook ความเร็วสูง' },
+    specs: {
+      en: ['Native Windows Low-Level Mouse & Keyboard Hook', 'Dynamic SVG Radial Arc HUD with 120fps Spring Physics', 'Client-Side RAM In-Place Conversion (No Cloud)', 'Context-Aware Smart Format Filtering by Extension', 'Cross-App Studio Gateway via ClipBus Memory Pipeline'],
+      th: ['Native Windows Low-Level Hook ดักจับเมาส์ความเร็วสูง', 'วงแหวนเรขาคณิต SVG Donut แอนิเมชัน 120fps ลื่นไหล', 'แปลงไฟล์ใน RAM บันทึกข้างไฟล์เดิม ไม่แตะ Cloud', 'กรอง Format ปลายทางอัตโนมัติตามนามสกุลไฟล์', 'ส่งต่อไฟล์เข้า mePDF / mePhoto ด้วย ClipBus Pipeline'],
     },
   },
   {
@@ -467,6 +499,7 @@ function getAppIcon(icon: string, color: string): string {
     audio: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.6"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
     doc: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>`,
     '3d': `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.6"><path d="M12 2l9 4.9V17L12 22l-9-5.1V6.9L12 2z"/><line x1="12" y1="22" x2="12" y2="12"/><polyline points="21 6.9 12 12 3 6.9"/></svg>`,
+    drop: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>`,
   };
   return icons[icon] ?? icons['doc'];
 }
@@ -1040,10 +1073,12 @@ class MeCraftsPortal {
 
   private renderDesktopPreviewInline(app: ShowcaseApp): string {
     const isIndev = app.status === 'in-dev';
-    const docExt = app.id === 'mepdf' ? 'pdf' : (app.id === 'mephoto' ? 'dng' : (app.id === 'mevector' ? 'svg' : (app.id === 'mefilm' ? 'proj' : (app.id === 'melight' ? 'raw' : (app.id === 'memotion' ? 'motion' : (app.id === 'medesign' ? 'design' : (app.id === 'meaudio' ? 'wav' : (app.id === 'medoc' ? 'doc' : '3d'))))))));
-    const sampleDocName = isIndev
-      ? (this.lang === 'th' ? `ภาพร่างโครงสร้าง_Draft.${docExt}` : `Architecture_Draft.${docExt}`)
-      : (this.lang === 'th' ? `ชิ้นงานออกแบบ_2026.${docExt}` : `Creative_Project_Master.${docExt}`);
+    const docExt = app.id === 'mepdf' ? 'pdf' : (app.id === 'mephoto' ? 'dng' : (app.id === 'medrop' ? 'pdf' : (app.id === 'mevector' ? 'svg' : (app.id === 'mefilm' ? 'proj' : (app.id === 'melight' ? 'raw' : (app.id === 'memotion' ? 'motion' : (app.id === 'medesign' ? 'design' : (app.id === 'meaudio' ? 'wav' : (app.id === 'medoc' ? 'doc' : '3d')))))))));
+    const sampleDocName = app.id === 'medrop'
+      ? (this.lang === 'th' ? 'รายงานประจำปี_2026.pdf [Ctrl + Drag]' : 'Annual_Report_2026.pdf [Ctrl + Drag]')
+      : (isIndev
+        ? (this.lang === 'th' ? `ภาพร่างโครงสร้าง_Draft.${docExt}` : `Architecture_Draft.${docExt}`)
+        : (this.lang === 'th' ? `ชิ้นงานออกแบบ_2026.${docExt}` : `Creative_Project_Master.${docExt}`));
 
     return `
     <div class="desktop-preview-window ${isIndev ? 'window-is-wireframe' : 'window-is-production'}" id="desktop-preview-window-${app.id}">
@@ -1337,6 +1372,67 @@ class MeCraftsPortal {
               <div class="mockup-slider-head"><span>Vibrance (ความสดสี)</span><span>+28</span></div>
               <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 64%;"></div></div>
             </div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (app.id === 'medrop') {
+      return `
+        <!-- meDrop Zero-Window Radial HUD Mockup -->
+        <div class="mockup-menubar">
+          <span class="mockup-menu-item"><b>meDrop Radial HUD</b></span>
+          <span class="mockup-menu-item">Windows Explorer Hook</span>
+          <span class="mockup-menu-item">System Tray Resident</span>
+          <span class="mockup-menu-item" style="color: #60a5fa;">Trigger: Ctrl + Mouse Drag</span>
+        </div>
+        <div class="mockup-ribbon" style="background: rgba(15, 23, 42, 0.9); border-bottom: 1px solid rgba(59, 130, 246, 0.25);">
+          <div class="mockup-ribbon-left">
+            <span class="mockup-tool-chip active" style="background: #2563eb; color: #fff;">🍩 Zero-Window HUD</span>
+            <span class="mockup-tool-chip" style="border-color: #3b82f6; color: #93c5fd;">⚡ In-Place RAM Conversion</span>
+          </div>
+          <div class="mockup-ribbon-center">
+            <span style="font-weight: 600; color: #f1f5f9;">Target File: Annual_Report_2026.pdf (4.2 MB)</span>
+          </div>
+          <div class="mockup-ribbon-right">
+            <span class="mockup-tool-chip" style="border-color: #10b981; color: #34d399;">100% In-Device Memory</span>
+          </div>
+        </div>
+        <div class="mockup-cockpit-layout" style="display: flex; align-items: center; justify-content: center; min-height: 440px; background: radial-gradient(circle at center, rgba(30, 58, 138, 0.3) 0%, rgba(10, 15, 30, 0.98) 75%); position: relative; overflow: hidden;">
+          <!-- Simulated Radial HUD Donut Ring -->
+          <div class="radial-mockup-wrapper" style="position: relative; width: 320px; height: 320px; display: flex; align-items: center; justify-content: center;">
+            <svg width="300" height="300" viewBox="0 0 300 300" style="filter: drop-shadow(0 0 24px rgba(59, 130, 246, 0.45));">
+              <!-- Wedge 1: To Images -->
+              <path d="M 150 10 A 140 140 0 0 1 283 107 L 205 132 A 58 58 0 0 0 150 92 Z" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5" opacity="0.9" />
+              <!-- Wedge 2: Compress -->
+              <path d="M 283 107 A 140 140 0 0 1 232 263 L 184 197 A 58 58 0 0 0 205 132 Z" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5" opacity="0.9" />
+              <!-- Wedge 3: Searchable OCR (Active Hover) -->
+              <path d="M 232 263 A 140 140 0 0 1 68 263 L 116 197 A 58 58 0 0 0 184 197 Z" fill="#2563eb" stroke="#60a5fa" stroke-width="2.5" opacity="1" />
+              <!-- Wedge 4: Split -->
+              <path d="M 68 263 A 140 140 0 0 1 17 107 L 95 132 A 58 58 0 0 0 116 197 Z" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5" opacity="0.9" />
+              <!-- Wedge 5: Open mePDF -->
+              <path d="M 17 107 A 140 140 0 0 1 150 10 L 150 92 A 58 58 0 0 0 95 132 Z" fill="#1e293b" stroke="#10b981" stroke-width="1.5" opacity="0.9" />
+
+              <!-- Wedge Labels & Icons -->
+              <text x="210" y="62" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">🖼️ Images</text>
+              <text x="240" y="190" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">🗜️ Compress</text>
+              <text x="150" y="246" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle">🔍 OCR Text</text>
+              <text x="60" y="190" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">✂️ Split</text>
+              <text x="90" y="62" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">📑 mePDF</text>
+            </svg>
+
+            <!-- Center Hub -->
+            <div style="position: absolute; width: 104px; height: 104px; border-radius: 50%; background: #0f172a; border: 2px solid #3b82f6; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);">
+              <span style="font-size: 26px;">📄</span>
+              <span style="font-size: 11px; font-weight: 700; color: #f8fafc; margin-top: 2px;">.PDF</span>
+              <span style="font-size: 9px; color: #94a3b8;">4.2 MB</span>
+            </div>
+          </div>
+
+          <!-- Bottom Floating Instruction Pill -->
+          <div style="position: absolute; bottom: 20px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(59, 130, 246, 0.4); padding: 8px 20px; border-radius: 20px; font-size: 12px; color: #cbd5e1; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(8px); box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+            <span style="color: #60a5fa; font-size: 14px;">⚡</span>
+            <span><b>Drop on slice</b> to convert &amp; save in-place beside original file</span>
           </div>
         </div>
       `;
@@ -1848,7 +1944,7 @@ class MeCraftsPortal {
         <div class="hero-ctas">
           <a href="#apps-grid" class="hero-cta-primary" id="hero-cta-explore">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            <span>${this.lang === 'th' ? 'สำรวจ 10 สตูดิโอ & ดูพรีวิวสด' : 'Explore All 10 Studios & Live Preview'}</span>
+            <span>${this.lang === 'th' ? 'สำรวจทั้ง 11 โปรแกรม & ดูพรีวิวสด' : 'Explore All 11 Programs & Live Preview'}</span>
           </a>
           <div class="hero-topright-hint">
             <span class="hero-hint-arrow" aria-hidden="true">↗</span>
@@ -1874,6 +1970,7 @@ class MeCraftsPortal {
       { key: 'all', label: this.t.filterAll },
       { key: 'document', label: this.t.filterDocument },
       { key: 'photo', label: this.t.filterPhoto },
+      { key: 'utility', label: this.t.filterUtility },
       { key: 'vector', label: this.t.filterVector },
       { key: 'video', label: this.t.filterVideo },
       { key: 'audio', label: this.t.filterAudio },
@@ -1917,7 +2014,7 @@ class MeCraftsPortal {
       <div class="portal-section-inner">
         <div class="showcase-header">
           <div class="showcase-header-left">
-            <div class="section-eyebrow" aria-hidden="true">10 CREATIVE &amp; DOCUMENT WORKSTATIONS</div>
+            <div class="section-eyebrow" aria-hidden="true">11 CREATIVE WORKSTATIONS &amp; UTILITIES</div>
             <h2 class="section-title" id="apps-title">${this.lang === 'th' ? 'คลังโปรแกรมสตูดิโอ &amp; ค็อกพิทพรีวิวสด' : 'Creative Workstation Studios &amp; Live Desktop Cockpit'}</h2>
             <p class="section-subtitle">${this.lang === 'th' ? 'เลือกสตูดิโอด้านล่างเพื่อสำรวจฟีเจอร์เชิงลึก พร้อมพรีวิวหน้าต่างซอฟต์แวร์จริงบน Windows แบบเรียลไทม์' : 'Select a studio below to inspect deep specifications alongside real-time native Windows desktop window previews.'}</p>
           </div>
@@ -1939,15 +2036,15 @@ class MeCraftsPortal {
           ${this.renderStudioSpotlight(activeApp)}
         </div>
 
-        <!-- 3. All 10 Programs Ecosystem Overview Grid -->
+        <!-- 3. All 11 Programs Ecosystem Overview Grid -->
         <div class="ecosystem-overview-section" id="ecosystem-overview">
           <div class="ecosystem-overview-header">
             <div class="ecosystem-title-wrap">
               <span class="ecosystem-eyebrow">ECOSYSTEM MATRIX</span>
-              <h3 class="ecosystem-overview-title">${this.lang === 'th' ? 'สำรวจทั้ง 10 สตูดิโอในเครือ meCrafts' : 'Explore All 10 meCrafts Workstation Studios'}</h3>
+              <h3 class="ecosystem-overview-title">${this.lang === 'th' ? 'สำรวจทั้ง 11 โปรแกรมในเครือ meCrafts' : 'Explore All 11 meCrafts Workstations & Utilities'}</h3>
             </div>
             <div class="ecosystem-overview-meta">
-              <span class="ecosystem-count-pill">${apps.length} / 10 ${this.lang === 'th' ? 'โปรแกรม' : 'Studios'}</span>
+              <span class="ecosystem-count-pill">${apps.length} / ${SHOWCASE_APPS.length} ${this.lang === 'th' ? 'โปรแกรม' : 'Apps'}</span>
             </div>
           </div>
           <div class="ecosystem-grid" id="ecosystem-grid" role="list" aria-label="meCrafts ecosystem catalog">
@@ -1965,6 +2062,7 @@ class MeCraftsPortal {
 
   private renderStudioNavPill(app: ShowcaseApp, isActive: boolean): string {
     const isAppActive = app.status === 'active';
+    const cleanName = app.name.replace(' Studio', '').replace(' Radial Converter', '');
     return `
     <button
       type="button"
@@ -1975,7 +2073,7 @@ class MeCraftsPortal {
       style="--pill-accent: ${app.accentColor}; --pill-glow: ${app.glowColor};"
     >
       <span class="pill-emblem" aria-hidden="true">${getAppIcon(app.icon, app.accentColor)}</span>
-      <span class="pill-title">${app.name.replace(' Studio', '')}</span>
+      <span class="pill-title">${cleanName}</span>
       <span class="pill-status-dot ${isAppActive ? 'dot-active' : 'dot-indev'}" title="${isAppActive ? 'Active Production' : 'In Development'}"></span>
     </button>`;
   }

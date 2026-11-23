@@ -245,7 +245,10 @@ export class ConversionEngine {
         URL.revokeObjectURL(url);
         resolve(img);
       };
-      img.onerror = () => reject(new Error('Failed to load image into DOM'));
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('Failed to load image into DOM'));
+      };
       img.src = url;
     });
   }
