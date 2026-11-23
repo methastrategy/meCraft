@@ -2972,6 +2972,7 @@ class MeCraftsPortal {
     this.bindStudioNavigatorListeners();
     this.bindEcosystemCardListeners();
     this.bindSpotlightListeners();
+    this.setupScrollSpy();
 
     // Fullscreen Inspector Modal Close
     document.getElementById('btn-close-fullscreen-modal')?.addEventListener('click', () => {
@@ -2994,8 +2995,8 @@ class MeCraftsPortal {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const studioId = btn.getAttribute('data-studio-id');
-        if (studioId && studioId !== this.activeStudioId) {
-          this.selectStudio(studioId);
+        if (studioId) {
+          this.scrollToStudio(studioId);
         }
       });
     });
@@ -3007,7 +3008,7 @@ class MeCraftsPortal {
         e.preventDefault();
         const studioId = card.getAttribute('data-studio-jump');
         if (studioId) {
-          this.selectStudio(studioId, true);
+          this.scrollToStudio(studioId);
         }
       };
       card.addEventListener('click', onJump);
@@ -3020,23 +3021,41 @@ class MeCraftsPortal {
   }
 
   private bindSpotlightListeners() {
-    document.getElementById('btn-inspect-modal')?.addEventListener('click', () => {
-      this.isFullscreenMockupOpen = true;
-      this.render();
-      this.attachListeners();
+    document.querySelectorAll<HTMLElement>('.btn-inspect-modal').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const appId = btn.getAttribute('data-inspect-app');
+        if (appId) {
+          this.activeStudioId = appId;
+        }
+        this.isFullscreenMockupOpen = true;
+        this.render();
+        this.attachListeners();
+      });
     });
   }
 
-  private selectStudio(studioId: string, shouldScroll: boolean = false) {
+  private scrollToStudio(studioId: string) {
     this.activeStudioId = studioId;
-    const app = SHOWCASE_APPS.find(a => a.id === studioId);
-    if (!app) return;
+
+    let targetEl = document.getElementById(`spotlight-${studioId}`);
+    if (!targetEl) {
+      // If target studio was filtered out, reset category filter
+      this.activeFilter = 'all';
+      this.searchQuery = '';
+      this.render();
+      this.attachListeners();
+      targetEl = document.getElementById(`spotlight-${studioId}`);
+    }
 
     // Update active class on nav pills
     document.querySelectorAll<HTMLElement>('.studio-nav-pill').forEach(pill => {
       const isCur = pill.getAttribute('data-studio-id') === studioId;
       pill.classList.toggle('active', isCur);
       pill.setAttribute('aria-selected', String(isCur));
+      if (isCur) {
+        pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
     });
 
     // Update active class on ecosystem cards
@@ -3046,50 +3065,97 @@ class MeCraftsPortal {
       const hint = card.querySelector('.eco-jump-hint');
       if (hint) {
         hint.textContent = isCur
-          ? (this.lang === 'th' ? '● กำลังดูในค็อกพิท' : '● In Cockpit')
-          : (this.lang === 'th' ? 'สลับดูหน้าต่างนี้ →' : 'Inspect UI →');
+          ? (this.lang === 'th' ? '● กำลังแสดง' : '● In View')
+          : (this.lang === 'th' ? 'เลื่อนไปดูหน้านี้ ↑' : 'Scroll to View ↑');
       }
     });
 
-    // Update the spotlight mount smoothly
-    const mount = document.getElementById('studio-spotlight-mount');
-    if (mount) {
-      mount.innerHTML = this.renderStudioSpotlight(app);
-      this.bindSpotlightListeners();
-    }
-
-    if (shouldScroll) {
-      const spotlightEl = document.getElementById('studio-spotlight-mount');
-      if (spotlightEl) {
-        spotlightEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
+    // Smooth scroll into view without mutating URL hash
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
-  private bindCardSelection() {
-    // Deprecated alias
+  private setupScrollSpy() {
+    if (typeof IntersectionObserver === 'undefined') return;
+    if (this.scrollSpyObserver) {
+      this.scrollSpyObserver.disconnect();
+    }
+
+    const cards = document.querySelectorAll<HTMLElement>('.studio-spotlight-card');
+    if (cards.length === 0) return;
+
+    this.scrollSpyObserver = new IntersectionObserver((entries) => {
+      const visible = entries.filter(e => e.isIntersecting);
+      if (visible.length === 0) return;
+
+      const topCard = visible.reduce((prev, curr) => {
+        return (curr.boundingClientRect.top >= 0 && curr.boundingClientRect.top < prev.boundingClientRect.top) ? curr : prev;
+      }, visible[0]);
+
+      const id = topCard.target.id.replace('spotlight-', '');
+      if (id && id !== this.activeStudioId) {
+        this.activeStudioId = id;
+        document.querySelectorAll<HTMLElement>('.studio-nav-pill').forEach(pill => {
+          const isCur = pill.getAttribute('data-studio-id') === id;
+          pill.classList.toggle('active', isCur);
+          pill.setAttribute('aria-selected', String(isCur));
+          if (isCur) {
+            pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
+        });
+        document.querySelectorAll<HTMLElement>('.ecosystem-card').forEach(card => {
+          const isCur = card.getAttribute('data-studio-jump') === id;
+          card.classList.toggle('card-active', isCur);
+        });
+      }
+    }, {
+      rootMargin: '-120px 0px -50% 0px',
+      threshold: [0.1, 0.4]
+    });
+
+    cards.forEach(card => this.scrollSpyObserver?.observe(card));
+  }
+
+  private selectStudio(studioId: string) {
+    this.scrollToStudio(studioId);
   }
 
   private selectApp(appId: string) {
-    this.selectStudio(appId);
+    this.scrollToStudio(appId);
   }
 
   private updateGrid() {
     const apps = this.filteredApps();
-    const ecoGrid = document.getElementById('ecosystem-grid');
-    if (ecoGrid) {
-      ecoGrid.innerHTML = apps.length > 0
-        ? apps.map(app => this.renderEcosystemCard(app, app.id === this.activeStudioId)).join('')
-        : `<div class="apps-empty" role="status">
-             <div class="apps-empty-icon" aria-hidden="true">🔍</div>
-             <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
-           </div>`;
-      this.bindEcosystemCardListeners();
+    const streamEl = document.getElementById('studios-spotlight-stream');
+    if (streamEl) {
+      if (apps.length > 0) {
+        streamEl.innerHTML = apps.map(app => this.renderStudioSpotlight(app)).join('');
+        this.bindSpotlightListeners();
+        this.setupScrollSpy();
+      } else {
+        streamEl.innerHTML = `
+          <div class="apps-empty" role="status">
+            <div class="apps-empty-icon" aria-hidden="true">🔍</div>
+            <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
+          </div>
+        `;
+      }
     }
 
-    // If current active studio is filtered out, select first matching app
-    if (apps.length > 0 && !apps.some(a => a.id === this.activeStudioId)) {
-      this.selectStudio(apps[0].id);
+    const ecoGrid = document.getElementById('ecosystem-grid');
+    if (ecoGrid) {
+      if (apps.length > 0) {
+        ecoGrid.innerHTML = apps.map(app => this.renderEcosystemCard(app, app.id === this.activeStudioId)).join('');
+        this.bindEcosystemCardListeners();
+      } else {
+        ecoGrid.innerHTML = `
+          <div class="apps-empty" role="status">
+            <div class="apps-empty-icon" aria-hidden="true">🔍</div>
+            <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
+          </div>
+        `;
+      }
     }
   }
 }
