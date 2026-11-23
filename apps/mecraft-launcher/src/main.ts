@@ -399,6 +399,17 @@ function getAppIcon(icon: string, color: string): string {
   return icons[icon] ?? icons['doc'];
 }
 
+// ─── Sanitization ───────────────────────────────────────────────────────────
+function escapeHtml(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // ─── Main Portal Class ────────────────────────────────────────────────────────
 class MeCraftsPortal {
   private lang: 'en' | 'th' = 'en';
@@ -494,7 +505,7 @@ class MeCraftsPortal {
         ${this.authError ? `
           <div class="auth-alert error" role="alert">
             <span class="alert-icon">⚠️</span>
-            <span>${this.authError}</span>
+            <span>${escapeHtml(this.authError)}</span>
           </div>
         ` : ''}
 
@@ -590,9 +601,9 @@ class MeCraftsPortal {
         <div class="portal-header-actions">
           ${this.currentSession ? `
             <div class="user-profile-pill" id="user-profile-pill">
-              <div class="user-avatar" aria-hidden="true">${(this.currentSession.user.fullName || this.currentSession.user.email).charAt(0).toUpperCase()}</div>
+              <div class="user-avatar" aria-hidden="true">${escapeHtml((this.currentSession.user.fullName || this.currentSession.user.email).charAt(0).toUpperCase())}</div>
               <div class="user-details">
-                <span class="user-email" title="${this.currentSession.user.email}">${this.currentSession.user.email}</span>
+                <span class="user-email" title="${escapeHtml(this.currentSession.user.email)}">${escapeHtml(this.currentSession.user.email)}</span>
                 <span class="user-tier-badge ${getTierBadge(this.currentSession.user.tier).isPro ? 'badge-pro' : 'badge-free'}">
                   ${getTierBadge(this.currentSession.user.tier).label}
                 </span>
@@ -1026,6 +1037,7 @@ export {
   getTierBadge,
   isFeatureUnlocked,
   isOfflineGraceValid,
+  escapeHtml,
   MeCraftsPortal,
 };
 export type { AppCatalogItem, RecentProject, DownloadProgress, AuthSession, SubscriptionTier };

@@ -15,6 +15,7 @@ import {
   getTierBadge,
   isFeatureUnlocked,
   isOfflineGraceValid,
+  escapeHtml,
 } from '../src/main';
 
 describe('meCraft Launcher Core & Catalog Engine', () => {
@@ -322,6 +323,13 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
 
       clearAuthSession();
       expect(getAuthSession()).toBeNull();
+    });
+
+    it('properly sanitizes potential XSS injection in user input and errors', () => {
+      const maliciousPayload = '<script>alert("pwned")</script>&"\'';
+      const clean = escapeHtml(maliciousPayload);
+      expect(clean).not.toContain('<script>');
+      expect(clean).toBe('&lt;script&gt;alert(&quot;pwned&quot;)&lt;/script&gt;&amp;&quot;&#39;');
     });
   });
 });
