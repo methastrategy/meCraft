@@ -16,6 +16,7 @@
     "desktop:photo": "npm run desktop:dev --workspace=@mecraft/mephoto",
     "build": "node scripts/build-web.js",
     "build:web": "node scripts/build-web.js",
+    "deploy:website": "node scripts/deploy-website.js",
     "build:all": "npm run build --workspaces --if-present",
     "generate:bitmaps": "node scripts/generate-installer-bitmaps.js",
     "typecheck": "npm run typecheck --workspaces --if-present",
