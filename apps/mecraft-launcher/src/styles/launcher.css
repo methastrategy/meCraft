@@ -1906,3 +1906,263 @@ pre,
     text-align: center;
   }
 }
+
+
+/* ==========================================================================
+   meCraft Program Manager & App Hub (Luxury Dark Suite Layout)
+   ========================================================================== */
+
+.hub-manager-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 28px 48px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hub-dashboard-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hub-dashboard-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: radial-gradient(ellipse at 85% -30%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
+              radial-gradient(ellipse at 15% 120%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+              var(--surface-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.hub-dashboard-main {
+  flex: 1;
+}
+
+.hub-dashboard-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 10px;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-full);
+  color: #a5b4fc;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
+}
+
+.hub-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6366f1;
+  box-shadow: 0 0 8px #6366f1;
+}
+
+.hub-dashboard-title {
+  margin: 0 0 6px 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: #ffffff;
+}
+
+.hub-dashboard-subtitle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 680px;
+}
+
+.hub-dashboard-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-dashboard-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  background: var(--surface-base);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast);
+}
+
+.btn-dashboard-action:hover {
+  background: var(--surface-hover);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Quick Metrics Bar */
+.hub-metrics-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  background: rgba(15, 17, 23, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.metric-pill-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.metric-pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.metric-pill-dot.emerald {
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+
+.metric-pill-dot.cyan {
+  background: #06b6d4;
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.6);
+}
+
+.metric-pill-dot.purple {
+  background: #a855f7;
+  box-shadow: 0 0 6px rgba(168, 85, 247, 0.6);
+}
+
+.metric-pill-label {
+  color: var(--text-muted);
+}
+
+.metric-pill-val {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.metric-pill-code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: #cbd5e1;
+  border: 1px solid var(--border-subtle);
+}
+
+/* App Card Manager Enhancements */
+.app-card.is-installed {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.app-card-status-pill {
+  margin-left: auto;
+  align-self: flex-start;
+}
+
+.badge-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+}
+
+.badge-status-pill.installed {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.badge-status-pill.in-dev {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+.badge-status-pill.not-installed {
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
+}
+
+.badge-status-pill .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.badge-status-pill .dot.green {
+  background: #10b981;
+  box-shadow: 0 0 5px #10b981;
+}
+
+.badge-status-pill .dot.amber {
+  background: #f59e0b;
+  box-shadow: 0 0 5px #f59e0b;
+}
+
+.badge-status-pill .dot.gray {
+  background: #94a3b8;
+}
+
+.app-tag.size-tag {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.25);
+  color: #c7d2fe;
+}
+
+/* Web Mode Action Group */
+.web-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.btn-action-web-subtle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all var(--duration-fast);
+}
+
+.btn-action-web-subtle:hover {
+  color: var(--primary);
+  background: rgba(99, 102, 241, 0.08);
+}
