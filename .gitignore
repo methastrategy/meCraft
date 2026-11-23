@@ -6,3 +6,9 @@ dist-ssr/
 .vercel
 src-tauri/target/
 target/
+
+# Root convenience junctions
+/mecraft
+/mepdf
+/mephoto
+
