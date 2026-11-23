@@ -1864,6 +1864,7 @@ class MeCraftsPortal {
 
   private renderAppsGrid(): string {
     const apps = this.filteredApps();
+    const activeApp = SHOWCASE_APPS.find(a => a.id === this.activeStudioId) || apps[0] || SHOWCASE_APPS[0];
 
     return `
     <section class="portal-apps-section" id="apps-grid" aria-labelledby="apps-title">
@@ -1871,8 +1872,8 @@ class MeCraftsPortal {
         <div class="showcase-header">
           <div class="showcase-header-left">
             <div class="section-eyebrow" aria-hidden="true">10 CREATIVE &amp; DOCUMENT WORKSTATIONS</div>
-            <h2 class="section-title" id="apps-title">${this.lang === 'th' ? 'คลังโปรแกรมสตูดิโอ &amp; พรีวิวแยกรายโปรแกรม' : 'Creative Workstation Studios &amp; Dedicated UI Previews'}</h2>
-            <p class="section-subtitle">${this.lang === 'th' ? 'แสดงข้อมูลฟีเจอร์และสเปกโปรแกรมด้านซ้าย พร้อมหน้าต่างซอฟต์แวร์จริงบน Windows ด้านขวาแยกตามแต่ละโปรแกรม' : 'Explore detailed specifications on the left, with real-time native Windows desktop window previews on the right for each studio.'}</p>
+            <h2 class="section-title" id="apps-title">${this.lang === 'th' ? 'คลังโปรแกรมสตูดิโอ &amp; ค็อกพิทพรีวิวสด' : 'Creative Workstation Studios &amp; Live Desktop Cockpit'}</h2>
+            <p class="section-subtitle">${this.lang === 'th' ? 'เลือกสตูดิโอด้านล่างเพื่อสำรวจฟีเจอร์เชิงลึก พร้อมพรีวิวหน้าต่างซอฟต์แวร์จริงบน Windows แบบเรียลไทม์' : 'Select a studio below to inspect deep specifications alongside real-time native Windows desktop window previews.'}</p>
           </div>
           <div class="showcase-header-pill">
             <span class="pulse-indicator"></span>
@@ -1880,19 +1881,60 @@ class MeCraftsPortal {
           </div>
         </div>
 
-        <div class="showcase-strips-list" id="showcase-strips-list" role="list" aria-label="meCrafts application catalog">
-          ${apps.length > 0 ? apps.map(app => this.renderProgramStrip(app)).join('') : `
-            <div class="apps-empty" role="status">
-              <div class="apps-empty-icon" aria-hidden="true">🔍</div>
-              <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
+        <!-- 1. Horizontal Studio Quick Switcher Bar -->
+        <div class="studio-nav-wrapper">
+          <nav class="studio-nav-bar" role="tablist" aria-label="Creative Studios Quick Switcher">
+            ${SHOWCASE_APPS.map(app => this.renderStudioNavPill(app, app.id === activeApp.id)).join('')}
+          </nav>
+        </div>
+
+        <!-- 2. Active Studio Spotlight Cockpit -->
+        <div class="studio-spotlight-mount" id="studio-spotlight-mount">
+          ${this.renderStudioSpotlight(activeApp)}
+        </div>
+
+        <!-- 3. All 10 Programs Ecosystem Overview Grid -->
+        <div class="ecosystem-overview-section" id="ecosystem-overview">
+          <div class="ecosystem-overview-header">
+            <div class="ecosystem-title-wrap">
+              <span class="ecosystem-eyebrow">ECOSYSTEM MATRIX</span>
+              <h3 class="ecosystem-overview-title">${this.lang === 'th' ? 'สำรวจทั้ง 10 สตูดิโอในเครือ meCrafts' : 'Explore All 10 meCrafts Workstation Studios'}</h3>
             </div>
-          `}
+            <div class="ecosystem-overview-meta">
+              <span class="ecosystem-count-pill">${apps.length} / 10 ${this.lang === 'th' ? 'โปรแกรม' : 'Studios'}</span>
+            </div>
+          </div>
+          <div class="ecosystem-grid" id="ecosystem-grid" role="list" aria-label="meCrafts ecosystem catalog">
+            ${apps.length > 0 ? apps.map(app => this.renderEcosystemCard(app, app.id === activeApp.id)).join('') : `
+              <div class="apps-empty" role="status">
+                <div class="apps-empty-icon" aria-hidden="true">🔍</div>
+                <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
+              </div>
+            `}
+          </div>
         </div>
       </div>
     </section>`;
   }
 
-  private renderProgramStrip(app: ShowcaseApp): string {
+  private renderStudioNavPill(app: ShowcaseApp, isActive: boolean): string {
+    const isAppActive = app.status === 'active';
+    return `
+    <button
+      type="button"
+      class="studio-nav-pill ${isActive ? 'active' : ''}"
+      data-studio-id="${app.id}"
+      role="tab"
+      aria-selected="${isActive}"
+      style="--pill-accent: ${app.accentColor}; --pill-glow: ${app.glowColor};"
+    >
+      <span class="pill-emblem" aria-hidden="true">${getAppIcon(app.icon, app.accentColor)}</span>
+      <span class="pill-title">${app.name.replace(' Studio', '')}</span>
+      <span class="pill-status-dot ${isAppActive ? 'dot-active' : 'dot-indev'}" title="${isAppActive ? 'Active Production' : 'In Development'}"></span>
+    </button>`;
+  }
+
+  private renderStudioSpotlight(app: ShowcaseApp): string {
     const isActive = app.status === 'active';
     const catLabel = app.categoryLabel[this.lang];
     const tagline = app.tagline[this.lang];
@@ -1901,57 +1943,153 @@ class MeCraftsPortal {
     const specsList = app.specs ? app.specs[this.lang] : [];
 
     return `
-    <article class="program-strip ${isActive ? 'strip-active' : 'strip-indev'}" id="program-${app.id}" role="listitem" style="--strip-accent: ${app.accentColor}; --strip-glow: ${app.glowColor};">
-      <div class="program-strip-inner">
-        <!-- Left Column: Details & Technical Specifications -->
-        <div class="program-strip-info">
-          <div class="strip-info-header">
-            <div class="strip-emblem" aria-hidden="true" style="background: radial-gradient(circle, ${app.glowColor} 0%, transparent 70%);">
+    <article class="studio-spotlight-card ${isActive ? 'spotlight-active' : 'spotlight-indev'}" id="spotlight-${app.id}" style="--spotlight-accent: ${app.accentColor}; --spotlight-glow: ${app.glowColor};">
+      <div class="studio-spotlight-inner">
+        <!-- Left: Studio Details & Action CTAs -->
+        <div class="studio-spotlight-info">
+          <div class="spotlight-info-header">
+            <div class="spotlight-emblem" aria-hidden="true" style="background: radial-gradient(circle, ${app.glowColor} 0%, transparent 70%);">
               ${getAppIcon(app.icon, app.accentColor)}
             </div>
-            <div class="strip-meta">
-              <div class="strip-badges">
-                <span class="strip-cat-badge" style="color: ${app.accentColor}; border-color: ${app.accentColor}40;">${catLabel}</span>
-                <span class="strip-status-pill ${isActive ? 'status-active' : 'status-indev'}">
+            <div class="spotlight-meta">
+              <div class="spotlight-badges">
+                <span class="spotlight-cat-badge" style="color: ${app.accentColor}; border-color: ${app.accentColor}40;">${catLabel}</span>
+                <span class="spotlight-status-pill ${isActive ? 'status-active' : 'status-indev'}">
                   <span class="status-dot" aria-hidden="true"></span>
                   ${isActive ? this.t.statusActive : this.t.statusInDev}
                 </span>
               </div>
-              <span class="strip-version">${app.version}</span>
+              <span class="spotlight-version">${app.version}</span>
             </div>
           </div>
 
-          <div class="strip-body">
-            <h3 class="strip-name">${app.name}</h3>
-            <p class="strip-tagline">${tagline}</p>
-            <p class="strip-desc">${desc}</p>
-            
-            <div class="strip-engine-badge">
+          <div class="spotlight-body">
+            <h3 class="spotlight-name">${app.name}</h3>
+            <p class="spotlight-tagline">${tagline}</p>
+            <p class="spotlight-desc">${desc}</p>
+
+            <div class="spotlight-engine-badge">
               <span>⚡</span>
               <span>${engineText}</span>
             </div>
 
             ${specsList.length > 0 ? `
-              <div class="strip-specs-list" aria-label="Program specifications">
-                ${specsList.map(s => `<span class="strip-spec-tag">✦ ${escapeHtml(s)}</span>`).join('')}
+              <div class="spotlight-specs-list" aria-label="Studio specifications">
+                ${specsList.map(s => `<span class="spotlight-spec-tag">✦ ${escapeHtml(s)}</span>`).join('')}
               </div>
             ` : ''}
 
-            ${app.artcraftEquivalent ? `<p class="strip-equivalent" aria-label="Inspired by">✧ ${app.artcraftEquivalent}</p>` : ''}
+            ${app.artcraftEquivalent ? `<p class="spotlight-equivalent" aria-label="Inspired by">✧ ${app.artcraftEquivalent}</p>` : ''}
+          </div>
+
+          <!-- Contextual Action Buttons -->
+          <div class="spotlight-action-row">
+            ${isActive && app.downloadUrl ? `
+              <div class="spotlight-download-group">
+                <a href="${app.downloadUrl}" download="${app.exeName || 'setup.exe'}" class="spotlight-cta-btn" id="spotlight-btn-download">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>${this.lang === 'th' ? `ดาวน์โหลด ${app.exeName} (${app.exeSize || 'Standalone'})` : `Download ${app.exeName} (${app.exeSize || 'Standalone'})`}</span>
+                </a>
+                <span class="spotlight-suite-note">
+                  ${this.lang === 'th' ? '✓ รวมอยู่ในตัวติดตั้ง meCraft Suite ที่มุมขวาบน' : '✓ Included in full meCraft Suite Installer (top-right)'}
+                </span>
+              </div>
+            ` : `
+              <div class="spotlight-indev-group">
+                <a href="https://github.com/methastrategy/meCraft#roadmap" target="_blank" rel="noopener noreferrer" class="spotlight-cta-roadmap">
+                  <span>✦ ${this.lang === 'th' ? 'ติดตามแผนพัฒนาบน GitHub Roadmap' : 'View Development Roadmap on GitHub'} →</span>
+                </a>
+                <span class="spotlight-suite-note">
+                  ${this.lang === 'th' ? 'กำลังพัฒนาภายใต้สัญญาอนุญาต MIT Open Source' : 'In active development under MIT Open Source License'}
+                </span>
+              </div>
+            `}
           </div>
         </div>
 
-        <!-- Right Column: True Live Desktop Window Mockup for this app -->
-        <div class="program-strip-preview">
-          ${this.renderDesktopPreviewInline(app)}
+        <!-- Right: Windows Native Desktop UI Mockup with Watermark Header -->
+        <div class="studio-spotlight-preview">
+          <div class="spotlight-preview-bar">
+            <div class="preview-bar-left">
+              <span class="preview-bar-dot" aria-hidden="true"></span>
+              <span class="preview-bar-label">${this.lang === 'th' ? 'หน้าต่างจำลองซอฟต์แวร์จริงบน Windows 11 (Desktop Simulator)' : 'Live Native Desktop Simulator (Windows 11 x64)'}</span>
+            </div>
+            <button type="button" class="btn-inspect-modal" id="btn-inspect-modal" title="${this.lang === 'th' ? 'ขยายดูเต็มจอ' : 'Inspect Fullscreen'}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              <span>${this.lang === 'th' ? 'เต็มจอ' : 'Inspect'}</span>
+            </button>
+          </div>
+          <div class="spotlight-window-mount">
+            ${this.renderDesktopPreviewInline(app)}
+          </div>
         </div>
       </div>
     </article>`;
   }
 
+  private renderEcosystemCard(app: ShowcaseApp, isActive: boolean): string {
+    const isAppActive = app.status === 'active';
+    const catLabel = app.categoryLabel[this.lang];
+    const tagline = app.tagline[this.lang];
+
+    return `
+    <div
+      class="ecosystem-card ${isActive ? 'card-active' : ''} ${isAppActive ? 'card-status-active' : 'card-status-indev'}"
+      data-studio-jump="${app.id}"
+      role="button"
+      tabindex="0"
+      aria-label="Inspect ${app.name}"
+      style="--card-accent: ${app.accentColor}; --card-glow: ${app.glowColor};"
+    >
+      <div class="eco-card-top">
+        <div class="eco-card-emblem" aria-hidden="true">${getAppIcon(app.icon, app.accentColor)}</div>
+        <div class="eco-card-meta">
+          <span class="eco-cat-tag" style="color: ${app.accentColor};">${catLabel}</span>
+          <span class="eco-status-pill ${isAppActive ? 'status-active' : 'status-indev'}">
+            <span class="status-dot" aria-hidden="true"></span>
+            ${isAppActive ? this.t.statusActive : this.t.statusInDev}
+          </span>
+        </div>
+      </div>
+      <div class="eco-card-body">
+        <h4 class="eco-card-name">${app.name}</h4>
+        <p class="eco-card-tagline">${tagline}</p>
+      </div>
+      <div class="eco-card-footer">
+        <span class="eco-version">${app.version}</span>
+        <span class="eco-jump-hint">${isActive ? (this.lang === 'th' ? '● กำลังดูในค็อกพิท' : '● In Cockpit') : (this.lang === 'th' ? 'สลับดูหน้าต่างนี้ →' : 'Inspect UI →')}</span>
+      </div>
+    </div>`;
+  }
+
+  private renderFullscreenMockupModal(): string {
+    if (!this.isFullscreenMockupOpen) return '';
+    const activeApp = SHOWCASE_APPS.find(a => a.id === this.activeStudioId) || SHOWCASE_APPS[0];
+
+    return `
+    <div class="fullscreen-modal-backdrop" id="fullscreen-modal-backdrop" role="dialog" aria-modal="true" aria-label="Desktop Preview Fullscreen">
+      <div class="fullscreen-modal-container">
+        <div class="fullscreen-modal-header">
+          <div class="fullscreen-modal-title">
+            <span class="window-app-icon">${getAppIcon(activeApp.icon, activeApp.accentColor)}</span>
+            <span>${activeApp.name} — ${this.lang === 'th' ? 'หน้าต่างจำลองซอฟต์แวร์จริงบน Windows 11' : 'Native Desktop UI Inspector'}</span>
+          </div>
+          <button type="button" class="fullscreen-modal-close" id="btn-close-fullscreen-modal" aria-label="Close fullscreen view">✕</button>
+        </div>
+        <div class="fullscreen-modal-body">
+          ${this.renderDesktopPreviewInline(activeApp)}
+        </div>
+      </div>
+    </div>`;
+  }
+
   // Alias for backward compatibility if any reference exists
+  private renderProgramStrip(app: ShowcaseApp): string {
+    return this.renderStudioSpotlight(app);
+  }
+
   private renderAppCard(app: ShowcaseApp): string {
-    return this.renderProgramStrip(app);
+    return this.renderStudioSpotlight(app);
   }
 
   private renderManifesto(): string {
@@ -2330,29 +2468,129 @@ class MeCraftsPortal {
       });
     });
 
-    // Desktop App UI Preview Selection listeners
-    this.bindCardSelection();
+    // Studio Navigator & Spotlight Listeners
+    this.bindStudioNavigatorListeners();
+    this.bindEcosystemCardListeners();
+    this.bindSpotlightListeners();
+
+    // Fullscreen Inspector Modal Close
+    document.getElementById('btn-close-fullscreen-modal')?.addEventListener('click', () => {
+      this.isFullscreenMockupOpen = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('fullscreen-modal-backdrop')?.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).id === 'fullscreen-modal-backdrop') {
+        this.isFullscreenMockupOpen = false;
+        this.render();
+        this.attachListeners();
+      }
+    });
+  }
+
+  private bindStudioNavigatorListeners() {
+    document.querySelectorAll<HTMLElement>('.studio-nav-pill').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const studioId = btn.getAttribute('data-studio-id');
+        if (studioId && studioId !== this.activeStudioId) {
+          this.selectStudio(studioId);
+        }
+      });
+    });
+  }
+
+  private bindEcosystemCardListeners() {
+    document.querySelectorAll<HTMLElement>('.ecosystem-card[data-studio-jump]').forEach(card => {
+      const onJump = (e: Event) => {
+        e.preventDefault();
+        const studioId = card.getAttribute('data-studio-jump');
+        if (studioId) {
+          this.selectStudio(studioId, true);
+        }
+      };
+      card.addEventListener('click', onJump);
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          onJump(e);
+        }
+      });
+    });
+  }
+
+  private bindSpotlightListeners() {
+    document.getElementById('btn-inspect-modal')?.addEventListener('click', () => {
+      this.isFullscreenMockupOpen = true;
+      this.render();
+      this.attachListeners();
+    });
+  }
+
+  private selectStudio(studioId: string, shouldScroll: boolean = false) {
+    this.activeStudioId = studioId;
+    const app = SHOWCASE_APPS.find(a => a.id === studioId);
+    if (!app) return;
+
+    // Update active class on nav pills
+    document.querySelectorAll<HTMLElement>('.studio-nav-pill').forEach(pill => {
+      const isCur = pill.getAttribute('data-studio-id') === studioId;
+      pill.classList.toggle('active', isCur);
+      pill.setAttribute('aria-selected', String(isCur));
+    });
+
+    // Update active class on ecosystem cards
+    document.querySelectorAll<HTMLElement>('.ecosystem-card').forEach(card => {
+      const isCur = card.getAttribute('data-studio-jump') === studioId;
+      card.classList.toggle('card-active', isCur);
+      const hint = card.querySelector('.eco-jump-hint');
+      if (hint) {
+        hint.textContent = isCur
+          ? (this.lang === 'th' ? '● กำลังดูในค็อกพิท' : '● In Cockpit')
+          : (this.lang === 'th' ? 'สลับดูหน้าต่างนี้ →' : 'Inspect UI →');
+      }
+    });
+
+    // Update the spotlight mount smoothly
+    const mount = document.getElementById('studio-spotlight-mount');
+    if (mount) {
+      mount.innerHTML = this.renderStudioSpotlight(app);
+      this.bindSpotlightListeners();
+    }
+
+    if (shouldScroll) {
+      const spotlightEl = document.getElementById('studio-spotlight-mount');
+      if (spotlightEl) {
+        spotlightEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
   }
 
   private bindCardSelection() {
-    // Each program strip now displays its own dedicated desktop UI preview inline.
+    // Deprecated alias
   }
 
-  private selectApp(_appId: string) {
-    // Deprecated: previews are shown inline inside each program strip.
+  private selectApp(appId: string) {
+    this.selectStudio(appId);
   }
 
   private updateGrid() {
-    const list = document.getElementById('showcase-strips-list');
-    if (!list) return;
     const apps = this.filteredApps();
+    const ecoGrid = document.getElementById('ecosystem-grid');
+    if (ecoGrid) {
+      ecoGrid.innerHTML = apps.length > 0
+        ? apps.map(app => this.renderEcosystemCard(app, app.id === this.activeStudioId)).join('')
+        : `<div class="apps-empty" role="status">
+             <div class="apps-empty-icon" aria-hidden="true">🔍</div>
+             <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
+           </div>`;
+      this.bindEcosystemCardListeners();
+    }
 
-    list.innerHTML = apps.length > 0
-      ? apps.map(app => this.renderProgramStrip(app)).join('')
-      : `<div class="apps-empty" role="status">
-           <div class="apps-empty-icon" aria-hidden="true">🔍</div>
-           <p>${this.lang === 'en' ? 'No programs match your search.' : 'ไม่พบโปรแกรมที่ตรงกับการค้นหา'}</p>
-         </div>`;
+    // If current active studio is filtered out, select first matching app
+    if (apps.length > 0 && !apps.some(a => a.id === this.activeStudioId)) {
+      this.selectStudio(apps[0].id);
+    }
   }
 }
 
