@@ -2445,7 +2445,7 @@ class MeCraftsPortal {
                 ? (this.lang === 'th' ? 'หน้าต่างจำลองซอฟต์แวร์จริงบน Windows 11 (Desktop Simulator)' : 'Live Native Desktop Simulator (Windows 11 x64)')
                 : (this.lang === 'th' ? 'โครงร่างภาพร่างต้นแบบสถาปัตยกรรม (Conceptual Blueprint Wireframe)' : 'Conceptual Architecture Blueprint & Wireframe (WIP)')}</span>
             </div>
-            <button type="button" class="btn-inspect-modal" id="btn-inspect-modal" title="${this.lang === 'th' ? 'ขยายดูเต็มจอ' : 'Inspect Fullscreen'}">
+            <button type="button" class="btn-inspect-modal" id="btn-inspect-${app.id}" data-inspect-app="${app.id}" title="${this.lang === 'th' ? 'ขยายดูเต็มจอ' : 'Inspect Fullscreen'}">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
               <span>${this.lang === 'th' ? 'เต็มจอ' : 'Inspect'}</span>
             </button>
@@ -2653,98 +2653,150 @@ class MeCraftsPortal {
     </footer>`;
   }
 
-  private attachListeners() {
-    // If in desktop and unauthenticated, handle auth portal events
-    if (this.bridge.isTauri() && !this.currentSession) {
-      document.getElementById('tab-signin')?.addEventListener('click', () => {
-        this.authTab = 'signin';
-        this.authError = '';
-        this.render();
-        this.attachListeners();
+  private async handleDropFiles(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    const name = file.name || 'document';
+    const isPdf = name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';
+    const isImage = file.type.startsWith('image/') || /\.(jpe?g|png|webp|avif|bmp|gif|svg)$/i.test(name);
+    const appId = isPdf ? 'mepdf' : (isImage ? 'mephoto' : 'mepdf');
+    const filePath = (file as any).path || name;
+
+    try {
+      await this.bridge.saveRecentProject({
+        name,
+        path: filePath,
+        appId,
+        fileType: isPdf ? 'pdf' : 'image',
+        sizeBytes: file.size,
       });
+    } catch {}
 
-      document.getElementById('tab-signup')?.addEventListener('click', () => {
-        this.authTab = 'signup';
-        this.authError = '';
-        this.render();
-        this.attachListeners();
+    await this.handleLaunchApp(appId, 'desktop', filePath);
+    await this.loadRecentProjects();
+  }
+
+  private async handleLaunchApp(appId: string, target: 'desktop' | 'web' = 'desktop', filePath?: string) {
+    try {
+      await this.bridge.launchApp({
+        appId,
+        target,
+        filePath,
       });
-
-      document.getElementById('btn-toggle-pwd')?.addEventListener('click', () => {
-        const input = document.getElementById('auth-password') as HTMLInputElement | null;
-        if (input) {
-          input.type = input.type === 'password' ? 'text' : 'password';
-        }
-      });
-
-      document.getElementById('auth-form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = (document.getElementById('auth-email') as HTMLInputElement)?.value.trim();
-        const pwd = (document.getElementById('auth-password') as HTMLInputElement)?.value;
-        const fullName = (document.getElementById('auth-fullname') as HTMLInputElement)?.value.trim();
-
-        if (!email || !pwd || pwd.length < 6) {
-          this.authError = this.lang === 'en' ? 'Please provide a valid email and 6+ character password.' : 'กรุณากรอกอีเมลและรหัสผ่านอย่างน้อย 6 ตัวอักษร';
-          this.render();
-          this.attachListeners();
-          return;
-        }
-
-        this.handleAuthSubmit(email, pwd, fullName);
-      });
-
-      document.getElementById('btn-auth-google')?.addEventListener('click', () => {
-        this.handleGoogleAuth();
-      });
-
-      document.getElementById('btn-auth-demo')?.addEventListener('click', () => {
-        const session = createMockAuthSession('demo.creator@mecraft.dev', 'free_member');
-        saveAuthSession(session);
-        this.currentSession = session;
-        this.render();
-        this.attachListeners();
-      });
-
-      document.getElementById('link-forgot-pwd')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const email = (document.getElementById('auth-email') as HTMLInputElement)?.value.trim();
-        this.handlePasswordReset(email);
-      });
-
-      // Desktop Web Sync Import Drawer
-      document.getElementById('btn-toggle-sync-import')?.addEventListener('click', () => {
-        this.showSyncImport = !this.showSyncImport;
-        const drawer = document.getElementById('sync-import-drawer');
-        if (drawer) {
-          drawer.style.display = this.showSyncImport ? 'flex' : 'none';
-        }
-      });
-
-      document.getElementById('btn-submit-sync-code')?.addEventListener('click', () => {
-        const code = (document.getElementById('input-sync-code') as HTMLInputElement)?.value.trim();
-        if (!code) {
-          this.authError = this.lang === 'en' ? 'Please paste a valid sync code.' : 'กรุณากรอกรหัสเชื่อมต่อ';
-          this.render();
-          this.attachListeners();
-          return;
-        }
-        const session = importAuthSyncCode(code);
-        if (session) {
-          this.currentSession = session;
-          this.render();
-          this.attachListeners();
-        } else {
-          this.authError = this.lang === 'en' ? 'Invalid or expired sync code from meCrafts Web.' : 'รหัสเชื่อมต่อไม่ถูกต้องหรือหมดอายุแล้ว';
-          this.render();
-          this.attachListeners();
-        }
-      });
-
-      return;
+    } catch (err) {
+      console.warn(`[meCraft:launch] Error launching ${appId}:`, err);
     }
+  }
 
-    // Web Portal Auth Modal Open / Close
-    document.querySelectorAll('.btn-trigger-auth, #btn-open-auth, #hero-btn-open-auth, #footer-btn-open-auth').forEach(btn => {
+  private attachListeners() {
+    // ── Universal File Dropzone & Browse Handlers ──
+    const fileInput = document.getElementById('hero-file-input') as HTMLInputElement | null;
+    document.getElementById('btn-browse-dropzone')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fileInput?.click();
+    });
+
+    const dropzone = document.getElementById('hero-dropzone');
+    dropzone?.addEventListener('click', () => {
+      fileInput?.click();
+    });
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('drag-over');
+    });
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.classList.remove('drag-over');
+    });
+    dropzone?.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('drag-over');
+      if (e.dataTransfer?.files) {
+        await this.handleDropFiles(e.dataTransfer.files);
+      }
+    });
+
+    fileInput?.addEventListener('change', async (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files) {
+        await this.handleDropFiles(files);
+      }
+    });
+
+    // ── Quick Studio Launcher Buttons ──
+    document.querySelectorAll('.btn-launch-app').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const appId = btn.getAttribute('data-appid') || 'mepdf';
+        const target = (btn.getAttribute('data-target') || 'desktop') as 'desktop' | 'web';
+        await this.handleLaunchApp(appId, target);
+      });
+    });
+
+    // ── Recent Projects Handlers ──
+    document.getElementById('btn-clear-recents')?.addEventListener('click', async () => {
+      await this.bridge.clearRecentProjects();
+      this.recentProjects = [];
+      this.render();
+      this.attachListeners();
+    });
+
+    document.querySelectorAll('.btn-open-recent').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const path = btn.getAttribute('data-path');
+        const appId = btn.getAttribute('data-appid') || 'mepdf';
+        if (path) {
+          await this.handleLaunchApp(appId, 'desktop', path);
+        }
+      });
+    });
+
+    document.querySelectorAll('.recent-project-card').forEach(card => {
+      card.addEventListener('click', async () => {
+        const path = card.getAttribute('data-path');
+        const appId = card.getAttribute('data-appid') || 'mepdf';
+        if (path) {
+          await this.handleLaunchApp(appId, 'desktop', path);
+        }
+      });
+    });
+
+    // ── User Profile Capsule & Modal Handlers ──
+    document.getElementById('user-profile-pill')?.addEventListener('click', () => {
+      this.isUserProfileModalOpen = true;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('btn-close-profile-modal')?.addEventListener('click', () => {
+      this.isUserProfileModalOpen = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('modal-profile-backdrop')?.addEventListener('click', () => {
+      this.isUserProfileModalOpen = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('btn-profile-signout')?.addEventListener('click', async () => {
+      await this.handleSignOut();
+    });
+
+    document.getElementById('btn-copy-profile-sync')?.addEventListener('click', () => {
+      const textarea = document.getElementById('profile-sync-code') as HTMLTextAreaElement | null;
+      if (textarea) {
+        textarea.select();
+        navigator.clipboard?.writeText(textarea.value);
+        this.syncCodeCopied = true;
+        this.render();
+        this.attachListeners();
+      }
+    });
+
+    // ── Auth Modal Open / Close Triggers ──
+    document.querySelectorAll('.btn-trigger-auth, #header-btn-auth, #btn-open-auth, #hero-btn-open-auth, #footer-btn-open-auth').forEach(btn => {
       btn.addEventListener('click', () => {
         this.isAuthModalOpen = true;
         this.authError = '';
@@ -2885,8 +2937,10 @@ class MeCraftsPortal {
     });
 
     // Authenticated state listeners
-    document.getElementById('btn-signout')?.addEventListener('click', async () => {
-      await this.handleSignOut();
+    document.querySelectorAll('#btn-signout, #btn-profile-signout').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await this.handleSignOut();
+      });
     });
 
     // Language toggle
