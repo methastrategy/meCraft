@@ -31,10 +31,12 @@ export class StatusBar {
   }
 
   public updateItem(id: string, content: string | HTMLElement): void {
-    const el = this.element.querySelector(`[data-status-id="${id}"]`);
+    const el = this.element.querySelector<HTMLElement>(`[data-status-id="${id}"]`);
     if (el) {
-      if (typeof content === 'string') el.innerHTML = content;
-      else {
+      if (typeof content === 'string') {
+        el.textContent = content;
+        el.innerHTML = content;
+      } else {
         el.innerHTML = '';
         el.appendChild(content);
       }
