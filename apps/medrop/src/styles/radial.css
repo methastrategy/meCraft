@@ -1,0 +1,202 @@
+@import '@mecraft/ui-tokens/tokens.css';
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: transparent !important;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+}
+
+.medrop-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+#medrop-app {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radial-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.85));
+  animation: radialPopIn 160ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes radialPopIn {
+  0% {
+    transform: scale(0.65);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.radial-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.radial-wedge {
+  cursor: pointer;
+  transition: all 120ms cubic-bezier(0.16, 1, 0.3, 1);
+  fill: rgba(14, 18, 28, 0.92);
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1.5;
+}
+
+.radial-wedge:hover,
+.radial-wedge.active-hover {
+  filter: brightness(1.25) drop-shadow(0 0 10px var(--wedge-glow, #3b82f6));
+  stroke: var(--wedge-glow, #3b82f6);
+  stroke-width: 2;
+  transform-origin: 150px 150px;
+  transform: scale(1.04);
+}
+
+.radial-label-group {
+  pointer-events: none;
+  transition: all 120ms ease-out;
+}
+
+.radial-label-icon {
+  font-size: 16px;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.radial-label-text {
+  font-size: 11px;
+  font-weight: 600;
+  fill: #f1f5f9;
+  text-anchor: middle;
+  dominant-baseline: central;
+  letter-spacing: -0.2px;
+}
+
+.radial-label-sub {
+  font-size: 8.5px;
+  font-weight: 500;
+  fill: #94a3b8;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Center Hub */
+.radial-center-hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #161b2a 0%, #090c14 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), inset 0 0 12px rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-sizing: border-box;
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.hub-ext-pill {
+  font-size: 9px;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  margin-bottom: 2px;
+}
+
+.hub-filename {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #f8fafc;
+  max-width: 82px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.hub-filesize {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: #64748b;
+  margin-top: 1px;
+}
+
+/* Circular Progress Overlay */
+.progress-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  width: 108px;
+  height: 108px;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.progress-ring-circle {
+  stroke-dasharray: 326;
+  stroke-dashoffset: 326;
+  transition: stroke-dashoffset 150ms ease;
+  stroke: #10b981;
+  stroke-width: 3;
+  fill: transparent;
+  stroke-linecap: round;
+}
+
+/* Tooltip Strip */
+.radial-tooltip-strip {
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(9, 12, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: #cbd5e1;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  animation: fadeIn 120ms ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, 4px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
