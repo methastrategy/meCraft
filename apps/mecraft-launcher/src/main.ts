@@ -1173,7 +1173,6 @@ class MeCraftsPortal {
       ${this.renderHeader()}
       <main id="portal-main" class="workstation-main">
         ${this.renderHero()}
-        ${this.renderRecentProjects()}
         ${this.renderFilterBar()}
         ${this.renderAppsGrid()}
         ${this.renderManifesto()}
@@ -1181,7 +1180,6 @@ class MeCraftsPortal {
       </main>
       ${this.renderFooter()}
       ${this.renderAuthModal()}
-      ${this.renderSyncModal()}
       ${this.renderUserProfileModal()}
       ${this.renderDesktopPreviewModal()}
       ${this.renderFullscreenMockupModal()}
@@ -1275,16 +1273,6 @@ class MeCraftsPortal {
           </div>
         </div>
 
-        <div class="sync-code-section" style="margin-top: 16px;">
-          <label class="sync-code-label" for="profile-sync-code">${this.lang === 'en' ? 'Desktop Sync Key:' : 'รหัสเชื่อมต่อ Desktop Sync:'}</label>
-          <div class="sync-code-box">
-            <textarea readonly class="sync-code-textarea" id="profile-sync-code" style="height: 52px;" spellcheck="false">${escapeHtml(syncCode)}</textarea>
-            <button type="button" id="btn-copy-profile-sync" class="btn-copy-code">
-              ${this.syncCodeCopied ? (this.lang === 'en' ? '✓ Copied!' : '✓ คัดลอกแล้ว!') : (this.lang === 'en' ? '📋 Copy' : '📋 คัดลอก')}
-            </button>
-          </div>
-        </div>
-
         <div style="display: flex; gap: 10px; margin-top: 24px;">
           <button type="button" class="btn-auth-submit" id="btn-profile-signout" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5;">
             🚪 ${this.t.signOutBtn}
@@ -1295,48 +1283,7 @@ class MeCraftsPortal {
   }
 
   private renderRecentProjects(): string {
-    const recents = this.recentProjects;
-    return `
-    <section class="portal-recents-section" id="recent-projects" aria-labelledby="recents-title">
-      <div class="portal-section-inner">
-        <div class="recents-header-row">
-          <div class="recents-title-wrap">
-            <span class="recents-icon" aria-hidden="true">📁</span>
-            <h3 class="recents-title" id="recents-title">${this.t.recentProjectsTitle}</h3>
-            ${recents.length > 0 ? `<span class="recents-badge">${recents.length}</span>` : ''}
-          </div>
-          ${recents.length > 0 ? `
-            <button type="button" class="btn-clear-recents" id="btn-clear-recents">
-              ${this.lang === 'th' ? 'ล้างประวัติ' : 'Clear History'}
-            </button>
-          ` : ''}
-        </div>
-
-        ${recents.length === 0 ? `
-          <div class="recents-empty-card">
-            <span class="empty-icon" aria-hidden="true" style="font-size: 26px; display: block; margin-bottom: 6px;">📂</span>
-            <p>${this.t.noRecentProjects}</p>
-          </div>
-        ` : `
-          <div class="recents-grid">
-            ${recents.map(r => `
-              <div class="recent-project-card" data-path="${escapeHtml(r.path)}" data-appid="${r.appId}">
-                <div class="recent-card-left">
-                  <span class="recent-file-icon">${r.fileType === 'pdf' ? '📑' : '🖼️'}</span>
-                  <div class="recent-info">
-                    <span class="recent-file-name" title="${escapeHtml(r.path)}">${escapeHtml(r.name)}</span>
-                    <span class="recent-meta">${r.sizeBytes ? formatBytes(r.sizeBytes) : ''} · ${this.formatTimeAgo(r.lastOpened)}</span>
-                  </div>
-                </div>
-                <button type="button" class="btn-open-recent" data-path="${escapeHtml(r.path)}" data-appid="${r.appId}">
-                  ${this.lang === 'th' ? 'เปิดงาน →' : 'Open →'}
-                </button>
-              </div>
-            `).join('')}
-          </div>
-        `}
-      </div>
-    </section>`;
+    return '';
   }
 
   private renderAuthGate(): string {
@@ -1529,30 +1476,7 @@ class MeCraftsPortal {
   }
 
   private renderSyncModal(): string {
-    const syncCode = this.currentSession ? exportAuthSyncCode(this.currentSession) : '';
-    return `
-    <div class="auth-modal-overlay ${this.isSyncModalOpen ? 'active' : ''}" id="sync-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-sync-title">
-      <div class="auth-modal-backdrop" id="modal-sync-backdrop"></div>
-      <div class="auth-gate-card auth-modal-card">
-        <button type="button" class="auth-modal-close" id="btn-close-sync-modal" aria-label="Close dialog">✕</button>
-        <div class="auth-brand">
-          <div class="auth-brand-emblem" aria-hidden="true" style="font-size:28px;">🔄</div>
-          <h2 class="auth-title" id="modal-sync-title">${this.lang === 'en' ? 'Sync with Desktop Launcher' : 'เชื่อมต่อบัญชีกับ Desktop'}</h2>
-          <p class="auth-subtitle">${this.lang === 'en' ? 'One-Click Handshake for Native Windows Desktop Launcher' : 'เชื่อมต่อบัญชีเข้ากับโปรแกรม meCraft บน Windows ทันที'}</p>
-        </div>
-
-        <div class="sync-code-section">
-          <label for="display-sync-code" class="sync-code-label">${this.lang === 'en' ? 'Your Instant Handshake Code:' : 'รหัสเชื่อมต่อด่วนของคุณ:'}</label>
-          <div class="sync-code-box">
-            <textarea readonly id="display-sync-code" class="sync-code-textarea" spellcheck="false">${escapeHtml(syncCode)}</textarea>
-            <button type="button" id="btn-copy-sync-code" class="btn-copy-code">
-              ${this.syncCodeCopied ? (this.lang === 'en' ? '✓ Copied to Clipboard!' : '✓ คัดลอกสำเร็จแล้ว!') : (this.lang === 'en' ? '📋 Copy Sync Code' : '📋 คัดลอกรหัสเชื่อมต่อ')}
-            </button>
-          </div>
-          <p class="sync-hint">${this.lang === 'en' ? 'Open meCraft Suite on your Windows PC, click "Paste Sync Code" on the login screen, and paste this code to sign in instantly.' : 'เปิดโปรแกรม meCraft บน Windows กดปุ่ม "วางรหัสเชื่อมต่อจาก meCrafts Web" เพื่อเข้าใช้งานได้ทันที'}</p>
-        </div>
-      </div>
-    </div>`;
+    return '';
   }
 
   private renderDesktopPreviewModal(): string {
@@ -2427,16 +2351,15 @@ class MeCraftsPortal {
           </div>
           <div class="portal-brand-text">
             <span class="portal-brand-name">${this.t.brandTitle}</span>
-            <span class="portal-brand-tag">${this.lang === 'th' ? 'Workstation Hub v1.0' : 'Workstation Hub v1.0'}</span>
+            <span class="portal-brand-tag">${this.lang === 'th' ? 'Official Suite' : 'Official Suite'}</span>
           </div>
         </a>
 
         <nav class="portal-nav" aria-label="Portal navigation">
-          <a href="#hero-dropzone" class="portal-nav-link active">${this.lang === 'th' ? '⚡ ค็อกพิท' : '⚡ Cockpit'}</a>
-          <a href="#apps-grid" class="portal-nav-link">${this.lang === 'th' ? '📦 โปรแกรม' : 'Apps'}</a>
-          <a href="#recent-projects" class="portal-nav-link">${this.lang === 'th' ? '📁 ไฟล์ล่าสุด' : 'Recents'}</a>
-          <a href="#manifesto" class="portal-nav-link">${this.lang === 'th' ? '🔒 ความเป็นส่วนตัว' : 'Privacy'}</a>
+          <a href="#apps-grid" class="portal-nav-link active">${this.lang === 'th' ? '📦 โปรแกรมสตูดิโอ' : 'Studios'}</a>
+          <a href="#manifesto" class="portal-nav-link">${this.lang === 'th' ? '🔒 ความเป็นส่วนตัว' : 'Privacy Architecture'}</a>
           <a href="#specs" class="portal-nav-link">${this.lang === 'th' ? '⚙️ สเปก' : 'Specs'}</a>
+          <a href="./downloads" target="_blank" rel="noopener noreferrer" class="portal-nav-link">${this.lang === 'th' ? '📥 ดาวน์โหลด (.exe)' : 'Downloads'}</a>
           <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer" class="portal-nav-link portal-nav-github" aria-label="GitHub Repository">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.63-5.373-12-12-12z"/></svg>
             GitHub
