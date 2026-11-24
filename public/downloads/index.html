@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="th">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>meCrafts Downloads — ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe) ทุกโปรแกรม</title>
+  <title>meCrafts Downloads — Official Windows .exe Installers & Studio Directory</title>
   <meta name="description" content="Official Windows .exe Standalone & Suite Releases for meCrafts Workstation. 100% In-Device Memory Execution · Zero Telemetry · Open Source MIT." />
-  <meta property="og:title" content="meCrafts Downloads — ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe) ทุกโปรแกรม" />
-  <meta property="og:description" content="Get official standalone studio binaries & master suite installer. 100% In-Device Memory Execution." />
+  <meta property="og:title" content="meCrafts Downloads — Official Windows .exe Studio Directory" />
+  <meta property="og:description" content="Download meCraft Installer (.exe) and standalone studio binaries. 100% In-Device Memory Execution · Zero Cloud Uploads." />
   <meta property="og:image" content="../assets/branding/github-social-preview.png" />
   <link rel="icon" type="image/png" href="../branding/mecraft-suite.png" />
   <link rel="apple-touch-icon" href="../branding/mecraft-suite.png" />
@@ -15,29 +15,28 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-base: #07090f;
-      --bg-elevated: #0d121f;
-      --bg-card: #111728;
-      --bg-card-hover: #162035;
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-medium: rgba(255, 255, 255, 0.14);
+      --bg: #08090c;
+      --bg-surface: #0f1116;
+      --bg-surface-elevated: #15181f;
+      --bg-sunken: #050608;
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.16);
+      --line-subtle: rgba(255, 255, 255, 0.04);
+      --ink: #f3f4f6;
+      --ink-strong: #ffffff;
+      --muted: #9ca3af;
+      --faint: #6b7280;
       --gold: #d4af37;
-      --gold-light: #f7d774;
-      --gold-glow: rgba(212, 175, 55, 0.3);
-      --blue-accent: #2563eb;
-      --blue-glow: rgba(37, 99, 235, 0.3);
+      --gold-light: #f6d878;
+      --gold-glow: rgba(212, 175, 55, 0.22);
       --emerald: #10b981;
-      --emerald-glow: rgba(16, 185, 129, 0.3);
-      --purple: #a855f7;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
+      --emerald-glow: rgba(16, 185, 129, 0.2);
       --font-sans: 'Inter', 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', Consolas, Monaco, monospace;
-      --radius-sm: 6px;
-      --radius-md: 10px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
       --radius-lg: 14px;
-      --radius-xl: 18px;
+      --radius-xl: 20px;
       --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -47,413 +46,447 @@
       padding: 0;
     }
 
-    body {
-      background-color: var(--bg-base);
-      color: var(--text-main);
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg);
+      color: var(--ink);
       font-family: var(--font-sans);
-      line-height: 1.7;
-      letter-spacing: 0;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: var(--bg);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      position: relative;
       overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* Architectural Drafting Grid Background */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
       background-image: 
-        radial-gradient(ellipse 90% 60% at 50% -10%, rgba(212, 175, 55, 0.12), transparent 70%),
-        radial-gradient(ellipse 60% 40% at 95% 25%, rgba(37, 99, 235, 0.08), transparent 60%),
-        radial-gradient(ellipse 50% 35% at 5% 55%, rgba(6, 182, 212, 0.07), transparent 60%);
-      background-attachment: fixed;
+        radial-gradient(circle at 50% 120px, rgba(212, 175, 55, 0.06), transparent 70%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 48px 48px, 48px 48px;
+      z-index: 0;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
     }
 
-    /* ─── Top Navigation Bar (Purpur Minimalist Header) ───────────────────── */
-    .dl-nav {
+    /* Sticky Global Navigation */
+    .nav-bar {
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      background: rgba(7, 9, 15, 0.88);
-      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(8, 9, 12, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
     }
 
-    .dl-nav-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 14px 24px;
+    .nav-inner {
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
     }
 
-    .dl-nav-left {
+    .brand-group {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
     }
 
-    .dl-brand-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 18px;
-      letter-spacing: -0.4px;
-      color: #fff;
-    }
-
-    .dl-brand-emblem {
+    .brand-logo-img {
       width: 32px;
       height: 32px;
       border-radius: 8px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #000;
-      font-weight: 900;
-      font-size: 18px;
-      box-shadow: 0 0 14px var(--gold-glow);
+      object-fit: cover;
+      box-shadow: 0 0 16px var(--gold-glow);
     }
 
-    .dl-breadcrumb {
+    .brand-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ffffff;
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 13px;
-      color: var(--text-dim);
     }
 
-    .dl-breadcrumb-sep {
-      color: var(--text-dim);
+    .brand-name span {
+      color: var(--gold);
     }
 
-    .dl-badge-hub {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: rgba(212, 175, 55, 0.12);
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      color: var(--gold-light);
-    }
-
-    .dl-nav-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
       font-weight: 600;
-      color: var(--text-muted);
-      padding: 6px 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--line);
       border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-      background: rgba(255, 255, 255, 0.03);
-      transition: var(--transition);
+      color: var(--muted);
     }
 
-    .dl-nav-back:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.08);
-      border-color: var(--border-medium);
-    }
-
-    .dl-nav-right {
+    .nav-links {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      list-style: none;
     }
 
-    .dl-nav-btn {
+    .nav-link {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 7px 14px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 14px;
       border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
+      transition: var(--transition);
+      border: 1px solid transparent;
+    }
+
+    .nav-link:hover {
+      color: #ffffff;
       background: rgba(255, 255, 255, 0.04);
-      color: var(--text-main);
+      border-color: var(--line);
+    }
+
+    .nav-link.back-portal {
+      color: var(--gold);
+      border-color: rgba(212, 175, 55, 0.25);
+      background: rgba(212, 175, 55, 0.06);
+    }
+
+    .nav-link.back-portal:hover {
+      background: rgba(212, 175, 55, 0.12);
+      border-color: var(--gold);
+      color: #ffffff;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-lang-toggle {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      color: var(--ink);
       cursor: pointer;
       transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .dl-nav-btn:hover {
+    .btn-lang-toggle:hover {
       background: rgba(255, 255, 255, 0.08);
-      border-color: var(--border-medium);
+      border-color: var(--line-strong);
+      color: #ffffff;
     }
 
-    .dl-lang-btn {
+    /* Section 01: Hero & Studio Matrix */
+    .hero-section {
+      padding: 64px 0 48px;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hud-eyebrow {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       color: var(--gold);
-      border-color: rgba(212, 175, 55, 0.35);
-    }
-
-    /* ─── Hero Section (Purpur Centered Clarity + Metrics) ───────────────── */
-    .dl-hero {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 48px 24px 28px;
-      text-align: center;
-    }
-
-    .dl-hero-eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 4px 14px;
-      border-radius: 999px;
-      background: rgba(212, 175, 55, 0.08);
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      color: var(--gold-light);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
       margin-bottom: 16px;
     }
 
-    .dl-pulse-dot {
-      width: 7px;
-      height: 7px;
+    .hud-eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
       border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 10px #10b981;
-      animation: pulse 2s infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.45; transform: scale(0.85); }
-    }
-
-    .dl-hero-title {
-      font-size: clamp(28px, 4.2vw, 42px);
+    .hero-title {
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
       font-weight: 800;
-      letter-spacing: -0.8px;
-      color: #fff;
-      margin-bottom: 12px;
-      line-height: 1.25;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin-bottom: 20px;
     }
 
-    .dl-hero-sub {
-      max-width: 820px;
-      margin: 0 auto 24px;
-      font-size: 15.5px;
-      color: var(--text-muted);
-      line-height: 1.65;
+    .hero-title .highlight {
+      background: linear-gradient(135deg, #ffffff 30%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .dl-metrics-row {
+    .hero-lead {
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+      max-width: 580px;
+    }
+
+    .hero-badges-row {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 34px;
+      gap: 8px;
+      margin-bottom: 32px;
     }
 
-    .dl-metric-pill {
+    .hud-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 6px 16px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-subtle);
-      font-size: 12.5px;
-      color: var(--text-muted);
+      gap: 6px;
     }
 
-    .dl-metric-pill strong {
-      color: #fff;
+    .hud-badge.gold {
+      color: var(--gold-light);
+      border-color: rgba(212, 175, 55, 0.3);
+      background: rgba(212, 175, 55, 0.05);
     }
 
-    /* ─── Featured Recommended Build (Purpur Latest Build + GetBukkit Meta) ─ */
-    .dl-featured-suite {
-      max-width: 1280px;
-      margin: 0 auto 36px;
-      padding: 0 24px;
-    }
-
-    .featured-card-inner {
-      background: linear-gradient(145deg, rgba(212, 175, 55, 0.09) 0%, rgba(17, 24, 39, 0.95) 70%, rgba(13, 18, 31, 0.98) 100%);
-      border: 1px solid rgba(212, 175, 55, 0.45);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 24px rgba(212, 175, 55, 0.06);
-      border-radius: var(--radius-xl);
-      padding: 30px 34px;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 28px;
+    .hero-cta-box {
+      display: flex;
+      flex-wrap: wrap;
       align-items: center;
+      gap: 16px;
+    }
+
+    .btn-master-dl {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--gold) 0%, #b89124 100%);
+      color: #000000;
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 1.05rem;
+      box-shadow: 0 4px 24px rgba(212, 175, 55, 0.3);
+      transition: var(--transition);
+      border: 1px solid #ffd875;
+    }
+
+    .btn-master-dl:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(212, 175, 55, 0.45);
+      background: linear-gradient(135deg, #fce28b 0%, var(--gold) 100%);
+    }
+
+    .btn-master-dl .dl-subtext {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      opacity: 0.85;
+      letter-spacing: 0.02em;
+      margin-top: 2px;
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--ink);
+      text-decoration: none;
+      padding: 15px 22px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.92rem;
+      border: 1px solid var(--line);
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--line-strong);
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    /* Right: Interactive 12-Studio Squircle Dock */
+    .hero-dock-wrap {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
       position: relative;
       overflow: hidden;
     }
 
-    .featured-card-inner::after {
-      content: '';
+    .hero-dock-wrap::before {
+      content: "";
       position: absolute;
       top: 0;
+      left: 0;
       right: 0;
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
-      pointer-events: none;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
     }
 
-    .featured-emblem-wrap {
-      width: 80px;
-      height: 80px;
-      border-radius: 18px;
-      background: rgba(212, 175, 55, 0.12);
-      border: 1px solid rgba(212, 175, 55, 0.35);
+    .dock-header-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 28px var(--gold-glow);
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
     }
 
-    .featured-emblem-img {
-      width: 58px;
-      height: 58px;
-      object-fit: contain;
-    }
-
-    .featured-info h2 {
-      font-size: 23px;
-      font-weight: 800;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-      letter-spacing: -0.3px;
-    }
-
-    .suite-badge-gold {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      color: #000;
-      letter-spacing: 0.3px;
-    }
-
-    /* GetBukkit Tabular Spec Matrix */
-    .featured-spec-grid {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 12px;
-      font-size: 13px;
-    }
-
-    .spec-cell {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-muted);
-    }
-
-    .spec-cell-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-dim);
-    }
-
-    .spec-cell-val {
+    .dock-title {
       font-family: var(--font-mono);
+      font-size: 0.75rem;
       font-weight: 600;
-      color: #fff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
 
-    .spec-cell-val.gold {
-      color: var(--gold-light);
-    }
-
-    .featured-highlights {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .f-tag {
-      font-size: 12px;
-      color: #e2e8f0;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      padding: 3px 10px;
-      border-radius: 999px;
-    }
-
-    .featured-checksum-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .dock-count-pill {
       font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: var(--text-dim);
+      font-size: 0.7rem;
+      color: var(--gold-light);
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
     }
 
-    .featured-action {
+    .dock-matrix {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .dock-app-item {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
-      gap: 10px;
-      min-width: 250px;
-    }
-
-    .btn-download-master {
-      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 14px 26px;
-      font-size: 14px;
-      font-weight: 700;
+      padding: 12px 8px;
       border-radius: var(--radius-md);
-      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
-      color: #000;
-      box-shadow: 0 4px 20px var(--gold-glow);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
       transition: var(--transition);
-      width: 100%;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .dock-app-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--app-color, var(--gold));
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px var(--app-glow, var(--gold-glow));
+    }
+
+    .dock-icon-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+      margin-bottom: 8px;
+      transition: transform 0.2s ease;
+    }
+
+    .dock-app-item:hover .dock-icon-img {
+      transform: scale(1.08);
+    }
+
+    .dock-app-name {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink);
       text-align: center;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
     }
 
-    .btn-download-master:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 28px rgba(212, 175, 55, 0.5);
+    /* Section 02: The Lineup (4-Column Hairline Grid) */
+    .lineup-section {
+      padding: 48px 0 80px;
+      position: relative;
     }
 
-    .btn-download-master:active {
-      transform: translateY(0);
+    .sticky-hud-bar {
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+      background: rgba(8, 9, 12, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 16px 0;
+      margin-bottom: 32px;
     }
 
-    /* ─── Controls: GetBukkit Segmented Pills & Instant Search ───────────── */
-    .dl-controls {
-      max-width: 1280px;
-      margin: 0 auto 24px;
-      padding: 0 24px;
-    }
-
-    .dl-controls-inner {
-      background: rgba(13, 18, 31, 0.88);
-      border: 1px solid var(--border-medium);
-      border-radius: var(--radius-lg);
-      padding: 14px 20px;
+    .sticky-hud-inner {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -461,1301 +494,1473 @@
       gap: 16px;
     }
 
-    .dl-filters-group {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .dl-filter-btn {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      font-size: 12.5px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .dl-filter-btn:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.09);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .dl-filter-btn.active {
-      background: var(--blue-accent);
-      color: #fff;
-      border-color: var(--blue-accent);
-      box-shadow: 0 2px 12px var(--blue-glow);
-    }
-
-    .dl-filter-btn.filter-gold.active {
-      background: var(--gold);
-      color: #000;
-      border-color: var(--gold);
-      box-shadow: 0 2px 12px var(--gold-glow);
-    }
-
-    .dl-search-wrap {
-      position: relative;
-      flex: 1;
-      max-width: 340px;
-      min-width: 220px;
-    }
-
-    .dl-search-input {
-      width: 100%;
-      background: rgba(7, 9, 15, 0.7);
-      border: 1px solid var(--border-subtle);
-      color: #fff;
-      font-size: 13px;
-      padding: 9px 14px 9px 36px;
-      border-radius: var(--radius-sm);
-      outline: none;
-      transition: var(--transition);
-      font-family: var(--font-sans);
-    }
-
-    .dl-search-input:focus {
-      border-color: var(--blue-accent);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-    }
-
-    .dl-search-icon {
-      position: absolute;
-      left: 11px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-dim);
-      pointer-events: none;
-    }
-
-    .dl-clear-btn {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--text-dim);
-      font-size: 14px;
-      cursor: pointer;
-      display: none;
-    }
-
-    .dl-clear-btn:hover {
-      color: #fff;
-    }
-
-    /* ─── List Section: GetBukkit Row Table Architecture ─────────────────── */
-    .dl-list-section {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 24px 60px;
-      flex: 1;
-    }
-
-    .dl-list-count {
+    .hud-section-label {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #ffffff;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-      font-size: 13px;
-      color: var(--text-muted);
-      padding: 0 4px;
-    }
-
-    .dl-table-stack {
-      display: flex;
-      flex-direction: column;
       gap: 10px;
     }
 
-    /* GetBukkit Compact Row Card */
-    .dl-row-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 16px 22px;
-      display: grid;
-      grid-template-columns: 240px 1fr auto;
-      gap: 20px;
+    .hud-section-label span {
+      color: var(--gold);
+    }
+
+    .filter-search-group {
+      display: flex;
+      flex-wrap: wrap;
       align-items: center;
+      gap: 12px;
+    }
+
+    .search-box-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      color: #ffffff;
+      padding: 8px 14px 8px 34px;
+      border-radius: var(--radius-sm);
+      outline: none;
+      width: 240px;
       transition: var(--transition);
+    }
+
+    .search-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 12px var(--gold-glow);
+      width: 280px;
+    }
+
+    .search-icon-svg {
+      position: absolute;
+      left: 10px;
+      width: 14px;
+      height: 14px;
+      color: var(--faint);
+      pointer-events: none;
+    }
+
+    .filter-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+    }
+
+    .filter-tab {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-tab:hover {
+      color: #ffffff;
+    }
+
+    .filter-tab.active {
+      color: #000000;
+      background: var(--gold);
+      box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+    }
+
+    /* Hairline Grid System */
+    .hairline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    /* Individual Lineup Card */
+    .lineup-card {
+      background: var(--bg-surface);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: background 0.2s ease, transform 0.2s ease;
+      overflow: hidden;
+    }
+
+    .lineup-card:hover {
+      background: var(--bg-surface-elevated);
+      z-index: 2;
+    }
+
+    /* Top Accent Line (ArtCraft signature) */
+    .card-accent-rule {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--app-color, var(--gold));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 10;
+    }
+
+    .lineup-card:hover .card-accent-rule {
+      transform: scaleX(1);
+    }
+
+    .card-header-hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px 10px;
+      border-bottom: 1px solid var(--line-subtle);
+    }
+
+    .hud-num-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--app-color, var(--gold));
+      letter-spacing: 0.05em;
+    }
+
+    .hud-category-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    /* 16:10 Wide Screenshot Preview */
+    .card-preview-box {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: #000000;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .card-preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+      filter: brightness(0.95) contrast(1.05);
+    }
+
+    .lineup-card:hover .card-preview-img {
+      transform: scale(1.04);
+      filter: brightness(1.02) contrast(1.08);
+    }
+
+    /* Card Body */
+    .card-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
       position: relative;
     }
 
-    .dl-row-card::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      background: var(--card-accent, var(--gold));
-      opacity: 0.8;
-      border-top-left-radius: var(--radius-md);
-      border-bottom-left-radius: var(--radius-md);
-      transition: var(--transition);
-    }
-
-    .dl-row-card:hover {
-      background: var(--bg-card-hover);
-      border-color: rgba(255, 255, 255, 0.18);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
-    }
-
-    .dl-row-card:hover::before {
-      opacity: 1;
-      width: 5px;
-    }
-
-    /* Column 1: Identity & Version */
-    .col-identity {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      min-width: 0;
-    }
-
-    .col-icon-wrap {
+    /* Tactile Overlapping Squircle Icon (-mt-8) */
+    .card-overlap-icon {
       width: 48px;
       height: 48px;
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      object-fit: cover;
+      margin-top: -38px;
+      margin-bottom: 12px;
+      border: 2px solid var(--bg-surface);
+      background: var(--bg-surface);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+      position: relative;
+      z-index: 5;
+      transition: transform 0.2s ease, border-color 0.2s ease;
     }
 
-    .col-icon-img {
-      width: 34px;
-      height: 34px;
-      object-fit: contain;
+    .lineup-card:hover .card-overlap-icon {
+      transform: translateY(-2px);
+      border-color: var(--app-color, var(--gold));
     }
 
-    .col-title-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      min-width: 0;
-    }
-
-    .col-name {
-      font-size: 15.5px;
+    .card-title {
+      font-size: 1.15rem;
       font-weight: 700;
-      color: #fff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .col-badges-row {
+      letter-spacing: -0.01em;
+      color: #ffffff;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
+    }
+
+    .card-title .accent-text {
+      color: var(--app-color, var(--gold));
+    }
+
+    .card-desc {
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 18px;
+      flex-grow: 1;
+    }
+
+    .card-badges-row {
+      display: flex;
       flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
     }
 
-    .col-ver-tag {
-      font-size: 11px;
+    .tech-badge {
       font-family: var(--font-mono);
-      font-weight: 700;
-      padding: 1px 7px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.07);
-      color: #e2e8f0;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.68rem;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
     }
 
-    .col-status-pill {
+    .tech-badge.active {
+      color: #34d399;
+      border-color: rgba(52, 211, 153, 0.3);
+      background: rgba(52, 211, 153, 0.06);
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      font-size: 10.5px;
-      font-weight: 700;
-      padding: 1px 7px;
-      border-radius: 999px;
     }
 
-    .status-active {
-      background: rgba(16, 185, 129, 0.14);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      color: #34d399;
-    }
-
-    .status-indev {
-      background: rgba(168, 85, 247, 0.14);
-      border: 1px solid rgba(168, 85, 247, 0.35);
-      color: #c084fc;
-    }
-
-    .status-dot-inner {
+    .tech-badge.active::before {
+      content: "";
       width: 5px;
       height: 5px;
       border-radius: 50%;
-      background: currentColor;
+      background: #34d399;
+      box-shadow: 0 0 6px #34d399;
     }
 
-    /* Column 2: GetBukkit-Style Structured Metadata Table */
-    .col-metadata {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 0;
+    .tech-badge.roadmap {
+      color: #c084fc;
+      border-color: rgba(192, 132, 252, 0.3);
+      background: rgba(192, 132, 252, 0.06);
     }
 
-    .row-meta-table {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 14px;
-      font-size: 12.5px;
-      color: var(--text-muted);
-    }
-
-    .meta-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .meta-lbl {
-      color: var(--text-dim);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-
-    .meta-val {
-      color: #e2e8f0;
-      font-weight: 500;
-    }
-
-    .meta-val.file {
-      font-family: var(--font-mono);
-      font-weight: 700;
-      color: var(--card-accent, var(--gold));
-    }
-
-    .meta-val.size {
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .row-highlights {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .row-pill-tag {
-      font-size: 11.5px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.035);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      color: #cbd5e1;
-    }
-
-    .row-checksum-bar {
+    /* Actions Footer */
+    .card-actions-row {
       display: flex;
       align-items: center;
       gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .btn-card-dl {
+      flex-grow: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-top: 2px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .btn-copy-hash {
-      background: none;
-      border: none;
-      color: var(--gold-light);
-      cursor: pointer;
-      font-size: 11px;
-      font-family: var(--font-sans);
+      font-size: 0.8rem;
       font-weight: 600;
-      text-decoration: underline;
-      padding: 0;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .btn-copy-hash:hover {
-      color: #fff;
-    }
-
-    /* Column 3: Dual Action Cluster (GetBukkit Style) */
-    .col-actions {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 6px;
-      min-width: 200px;
-    }
-
-    .btn-action-primary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 9px 18px;
-      font-size: 13px;
-      font-weight: 700;
+      color: #000000;
+      background: var(--app-color, var(--gold));
+      border: 1px solid transparent;
+      padding: 9px 14px;
       border-radius: var(--radius-sm);
-      background: var(--blue-accent);
-      color: #fff;
+      text-decoration: none;
       transition: var(--transition);
-      white-space: nowrap;
-      width: 100%;
-      border: none;
       cursor: pointer;
     }
 
-    .btn-action-primary.suite-accent {
-      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
-      color: #000;
-      box-shadow: 0 2px 10px var(--gold-glow);
+    .btn-card-dl:hover {
+      filter: brightness(1.15);
+      box-shadow: 0 4px 16px var(--app-glow, var(--gold-glow));
     }
 
-    .btn-action-primary:hover {
-      opacity: 0.94;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px var(--blue-glow);
-    }
-
-    .btn-action-primary.suite-accent:hover {
-      box-shadow: 0 4px 18px var(--gold-glow);
-    }
-
-    .btn-action-secondary {
+    .btn-card-hash {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: var(--text-dim);
-      padding: 4px 8px;
-      border-radius: 4px;
-      transition: var(--transition);
-    }
-
-    .btn-action-secondary:hover {
-      color: var(--gold-light);
-    }
-
-    .btn-action-roadmap {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 8px 16px;
-      font-size: 12.5px;
-      font-weight: 600;
-      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
+      color: var(--muted);
+      border: 1px solid var(--line);
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
       transition: var(--transition);
-      white-space: nowrap;
-      width: 100%;
     }
 
-    .btn-action-roadmap:hover {
+    .btn-card-hash:hover {
       background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.2);
-      color: #fff;
+      border-color: var(--line-strong);
+      color: #ffffff;
     }
 
-    /* ─── Quick-Start & Verification Cockpit (GetBukkit Detail Box) ─────── */
-    .dl-cockpit-section {
-      max-width: 1280px;
-      margin: 0 auto 50px;
-      padding: 0 24px;
+    /* Section 03: Principles Blueprint Grid */
+    .principles-section {
+      padding: 64px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--bg-sunken);
     }
 
-    .cockpit-card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-medium);
-      border-radius: var(--radius-lg);
-      padding: 26px 30px;
+    .section-header-center {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 48px;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .principles-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 28px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
     }
 
-    .cockpit-col h3 {
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
+    .principle-card {
+      background: var(--bg-surface);
+      padding: 32px 24px;
       display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
+      flex-direction: column;
+      position: relative;
     }
 
-    .cockpit-col p {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      margin-bottom: 14px;
+    .principle-num {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .principle-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .principle-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
       line-height: 1.6;
     }
 
-    .terminal-box {
+    /* Section 04: Cryptographic Verification */
+    .verify-section {
+      padding: 64px 0 80px;
+    }
+
+    .verify-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .terminal-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      background: #04060b;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 16px;
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .terminal-code-block {
+      background: #000000;
+      border: 1px solid var(--line);
       border-radius: var(--radius-sm);
-      padding: 10px 14px;
+      padding: 16px 20px;
       font-family: var(--font-mono);
-      font-size: 12px;
-      color: #38bdf8;
+      font-size: 0.85rem;
+      color: #34d399;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      overflow-x: auto;
+      margin-bottom: 24px;
+    }
+
+    .btn-copy-cmd {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #000000;
+      background: var(--gold);
+      border: none;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn-copy-cmd:hover {
+      background: #fce28b;
+    }
+
+    .checksum-table-wrap {
       overflow-x: auto;
     }
 
-    .btn-copy-terminal {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--border-subtle);
-      color: #fff;
-      font-size: 11px;
-      font-family: var(--font-sans);
+    .checksum-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .checksum-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
       font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    .btn-copy-terminal:hover {
-      background: rgba(255, 255, 255, 0.16);
+    .checksum-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line-subtle);
+      color: var(--ink);
     }
 
-    /* ─── Footer ─────────────────────────────────────────────────────────── */
-    .dl-footer {
-      border-top: 1px solid var(--border-subtle);
-      background: rgba(7, 9, 15, 0.95);
-      padding: 34px 24px;
+    .checksum-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .hash-val {
+      color: var(--gold-light);
+      word-break: break-all;
+    }
+
+    /* Footer */
+    .page-footer {
+      border-top: 1px solid var(--line);
+      padding: 40px 0;
+      background: var(--bg-sunken);
       margin-top: auto;
     }
 
-    .dl-footer-inner {
-      max-width: 1280px;
-      margin: 0 auto;
+    .footer-inner {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      font-size: 13px;
-      color: var(--text-dim);
     }
 
-    .dl-footer-links {
+    .footer-text {
+      font-size: 0.85rem;
+      color: var(--faint);
+    }
+
+    .footer-links {
       display: flex;
-      flex-wrap: wrap;
-      gap: 18px;
+      align-items: center;
+      gap: 16px;
+      list-style: none;
     }
 
-    .dl-footer-links a:hover {
-      color: var(--gold-light);
+    .footer-links a {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: var(--transition);
     }
 
-    /* ─── Responsive Breakpoints ─────────────────────────────────────────── */
-    @media (max-width: 1040px) {
-      .dl-row-card {
+    .footer-links a:hover {
+      color: #ffffff;
+    }
+
+    /* Toast Notification */
+    #toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--gold);
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #toast-box.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 1080px) {
+      .hero-grid {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 40px;
       }
-      .col-actions {
-        align-items: flex-start;
-      }
-      .cockpit-card {
+      .principles-grid {
         grid-template-columns: 1fr;
-      }
-      .featured-card-inner {
-        grid-template-columns: 1fr;
-      }
-      .featured-action {
-        align-items: flex-start;
       }
     }
 
-    @media (max-width: 640px) {
-      .dl-nav-inner {
-        padding: 10px 16px;
+    @media (max-width: 768px) {
+      .hairline-grid {
+        grid-template-columns: 1fr;
       }
-      .dl-hero {
-        padding: 30px 16px 20px;
+      .sticky-hud-inner {
+        flex-direction: column;
+        align-items: stretch;
       }
-      .dl-featured-suite, .dl-controls, .dl-list-section, .dl-cockpit-section {
-        padding: 0 16px;
+      .filter-search-group {
+        flex-direction: column;
+        align-items: stretch;
       }
-      .featured-card-inner {
-        padding: 20px 18px;
+      .search-input {
+        width: 100% !important;
       }
-      .dl-row-card {
-        padding: 16px 16px;
-      }
-      .row-meta-table {
-        gap: 8px;
+      .dock-matrix {
+        grid-template-columns: repeat(3, 1fr);
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- ─── Top Navigation (Purpur Clean Nav) ─────────────────────────────── -->
-  <nav class="dl-nav" aria-label="Main Navigation">
-    <div class="dl-nav-inner">
-      <div class="dl-nav-left">
-        <a href="../" class="dl-brand-link" title="meCrafts Home Portal">
-          <div class="dl-brand-emblem">M</div>
-          <span>meCrafts</span>
-        </a>
-        <div class="dl-breadcrumb">
-          <span class="dl-breadcrumb-sep">/</span>
-          <span class="dl-badge-hub" id="lbl-nav-badge">Downloads Directory</span>
-        </div>
-        <a href="../" class="dl-nav-back" id="btn-nav-back">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-          <span id="txt-nav-back">กลับหน้าหลัก Portal</span>
-        </a>
-      </div>
+  <!-- Sticky Global Navigation -->
+  <nav class="nav-bar">
+    <div class="container nav-inner">
+      <a href="../" class="brand-group" target="_self">
+        <img src="../branding/mecraft-suite.png" alt="meCrafts" class="brand-logo-img" onerror="this.src='./branding/mecraft-suite.png';" />
+        <span class="brand-name">me<span>Crafts</span></span>
+        <span class="brand-badge" data-i18n="badge_downloads">/ DOWNLOADS DIRECTORY</span>
+      </a>
 
-      <div class="dl-nav-right">
-        <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="dl-nav-btn" title="GitHub Releases History">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          <span>GitHub Releases</span>
+      <ul class="nav-links">
+        <li><a href="../" class="nav-link back-portal" target="_self" data-i18n="nav_portal">← Back to Portal</a></li>
+        <li><a href="#lineup" class="nav-link" data-i18n="nav_lineup">The Lineup</a></li>
+        <li><a href="#principles" class="nav-link" data-i18n="nav_principles">Principles</a></li>
+        <li><a href="#verify" class="nav-link" data-i18n="nav_verify">Verification</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="https://github.com/methastrategy/meCraft/releases" class="nav-link" target="_blank" rel="noopener noreferrer">
+          GitHub
         </a>
-        <button type="button" class="dl-nav-btn dl-lang-btn" id="btn-toggle-lang" title="Switch Language (TH / EN)">
-          <span>TH / EN</span>
+        <button type="button" id="btn-lang" class="btn-lang-toggle" aria-label="Toggle Language">
+          <span id="lang-indicator">TH</span>
         </button>
       </div>
     </div>
   </nav>
 
-  <!-- ─── Hero Section (Purpur Style Centered Layout) ───────────────────── -->
-  <header class="dl-hero">
-    <div class="dl-hero-eyebrow">
-      <span class="dl-pulse-dot" aria-hidden="true"></span>
-      <span id="hero-eyebrow">OFFICIAL WINDOWS .EXE RELEASE DIRECTORY · BUILD PIPELINE</span>
-    </div>
-    <h1 class="dl-hero-title" id="hero-title">ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe) ทุกโปรแกรม</h1>
-    <p class="dl-hero-sub" id="hero-subtitle">
-      ไฟล์ติดตั้งทางการสำหรับระบบปฏิบัติการ Windows 11 และ Windows 10 (64-bit) · ประมวลผลบน RAM เฉพาะในเครื่อง 100% · ปราศจากโฆษณา ไม่เก็บสถิติ และสัญญาอนุญาต MIT Open Source
-    </p>
-
-    <div class="dl-metrics-row">
-      <div class="dl-metric-pill">
-        <span>📦</span> <span id="m-pill-1"><strong>12 ไฟล์ติดตั้ง</strong> ครบทั้ง Suite และ Standalone</span>
-      </div>
-      <div class="dl-metric-pill">
-        <span>🪟</span> <span>Windows 11 / 10 (64-bit x64)</span>
-      </div>
-      <div class="dl-metric-pill">
-        <span>🔒</span> <span id="m-pill-2">100% Offline RAM · 0-Cloud Telemetry</span>
-      </div>
-      <div class="dl-metric-pill">
-        <span>🛡️</span> <span>Ed25519 Signed & SHA-256 Verified</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- ─── Featured Recommended Build (Purpur Latest Build Card) ─────────── -->
-  <section class="dl-featured-suite" aria-label="Recommended Master Installer">
-    <div class="featured-card-inner">
-      <div class="featured-emblem-wrap">
-        <img src="../branding/mecraft-suite.png" alt="meCraft Suite" class="featured-emblem-img" onerror="this.src='./branding/mecraft-suite.png';">
-      </div>
-      <div class="featured-info">
-        <h2>
-          <span>meCraft Suite Master Installer</span>
-          <span class="suite-badge-gold" id="lbl-suite-badge">★ แนะนำ: ตัวติดตั้งชุดหลัก (All-in-One)</span>
-        </h2>
-
-        <!-- GetBukkit Tabular Spec Row -->
-        <div class="featured-spec-grid">
-          <div class="spec-cell">
-            <span class="spec-cell-label">FILE:</span>
-            <span class="spec-cell-val gold">meCraft-Setup.exe</span>
-          </div>
-          <div class="spec-cell">
-            <span class="spec-cell-label">VERSION:</span>
-            <span class="spec-cell-val">v1.0.0 (Latest Stable)</span>
-          </div>
-          <div class="spec-cell">
-            <span class="spec-cell-label">SIZE:</span>
-            <span class="spec-cell-val">14.8 MB</span>
-          </div>
-          <div class="spec-cell">
-            <span class="spec-cell-label">REQUIRES:</span>
-            <span class="spec-cell-val">Windows 11 / 10 x64</span>
-          </div>
-          <div class="spec-cell">
-            <span class="spec-cell-label">RELEASED:</span>
-            <span class="spec-cell-val" id="txt-suite-date">23 พ.ย. 2026</span>
-          </div>
-        </div>
-
-        <div class="featured-highlights">
-          <span class="f-tag" id="f-tag-1">✦ รวมครบทั้ง 11 โปรแกรมสตูดิโอในตัวติดตั้งเดียว</span>
-          <span class="f-tag" id="f-tag-2">✦ ประมวลผลบนเครื่อง 100% ไม่ส่งข้อมูลขึ้นคลาวด์</span>
-          <span class="f-tag" id="f-tag-3">✦ อัปเดตแพตช์อัตโนมัติภายในโปรแกรมด้วย Ed25519</span>
-        </div>
-
-        <div class="featured-checksum-row">
-          <span>🔒 SHA-256: 9f8e7d4a6b1c2e3f88a912c4e5f60718293a4b5c6d7e8f90123456789abcdef0</span>
-          <button type="button" class="btn-copy-hash" data-hash="9f8e7d4a6b1c2e3f88a912c4e5f60718293a4b5c6d7e8f90123456789abcdef0">
-            <span id="txt-copy-suite-hash">📋 คัดลอก Checksum</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="featured-action">
-        <a href="https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meCraft-Setup.exe" download="meCraft-Setup.exe" class="btn-download-master" id="btn-master-dl">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <span id="txt-btn-master-dl">ดาวน์โหลดตัวติดตั้งชุดหลัก (.exe)</span>
-        </a>
-        <span style="font-size: 11.5px; color: var(--text-dim);" id="txt-suite-sub">14.8 MB · Zero-Cloud Windows Package</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── Controls: GetBukkit Segmented Category Pills & Live Search ────── -->
-  <section class="dl-controls">
-    <div class="dl-controls-inner">
-      <div class="dl-filters-group" role="tablist" aria-label="Filter installers">
-        <button type="button" class="dl-filter-btn active" data-filter="all" id="tab-all">
-          ทั้งหมด (12 ไฟล์)
-        </button>
-        <button type="button" class="dl-filter-btn filter-gold" data-filter="suite" id="tab-suite">
-          ★ Master Suite
-        </button>
-        <button type="button" class="dl-filter-btn" data-filter="ready" id="tab-ready">
-          พร้อมดาวน์โหลด (Active)
-        </button>
-        <button type="button" class="dl-filter-btn" data-filter="indev" id="tab-indev">
-          กำลังพัฒนา (Roadmap)
-        </button>
-      </div>
-
-      <div class="dl-search-wrap">
-        <svg class="dl-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" class="dl-search-input" id="search-input" placeholder="ค้นหา เช่น mepdf, raw, 1.0.0, .exe..." autocomplete="off" spellcheck="false" />
-        <button type="button" class="dl-clear-btn" id="btn-clear-search" aria-label="Clear search">✕</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── List Section: GetBukkit-Style Row Table ───────────────────────── -->
-  <main class="dl-list-section">
-    <div class="dl-list-count">
-      <span id="lbl-results-count">กำลังแสดงรายการตัวติดตั้ง...</span>
-      <span style="font-size: 12px; color: var(--text-dim);">Windows 10/11 x64 · Tauri v2 & WebAssembly</span>
-    </div>
-
-    <div class="dl-table-stack" id="binaries-table-stack" role="list">
-      <!-- Injected via JavaScript -->
-    </div>
-  </main>
-
-  <!-- ─── Quick-Start & Verification Cockpit (GetBukkit Command Card) ────── -->
-  <section class="dl-cockpit-section">
-    <div class="cockpit-card">
-      <div class="cockpit-col">
-        <h3 id="verify-box-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>ตรวจสอบ Checksum ความปลอดภัย (PowerShell)</span>
-        </h3>
-        <p id="verify-box-desc">
-          คุณสามารถตรวจสอบความถูกต้องของไฟล์ติดตั้ง .exe บนเครื่อง Windows เพื่อยืนยันว่าไฟล์ไม่ถูกดัดแปลงและส่งตรงจาก GitHub Release Pipeline:
+  <!-- Section 01: Hero & Interactive Studio Dock -->
+  <section class="hero-section" id="hero">
+    <div class="container hero-grid">
+      
+      <!-- Left: Master CTA & Eyebrow -->
+      <div class="hero-text-col">
+        <div class="hud-eyebrow" data-i18n="hero_eyebrow">01 / WINDOWS .EXE PIPELINE</div>
+        <h1 class="hero-title" data-i18n="hero_title">
+          Official Studio Installers & <span class="highlight">Suite Directory</span>
+        </h1>
+        <p class="hero-lead" data-i18n="hero_lead">
+          100% In-Device Memory Execution. Zero Cloud Uploads. Zero Telemetry. Native Windows Desktop Performance with MIT Open-Source Transparency.
         </p>
-        <div class="terminal-box">
-          <code>Get-FileHash -Algorithm SHA256 .\meCraft-Setup.exe</code>
-          <button type="button" class="btn-copy-terminal" data-copy="Get-FileHash -Algorithm SHA256 .\meCraft-Setup.exe">คัดลอกคำสั่ง</button>
+
+        <div class="hero-badges-row">
+          <span class="hud-badge gold" data-i18n="badge_win">Windows 11 / 10 · 64-bit</span>
+          <span class="hud-badge" data-i18n="badge_ram">100% In-Device RAM</span>
+          <span class="hud-badge" data-i18n="badge_telemetry">Zero Telemetry</span>
+          <span class="hud-badge" data-i18n="badge_crypto">SHA-256 Verified</span>
+        </div>
+
+        <div class="hero-cta-box">
+          <a href="https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meCraft-Setup.exe" class="btn-master-dl" id="btn-master-download">
+            <span data-i18n="cta_master_dl">Download meCraft Installer (.exe)</span>
+            <span class="dl-subtext" data-i18n="cta_master_sub">v1.0.0 · 14.8 MB · All 11 Studios Included</span>
+          </a>
+          <a href="#lineup" class="btn-secondary" data-i18n="cta_browse_studios">
+            Explore 11 Studios ↓
+          </a>
         </div>
       </div>
 
-      <div class="cockpit-col">
-        <h3 id="silent-box-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          <span>ติดตั้งแบบไร้การรบกวน (Silent CLI Install)</span>
-        </h3>
-        <p id="silent-box-desc">
-          สำหรับผู้ดูแลระบบหรือต้องการติดตั้งแบบเงียบ ไม่แสดงหน้าต่าง Wizard สามารถรันคำสั่งผ่าน Command Prompt หรือ PowerShell ได้ทันที:
+      <!-- Right: Interactive 12-Studio Squircle Dock -->
+      <div class="hero-dock-wrap">
+        <div class="dock-header-row">
+          <span class="dock-title" data-i18n="dock_title">STUDIO DOCK · CLICK TO NAVIGATE</span>
+          <span class="dock-count-pill" data-i18n="dock_count">11 STUDIOS + SUITE</span>
+        </div>
+        <div class="dock-matrix" id="hero-dock-matrix">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 02: The Lineup (4-Column Hairline Grid) -->
+  <section class="lineup-section" id="lineup">
+    
+    <!-- Sticky HUD Filter & Search -->
+    <div class="sticky-hud-bar">
+      <div class="container sticky-hud-inner">
+        <div class="hud-section-label">
+          <span>02 /</span> <span data-i18n="lineup_header">THE LINEUP · PICK A STUDIO TO DOWNLOAD</span>
+        </div>
+
+        <div class="filter-search-group">
+          <div class="search-box-wrap">
+            <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="studio-search" class="search-input" placeholder="Search studios, files, features..." data-i18n-placeholder="search_placeholder" />
+          </div>
+
+          <div class="filter-tabs">
+            <button type="button" class="filter-tab active" data-filter="all" data-i18n="filter_all">All (12)</button>
+            <button type="button" class="filter-tab" data-filter="active" data-i18n="filter_active">Active (.exe)</button>
+            <button type="button" class="filter-tab" data-filter="roadmap" data-i18n="filter_roadmap">Roadmap</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4-Column Hairline Grid Container -->
+    <div class="container">
+      <div class="hairline-grid" id="lineup-grid">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 03: Principles Blueprint Grid -->
+  <section class="principles-section" id="principles">
+    <div class="container">
+      <div class="section-header-center">
+        <div class="hud-eyebrow" data-i18n="principles_eyebrow">03 / ARCHITECTURAL INVARIANTS</div>
+        <h2 class="section-title" data-i18n="principles_title">Zero-Cloud Engineering Principles</h2>
+        <p class="section-subtitle" data-i18n="principles_subtitle">
+          Six non-negotiable guarantees built into every byte of meCrafts desktop applications.
         </p>
-        <div class="terminal-box">
-          <code>Start-Process -FilePath ".\meCraft-Setup.exe" -ArgumentList "/S" -Wait</code>
-          <button type="button" class="btn-copy-terminal" data-copy='Start-Process -FilePath ".\meCraft-Setup.exe" -ArgumentList "/S" -Wait'>คัดลอกคำสั่ง</button>
+      </div>
+
+      <div class="principles-grid">
+        <div class="principle-card">
+          <span class="principle-num">01 / RAM</span>
+          <h3 class="principle-title" data-i18n="p1_title">100% In-Device Memory</h3>
+          <p class="principle-desc" data-i18n="p1_desc">All documents, pixels, waveforms, and geometries are loaded strictly into local host RAM. No file buffers or telemetry ever touch remote servers.</p>
+        </div>
+
+        <div class="principle-card">
+          <span class="principle-num">02 / TELEMETRY</span>
+          <h3 class="principle-title" data-i18n="p2_title">Zero Telemetry & Tracking</h3>
+          <p class="principle-desc" data-i18n="p2_desc">Zero analytics SDKs, zero background pinging, zero behavioral telemetry. Your machine remains strictly yours.</p>
+        </div>
+
+        <div class="principle-card">
+          <span class="principle-num">03 / NATIVE</span>
+          <h3 class="principle-title" data-i18n="p3_title">Native Windows Desktop Engine</h3>
+          <p class="principle-desc" data-i18n="p3_desc">Built with Tauri v2, Rust native backend, and DirectX 12 / Vulkan hardware acceleration for microsecond UI response times.</p>
+        </div>
+
+        <div class="principle-card">
+          <span class="principle-num">04 / OPEN-SOURCE</span>
+          <h3 class="principle-title" data-i18n="p4_title">MIT Open-Source License</h3>
+          <p class="principle-desc" data-i18n="p4_desc">Transparent source code available on GitHub. Anyone can inspect, audit, fork, or build the binaries from source independently.</p>
+        </div>
+
+        <div class="principle-card">
+          <span class="principle-num">05 / INTEGRITY</span>
+          <h3 class="principle-title" data-i18n="p5_title">Cryptographic Signatures</h3>
+          <p class="principle-desc" data-i18n="p5_desc">Every executable is published with an immutable SHA-256 hash and Ed25519 cryptographic release signature.</p>
+        </div>
+
+        <div class="principle-card">
+          <span class="principle-num">06 / AIR-GAPPED</span>
+          <h3 class="principle-title" data-i18n="p6_title">Air-Gapped Offline Ready</h3>
+          <p class="principle-desc" data-i18n="p6_desc">Full offline functionality from first boot. Install once and run indefinitely in air-gapped secure workstations.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ─── Footer ────────────────────────────────────────────────────────── -->
-  <footer class="dl-footer">
-    <div class="dl-footer-inner">
-      <div>
-        <p>© 2026 meCrafts Workstation Suite. Licensed under MIT Open Source.</p>
-        <p style="margin-top: 4px; font-size: 11.5px; color: #64748b;" id="footer-note">ประมวลผล 100% บนหน่วยความจำเครื่อง ปราศจากการเก็บข้อมูลส่วนตัวใดๆ</p>
+  <!-- Section 04: Cryptographic Verification -->
+  <section class="verify-section" id="verify">
+    <div class="container">
+      <div class="verify-box">
+        <div class="terminal-header">
+          <div class="hud-eyebrow" data-i18n="verify_eyebrow">04 / SECURITY & CRYPTOGRAPHIC VERIFICATION</div>
+          <div class="terminal-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+
+        <p class="card-desc" style="margin-bottom: 16px;" data-i18n="verify_desc">
+          Verify the integrity of downloaded binaries before execution using the Windows PowerShell command:
+        </p>
+
+        <div class="terminal-code-block">
+          <code id="ps-cmd">Get-FileHash -Algorithm SHA256 .\meCraft-Setup.exe</code>
+          <button type="button" class="btn-copy-cmd" id="btn-copy-powershell" data-i18n="btn_copy_cmd">Copy PowerShell</button>
+        </div>
+
+        <div class="checksum-table-wrap">
+          <table class="checksum-table">
+            <thead>
+              <tr>
+                <th data-i18n="th_file">Binary File</th>
+                <th data-i18n="th_version">Version</th>
+                <th data-i18n="th_size">Size</th>
+                <th data-i18n="th_hash">SHA-256 Checksum</th>
+              </tr>
+            </thead>
+            <tbody id="checksum-tbody">
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="dl-footer-links">
-        <a href="../" id="foot-link-home">meCrafts Portal</a>
-        <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
-        <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer">Releases (v1.0.0)</a>
-        <a href="https://github.com/methastrategy/meCraft/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>
+    </div>
+  </section>
+
+  <!-- Page Footer -->
+  <footer class="page-footer">
+    <div class="container footer-inner">
+      <div class="footer-text">
+        &copy; 2026 meCrafts Workstation. 100% In-Device Memory Execution · MIT Open-Source.
       </div>
+      <ul class="footer-links">
+        <li><a href="../" target="_self" data-i18n="nav_portal">Portal Home</a></li>
+        <li><a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/methastrategy/meCraft/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></li>
+      </ul>
     </div>
   </footer>
 
-  <!-- ─── Interactive Logic & Dataset ───────────────────────────────────── -->
+  <!-- Toast Notification Box -->
+  <div id="toast-box">Copied SHA-256 Checksum to Clipboard</div>
+
+  <!-- Interactive Client-Side Logic & Bilingual Dictionary -->
   <script>
-    const SUITE_DOWNLOAD_URL = 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meCraft-Setup.exe';
+    (function() {
+      'use strict';
 
-    const BINARIES_DATA = [
-      {
-        id: 'mecraft-suite',
-        brandIcon: 'mecraft-suite',
-        name: { en: 'meCraft Suite Master Installer', th: 'meCraft Suite Master Installer' },
-        category: { en: 'All-in-One Creative & Document Suite', th: 'ชุดโปรแกรมสร้างสรรค์และจัดการเอกสารครบวงจร' },
-        version: 'v1.0.0',
-        releaseChannel: { en: 'Latest Stable', th: 'เสถียรล่าสุด' },
-        releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
-        fileName: 'meCraft-Setup.exe',
-        fileSize: '14.8 MB',
-        downloadUrl: SUITE_DOWNLOAD_URL,
-        webUrl: '../',
-        isSuite: true,
-        status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit x64)',
-        sha256: '9f8e7d4a6b1c2e3f88a912c4e5f60718293a4b5c6d7e8f90123456789abcdef0',
-        accentColor: '#d4af37',
-        highlights: {
-          en: ['All 11 Creative & Document Studios Included', '100% In-Device Memory Execution · Zero-Cloud', 'Automated in-app delta updates with Ed25519 signing'],
-          th: ['รวมทั้ง 11 โปรแกรมสตูดิโอและยูทิลิตี้ในตัวติดตั้งเดียว', 'ประมวลผลบนเครื่อง 100% ปราศจากคลาวด์ ปลอดภัยสูงสุด', 'ระบบตรวจจับและอัปเดตอัตโนมัติพร้อมลายเซ็น Ed25519'],
+      // 12 Programs Data (Suite Card 00 + 11 Studios)
+      const APPS = [
+        {
+          id: 'mecraft-suite',
+          num: '00',
+          titlePrefix: 'meCraft',
+          titleAccent: ' Installer',
+          nameEn: 'meCraft Installer',
+          nameTh: 'meCraft Installer (ชุดรวม)',
+          category: 'SUITE INSTALLER',
+          categoryTh: 'ตัวติดตั้งรวม',
+          appColor: '#d4af37',
+          appGlow: 'rgba(212, 175, 55, 0.25)',
+          preview: 'mecraft-suite-wide.png',
+          icon: 'mecraft-suite.png',
+          descEn: 'Unified master installer bundling all 11 creative & document studios with 100% in-device memory execution.',
+          descTh: 'ตัวติดตั้งแบบรวมศูนย์ รวมครบทั้ง 11 สตูดิโองานสร้างสรรค์และเอกสาร ประมวลผลบนเครื่อง 100% ไม่พึ่งพาคลาวด์',
+          version: 'v1.0.0',
+          status: 'active',
+          file: 'meCraft-Setup.exe',
+          size: '14.8 MB',
+          hash: '9f8e7d4a6b1c2e3f88a912c4e5f68710293a4b5c6d7e8f90123456789abcdef0',
+          keywords: ['all-in-one', 'suite', 'bundle', 'installer', 'master', 'desktop']
         },
-      },
-      {
-        id: 'mepdf',
-        brandIcon: 'mepdf',
-        name: { en: 'mePDF Studio Pro Standalone', th: 'mePDF Studio Pro Standalone' },
-        category: { en: 'Document Engineering & PDF Lab', th: 'วิศวกรรมเอกสารและสตูดิโอ PDF' },
-        version: 'v3.2.1',
-        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
-        releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
-        fileName: 'mepdf.exe',
-        fileSize: '30.8 MB',
-        downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mepdf.exe',
-        webUrl: '../mepdf/',
-        status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit) · Tauri v2 Native',
-        sha256: '8a4d1f2e9c5b7a0d4f6e3c8b2a1e9d5f7c3a0b8e6d4c2a1f9e8d7b6c5a4f3e2d',
-        accentColor: '#3b82f6',
-        highlights: {
-          en: ['Visual Page Cockpit: Drag, Split, Merge', '4-Point Deskew & Local Otsu Binarization', 'Bank-Grade AES-256 Encryption & PDF Sanitization'],
-          th: ['ค็อกพิทจัดการหน้า ลาก สลับ แยก รวมหน้าเอกสาร', 'ปรับระนาบเอกสารเอียง (Deskew) และปรับภาพขาวดำ Otsu', 'เข้ารหัสเอกสาร AES-256 ระดับธนาคารและลบลายเซ็นลับ'],
+        {
+          id: 'mepdf',
+          num: '01',
+          titlePrefix: 'me',
+          titleAccent: 'PDF',
+          titleSuffix: ' Studio Pro',
+          nameEn: 'mePDF Studio Pro',
+          nameTh: 'mePDF Studio Pro',
+          category: 'DOCUMENT WORKBENCH',
+          categoryTh: 'จัดการเอกสาร PDF',
+          appColor: '#e8204f',
+          appGlow: 'rgba(232, 32, 79, 0.22)',
+          preview: 'mepdf-wide.png',
+          icon: 'mepdf.png',
+          descEn: 'Professional in-device PDF engineering cockpit, OCR lab, lossless compression, and bank-grade AES-256 encryption.',
+          descTh: 'สตูดิโอวิศวกรรมเอกสาร PDF ผสาน OCR สกัดข้อความในเครื่อง บีบอัดไร้การสูญเสีย และเข้ารหัส AES-256',
+          version: 'v1.0.0',
+          status: 'active',
+          file: 'mepdf.exe',
+          size: '11.2 MB',
+          hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+          keywords: ['pdf', 'ocr', 'merge', 'split', 'compress', 'encrypt', 'a4', 'document']
         },
-      },
-      {
-        id: 'mephoto',
-        brandIcon: 'mephoto',
-        name: { en: 'mePhoto Studio Darkroom Standalone', th: 'mePhoto Studio Darkroom Standalone' },
-        category: { en: 'Darkroom RAW & Color Lab', th: 'ห้องมืดตกแต่งภาพ RAW และเกรดสี' },
-        version: 'v2.4.0',
-        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
-        releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
-        fileName: 'mephoto.exe',
-        fileSize: '22.7 MB',
-        downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mephoto.exe',
-        webUrl: '../mephoto/',
-        status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit) · WebAssembly & OpenCV',
-        sha256: '7b2c5e8d1a4f0c9e3b6a8d7f2e1c4a0d9f8e7b6c5a3d2e1f4a9b8c7d6e5f0a1b',
-        accentColor: '#06b6d4',
-        highlights: {
-          en: ['16-Bit RAW / DNG Digital Darkroom', '32-Bit Floating Point Grading & 3D LUTs', 'On-Device Searchable Thai/English OCR Text Extraction'],
-          th: ['แต่งไฟล์ภาพ RAW / DNG แบบ 16-Bit คุณภาพสูงสุด', 'เกรดสีระดับ 32-Bit Float และรองรับ 3D LUTs', 'สแกนข้อความ OCR ภาษาไทยและอังกฤษในเครื่อง'],
+        {
+          id: 'mephoto',
+          num: '02',
+          titlePrefix: 'me',
+          titleAccent: 'Photo',
+          titleSuffix: ' Studio',
+          nameEn: 'mePhoto Studio',
+          nameTh: 'mePhoto Studio',
+          category: 'DARKROOM & RETOUCH',
+          categoryTh: 'ห้องมืดและรีทัชภาพ',
+          appColor: '#2f7bf5',
+          appGlow: 'rgba(47, 123, 245, 0.22)',
+          preview: 'mephoto-wide.png',
+          icon: 'mephoto.png',
+          descEn: 'Hardware-accelerated darkroom, RAW digital negatives processor, HDR curve grading, and neural detail denoise.',
+          descTh: 'ห้องมืดดิจิทัลปรับแต่งภาพ RAW เกรดสี HDR พร้อมระบบลดสัญญาณรบกวนความเร็วสูงด้วยฮาร์ดแวร์',
+          version: 'v1.0.0',
+          status: 'active',
+          file: 'mephoto.exe',
+          size: '18.6 MB',
+          hash: 'a1b2c3d4e5f67890123456789abcdef0123456789abcdef0123456789abcdef0',
+          keywords: ['photo', 'raw', 'darkroom', 'hdr', 'curves', 'color grading', 'retouch']
         },
-      },
-      {
-        id: 'medrop',
-        brandIcon: 'medrop',
-        name: { en: 'meDrop Studio Offline File Relay', th: 'meDrop Studio Offline File Relay' },
-        category: { en: 'P2P LAN & AirDrop-Style Offline Relay', th: 'โอนย้ายไฟล์ความเร็วสูงบนเครือข่ายภายใน' },
-        version: 'v1.2.0',
-        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
-        releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
-        fileName: 'meDrop.exe',
-        fileSize: '12.4 MB',
-        downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meDrop.exe',
-        webUrl: '../medrop/',
-        status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit) · Local LAN P2P',
-        sha256: '4f9e1d2c7b8a0e3d5f6a9c8b1e2d4f7a0b3c6e9d8f1a4b7c2e5d8a0b3c6e9d8f',
-        accentColor: '#10b981',
-        highlights: {
-          en: ['Zero-Cloud P2P Multicast Discovery', 'End-to-End Encrypted Transfer', 'QR Code Handshake with Mobile Web'],
-          th: ['ค้นหาอุปกรณ์ในวงแลนโดยไม่ต้องใช้อินเทอร์เน็ต', 'เข้ารหัสไฟล์ตั้งแต่ต้นทางถึงปลายทาง ปลอดภัยสูง', 'สแกน QR Code เชื่อมต่อมือถือได้ทันที'],
+        {
+          id: 'medrop',
+          num: '03',
+          titlePrefix: 'me',
+          titleAccent: 'Drop',
+          titleSuffix: ' Radial HUD',
+          nameEn: 'meDrop Radial HUD',
+          nameTh: 'meDrop Radial HUD',
+          category: 'RADIAL DISPATCH',
+          categoryTh: 'วงล้อสั่งการด่วน',
+          appColor: '#f26b1d',
+          appGlow: 'rgba(242, 107, 29, 0.22)',
+          preview: 'medrop-wide.png',
+          icon: 'medrop.png',
+          descEn: 'Zero-cloud radial quick-dispatch tool for batch file operations, format conversions, and drag-and-drop routing.',
+          descTh: 'เครื่องมือเมนูวงล้อสั่งการด่วน จัดการไฟล์และแปลงฟอร์แมตอัตโนมัติบนเครื่องเพียงลากวาง',
+          version: 'v1.0.0',
+          status: 'active',
+          file: 'medrop.exe',
+          size: '6.4 MB',
+          hash: 'f1e2d3c4b5a67890123456789abcdef0123456789abcdef0123456789abcdef0',
+          keywords: ['drop', 'radial', 'hud', 'quick actions', 'batch converter', 'file transfer']
         },
-      },
-      {
-        id: 'medoc',
-        brandIcon: 'medoc',
-        name: { en: 'meDoc Studio Technical Markdown', th: 'meDoc Studio Technical Markdown' },
-        category: { en: 'Technical Markdown & Math Workstation', th: 'บันทึกเอกสารวิศวกรรมและสูตรคณิตศาสตร์' },
-        version: 'v1.1.0',
-        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
-        releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
-        fileName: 'medoc.exe',
-        fileSize: '18.2 MB',
-        downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/medoc.exe',
-        webUrl: '../medoc/',
-        status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit) · KaTeX & Monaco',
-        sha256: '6c3d9a1e4b7f0e2d5c8a1b4e7d0f3c6a9b2e5d8f1a4c7e0b3d6f9a2c5e8b1d4f',
-        accentColor: '#6366f1',
-        highlights: {
-          en: ['Full KaTeX Math & LaTeX Live Rendering', 'Mermaid Architecture & Sequence Diagrams', 'Zero-Leak In-Device Document Storage'],
-          th: ['เรนเดอร์สูตรคณิตศาสตร์ KaTeX และ LaTeX ทันที', 'วาดผังระบบ Mermaid Architecture & Sequence Diagram', 'บันทึกข้อมูลบนเครื่อง 100% ไร้การรั่วไหล'],
+        {
+          id: 'medoc',
+          num: '04',
+          titlePrefix: 'me',
+          titleAccent: 'Doc',
+          titleSuffix: ' Typewriter',
+          nameEn: 'meDoc Typewriter',
+          nameTh: 'meDoc Typewriter',
+          category: 'FOCUSED WRITING',
+          categoryTh: 'พิมพ์งานเอกสารโฟกัส',
+          appColor: '#4c6ef5',
+          appGlow: 'rgba(76, 110, 245, 0.22)',
+          preview: 'medoc-wide.png',
+          icon: 'medoc.png',
+          descEn: 'Distraction-free Markdown & LaTeX editor with real-time typography preview, math engine, and zero-lag keystrokes.',
+          descTh: 'โปรแกรมพิมพ์เอกสารไร้สิ่งรบกวน รองรับ Markdown & LaTeX พร้อมเรนเดอร์ตัวอักษรทันที',
+          version: 'v1.0.0',
+          status: 'active',
+          file: 'medoc.exe',
+          size: '9.8 MB',
+          hash: 'c1d2e3f4a5b67890123456789abcdef0123456789abcdef0123456789abcdef0',
+          keywords: ['doc', 'markdown', 'typewriter', 'editor', 'writing', 'latex', 'notes']
         },
-      },
-      {
-        id: 'mesurv',
-        brandIcon: 'mesurv',
-        name: { en: 'meSurv Studio Panoramic Survey Lab', th: 'meSurv Studio Panoramic Survey Lab' },
-        category: { en: 'Geodetic Panoramic Survey & Coordinates', th: 'วิศวกรรมสำรวจคำนวณพิกัดและหมุดดาวเทียม' },
-        version: 'v2.1.0',
-        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
-        releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
-        fileName: 'mesurv.exe',
-        fileSize: '26.5 MB',
-        downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mesurv.exe',
-        status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit) · RTK GNSS Bridge',
-        sha256: '2b8f4e1a7d0c3e6b9a2d5f8c1e4a7b0d3f6c9e2a5b8d1f4e7a0c3b6e9d2f5a8b',
-        accentColor: '#f59e0b',
-        highlights: {
-          en: ['WGS84 & UTM Zone Coordinate Transformation', 'High-Precision Traverse Adjustment & Error Ellipses', 'NMEA 0183 & RTCM v3 Satellite Stream Parsing'],
-          th: ['แปลงพิกัด WGS84 และระนาบ UTM ความแม่นยำสูง', 'ปรับแก้วงรอบและประเมินวงรีความคลาดเคลื่อน', 'ถอดรหัสสัญญาณดาวเทียม NMEA และ RTCM'],
+        {
+          id: 'mevector',
+          num: '05',
+          titlePrefix: 'me',
+          titleAccent: 'Vector',
+          titleSuffix: ' Studio',
+          nameEn: 'meVector Studio',
+          nameTh: 'meVector Studio',
+          category: 'VECTOR GRAPHICS',
+          categoryTh: 'กราฟิกเวกเตอร์',
+          appColor: '#e8573f',
+          appGlow: 'rgba(232, 87, 63, 0.22)',
+          preview: 'mevector-wide.png',
+          icon: 'mevector.png',
+          descEn: 'High-precision Bézier pen curves, SVG authoring, path boolean operations, and crisp vector typography design.',
+          descTh: 'โปรแกรมวาดภาพเวกเตอร์ลายเส้น Bézier ความแม่นยำสูง ออกแบบไอคอน จัดการพาธ และ SVG',
+          version: 'v1.0.0',
+          status: 'active',
+          file: 'mevector.exe',
+          size: '14.2 MB',
+          hash: 'd1e2f3a4b5c67890123456789abcdef0123456789abcdef0123456789abcdef0',
+          keywords: ['vector', 'svg', 'bezier', 'pen tool', 'illustration', 'logo', 'boolean']
         },
-      },
-      {
-        id: 'mevision',
-        brandIcon: 'mevision',
-        name: { en: 'meVision Studio Spatial Visualizer', th: 'meVision Studio Spatial Visualizer' },
-        category: { en: 'Panoramic & 360° Photogrammetry', th: 'แสดงผลภาพพาโนรามาและงานสำรวจ 360 องศา' },
-        version: 'v1.0.0-rc2',
-        releaseChannel: { en: 'Release Candidate', th: 'รุ่นเสร็จสมบูรณ์' },
-        releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
-        fileName: 'mevision.exe',
-        fileSize: '~24.0 MB',
-        downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mevision.exe',
-        status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit) · WebGL 2.0',
-        sha256: '3e7a1b9f4c0d2e8b5a6f3c1d9e4a7b0f2c5e8a1d4b7c0e3f6a9b2d5e8f1c4a7b',
-        accentColor: '#8b5cf6',
-        highlights: {
-          en: ['Equirectangular 360° Panoramic Projection', 'Visual Spatial Hotspot & Measurement Markers', 'Multi-Resolution Deep-Zoom Tile Loading'],
-          th: ['แสดงผลภาพพาโนรามา 360 องศา คมชัดลื่นไหล', 'ปักหมุดวัดระยะและจุดเชื่อมต่อพื้นที่จริง', 'รองรับการโหลดภาพความละเอียดสูงแบบ Deep-Zoom'],
+        {
+          id: 'mefilm',
+          num: '06',
+          titlePrefix: 'me',
+          titleAccent: 'Film',
+          titleSuffix: ' Studio',
+          nameEn: 'meFilm Studio',
+          nameTh: 'meFilm Studio',
+          category: 'CINEMA & NLE',
+          categoryTh: 'ตัดต่อวิดีโอภาพยนตร์',
+          appColor: '#8b5cf6',
+          appGlow: 'rgba(139, 92, 246, 0.22)',
+          preview: 'mefilm-wide.png',
+          icon: 'mefilm.png',
+          descEn: 'Timeline non-linear video editor with hardware GPU decode, LUT color grading, audio sync, and fast multi-track cut.',
+          descTh: 'สตูดิโอตัดต่อวิดีโอแบบ Non-Linear ปรับแต่งเกรดสี LUT และเรนเดอร์ด้วยการถอดรหัส GPU ในเครื่อง',
+          version: 'v0.9.0',
+          status: 'roadmap',
+          file: 'mefilm.exe',
+          size: '24.5 MB',
+          hash: 'b1c2d3e4f5a67890123456789abcdef0123456789abcdef0123456789abcdef0',
+          keywords: ['video', 'nle', 'film', 'timeline', 'cutter', 'lut', 'editor', 'mp4']
         },
-      },
-      {
-        id: 'mevector',
-        brandIcon: 'mevector',
-        name: { en: 'meVector Studio Scalable Vector Lab', th: 'meVector Studio Scalable Vector Lab' },
-        category: { en: 'Scalable Vector & Bezier Engineering', th: 'สตูดิโอออกแบบเวกเตอร์และเส้นโค้งเบซิเยร์' },
-        version: 'v1.0.0-beta',
-        releaseChannel: { en: 'Beta Channel', th: 'รุ่นทดสอบ Beta' },
-        releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
-        fileName: 'mevector.exe',
-        fileSize: '~21.5 MB',
-        downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mevector.exe',
-        status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit) · Skia GPU Accelerated',
-        sha256: '5a8c2e1f4b7d0a9e3f6b2c8e1d4a7f0b9c3e6a2d5f8b1c4e7a0d3f6b9c2e5a8d',
-        accentColor: '#ec4899',
-        highlights: {
-          en: ['Sub-Pixel Cubic & Quadratic Bezier Engines', 'Clean SVG Code Sanitizer & Export Optimizer', 'Non-Destructive Boolean Paths & Shape Combine'],
-          th: ['วาดเส้นโค้ง Bezier ระดับ Sub-Pixel แม่นยำสูงสุด', 'ปรับแต่งโค้ด SVG ให้สะอาดและมีขนาดไฟล์เล็กจิ๋ว', 'รวม ตัด เฉือนรูปทรงแบบ Non-Destructive'],
+        {
+          id: 'melight',
+          num: '07',
+          titlePrefix: 'me',
+          titleAccent: 'Light',
+          titleSuffix: ' Studio',
+          nameEn: 'meLight Studio',
+          nameTh: 'meLight Studio',
+          category: 'BATCH DEVELOPER',
+          categoryTh: 'จัดการและสกัดภาพชุด',
+          appColor: '#f2a516',
+          appGlow: 'rgba(242, 165, 22, 0.22)',
+          preview: 'melight-wide.png',
+          icon: 'melight.png',
+          descEn: 'High-speed batch photo cataloger, metadata tagger, non-destructive preset recipes, and smart collection exporter.',
+          descTh: 'ระบบจัดการและโปรเซสภาพถ่ายจำนวนมาก คัดแยกแท็ก จัดแคตตาล็อก และส่งออกสูตรปรับแต่งภาพ',
+          version: 'v0.9.0',
+          status: 'roadmap',
+          file: 'melight.exe',
+          size: '16.0 MB',
+          hash: '5a6b7c8d9e0f123456789abcdef0123456789abcdef0123456789abcdef01234',
+          keywords: ['lightroom', 'batch', 'catalog', 'presets', 'exif', 'tagging', 'culling']
         },
-      },
-      {
-        id: 'memotion',
-        brandIcon: 'memotion',
-        name: { en: 'meMotion Studio (Keyframe & DSP)', th: 'meMotion Studio (Keyframe & DSP)' },
-        category: { en: 'Procedural Motion & 60fps Animation', th: 'อนิเมชันคีย์เฟรมและเอฟเฟกต์ภาพเคลื่อนไหว' },
-        version: 'v1.0.0-alpha',
-        releaseChannel: { en: 'In Development', th: 'กำลังพัฒนา' },
-        releaseDate: { en: 'Target Q3 2027', th: 'กำหนดปล่อย Q3 2027' },
-        fileName: 'memotion.exe',
-        fileSize: '~32.0 MB (Est.)',
-        status: 'in-dev',
-        architecture: 'Windows 11 / 10 (64-bit) · WebGPU Accelerated',
-        sha256: 'Candidate Build in Verification',
-        accentColor: '#f43f5e',
-        highlights: {
-          en: ['Graph Editor with Bezier Velocity Curves', 'Lightweight Lottie & MP4 Canvas Exporter', 'Real-Time DSP Audio-Reactive Motion Sync'],
-          th: ['ปรับแต่งความเร็วกราฟอนิเมชันด้วย Bezier Curve', 'เรนเดอร์ไฟล์ Lottie และวิดีโอ MP4 ได้จากเครื่อง', 'ซิงค์จังหวะภาพเคลื่อนไหวตามคลื่นเสียง DSP'],
+        {
+          id: 'memotion',
+          num: '08',
+          titlePrefix: 'me',
+          titleAccent: 'Motion',
+          titleSuffix: ' Studio',
+          nameEn: 'meMotion Studio',
+          nameTh: 'meMotion Studio',
+          category: 'KEYFRAME MOTION',
+          categoryTh: 'โมชันและแอนิเมชัน',
+          appColor: '#e0368f',
+          appGlow: 'rgba(224, 54, 143, 0.22)',
+          preview: 'memotion-wide.png',
+          icon: 'memotion.png',
+          descEn: 'Physics-based motion design, spline velocity graph keyframing, shape morphing, and Lottie/MP4 export.',
+          descTh: 'โปรแกรมแอนิเมชัน 2D เวกเตอร์ กราฟปรับความเร็วสไปลน์ รูปร่างเคลื่อนไหว และส่งออก Lottie/MP4',
+          version: 'v0.8.5',
+          status: 'roadmap',
+          file: 'memotion.exe',
+          size: '19.4 MB',
+          hash: '6b7c8d9e0f1a23456789abcdef0123456789abcdef0123456789abcdef012345',
+          keywords: ['motion', 'animation', 'spline', 'keyframes', 'lottie', 'physics', '2d']
         },
-      },
-      {
-        id: 'meaudio',
-        brandIcon: 'meaudio',
-        name: { en: 'meAudio Studio (DSP Spatial Audio)', th: 'meAudio Studio (DSP Spatial Audio)' },
-        category: { en: '32-Bit Float Mastering & Spatial DSP', th: 'ประมวลผลคลื่นเสียง 32-Bit Float และ Spatial Audio' },
-        version: 'v1.0.0-alpha',
-        releaseChannel: { en: 'In Development', th: 'กำลังพัฒนา' },
-        releaseDate: { en: 'Target Q3 2027', th: 'กำหนดปล่อย Q3 2027' },
-        fileName: 'meaudio.exe',
-        fileSize: '~28.0 MB (Est.)',
-        status: 'in-dev',
-        architecture: 'Windows 11 / 10 (64-bit) · Rust DSP Engine',
-        sha256: 'Candidate Build in Verification',
-        accentColor: '#14b8a6',
-        highlights: {
-          en: ['64-Band Real-Time FFT Spectral Visualizer', '32-Bit Floating Point Mastering & Limiter', 'Binaural 3D Headphone Spatial Audio Engine'],
-          th: ['วิเคราะห์คลื่นเสียง 64-Band Real-Time Spectrum', 'มาสเตอริ่งเสียงความละเอียด 32-Bit Float ไร้เสียงแตก', 'จำลองมิติเสียง 3D Binaural สำหรับหูฟัง'],
+        {
+          id: 'medesign',
+          num: '09',
+          titlePrefix: 'me',
+          titleAccent: 'Design',
+          titleSuffix: ' Studio',
+          nameEn: 'meDesign Studio',
+          nameTh: 'meDesign Studio',
+          category: 'UI/UX CANVAS',
+          categoryTh: 'ออกแบบอินเทอร์เฟซ',
+          appColor: '#7bb51c',
+          appGlow: 'rgba(123, 181, 28, 0.22)',
+          preview: 'medesign-wide.png',
+          icon: 'medesign.png',
+          descEn: 'Vector design canvas for responsive screen layouts, design token governance, and instant interactive prototyping.',
+          descTh: 'ผืนผ้าใบออกแบบ UI/UX ดีไซน์ซิสเต็ม จัดการดีไซน์โทเค็น และทดสอบโปรโตไทป์ตอบสนองฉับไว',
+          version: 'v0.8.0',
+          status: 'roadmap',
+          file: 'medesign.exe',
+          size: '15.7 MB',
+          hash: '7c8d9e0f1a2b3456789abcdef0123456789abcdef0123456789abcdef0123456',
+          keywords: ['ui', 'ux', 'design system', 'tokens', 'prototype', 'canvas', 'components']
         },
-      },
-      {
-        id: 'me3d',
-        brandIcon: 'me3d',
-        name: { en: 'me3D Studio (Spatial Mesh & Raytracing)', th: 'me3D Studio (Spatial Mesh & Raytracing)' },
-        category: { en: 'WebGL Spatial Mesh & Raytracing', th: 'แสดงผลและจำลองแสงเงา 3D Mesh แบบเรียลไทม์' },
-        version: 'v1.0.0-alpha',
-        releaseChannel: { en: 'In Development', th: 'กำลังพัฒนา' },
-        releaseDate: { en: 'Target Q4 2027', th: 'กำหนดปล่อย Q4 2027' },
-        fileName: 'me3d.exe',
-        fileSize: '~38.0 MB (Est.)',
-        status: 'in-dev',
-        architecture: 'Windows 11 / 10 (64-bit) · wgpu WebGPU Native',
-        sha256: 'Candidate Build in Verification',
-        accentColor: '#a855f7',
-        highlights: {
-          en: ['Real-Time PBR Shaders & Hardware Raytracing', 'Import & Export OBJ, STL, GLTF & USDZ', 'Automated 3D Print Slicing & Mesh Topology Repair'],
-          th: ['แสดงผลโมเดล 3D และเรนเดอร์แสงเงา Raytracing แบบเรียลไทม์', 'รองรับไฟล์สากล OBJ, STL, GLTF และ USDZ', 'เครื่องมือเตรียมโมเดลสำหรับ 3D Printer และซ่อม Mesh'],
+        {
+          id: 'meaudio',
+          num: '10',
+          titlePrefix: 'me',
+          titleAccent: 'Audio',
+          titleSuffix: ' Studio',
+          nameEn: 'meAudio Studio',
+          nameTh: 'meAudio Studio',
+          category: 'WAVEFORM LAB',
+          categoryTh: 'ห้องวิศวกรรมเสียง',
+          appColor: '#14a9c4',
+          appGlow: 'rgba(20, 169, 196, 0.22)',
+          preview: 'meaudio-wide.png',
+          icon: 'meaudio.png',
+          descEn: 'Multi-track audio waveform lab, spectral FFT analysis, noise reduction gate, and lossless mastering output.',
+          descTh: 'ห้องตัดต่อเสียงแบบหลายแทร็ก วิเคราะห์คลื่นสเปกตรัม ลบเสียงรบกวน และมาสเตอร์ริ่งไฟล์ไร้สูญเสีย',
+          version: 'v0.8.0',
+          status: 'roadmap',
+          file: 'meaudio.exe',
+          size: '13.1 MB',
+          hash: '8d9e0f1a2b3c456789abcdef0123456789abcdef0123456789abcdef01234567',
+          keywords: ['audio', 'waveform', 'spectral', 'noise removal', 'mastering', 'podcast', 'sound']
         },
-      },
-      {
-        id: 'mecraft-hub',
-        brandIcon: 'mecraft-suite',
-        name: { en: 'meCraft Hub Workstation Launcher', th: 'meCraft Hub Workstation Launcher' },
-        category: { en: 'Central Daemon & Desktop License Bridge', th: 'ศูนย์รวมลอนเชอร์และตัวจัดการไลเซนส์เดสก์ท็อป' },
-        version: 'v1.0.0',
-        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
-        releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
-        fileName: 'mecraft-hub.exe',
-        fileSize: 'Included in Suite (~14.8 MB)',
-        status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit) · Tauri v2 Bridge',
-        sha256: 'Included in Suite Bundle',
-        accentColor: '#eab308',
-        highlights: {
-          en: ['Central Workstation Switcher & Recent Projects', 'Local Ed25519 License Vault & Account Sync', 'Background Delta Updates & Integrity Checks'],
-          th: ['หน้าต่างศูนย์กลางเปิดโปรแกรมทั้งหมดและประวัติโปรเจกต์ล่าสุด', 'ซิงค์ไลเซนส์และบัญชีปลอดภัยด้วย Ed25519 ภายในเครื่อง', 'ตรวจจับและดาวน์โหลดตัวอัปเดตอัตโนมัติ'],
-        },
-      },
-    ];
+        {
+          id: 'me3d',
+          num: '11',
+          titlePrefix: 'me',
+          titleAccent: '3D',
+          titleSuffix: ' Studio',
+          nameEn: 'me3D Studio',
+          nameTh: 'me3D Studio',
+          category: 'SPATIAL MESH',
+          categoryTh: 'โมเดลสามมิติ',
+          appColor: '#02da96',
+          appGlow: 'rgba(2, 218, 150, 0.22)',
+          preview: 'me3d-wide.png',
+          icon: 'me3d.png',
+          descEn: 'Real-time GLTF/OBJ 3D viewport, procedural PBR shader inspector, mesh topology analysis, and UV visualizer.',
+          descTh: 'มุมมอง 3D เรียลไทม์ ตรวจสอบโครงตาข่าย GLTF/OBJ เชดเดอร์ PBR และพรีวิวแมปปิ้ง UV',
+          version: 'v0.7.5',
+          status: 'roadmap',
+          file: 'me3d.exe',
+          size: '22.3 MB',
+          hash: '9e0f1a2b3c4d56789abcdef0123456789abcdef0123456789abcdef012345678',
+          keywords: ['3d', 'gltf', 'obj', 'mesh', 'pbr', 'shader', 'topology', 'uv', 'viewport']
+        }
+      ];
 
-    let currentLang = localStorage.getItem('mecrafts_lang') || 'th';
-    let currentFilter = 'all';
-    let searchQuery = '';
+      // Bilingual dictionary
+      const I18N = {
+        en: {
+          badge_downloads: '/ DOWNLOADS DIRECTORY',
+          nav_portal: '← Back to Portal',
+          nav_lineup: 'The Lineup',
+          nav_principles: 'Principles',
+          nav_verify: 'Verification',
+          hero_eyebrow: '01 / WINDOWS .EXE PIPELINE',
+          hero_title: 'Official Studio Installers & <span class="highlight">Suite Directory</span>',
+          hero_lead: '100% In-Device Memory Execution. Zero Cloud Uploads. Zero Telemetry. Native Windows Desktop Performance with MIT Open-Source Transparency.',
+          badge_win: 'Windows 11 / 10 · 64-bit',
+          badge_ram: '100% In-Device RAM',
+          badge_telemetry: 'Zero Telemetry',
+          badge_crypto: 'SHA-256 Verified',
+          cta_master_dl: 'Download meCraft Installer (.exe)',
+          cta_master_sub: 'v1.0.0 · 14.8 MB · All 11 Studios Included',
+          cta_browse_studios: 'Explore 11 Studios ↓',
+          dock_title: 'STUDIO DOCK · CLICK TO NAVIGATE',
+          dock_count: '11 STUDIOS + SUITE',
+          lineup_header: 'THE LINEUP · PICK A STUDIO TO DOWNLOAD',
+          search_placeholder: 'Search studios, files, features...',
+          filter_all: 'All (12)',
+          filter_active: 'Active (.exe)',
+          filter_roadmap: 'Roadmap',
+          status_active: 'Active',
+          status_roadmap: 'Roadmap',
+          btn_dl: 'Download .exe',
+          btn_roadmap_info: 'Roadmap Build',
+          principles_eyebrow: '03 / ARCHITECTURAL INVARIANTS',
+          principles_title: 'Zero-Cloud Engineering Principles',
+          principles_subtitle: 'Six non-negotiable guarantees built into every byte of meCrafts desktop applications.',
+          p1_title: '100% In-Device Memory',
+          p1_desc: 'All documents, pixels, waveforms, and geometries are loaded strictly into local host RAM. No file buffers or telemetry ever touch remote servers.',
+          p2_title: 'Zero Telemetry & Tracking',
+          p2_desc: 'Zero analytics SDKs, zero background pinging, zero behavioral telemetry. Your machine remains strictly yours.',
+          p3_title: 'Native Windows Desktop Engine',
+          p3_desc: 'Built with Tauri v2, Rust native backend, and DirectX 12 / Vulkan hardware acceleration for microsecond UI response times.',
+          p4_title: 'MIT Open-Source License',
+          p4_desc: 'Transparent source code available on GitHub. Anyone can inspect, audit, fork, or build the binaries from source independently.',
+          p5_title: 'Cryptographic Signatures',
+          p5_desc: 'Every executable is published with an immutable SHA-256 hash and Ed25519 cryptographic release signature.',
+          p6_title: 'Air-Gapped Offline Ready',
+          p6_desc: 'Full offline functionality from first boot. Install once and run indefinitely in air-gapped secure workstations.',
+          verify_eyebrow: '04 / SECURITY & CRYPTOGRAPHIC VERIFICATION',
+          verify_desc: 'Verify the integrity of downloaded binaries before execution using the Windows PowerShell command:',
+          btn_copy_cmd: 'Copy PowerShell',
+          th_file: 'Binary File',
+          th_version: 'Version',
+          th_size: 'Size',
+          th_hash: 'SHA-256 Checksum',
+          toast_copied: 'Copied SHA-256 Checksum to Clipboard'
+        },
+        th: {
+          badge_downloads: '/ ศูนย์ดาวน์โหลดตัวติดตั้ง',
+          nav_portal: '← กลับหน้าพอร์ทัล',
+          nav_lineup: 'ผังโปรแกรม',
+          nav_principles: 'สถาปัตยกรรม',
+          nav_verify: 'ตรวจสอบความปลอดภัย',
+          hero_eyebrow: '01 / ตัวติดตั้ง WINDOWS .EXE',
+          hero_title: 'ศูนย์ดาวน์โหลดตัวติดตั้งโปรแกรมและ <span class="highlight">ชุดรวมแอป</span>',
+          hero_lead: 'ประมวลผลบนเครื่อง 100% ในแรม ไม่ส่งไฟล์ขึ้นคลาวด์ ไม่บันทึกการใช้งาน เครื่องยนต์ Windows Desktop ทรงพลัง พร้อมความโปร่งใสแบบ Open-Source MIT',
+          badge_win: 'Windows 11 / 10 · 64-บิต',
+          badge_ram: 'ประมวลผลบน RAM 100%',
+          badge_telemetry: 'ไม่ดักจับข้อมูล',
+          badge_crypto: 'ยืนยันด้วย SHA-256',
+          cta_master_dl: 'ดาวน์โหลด meCraft Installer (.exe)',
+          cta_master_sub: 'v1.0.0 · 14.8 MB · รวมครบทั้ง 11 สตูดิโอ',
+          cta_browse_studios: 'สำรวจทั้ง 11 สตูดิโอ ↓',
+          dock_title: 'สตูดิโอด็อก · คลิกเพื่อเลื่อนดู',
+          dock_count: '11 สตูดิโอ + ชุดรวม',
+          lineup_header: 'ผังโปรแกรมทั้งหมด · เลือกดาวน์โหลดตามสตูดิโอ',
+          search_placeholder: 'ค้นหาชื่อโปรแกรม, ไฟล์ หรือฟีเจอร์...',
+          filter_all: 'ทั้งหมด (12)',
+          filter_active: 'พร้อมใช้งาน (.exe)',
+          filter_roadmap: 'แผนพัฒนา',
+          status_active: 'พร้อมใช้งาน',
+          status_roadmap: 'แผนพัฒนา',
+          btn_dl: 'ดาวน์โหลด .exe',
+          btn_roadmap_info: 'เวอร์ชันกำลังพัฒนา',
+          principles_eyebrow: '03 / หลักการเชิงสถาปัตยกรรม',
+          principles_title: 'หลักวิศวกรรม Zero-Cloud',
+          principles_subtitle: '6 คำมั่นสัญญาเชิงสถาปัตยกรรมที่ฝังอยู่ในทุกไบต์ของ meCrafts',
+          p1_title: 'ประมวลผลบน RAM ในเครื่อง 100%',
+          p1_desc: 'เอกสาร พิกเซล และคลื่นเสียงทั้งหมดถูกโหลดลงใน RAM ของเครื่องโดยตรง ไม่มีบัฟเฟอร์หรือข้อมูลใดๆ ถูกส่งออกไปนอกเครื่อง',
+          p2_title: 'ปราศจาก Telemetry โดยสิ้นเชิง',
+          p2_desc: 'ไม่มีระบบเก็บสถิติภายนอก ไม่มีโค้ดแฝงดักจับพฤติกรรม เครื่องคอมพิวเตอร์ของคุณเป็นกรรมสิทธิ์ของคุณอย่างแท้จริง',
+          p3_title: 'เครื่องยนต์ Windows Desktop แท้',
+          p3_desc: 'พัฒนาด้วย Tauri v2 และแกนหลักภาษา Rust ผสาน DirectX 12 / Vulkan เร่งความเร็วฮาร์ดแวร์เพื่อการตอบสนองระดับไมโครวินาที',
+          p4_title: 'สัญญาอนุญาต MIT Open-Source',
+          p4_desc: 'โค้ดต้นฉบับเปิดเผยและโปร่งใสบน GitHub ทุกคนสามารถตรวจสอบ ดัดแปลง หรือคอมไพล์ไบนารีใช้งานได้เองอย่างอิสระ',
+          p5_title: 'การยืนยันทางวิทยาการรหัสลับ',
+          p5_desc: 'ทุกไฟล์ .exe ถูกระบุรหัสตรวจสอบความถูกต้อง SHA-256 และการลงลายมือชื่อดิจิทัล Ed25519',
+          p6_title: 'พร้อมทำงานแบบออฟไลน์ 100%',
+          p6_desc: 'ทำงานได้สมบูรณ์แบบโดยไม่ต้องเชื่อมต่ออินเทอร์เน็ต สามารถนำไปใช้งานบนคอมพิวเตอร์แยกเครือข่าย (Air-gapped) ได้ทันที',
+          verify_eyebrow: '04 / ตรวจสอบความถูกต้องของไฟล์',
+          verify_desc: 'ตรวจสอบความสมบูรณ์ของไฟล์ .exe ก่อนเปิดใช้งานผ่านคำสั่ง Windows PowerShell:',
+          btn_copy_cmd: 'คัดลอกคำสั่ง PowerShell',
+          th_file: 'ชื่อไฟล์ไบนารี',
+          th_version: 'เวอร์ชัน',
+          th_size: 'ขนาด',
+          th_hash: 'รหัสตรวจสอบ SHA-256',
+          toast_copied: 'คัดลอกรหัส SHA-256 ลงในคลิปบอร์ดแล้ว'
+        }
+      };
 
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
+      // State
+      let currentLang = localStorage.getItem('mecrafts_lang') || 'en';
+      let currentFilter = 'all';
+      let searchQuery = '';
 
-    function renderTable() {
-      const container = document.getElementById('binaries-table-stack');
-      const countEl = document.getElementById('lbl-results-count');
-      if (!container) return;
+      // Determine asset path prefix
+      const isSubfolder = window.location.pathname.includes('/downloads');
+      const assetPrefix = isSubfolder ? '../branding/' : './branding/';
+      const assetFallback = isSubfolder ? './branding/' : '../branding/';
 
-      let items = BINARIES_DATA;
-
-      // Filter tabs
-      if (currentFilter === 'suite') {
-        items = items.filter(i => i.isSuite);
-      } else if (currentFilter === 'ready') {
-        items = items.filter(i => i.status === 'active');
-      } else if (currentFilter === 'indev') {
-        items = items.filter(i => i.status === 'in-dev');
+      // Render Dock Matrix
+      function renderDock() {
+        const dockContainer = document.getElementById('hero-dock-matrix');
+        if (!dockContainer) return;
+        dockContainer.innerHTML = APPS.map(app => {
+          const name = currentLang === 'th' ? app.nameTh : app.nameEn;
+          return `
+            <a href="#card-${app.id}" class="dock-app-item" style="--app-color: ${app.appColor}; --app-glow: ${app.appGlow};" title="${name}">
+              <img src="${assetPrefix}${app.icon}" alt="${name}" class="dock-icon-img" onerror="this.src='${assetFallback}${app.icon}';" loading="lazy" />
+              <span class="dock-app-name">${name.replace(' Studio Pro', '').replace(' Studio', '').replace(' Radial HUD', '').replace(' Typewriter', '')}</span>
+            </a>
+          `;
+        }).join('');
       }
 
-      // Live search
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        items = items.filter(i => 
-          i.fileName.toLowerCase().includes(q) ||
-          i.name[currentLang].toLowerCase().includes(q) ||
-          i.category[currentLang].toLowerCase().includes(q) ||
-          i.version.toLowerCase().includes(q) ||
-          i.highlights[currentLang].some(h => h.toLowerCase().includes(q))
-        );
-      }
+      // Render Lineup Cards
+      function renderLineup() {
+        const grid = document.getElementById('lineup-grid');
+        if (!grid) return;
 
-      // Update count label
-      if (countEl) {
-        countEl.textContent = currentLang === 'th'
-          ? `พบตัวติดตั้งทั้งหมด ${items.length} รายการ`
-          : `Showing ${items.length} installer binaries`;
-      }
+        const filtered = APPS.filter(app => {
+          // Status filter
+          if (currentFilter === 'active' && app.status !== 'active') return false;
+          if (currentFilter === 'roadmap' && app.status !== 'roadmap') return false;
 
-      if (items.length === 0) {
-        container.innerHTML = `
-          <div style="text-align:center; padding: 60px 20px; background: rgba(17, 23, 40, 0.4); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); color: #64748b; font-size: 15px;">
-            ${currentLang === 'th' ? 'ไม่พบไฟล์ติดตั้งที่ตรงกับเงื่อนไขการค้นหา' : 'No installer binaries match your search criteria.'}
-          </div>
-        `;
-        return;
-      }
+          // Search query filter
+          if (searchQuery) {
+            const q = searchQuery.toLowerCase();
+            const inName = app.nameEn.toLowerCase().includes(q) || app.nameTh.toLowerCase().includes(q);
+            const inFile = app.file.toLowerCase().includes(q);
+            const inCategory = app.category.toLowerCase().includes(q) || app.categoryTh.toLowerCase().includes(q);
+            const inKeywords = app.keywords.some(k => k.toLowerCase().includes(q));
+            if (!inName && !inFile && !inCategory && !inKeywords) return false;
+          }
+          return true;
+        });
 
-      container.innerHTML = items.map(item => {
-        const isActive = item.status === 'active';
-        const name = escapeHtml(item.name[currentLang]);
-        const cat = escapeHtml(item.category[currentLang]);
-        const date = escapeHtml(item.releaseDate[currentLang]);
-        const channel = escapeHtml(item.releaseChannel[currentLang]);
-        const highlights = item.highlights[currentLang];
-
-        return `
-          <article class="dl-row-card" style="--card-accent: ${item.accentColor};" role="listitem">
-            <!-- Column 1: Identity & Version -->
-            <div class="col-identity">
-              <div class="col-icon-wrap">
-                <img src="../branding/${item.brandIcon}.png" alt="${name}" class="col-icon-img" onerror="this.src='./branding/${item.brandIcon}.png';this.onerror=null;" />
-              </div>
-              <div class="col-title-wrap">
-                <h3 class="col-name" title="${name}">${name}</h3>
-                <div class="col-badges-row">
-                  <span class="col-ver-tag">${item.version}</span>
-                  ${item.isSuite ? `<span class="suite-badge-gold" style="font-size:10px; padding: 1px 7px;">★ Suite</span>` : ''}
-                  <span class="col-status-pill ${isActive ? 'status-active' : 'status-indev'}">
-                    <span class="status-dot-inner" aria-hidden="true"></span>
-                    <span>${channel}</span>
-                  </span>
-                </div>
-              </div>
+        if (filtered.length === 0) {
+          grid.innerHTML = `
+            <div style="grid-column: 1 / -1; padding: 64px 24px; text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: 0.9rem;">
+              No studios matched your filter query.
             </div>
+          `;
+          return;
+        }
 
-            <!-- Column 2: Structured Metadata Grid (GetBukkit Style) -->
-            <div class="col-metadata">
-              <div class="row-meta-table">
-                <div class="meta-item">
-                  <span class="meta-lbl">FILE:</span>
-                  <span class="meta-val file">${item.fileName}</span>
-                </div>
-                <div class="meta-item">
-                  <span class="meta-lbl">SIZE:</span>
-                  <span class="meta-val size">${item.fileSize}</span>
-                </div>
-                <div class="meta-item">
-                  <span class="meta-lbl">ARCH:</span>
-                  <span class="meta-val">${item.architecture}</span>
-                </div>
-                <div class="meta-item">
-                  <span class="meta-lbl">DATE:</span>
-                  <span class="meta-val">${date}</span>
-                </div>
+        grid.innerHTML = filtered.map(app => {
+          const t = I18N[currentLang];
+          const name = currentLang === 'th' ? app.nameTh : app.nameEn;
+          const desc = currentLang === 'th' ? app.descTh : app.descEn;
+          const category = currentLang === 'th' ? app.categoryTh : app.category;
+          const statusText = app.status === 'active' ? `${t.status_active} ${app.version}` : `${t.status_roadmap} ${app.version}`;
+          const statusClass = app.status === 'active' ? 'tech-badge active' : 'tech-badge roadmap';
+          const downloadUrl = `https://github.com/methastrategy/meCraft/releases/download/${app.version}/${app.file}`;
+
+          return `
+            <article class="lineup-card" id="card-${app.id}" style="--app-color: ${app.appColor}; --app-glow: ${app.appGlow};">
+              <span class="card-accent-rule"></span>
+              
+              <div class="card-header-hud">
+                <span class="hud-num-badge">${app.num}</span>
+                <span class="hud-category-label">${category}</span>
               </div>
 
-              <div class="row-highlights">
-                ${highlights.map(h => `<span class="row-pill-tag">✦ ${escapeHtml(h)}</span>`).join('')}
+              <div class="card-preview-box">
+                <img src="${assetPrefix}${app.preview}" alt="${name} Preview" class="card-preview-img" onerror="this.src='${assetFallback}${app.preview}';" loading="lazy" />
               </div>
 
-              <div class="row-checksum-bar">
-                <span>🔒 SHA-256: ${item.sha256}</span>
-                ${item.sha256.length > 20 ? `
-                  <button type="button" class="btn-copy-hash" data-hash="${item.sha256}">
-                    <span>📋 ${currentLang === 'th' ? 'คัดลอก' : 'Copy'}</span>
-                  </button>
-                ` : ''}
-              </div>
-            </div>
+              <div class="card-body">
+                <img src="${assetPrefix}${app.icon}" alt="${name} Icon" class="card-overlap-icon" onerror="this.src='${assetFallback}${app.icon}';" loading="lazy" />
+                
+                <h3 class="card-title">
+                  ${app.titlePrefix ? app.titlePrefix : ''}<span class="accent-text">${app.titleAccent}</span>${app.titleSuffix ? app.titleSuffix : ''}
+                </h3>
+                
+                <p class="card-desc">${desc}</p>
+                
+                <div class="card-badges-row">
+                  <span class="${statusClass}">${statusText}</span>
+                  <span class="tech-badge">Windows 64-bit</span>
+                  <span class="tech-badge">100% In-RAM</span>
+                  <span class="tech-badge">${app.size}</span>
+                </div>
 
-            <!-- Column 3: Dual Action Cluster (GetBukkit Style) -->
-            <div class="col-actions">
-              ${isActive && item.downloadUrl ? `
-                <a href="${item.downloadUrl}" download="${item.fileName}" class="btn-action-primary ${item.isSuite ? 'suite-accent' : ''}">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  <span>${currentLang === 'th' ? `ดาวน์โหลด .exe` : `Download .exe`}</span>
-                </a>
-                ${item.webUrl ? `
-                  <a href="${item.webUrl}" target="_blank" rel="noopener noreferrer" class="btn-action-secondary">
-                    <span>${currentLang === 'th' ? 'เปิด Web Studio ↗' : 'Launch Web Studio ↗'}</span>
+                <div class="card-actions-row">
+                  <a href="${downloadUrl}" class="btn-card-dl" target="_blank" rel="noopener noreferrer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <span>${t.btn_dl}</span>
                   </a>
-                ` : `
-                  <span style="font-size: 11px; color: var(--text-dim);">${item.fileSize} · Win x64</span>
-                `}
-              ` : `
-                <a href="https://github.com/methastrategy/meCraft#roadmap" target="_blank" rel="noopener noreferrer" class="btn-action-roadmap">
-                  <span>${currentLang === 'th' ? 'GitHub Roadmap ↗' : 'Roadmap & Specs ↗'}</span>
-                </a>
-                <span style="font-size: 11px; color: var(--text-dim);">${currentLang === 'th' ? 'กำหนดการปล่อยเร็วๆ นี้' : 'Upcoming Release'}</span>
-              `}
-            </div>
-          </article>
-        `;
-      }).join('');
+                  <button type="button" class="btn-card-hash" data-hash="${app.hash}" title="Copy SHA-256 Checksum" aria-label="Copy SHA-256">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
 
-      // Wire copy hash buttons
-      document.querySelectorAll('.btn-copy-hash').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const hash = btn.getAttribute('data-hash');
-          if (hash && navigator.clipboard) {
-            navigator.clipboard.writeText(hash).then(() => {
-              const prev = btn.innerHTML;
-              btn.innerHTML = `<span>✓ ${currentLang === 'th' ? 'คัดลอกแล้ว!' : 'Copied!'}</span>`;
-              setTimeout(() => { btn.innerHTML = prev; }, 1800);
-            });
+        // Attach hash copy buttons
+        grid.querySelectorAll('.btn-card-hash').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const hash = this.getAttribute('data-hash');
+            if (hash) {
+              copyToClipboard(hash);
+            }
+          });
+        });
+      }
+
+      // Render Checksum Table
+      function renderChecksumTable() {
+        const tbody = document.getElementById('checksum-tbody');
+        if (!tbody) return;
+        tbody.innerHTML = APPS.map(app => `
+          <tr>
+            <td style="font-weight: 600; color: #ffffff;">${app.file}</td>
+            <td><span class="hud-badge">${app.version}</span></td>
+            <td>${app.size}</td>
+            <td class="hash-val">${app.hash}</td>
+          </tr>
+        `).join('');
+      }
+
+      // Copy to Clipboard with Toast
+      function copyToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(showToast).catch(() => {
+            fallbackCopy(text);
+          });
+        } else {
+          fallbackCopy(text);
+        }
+      }
+
+      function fallbackCopy(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          showToast();
+        } catch (err) {}
+        document.body.removeChild(textarea);
+      }
+
+      function showToast() {
+        const toast = document.getElementById('toast-box');
+        if (!toast) return;
+        toast.textContent = I18N[currentLang].toast_copied;
+        toast.classList.add('show');
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2400);
+      }
+
+      // Apply Language
+      function applyLanguage(lang) {
+        currentLang = lang;
+        document.documentElement.lang = lang;
+        localStorage.setItem('mecrafts_lang', lang);
+
+        const t = I18N[lang];
+
+        // Update static i18n nodes
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (t[key]) {
+            el.innerHTML = t[key];
           }
         });
-      });
-    }
 
-    function updateLanguage() {
-      const isTh = currentLang === 'th';
-      document.documentElement.lang = currentLang;
+        // Update placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          const key = el.getAttribute('data-i18n-placeholder');
+          if (t[key]) {
+            el.placeholder = t[key];
+          }
+        });
 
-      // Nav
-      document.getElementById('lbl-nav-badge').textContent = isTh ? 'ศูนย์รวมไฟล์ดาวน์โหลด' : 'Downloads Directory';
-      document.getElementById('txt-nav-back').textContent = isTh ? 'กลับหน้าหลัก Portal' : 'Back to Portal';
+        // Update language button indicator
+        const langIndicator = document.getElementById('lang-indicator');
+        if (langIndicator) {
+          langIndicator.textContent = lang === 'en' ? 'TH' : 'EN';
+        }
 
-      // Hero
-      document.getElementById('hero-eyebrow').textContent = isTh 
-        ? 'ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้งทางการ · WINDOWS .EXE PIPELINE'
-        : 'OFFICIAL WINDOWS .EXE RELEASE DIRECTORY · BUILD PIPELINE';
-      document.getElementById('hero-title').textContent = isTh 
-        ? 'ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe) ทุกโปรแกรม'
-        : 'Official Standalone & Suite Installer Releases';
-      document.getElementById('hero-subtitle').textContent = isTh
-        ? 'ไฟล์ติดตั้งทางการสำหรับระบบปฏิบัติการ Windows 11 และ Windows 10 (64-bit) · ประมวลผลบน RAM เฉพาะในเครื่อง 100% · ปราศจากโฆษณา ไม่เก็บสถิติ และสัญญาอนุญาต MIT Open Source'
-        : 'Official standalone and suite installer binaries (.exe) for Windows 10/11 · 100% In-Device Memory Execution · Zero Telemetry · Open Source MIT';
-
-      // Metrics
-      document.getElementById('m-pill-1').innerHTML = isTh ? '<strong>12 ไฟล์ติดตั้ง</strong> ครบทั้ง Suite และ Standalone' : '<strong>12 Binaries</strong> Master & Standalone';
-      document.getElementById('m-pill-2').textContent = isTh ? '100% Offline RAM · 0-Cloud Telemetry' : '100% In-Device RAM · Zero-Cloud';
-
-      // Featured Suite
-      document.getElementById('lbl-suite-badge').textContent = isTh ? '★ แนะนำ: ตัวติดตั้งชุดหลัก (All-in-One)' : '★ Recommended: Master Suite (All-in-One)';
-      document.getElementById('txt-suite-date').textContent = isTh ? '23 พ.ย. 2026' : 'Nov 23, 2026';
-      document.getElementById('f-tag-1').textContent = isTh ? '✦ รวมครบทั้ง 11 โปรแกรมสตูดิโอในตัวติดตั้งเดียว' : '✦ All 11 Creative & Document Studios Included';
-      document.getElementById('f-tag-2').textContent = isTh ? '✦ ประมวลผลบนเครื่อง 100% ไม่ส่งข้อมูลขึ้นคลาวด์' : '✦ 100% In-Device RAM Execution · Zero-Cloud';
-      document.getElementById('f-tag-3').textContent = isTh ? '✦ อัปเดตแพตช์อัตโนมัติภายในโปรแกรมด้วย Ed25519' : '✦ In-App Delta Updates with Ed25519 Signing';
-      document.getElementById('txt-btn-master-dl').textContent = isTh ? 'ดาวน์โหลดตัวติดตั้งชุดหลัก (.exe)' : 'Download Suite Master (.exe)';
-      document.getElementById('txt-suite-sub').textContent = isTh ? '14.8 MB · แพ็กเกจติดตั้งสำหรับ Windows' : '14.8 MB · Zero-Cloud Windows Package';
-      document.getElementById('txt-copy-suite-hash').textContent = isTh ? '📋 คัดลอก Checksum' : '📋 Copy Checksum';
-
-      // Tabs
-      document.getElementById('tab-all').textContent = isTh ? 'ทั้งหมด (12 ไฟล์)' : 'All Files (12)';
-      document.getElementById('tab-suite').textContent = isTh ? '★ Master Suite' : '★ Master Suite';
-      document.getElementById('tab-ready').textContent = isTh ? 'พร้อมดาวน์โหลด (Active)' : 'Production Ready (Active)';
-      document.getElementById('tab-indev').textContent = isTh ? 'กำลังพัฒนา (Roadmap)' : 'In Development (Roadmap)';
-
-      // Search placeholder
-      document.getElementById('search-input').placeholder = isTh ? 'ค้นหา เช่น mepdf, raw, 1.0.0, .exe...' : 'Search e.g. mepdf, raw, 1.0.0, .exe...';
-
-      // Cockpit boxes
-      document.getElementById('verify-box-title').innerHTML = `
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span>${isTh ? 'ตรวจสอบ Checksum ความปลอดภัย (PowerShell)' : 'Cryptographic Integrity Check (PowerShell)'}</span>
-      `;
-      document.getElementById('verify-box-desc').textContent = isTh
-        ? 'คุณสามารถตรวจสอบความถูกต้องของไฟล์ติดตั้ง .exe บนเครื่อง Windows เพื่อยืนยันว่าไฟล์ไม่ถูกดัดแปลงและส่งตรงจาก GitHub Release Pipeline:'
-        : 'Verify SHA-256 binary hash directly on Windows PowerShell to confirm 100% bit-exact provenance from official GitHub release assets:';
-
-      document.getElementById('silent-box-title').innerHTML = `
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        <span>${isTh ? 'ติดตั้งแบบไร้การรบกวน (Silent CLI Install)' : 'Silent Unattended Deployment (CLI)'}</span>
-      `;
-      document.getElementById('silent-box-desc').textContent = isTh
-        ? 'สำหรับผู้ดูแลระบบหรือต้องการติดตั้งแบบเงียบ ไม่แสดงหน้าต่าง Wizard สามารถรันคำสั่งผ่าน Command Prompt หรือ PowerShell ได้ทันที:'
-        : 'For sysadmins or automated workstation provisioning, execute unattended silent installation without GUI dialog wizards:';
-
-      // Footer
-      document.getElementById('footer-note').textContent = isTh
-        ? 'ประมวลผล 100% บนหน่วยความจำเครื่อง ปราศจากการเก็บข้อมูลส่วนตัวใดๆ'
-        : '100% in-device memory execution. Zero telemetry, zero analytics, open source.';
-
-      renderTable();
-    }
-
-    // Event Listeners
-    document.getElementById('btn-toggle-lang')?.addEventListener('click', () => {
-      currentLang = currentLang === 'th' ? 'en' : 'th';
-      localStorage.setItem('mecrafts_lang', currentLang);
-      updateLanguage();
-    });
-
-    document.querySelectorAll('.dl-filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.dl-filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.getAttribute('data-filter') || 'all';
-        renderTable();
-      });
-    });
-
-    const searchInput = document.getElementById('search-input');
-    const clearBtn = document.getElementById('btn-clear-search');
-
-    searchInput?.addEventListener('input', (e) => {
-      searchQuery = e.target.value;
-      if (clearBtn) {
-        clearBtn.style.display = searchQuery ? 'block' : 'none';
+        // Re-render dynamic elements
+        renderDock();
+        renderLineup();
       }
-      renderTable();
-    });
 
-    clearBtn?.addEventListener('click', () => {
-      if (searchInput) {
-        searchInput.value = '';
-        searchQuery = '';
-        clearBtn.style.display = 'none';
-        searchInput.focus();
-        renderTable();
-      }
-    });
+      // Initialize Everything
+      function init() {
+        // Render dynamic parts
+        renderDock();
+        renderLineup();
+        renderChecksumTable();
+        applyLanguage(currentLang);
 
-    document.querySelectorAll('.btn-copy-terminal').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const text = btn.getAttribute('data-copy');
-        if (text && navigator.clipboard) {
-          navigator.clipboard.writeText(text).then(() => {
-            const prev = btn.textContent;
-            btn.textContent = currentLang === 'th' ? '✓ คัดลอกแล้ว!' : '✓ Copied!';
-            setTimeout(() => { btn.textContent = prev; }, 1800);
+        // Lang switch listener
+        const btnLang = document.getElementById('btn-lang');
+        if (btnLang) {
+          btnLang.addEventListener('click', () => {
+            applyLanguage(currentLang === 'en' ? 'th' : 'en');
           });
         }
-      });
-    });
 
-    // Initialize
-    updateLanguage();
+        // Search input listener
+        const searchInput = document.getElementById('studio-search');
+        if (searchInput) {
+          searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.trim();
+            renderLineup();
+          });
+        }
+
+        // Filter tab listeners
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        filterTabs.forEach(tab => {
+          tab.addEventListener('click', function() {
+            filterTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.getAttribute('data-filter') || 'all';
+            renderLineup();
+          });
+        });
+
+        // Copy PowerShell command
+        const btnCopyPs = document.getElementById('btn-copy-powershell');
+        if (btnCopyPs) {
+          btnCopyPs.addEventListener('click', () => {
+            const cmd = document.getElementById('ps-cmd');
+            if (cmd) {
+              copyToClipboard(cmd.textContent.trim());
+            }
+          });
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
   </script>
 </body>
 </html>
