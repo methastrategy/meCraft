@@ -1882,6 +1882,503 @@ code, pre, kbd, samp, .font-mono, [class*="version"], [class*="hash"], [class*="
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   STEAM-STYLE STARTUP AUTO-UPDATER & SPLASH SYSTEM
+═══════════════════════════════════════════════════════════════ */
+.steam-splash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(5, 6, 10, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+}
+
+.steam-splash-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.steam-splash-card {
+  width: 100%;
+  max-width: 540px;
+  background: linear-gradient(180deg, #111420 0%, #090a10 100%);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 16px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.9), 0 0 45px rgba(212, 175, 55, 0.15);
+  padding: 32px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.steam-splash-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold, #d4af37), rgba(99, 102, 241, 0.8), transparent);
+}
+
+.steam-splash-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.steam-splash-emblem {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(99, 102, 241, 0.2));
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+  flex-shrink: 0;
+  animation: steamEmblemPulse 2.5s infinite ease-in-out;
+}
+
+.steam-splash-emblem img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+@keyframes steamEmblemPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+  }
+}
+
+.steam-splash-title-area {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.steam-splash-brand {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold, #d4af37);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.steam-splash-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  font-family: 'Inter', 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.steam-splash-status {
+  font-size: 13px;
+  color: #a0a6b8;
+  margin: 0 0 6px 0;
+  min-height: 20px;
+}
+
+.steam-splash-substatus {
+  font-size: 11px;
+  color: #64748b;
+  font-family: 'JetBrains Mono', monospace;
+  margin: 0 0 16px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.steam-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 12px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.steam-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #d4af37 0%, #f3e5ab 50%, #6366f1 100%);
+  border-radius: 999px;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+  position: relative;
+}
+
+.steam-telemetry-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94a3b8;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 16px;
+}
+
+.steam-log-terminal {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  height: 76px;
+  overflow-y: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #7dd3fc;
+  display: flex;
+  flex-direction: column-reverse;
+  margin-bottom: 18px;
+  scrollbar-width: thin;
+}
+
+.steam-log-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.steam-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.steam-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.btn-steam-skip {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--dur-fast);
+}
+
+.btn-steam-skip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STEP 2: DESKTOP GOOGLE-ONLY AUTH MODAL
+═══════════════════════════════════════════════════════════════ */
+.desktop-google-auth-card {
+  max-width: 440px;
+  text-align: center;
+}
+
+.btn-desktop-google-login {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: #ffffff;
+  color: #1f2937;
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 20px rgba(66, 133, 244, 0.2);
+  transition: all var(--dur-fast);
+  margin: 18px 0;
+}
+
+.btn-desktop-google-login:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 28px rgba(66, 133, 244, 0.35);
+  background: #f8fafc;
+}
+
+.desktop-auth-signup-box {
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.desktop-auth-signup-box span {
+  font-size: 12px;
+  color: var(--text-muted, #94a3b8);
+}
+
+.btn-desktop-web-link {
+  color: var(--gold, #d4af37);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all var(--dur-fast);
+}
+
+.btn-desktop-web-link:hover {
+  color: #f3e5ab;
+  text-decoration: underline;
+}
+
+.auth-trust-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 18px;
+  text-align: left;
+}
+
+.trust-badge-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.trust-badge-icon {
+  font-size: 14px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STEP 3: WEB PORTAL 6-DIGIT OTP SECURITY HUB & DESKTOP RELAY
+═══════════════════════════════════════════════════════════════ */
+.otp-auth-card {
+  max-width: 480px;
+}
+
+.otp-target-email-badge {
+  display: inline-block;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #a5b4fc;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  margin: 6px 0 16px;
+}
+
+.otp-inputs-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.otp-input-box {
+  width: 48px;
+  height: 56px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(0, 0, 0, 0.55);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #ffffff;
+  outline: none;
+  transition: all var(--dur-fast);
+}
+
+.otp-input-box:focus {
+  border-color: var(--gold, #d4af37);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.35);
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.otp-timer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.otp-timer-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  color: #f59e0b;
+}
+
+.btn-resend-otp {
+  background: transparent;
+  border: none;
+  color: var(--gold, #d4af37);
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all var(--dur-fast);
+}
+
+.btn-resend-otp:disabled {
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.btn-resend-otp:not(:disabled):hover {
+  color: #ffffff;
+  background: rgba(212, 175, 55, 0.15);
+}
+
+.otp-rate-limit-banner {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #fca5a5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.btn-verify-otp {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, var(--gold, #d4af37) 0%, #b8972e 100%);
+  color: #000000;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all var(--dur-fast);
+}
+
+.btn-verify-otp:hover {
+  opacity: 0.92;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.35);
+}
+
+.btn-back-to-auth {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-back-to-auth:hover {
+  color: #ffffff;
+}
+
+.desktop-relay-card {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.desktop-relay-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.btn-desktop-deeplink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.35);
+  transition: all var(--dur-fast);
+  margin: 16px 0;
+}
+
+.btn-desktop-deeplink:hover {
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
+  transform: translateY(-1px);
+}
+
+.relay-sync-box {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-relay-code {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-mid);
+  color: var(--gold, #d4af37);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  outline: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
    ACCOUNT SETTINGS MODAL (Pro 2-Column Architecture)
 ═══════════════════════════════════════════════════════════════ */
 .settings-modal-card {

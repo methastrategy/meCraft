@@ -749,4 +749,194 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
     });
   });
 
+  describe('Steam Startup Auto-Updater, Desktop Google Auth, and Web 6-Digit OTP Hub', () => {
+    it('Step 1: executes Steam-style startup auto-updater sequence with progress telemetry', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+
+      expect(portal.isSteamUpdating).toBe(false);
+
+      // Trigger Steam update check with accelerated speed for tests (10ms per step)
+      const updatePromise = portal.runSteamStartupUpdate({ speedMs: 10, force: true });
+      expect(portal.isSteamUpdating).toBe(true);
+      expect(portal.steamUpdateStep).toBe(1);
+      expect(portal.steamUpdateLogs.length).toBeGreaterThanOrEqual(1);
+
+      (portal as any).render();
+      const overlay = doc.getElementById('steam-splash-overlay');
+      expect(overlay).not.toBeNull();
+      expect(doc.getElementById('steam-progress-bar')).not.toBeNull();
+      expect(doc.getElementById('steam-log-terminal')).not.toBeNull();
+      expect(doc.getElementById('btn-steam-skip')).not.toBeNull();
+
+      // Await sequence completion
+      await updatePromise;
+      expect(portal.steamUpdateCompleted).toBe(true);
+      expect(portal.steamUpdateProgress).toBe(100);
+      expect(portal.isSteamUpdating).toBe(false);
+    });
+
+    it('Step 1: supports skip button dismissing Steam updater overlay immediately', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.isSteamUpdating = true;
+      portal.steamUpdateProgress = 45;
+      portal.steamUpdateStatus = 'Downloading packages...';
+      (portal as any).render();
+      (portal as any).attachListeners();
+
+      const skipBtn = doc.getElementById('btn-steam-skip');
+      expect(skipBtn).not.toBeNull();
+      skipBtn?.click();
+
+      expect(portal.isSteamUpdating).toBe(false);
+    });
+
+    it('Step 2: renders ONLY Google sign-in and Web signup redirect in Desktop Mode', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      portal.isAuthModalOpen = true;
+      (portal as any).render();
+
+      // 1. Google Login Button exists
+      const googleBtn = doc.getElementById('modal-btn-auth-google');
+      expect(googleBtn).not.toBeNull();
+      expect(googleBtn?.textContent).toContain('Google');
+
+      // 2. Web Portal Signup Redirect Link exists
+      const webSignupLink = doc.getElementById('modal-link-web-signup') as HTMLAnchorElement;
+      expect(webSignupLink).not.toBeNull();
+      expect(webSignupLink?.getAttribute('href') || (webSignupLink as any)?.href).toContain('mecrafts.vercel.app/auth?action=signup&source=desktop');
+
+      // 3. Email and Password input forms MUST NOT exist on Desktop Modal
+      expect(doc.getElementById('modal-auth-email')).toBeNull();
+      expect(doc.getElementById('modal-auth-password')).toBeNull();
+      expect(doc.getElementById('modal-btn-auth-submit')).toBeNull();
+
+      // 4. Trust Badges exist
+      const trustPills = doc.querySelectorAll('.trust-badge-pill');
+      expect(trustPills.length).toBe(3);
+    });
+
+    it('Step 2: Desktop Google Login establishes authenticated session cleanly', async () => {
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      portal.isAuthModalOpen = true;
+
+      await (portal as any).handleGoogleAuth();
+      expect(portal.currentSession).not.toBeNull();
+      expect(portal.currentSession?.user.email).toContain('google.creator');
+      expect(portal.isAuthModalOpen).toBe(false);
+    });
+
+    it('Step 3: Web Portal mode renders full email form and transitions to 6-digit OTP on signup', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = false; // Web mode
+      portal.isAuthModalOpen = true;
+      portal.authTab = 'signup';
+      (portal as any).render();
+
+      expect(doc.getElementById('modal-auth-email')).not.toBeNull();
+      expect(doc.getElementById('modal-auth-password')).not.toBeNull();
+      expect(doc.getElementById('modal-auth-fullname')).not.toBeNull();
+
+      // Submit signup
+      (portal as any).handleAuthSubmit('creator.elite@gmail.com', 'SuperSecretPass123', 'Elite Creator');
+      expect(portal.authTab).toBe('otp');
+      expect(portal.otpEmail).toBe('creator.elite@gmail.com');
+      expect(portal.otpTimerSeconds).toBe(300);
+      expect(portal.otpAttemptsRemaining).toBe(3);
+
+      (portal as any).render();
+      const otpRow = doc.getElementById('otp-inputs-row');
+      expect(otpRow).not.toBeNull();
+      for (let i = 0; i < 6; i++) {
+        expect(doc.getElementById(`otp-box-${i}`)).not.toBeNull();
+      }
+    });
+
+    it('Step 3: handles OTP digit auto-advancement and 6-digit paste event', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = false;
+      portal.isAuthModalOpen = true;
+      portal.authTab = 'otp';
+      (portal as any).render();
+
+      // Test individual digit input
+      portal.handleOtpDigitInput(0, '8');
+      expect(portal.otpDigits[0]).toBe('8');
+
+      // Test 6-digit paste
+      portal.handleOtpPaste('882914');
+      expect(portal.otpDigits).toEqual(['8', '8', '2', '9', '1', '4']);
+    });
+
+    it('Step 3: verifies valid OTP and activates Desktop Relay with deep link and sync token', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = false;
+      portal.isAuthModalOpen = true;
+      portal.authTab = 'otp';
+      portal.otpEmail = 'verified.user@gmail.com';
+      portal.otpGeneratedCode = '882914';
+      portal.otpDigits = ['8', '8', '2', '9', '1', '4'];
+
+      // Mock source=desktop in query
+      delete (window as any).location;
+      (window as any).location = new URL('https://mecrafts.vercel.app/auth?source=desktop');
+
+      const verified = await portal.handleVerifyOtp();
+      expect(verified).toBe(true);
+      expect(portal.currentSession).not.toBeNull();
+      expect(portal.currentSession?.user.email).toBe('verified.user@gmail.com');
+      expect(portal.isDesktopRelayActive).toBe(true);
+      expect(portal.desktopRelayToken.length).toBeGreaterThan(0);
+
+      (portal as any).render();
+      const deepLink = doc.getElementById('btn-open-desktop-app') as HTMLAnchorElement;
+      expect(deepLink).not.toBeNull();
+      expect(deepLink?.getAttribute('href') || (deepLink as any)?.href).toContain('mecraft://auth?token=');
+      expect(doc.getElementById('btn-copy-relay-code')).not.toBeNull();
+    });
+
+    it('Step 3: enforces security rate limiting and locks out after 3 failed OTP attempts', async () => {
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = false;
+      portal.authTab = 'otp';
+      portal.otpGeneratedCode = '999999';
+      portal.otpDigits = ['1', '1', '1', '1', '1', '1'];
+
+      // Attempt 1
+      let res = await portal.handleVerifyOtp();
+      expect(res).toBe(false);
+      expect(portal.otpAttemptsRemaining).toBe(2);
+
+      // Attempt 2
+      res = await portal.handleVerifyOtp();
+      expect(res).toBe(false);
+      expect(portal.otpAttemptsRemaining).toBe(1);
+
+      // Attempt 3
+      res = await portal.handleVerifyOtp();
+      expect(res).toBe(false);
+      expect(portal.otpAttemptsRemaining).toBe(0);
+      expect(portal.otpLockedUntil).toBeGreaterThan(Date.now());
+      expect(portal.authError.toLowerCase()).toMatch(/locked|ล็อก/);
+
+      // Attempt 4 while locked
+      res = await portal.handleVerifyOtp();
+      expect(res).toBe(false);
+    });
+  });
+
 });
