@@ -14,7 +14,7 @@
 [![GitHub Forks](https://img.shields.io/github/forks/methastrategy/meCraft?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/network)
 [![Tauri v2](https://img.shields.io/badge/Desktop-Tauri%20v2%20(Rust)-ea580c?style=for-the-badge&logo=tauri)](https://tauri.app/)
 [![Client-Side Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-blue?style=for-the-badge&logo=shield)](SECURITY.md)
-[![Tests Passing](https://img.shields.io/badge/Tests-313%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
+[![Tests Passing](https://img.shields.io/badge/Tests-326%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 ---
@@ -97,11 +97,11 @@ flowchart TD
 5. **👆 Decoupled 44px Hit-Target Invariant:**
    Touch interactive targets on mobile and tablets must provide a minimum bounding hit-box of $\ge 44 \times 44\text{ px}$.
 6. **📦 Zero-Defect Monorepo Quality Gate:**
-   Every milestone requires 100% test pass rate (`npm test`, 313/313 tests) and zero TypeScript errors (`npm run typecheck`).
+   Every milestone requires 100% test pass rate (`npm test`, 326/326 tests across 29 test files) and zero TypeScript errors (`npm run typecheck`).
 
 ---
 
-## 📦 Application Suite & Thai Mythology Guardian Guardians (11 Studios)
+## 📦 Application Suite & Thai Mythology Guardian Guardians (18 Studios)
 
 | Emblem | Application | Guardian Deity & Lore | Description | Technology Stack | Status |
 |:---:|:---|:---|:---|:---|:---:|
@@ -110,13 +110,20 @@ flowchart TD
 | <img src="public/branding/mephoto.png" width="36" /> | **🪄 mePhoto Studio** | **พญานาค (Phraya Naga)**<br>Emerald Serpent with Radiant Gem | CamScanner-grade document lab: 4-point homography deskew, Otsu binarization, Magic Color. | Canvas API, `@mecraft/photo-core` | **Stable** (`v1.0.0`) |
 | <img src="public/branding/medrop.png" width="36" /> | **🍩 meDrop Radial HUD** | **ม้านิลมังกร (Ma Nil Mangkon)**<br>Swift Dragon-Horse & Radial Wheel | Zero-Window Radial Drag & Drop File Converter HUD. Instant local RAM conversion on Ctrl+Drag. | Tauri v2, Rust Hook, SVG Donut | **Stable** (`v1.0.0`) |
 | <img src="public/branding/medoc.png" width="36" /> | **📝 meDoc Studio** | **พระสุนทรีวาณี (Sunthari Vani)**<br>Goddess of Eloquence & Crystal Lotus | Distraction-free typewriter, live KaTeX LaTeX formula rendering, inline Mermaid diagrams, clean PDF export. | marked, KaTeX, Mermaid, pdf-lib | **Stable** (`v1.0.0`) |
-| <img src="public/branding/mevector.png" width="36" /> | **📐 meVector** | **พญาครุฑ (Phraya Garuda)**<br>King of Birds with Feather Splines | Resolution-independent Bézier vector illustration, sub-pixel node editor, Boolean geometry, SVG 2.0. | Vector Canvas Engine | *In Development* |
-| <img src="public/branding/mefilm.png" width="36" /> | **🎬 meFilm Studio** | **นางกินรี (Kinnari Maiden)**<br>Celestial Creature with Golden Wings | Non-linear video timeline, multi-track sequencing, WebCodecs hardware decode, zero-transcode preview. | WebCodecs, WebGL, Canvas | *In Development* |
-| <img src="public/branding/melight.png" width="36" /> | **✨ meLight Studio** | **นางสุพรรณมัจฉา (Suphannamatcha)**<br>Golden Mermaid with Iridescent Scales | High-bit-depth non-destructive RAW photo grading, 3D LUT grading, HSL curves, chromatic aberration. | WebGPU / WebAssembly | *In Development* |
-| <img src="public/branding/memotion.png" width="36" /> | **⚡ meMotion Studio** | **หนุมาน (Hanuman)**<br>White Monkey God of Agile Motion | 120fps motion design, keyframe easing curves, particle kinetic bursts, Lottie & WebM hardware export. | WebGPU, Compositor Engine | *In Development* |
-| <img src="public/branding/medesign.png" width="36" /> | **📐 meDesign Studio** | **ช้างเอราวัณ (Erawan Elephant)**<br>3-Headed Divine Architect Elephant | Multi-page editorial layout, typographic baseline grids, master pages, CMYK prepress flight-check. | Canvas 2D, SVG Engine | *In Development* |
-| <img src="public/branding/meaudio.png" width="36" /> | **🎵 meAudio Studio** | **พระพิราพ (Phra Phirap)**<br>Master Deity of Dramatic Arts & Sound | 32-bit float audio DAW, waveform inspector, spectral de-noise, multi-track mixing, Opus/FLAC lossless. | Web Audio API, AudioWorklets | *In Development* |
-| <img src="public/branding/me3d.png" width="36" /> | **🧊 me3D Studio** | **พระวิศวกรรม (Vishvakarman)**<br>Celestial Architect & Builder of Worlds | Spatial polyhedral mesh modeling, real-time physically-based rendering (PBR), GLTF/USDZ/OBJ export. | Three.js / WebGPU PBR | *In Development* |
+| <img src="public/branding/mevector.png" width="36" /> | **📐 meVector Studio** | **พญาครุฑ (Phraya Garuda)**<br>King of Birds with Feather Splines | Precision Bézier vector illustration, sub-pixel node editor, Boolean geometry, SVG/PDF. | Vector Canvas, `@mecraft/studio-shell` | **Ready** (`v1.0.0`) |
+| <img src="public/branding/me3d.png" width="36" /> | **🧊 me3D Studio** | **พระวิศวกรรม (Vishvakarman)**<br>Celestial Architect & Builder of Worlds | Spatial polyhedral mesh modeling, real-time physically-based rendering (PBR), HDRI lighting. | Three.js / WebGPU PBR | **Ready** (`v1.0.0`) |
+| <img src="public/branding/mefilm.png" width="36" /> | **🎬 meFilm Studio** | **นางกินรี (Kinnari Maiden)**<br>Celestial Creature with Golden Wings | Non-linear video timeline, multi-track sequencing, WebCodecs hardware decode, zero-transcode preview. | WebCodecs, WebGL, Canvas | **Ready** (`v1.0.0`) |
+| <img src="public/branding/melight.png" width="36" /> | **✨ meLight Studio** | **นางสุพรรณมัจฉา (Suphannamatcha)**<br>Golden Mermaid with Iridescent Scales | High-bit-depth non-destructive RAW photo grading, 3D LUT grading, HSL curves, parametric exposure. | WebGPU / WebAssembly | **Ready** (`v1.0.0`) |
+| <img src="public/branding/memotion.png" width="36" /> | **⚡ meMotion Studio** | **หนุมาน (Hanuman)**<br>White Monkey God of Agile Motion | 120fps motion design, keyframe easing curves, particle kinetic bursts, Lottie & WebM hardware export. | WebGPU, Compositor Engine | **Ready** (`v1.0.0`) |
+| <img src="public/branding/medesign.png" width="36" /> | **📐 meDesign Studio** | **ช้างเอราวัณ (Erawan Elephant)**<br>3-Headed Divine Architect Elephant | UI/UX prototyping, design systems, typographic baseline grids, master layout artboards. | Canvas 2D, SVG Engine | **Ready** (`v1.0.0`) |
+| <img src="public/branding/meaudio.png" width="36" /> | **🎵 meAudio Studio** | **พระพิราพ (Phra Phirap)**<br>Master Deity of Dramatic Arts & Sound | 32-bit float audio DAW, waveform inspector, spectral de-noise, multi-track podcast mixing. | Web Audio API, AudioWorklets | **Ready** (`v1.0.0`) |
+| <img src="public/branding/medeck.png" width="36" /> | **📊 meDeck Studio** | **พระพิฆเนศ (Ganesha)**<br>Lord of Intellect, Wisdom & High-Impact Arts | High-impact interactive presentation and keynote slide studio with PDF/WebDeck export. | Canvas 2D, Slide Layout Engine | **Ready** (`v1.0.0`) |
+| <img src="public/branding/mesheet.png" width="36" /> | **📈 meSheet Studio** | **พระแม่โพสพ (Phra Mae Phosop)**<br>Goddess of Abundance & Financial Balance | Reactive financial modeling & high-volume client-side spreadsheet grid with 400+ formulas. | WASM Calc Engine, High-Density Grid | **Ready** (`v1.0.0`) |
+| <img src="public/branding/mecad.png" width="36" /> | **📐 meCAD Studio** | **พระพรหม (Phra Phrom)**<br>Four-Faced Divine Creator & Universal Blueprint | 2D engineering CAD drafting, clean-room DXF parsing, snap grid, millimeter precision plotter. | 2D Geometry Engine, WebGL | **Active** (`v1.0.0`) |
+| <img src="public/branding/metexture.png" width="36" /> | **🎨 meTexture Studio** | **พาลี (Vali)**<br>Emerald Simian Sovereign with Immeasurable Force | Direct 3D mesh surface painter, texture projection, and real-time UV unwrapping workbench. | WebGL 2.0 / WebGPU Canvas | **Active** (`v1.0.0`) |
+| <img src="public/branding/mematerial.png" width="36" /> | **💎 meMaterial Studio** | **สุครีพ (Sugriva)**<br>Solar Simian King of Radiant Light & Refraction | Procedural node-based PBR material synthesis, BRDF microfacet visual shader graph builder. | WebGPU Shader Graph | **Active** (`v1.0.0`) |
+| <img src="public/branding/meani.png" width="36" /> | **🏃 meAni Studio** | **องคต (Angada)**<br>Peerless Messenger of Velocity & Sovereign Leap | 2D skeletal animation, inverse kinematics (IK) rigging, timeline curve graph, and sprite sheets. | 2D Rigging Engine, Canvas | **Active** (`v1.0.0`) |
+| <img src="public/branding/merea.png" width="36" /> | **⚡ meREA Studio** | **มัยราพณ์ (Maiyarap)**<br>Lord of the Underworld & Occult Decryption | Deep binary reverse engineering, disassembled control-flow graph (CFG), and clean-room synthesis. | REA Byte Engine, Graphviz Web | **Active** (`v1.0.0`) |
 
 ---
 

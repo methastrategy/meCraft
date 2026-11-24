@@ -17,6 +17,11 @@
     { "source": "/melight", "destination": "/melight/", "permanent": true },
     { "source": "/memotion", "destination": "/memotion/", "permanent": true },
     { "source": "/mesheet", "destination": "/mesheet/", "permanent": true },
+    { "source": "/mecad", "destination": "/mecad/", "permanent": true },
+    { "source": "/metexture", "destination": "/metexture/", "permanent": true },
+    { "source": "/mematerial", "destination": "/mematerial/", "permanent": true },
+    { "source": "/meani", "destination": "/meani/", "permanent": true },
+    { "source": "/merea", "destination": "/merea/", "permanent": true },
     { "source": "/downloads", "destination": "/downloads/", "permanent": false }
   ],
   "headers": [
