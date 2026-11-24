@@ -90,6 +90,8 @@ console.log('[build-web] Assembling meDoc Studio into dist/medoc...');
 copyDir(path.join(rootDir, 'apps/medoc/dist'), path.join(distDir, 'medoc'));
 
 // Subpaths for all specialized standalone creative studios
+// Use lightweight root-pathed index.html shells pointing directly to root /assets/ bundle
+// Eliminates ~2GB of redundant bundle and branding asset duplication across 14 studio folders
 const additionalStudios = [
   'mevector',
   'me3d',
@@ -107,30 +109,26 @@ const additionalStudios = [
   'merea',
 ];
 
+const launcherHtmlPath = path.join(distDir, 'index.html');
+const launcherHtml = fs.readFileSync(launcherHtmlPath, 'utf-8');
+const rootPathedHtml = launcherHtml
+  .replaceAll('src="./assets/', 'src="/assets/')
+  .replaceAll('href="./assets/', 'href="/assets/')
+  .replaceAll('href="./branding/', 'href="/branding/')
+  .replaceAll('content="./assets/', 'content="/assets/');
+
 for (const studio of additionalStudios) {
-  console.log(`[build-web] Assembling ${studio} studio into dist/${studio}...`);
-  copyDir(path.join(rootDir, 'apps/mecraft-launcher/dist'), path.join(distDir, studio));
+  console.log(`[build-web] Assembling lightweight ${studio} shell into dist/${studio}...`);
+  const studioDir = path.join(distDir, studio);
+  fs.mkdirSync(studioDir, { recursive: true });
+  fs.writeFileSync(path.join(studioDir, 'index.html'), rootPathedHtml, 'utf-8');
 }
 
 // Public assets if available
 const publicDir = path.join(rootDir, 'public');
 if (fs.existsSync(publicDir)) {
-  console.log('[build-web] Copying root public assets...');
+  console.log('[build-web] Copying root public assets to dist...');
   copyDir(publicDir, distDir);
-
-  // Ensure 3D branding is available at root and inside each sub-app for relative URLs
-  const brandingDir = path.join(publicDir, 'branding');
-  if (fs.existsSync(brandingDir)) {
-    copyDir(brandingDir, path.join(distDir, 'branding'));
-    copyDir(brandingDir, path.join(distDir, 'mepdf', 'branding'));
-    copyDir(brandingDir, path.join(distDir, 'mephoto', 'branding'));
-    copyDir(brandingDir, path.join(distDir, 'medrop', 'branding'));
-    copyDir(brandingDir, path.join(distDir, 'medoc', 'branding'));
-    copyDir(brandingDir, path.join(distDir, 'downloads', 'branding'));
-    for (const s of additionalStudios) {
-      copyDir(brandingDir, path.join(distDir, s, 'branding'));
-    }
-  }
 }
 
 console.log('[build-web] Multi-app dist assembled:');
