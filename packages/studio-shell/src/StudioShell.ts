@@ -11,6 +11,8 @@ import { Cockpit } from './components/Cockpit.js';
 import { StatusBar } from './components/StatusBar.js';
 import { UpdateBanner } from './components/UpdateBanner.js';
 import { UpdateModal } from './components/UpdateModal.js';
+import { SteamStartupSplash } from './components/SteamStartupSplash.js';
+import { DesktopGoogleAuthModal } from './components/DesktopGoogleAuthModal.js';
 import { ToastManager } from './components/ToastManager.js';
 import { ModalManager } from './components/ModalManager.js';
 import { checkSoftwareUpdate } from '@mecraft/core-bridge';
@@ -87,6 +89,27 @@ export class StudioShell {
 
   public getRootElement(): HTMLElement {
     return this.rootEl;
+  }
+
+  public runSteamStartupSplash(options?: { speedMs?: number; force?: boolean }): SteamStartupSplash {
+    const splash = new SteamStartupSplash({
+      appName: this.config.appName,
+      appId: this.config.appId,
+      currentVersion: this.config.version || '1.0.0',
+      speedMs: options?.speedMs,
+      force: options?.force,
+    });
+    splash.run();
+    return splash;
+  }
+
+  public openDesktopAuthModal(onSuccess?: (session: any) => void): DesktopGoogleAuthModal {
+    const modal = new DesktopGoogleAuthModal({
+      appName: this.config.appName,
+      onSuccess,
+    });
+    modal.open();
+    return modal;
   }
 
   public getCenterStage(): HTMLElement {

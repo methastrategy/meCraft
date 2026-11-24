@@ -13,5 +13,7 @@ export { CockpitSplitter } from './components/CockpitSplitter.js';
 export { StatusBar } from './components/StatusBar.js';
 export { UpdateBanner } from './components/UpdateBanner.js';
 export { UpdateModal } from './components/UpdateModal.js';
+export { SteamStartupSplash, type SteamSplashOptions } from './components/SteamStartupSplash.js';
+export { DesktopGoogleAuthModal, type DesktopAuthModalOptions } from './components/DesktopGoogleAuthModal.js';
 export { ToastManager } from './components/ToastManager.js';
 export { ModalManager } from './components/ModalManager.js';
