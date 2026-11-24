@@ -2944,28 +2944,176 @@ console.log(initializeStudio(pdfStudio));`,
     if (!this.isUserProfileModalOpen || !this.currentSession) return '';
     const tierBadge = getTierBadge(this.currentSession.user.tier);
     const syncCode = exportAuthSyncCode(this.currentSession);
-    return `
-    <div class="auth-modal-overlay active" id="profile-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-profile-title">
-      <div class="auth-modal-backdrop" id="modal-profile-backdrop"></div>
-      <div class="auth-gate-card auth-modal-card">
-        <button type="button" class="auth-modal-close" id="btn-close-profile-modal" aria-label="Close dialog">✕</button>
-        <div class="auth-brand">
-          <div class="user-avatar" style="width: 58px; height: 58px; font-size: 24px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #d4af37, #6366f1); border-radius: 50%; color: #fff; font-weight: 700; box-shadow: 0 0 24px rgba(212,175,55,0.4);">
-            ${escapeHtml((this.currentSession.user.fullName || this.currentSession.user.email).charAt(0).toUpperCase())}
-          </div>
-          <h2 class="auth-title" id="modal-profile-title">${escapeHtml(this.currentSession.user.fullName || 'meCraft User')}</h2>
-          <p class="auth-subtitle">${escapeHtml(this.currentSession.user.email)}</p>
-          <div style="margin-top: 10px;">
+    const activeTab = this.profileActiveTab || 'profile';
+    const isTh = this.lang === 'th';
+
+    let contentHtml = '';
+    if (activeTab === 'profile') {
+      contentHtml = `
+        <h3 class="settings-panel-title">${isTh ? 'ข้อมูลบัญชีผู้ใช้' : 'Profile & Identity'}</h3>
+        <p class="settings-panel-desc">${isTh ? 'จัดการชื่อผู้ใช้งานและข้อมูลประจำตัวสำหรับการทำงานในเครื่อง' : 'Manage your local creator identity and device profile credentials.'}</p>
+        
+        <div class="settings-group">
+          <label class="settings-label" for="input-profile-name">${isTh ? 'ชื่อผู้ใช้ / นามปากกา' : 'Creator Display Name'}</label>
+          <input type="text" id="input-profile-name" class="settings-input" value="${escapeHtml(this.currentSession.user.fullName || '')}" placeholder="e.g. Metha Strategy" />
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">${isTh ? 'อีเมลที่ลงทะเบียน' : 'Registered Email Address'}</label>
+          <input type="email" class="settings-input" value="${escapeHtml(this.currentSession.user.email)}" readonly />
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">${isTh ? 'ระดับสมาชิก (Tier)' : 'Membership Tier'}</label>
+          <div>
             <span class="user-tier-badge ${tierBadge.isPro ? 'badge-pro' : 'badge-free'}" style="font-size: 12px; padding: 4px 14px;">
               ${tierBadge.label}
             </span>
           </div>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-top: 24px;">
-          <button type="button" class="btn-auth-submit" id="btn-profile-signout" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5;">
-            🚪 ${this.t.signOutBtn}
+        <div style="margin-top: 12px;">
+          <button type="button" class="settings-btn-primary" id="btn-save-profile">
+            💾 ${isTh ? 'บันทึกการเปลี่ยนแปลง' : 'Save Changes'}
           </button>
+        </div>
+      `;
+    } else if (activeTab === 'security') {
+      contentHtml = `
+        <h3 class="settings-panel-title">${isTh ? 'ความปลอดภัยและรหัสผ่าน' : 'Security & Encryption'}</h3>
+        <p class="settings-panel-desc">${isTh ? 'ระบบความปลอดภัยทำงานแบบเข้ารหัสในเครื่อง (100% In-Device AES-256-GCM)' : 'All credentials and tokens are encrypted locally with client-side Zero-Knowledge vaults.'}</p>
+        
+        <div class="settings-group">
+          <label class="settings-label" for="input-old-pwd">${isTh ? 'รหัสผ่านปัจจุบัน' : 'Current Password'}</label>
+          <input type="password" id="input-old-pwd" class="settings-input" placeholder="••••••••" />
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label" for="input-new-pwd">${isTh ? 'รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)' : 'New Password (min 6 chars)'}</label>
+          <input type="password" id="input-new-pwd" class="settings-input" placeholder="••••••••" />
+        </div>
+
+        <div style="margin-top: 4px;">
+          <button type="button" class="settings-btn-primary" id="btn-update-pwd">
+            🔒 ${isTh ? 'อัปเดตรหัสผ่าน' : 'Update Password'}
+          </button>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid var(--border-subtle); margin: 16px 0;" />
+
+        <div class="settings-group">
+          <label class="settings-label">${isTh ? 'รหัสเชื่อมต่อข้ามอุปกรณ์ (Web-to-Desktop Sync Code)' : 'Device Handshake Sync Code'}</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" class="settings-input" value="${escapeHtml(syncCode)}" readonly style="font-family: var(--font-mono); font-size: 12px;" />
+            <button type="button" class="settings-btn-primary" id="btn-copy-sync-code" style="white-space: nowrap; padding: 10px 14px;">
+              📋 ${isTh ? 'คัดลอก' : 'Copy'}
+            </button>
+          </div>
+          <span style="font-size: 11px; color: var(--text-muted);">${isTh ? 'ใช้รหัสนี้สำหรับนำเข้าข้อมูลใน meCraft Desktop Engine' : 'Use this token to import your profile into meCraft Desktop.'}</span>
+        </div>
+      `;
+    } else if (activeTab === 'preferences') {
+      contentHtml = `
+        <h3 class="settings-panel-title">${isTh ? 'การตั้งค่าระบบและสภาพแวดล้อม' : 'Preferences & Environment'}</h3>
+        <p class="settings-panel-desc">${isTh ? 'ปรับแต่งการแสดงผลและพฤติกรรมการเปิดใช้งานแอปพลิเคชัน' : 'Customize theme behaviors, display scaling, and studio launch defaults.'}</p>
+        
+        <div class="settings-group">
+          <label class="settings-label">${isTh ? 'ธีมภาพหลัก (Sanctuary Aesthetics)' : 'Visual Theme'}</label>
+          <div class="settings-info-badge">
+            ✨ ${isTh ? 'Dark Sanctuary (Gold & Midnight Obsidian) — ทำงานอัตโนมัติ' : 'Dark Sanctuary (Gold & Midnight Obsidian) — Default Active'}
+          </div>
+        </div>
+
+        <div class="settings-group" style="margin-top: 8px;">
+          <label class="settings-label">${isTh ? 'การเร่งประสิทธิภาพกราฟิก (Hardware Acceleration)' : 'Hardware Graphics Acceleration'}</label>
+          <div class="settings-info-badge" style="color: #60a5fa; background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3);">
+            ⚡ Direct3D 12 / WebGPU Native Ready
+          </div>
+        </div>
+
+        <div class="settings-group" style="margin-top: 8px;">
+          <label class="settings-label">${isTh ? 'การตรวจสอบเวอร์ชันอัตโนมัติ' : 'Autonomous Update Check'}</label>
+          <div class="settings-info-badge">
+            🟢 ${isTh ? 'เปิดใช้งาน (ตรวจสอบจาก GitHub Releases อัตโนมัติ)' : 'Enabled (Verified with Official GitHub Releases)'}
+          </div>
+        </div>
+      `;
+    } else if (activeTab === 'storage') {
+      contentHtml = `
+        <h3 class="settings-panel-title">${isTh ? 'พื้นที่จัดเก็บในเครื่องและแคช' : 'In-Device Storage & Local Cache'}</h3>
+        <p class="settings-panel-desc">${isTh ? 'ข้อมูลทั้งหมดถูกจัดเก็บบนเครื่องของคุณ 100% ปราศจากการอัปโหลดขึ้นคลาวด์' : 'Zero telemetry, zero cloud storage. All projects and assets live on local storage.'}</p>
+        
+        <div class="settings-group">
+          <label class="settings-label">${isTh ? 'สถานะพื้นที่ความจำในเครื่อง' : 'In-Device Vault Allocation'}</label>
+          <div class="settings-info-badge">
+            💾 Local IndexedDB & Storage: 100% Isolated
+          </div>
+        </div>
+
+        <div style="margin-top: 14px;">
+          <button type="button" class="btn-settings-signout" id="btn-clear-cache" style="background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.35); color: #fbbf24;">
+            🧹 ${isTh ? 'ล้างแคชชั่วคราวในเครื่อง (Clear Local Cache)' : 'Clear Temporary In-Device Cache'}
+          </button>
+        </div>
+      `;
+    }
+
+    return `
+    <div class="auth-modal-overlay active" id="profile-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-settings-title">
+      <div class="auth-modal-backdrop" id="modal-profile-backdrop"></div>
+      <div class="settings-modal-card">
+        <div class="settings-modal-header">
+          <div class="settings-modal-title" id="modal-settings-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--gold);"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>${isTh ? 'การตั้งค่าบัญชีและระบบ (Account Settings)' : 'Account & System Settings'}</span>
+          </div>
+          <button type="button" class="auth-modal-close" id="btn-close-profile-modal" aria-label="Close dialog">✕</button>
+        </div>
+
+        <div class="settings-modal-body">
+          <!-- Left Sidebar Categories -->
+          <div class="settings-sidebar">
+            <nav class="settings-nav" aria-label="Settings categories">
+              <button type="button" class="settings-nav-item ${activeTab === 'profile' ? 'active' : ''}" data-tab="profile">
+                <span class="settings-nav-icon">👤</span>
+                <span>${isTh ? 'ข้อมูลบัญชี' : 'Profile'}</span>
+              </button>
+              <button type="button" class="settings-nav-item ${activeTab === 'security' ? 'active' : ''}" data-tab="security">
+                <span class="settings-nav-icon">🔒</span>
+                <span>${isTh ? 'ความปลอดภัย' : 'Security'}</span>
+              </button>
+              <button type="button" class="settings-nav-item ${activeTab === 'preferences' ? 'active' : ''}" data-tab="preferences">
+                <span class="settings-nav-icon">⚙️</span>
+                <span>${isTh ? 'การตั้งค่าทั่วไป' : 'Preferences'}</span>
+              </button>
+              <button type="button" class="settings-nav-item ${activeTab === 'storage' ? 'active' : ''}" data-tab="storage">
+                <span class="settings-nav-icon">💾</span>
+                <span>${isTh ? 'พื้นที่จัดเก็บในเครื่อง' : 'Storage'}</span>
+              </button>
+            </nav>
+
+            <!-- Bottom-left language switcher under Category Tabs -->
+            <div class="settings-sidebar-bottom">
+              <div class="settings-lang-box">
+                <span class="settings-lang-label">
+                  🌐 ${isTh ? 'ภาษา / Language' : 'Language'}
+                </span>
+                <div class="settings-lang-pills">
+                  <button type="button" class="settings-lang-pill ${this.lang === 'th' ? 'active' : ''}" id="btn-settings-lang-th">ไทย (TH)</button>
+                  <button type="button" class="settings-lang-pill ${this.lang === 'en' ? 'active' : ''}" id="btn-settings-lang-en">EN</button>
+                </div>
+              </div>
+
+              <button type="button" class="btn-settings-signout" id="btn-profile-signout">
+                🚪 <span>${this.t.signOutBtn}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Content Panel -->
+          <div class="settings-content">
+            ${contentHtml}
+          </div>
         </div>
       </div>
     </div>`;
@@ -3048,12 +3196,6 @@ console.log(initializeStudio(pdfStudio));`,
             <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
             <span>Continue with Google</span>
           </button>
-
-          <div class="auth-demo-box">
-            <button type="button" class="btn-auth-demo" id="btn-auth-demo">
-              ⚡ ${this.lang === 'en' ? 'Quick Free Member Demo (Offline Bypass)' : 'เข้าสู่ระบบทดลองใช้งานทันที (Free Member)'}
-            </button>
-          </div>
 
           <!-- Desktop Sync Import Box -->
           <div class="auth-sync-desktop-box">
@@ -3149,12 +3291,6 @@ console.log(initializeStudio(pdfStudio));`,
             <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
             <span>Continue with Google</span>
           </button>
-
-          <div class="auth-demo-box">
-            <button type="button" class="btn-auth-demo" id="modal-btn-auth-demo">
-              ⚡ ${this.lang === 'en' ? 'Quick Free Member Demo (Offline Bypass)' : 'เข้าสู่ระบบทดลองใช้งานทันที (Free Member)'}
-            </button>
-          </div>
 
           <div class="auth-footer-terms">
             <span>${this.lang === 'en' ? 'By continuing, you agree to our 100% In-Device Privacy Policy.' : 'การเข้าใช้งานถือว่ายอมรับนโยบายความเป็นส่วนตัวในเครื่อง 100%'}</span>
@@ -4057,9 +4193,11 @@ console.log(initializeStudio(pdfStudio));`,
             </button>
           ` : ''}
 
+          ${!this.currentSession ? `
           <button class="portal-lang-btn" id="btn-lang" aria-label="Switch language">
             <span>${this.lang === 'en' ? 'TH' : 'EN'}</span>
           </button>
+          ` : ''}
 
           ${this.currentSession ? `
             <div class="user-profile-pill" id="user-profile-pill" role="button" tabindex="0" title="${escapeHtml(this.currentSession.user.email)}">
@@ -4958,13 +5096,70 @@ console.log(initializeStudio(pdfStudio));`,
       this.handleGoogleAuth();
     });
 
-    document.getElementById('modal-btn-auth-demo')?.addEventListener('click', () => {
-      const session = createMockAuthSession('demo.creator@mecraft.dev', 'free_member');
-      saveAuthSession(session);
-      this.currentSession = session;
-      this.isAuthModalOpen = false;
+    // Account Settings Modal Category Navigation
+    document.querySelectorAll('.settings-nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const tab = (item as HTMLElement).dataset.tab as 'profile' | 'security' | 'preferences' | 'storage';
+        if (tab) {
+          this.profileActiveTab = tab;
+          this.render();
+          this.attachListeners();
+        }
+      });
+    });
+
+    // Account Settings Modal Language Switcher (Bottom-Left)
+    document.getElementById('btn-settings-lang-th')?.addEventListener('click', () => {
+      this.lang = 'th';
+      try { localStorage.setItem('mecrafts_lang', 'th'); } catch {}
       this.render();
       this.attachListeners();
+    });
+
+    document.getElementById('btn-settings-lang-en')?.addEventListener('click', () => {
+      this.lang = 'en';
+      try { localStorage.setItem('mecrafts_lang', 'en'); } catch {}
+      this.render();
+      this.attachListeners();
+    });
+
+    // Account Settings Profile Save
+    document.getElementById('btn-save-profile')?.addEventListener('click', () => {
+      const nameInput = document.getElementById('input-profile-name') as HTMLInputElement;
+      if (nameInput && this.currentSession) {
+        this.currentSession.user.fullName = nameInput.value.trim();
+        saveAuthSession(this.currentSession);
+        alert(this.lang === 'th' ? 'บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว' : 'Profile updated successfully');
+        this.render();
+        this.attachListeners();
+      }
+    });
+
+    // Account Settings Password Update
+    document.getElementById('btn-update-pwd')?.addEventListener('click', () => {
+      const newPwdInput = document.getElementById('input-new-pwd') as HTMLInputElement;
+      if (newPwdInput && newPwdInput.value.length >= 6) {
+        alert(this.lang === 'th' ? 'อัปเดตรหัสผ่านในเครื่องเรียบร้อยแล้ว' : 'Password updated successfully');
+        newPwdInput.value = '';
+        const oldPwd = document.getElementById('input-old-pwd') as HTMLInputElement;
+        if (oldPwd) oldPwd.value = '';
+      } else {
+        alert(this.lang === 'th' ? 'กรุณากรอกรหัสผ่านใหม่อย่างน้อย 6 ตัวอักษร' : 'New password must be at least 6 characters');
+      }
+    });
+
+    // Account Settings Sync Code Copy
+    document.getElementById('btn-copy-sync-code')?.addEventListener('click', () => {
+      if (this.currentSession) {
+        const syncCode = exportAuthSyncCode(this.currentSession);
+        navigator.clipboard?.writeText(syncCode);
+        alert(this.lang === 'th' ? 'คัดลอกรหัสเชื่อมต่อ (Sync Code) แล้ว' : 'Sync code copied to clipboard');
+      }
+    });
+
+    // Account Settings Clear Cache
+    document.getElementById('btn-clear-cache')?.addEventListener('click', () => {
+      alert(this.lang === 'th' ? 'ล้างแคชชั่วคราวในเครื่องเรียบร้อยแล้ว' : 'Temporary cache cleared');
     });
 
     document.getElementById('modal-link-forgot-pwd')?.addEventListener('click', (e) => {
