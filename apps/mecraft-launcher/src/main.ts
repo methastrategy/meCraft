@@ -847,11 +847,27 @@ class MeCraftsPortal {
   private updateInfo: SoftwareUpdateInfo | null = null;
   private isUpdateModalOpen = false;
   private isCheckingUpdate = false;
-  public forceDesktopMode = false;
+  public forceDesktopMode: boolean | null = null;
   public desktopView: 'workbench' | 'studios' | 'recents' | 'vault' = 'workbench';
 
   public isDesktopMode(): boolean {
-    return this.forceDesktopMode || this.bridge.isTauri();
+    if (this.forceDesktopMode !== null) {
+      return this.forceDesktopMode;
+    }
+    if (this.bridge.isTauri()) {
+      return true;
+    }
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('mode') === 'web') return false;
+      if (params.get('mode') === 'desktop') return true;
+      // On public production web domain, default to web landing page
+      if (window.location.hostname && window.location.hostname.includes('vercel.app')) {
+        return false;
+      }
+    }
+    // On localhost, local dev, and native runtime, default to Desktop Workstation!
+    return true;
   }
 
   constructor() {
