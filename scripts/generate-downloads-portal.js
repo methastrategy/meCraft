@@ -108,7 +108,14 @@ const htmlContent = `<!doctype html>
       z-index: 1;
     }
 
-    /* ── Sticky Portal Header (Exact Match to Home Page) ── */
+    #app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ── Sticky Portal Header (Exact Match to Home Page #app > header > div) ── */
     .portal-header {
       position: sticky;
       top: 0;
@@ -120,137 +127,139 @@ const htmlContent = `<!doctype html>
     }
 
     .portal-header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px;
       height: 60px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      gap: 24px;
     }
 
     .portal-brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      flex-shrink: 0;
+      outline-offset: 4px;
       text-decoration: none;
       color: inherit;
     }
 
     .portal-brand-emblem {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
-      background: rgba(212, 175, 55, 0.12);
-      border: 1px solid rgba(212, 175, 55, 0.35);
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 16px var(--gold-glow);
-      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
     }
 
     .portal-brand-img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 6px rgba(212, 175, 55, 0.4));
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .portal-brand:hover .portal-brand-img {
+      transform: scale(1.1) rotate(-3deg);
+    }
+
+    .portal-brand-fallback {
+      width: 32px;
+      height: 32px;
     }
 
     .portal-brand-text {
       display: flex;
       flex-direction: column;
-    }
-
-    .portal-brand-name {
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: #ffffff;
       line-height: 1.1;
     }
 
-    .portal-brand-name span {
-      color: var(--gold);
+    .portal-brand-name {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--gold) 0%, #f7d774 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .portal-brand-tag {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
       text-transform: uppercase;
-      color: var(--text-gold);
     }
 
     .portal-nav {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
+      margin-left: auto;
       list-style: none;
     }
 
     .portal-nav-link {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.875rem;
-      font-weight: 600;
+      padding: 6px 12px;
+      min-height: 36px;
+      font-size: 13px;
+      font-weight: 500;
       color: var(--text-secondary);
-      text-decoration: none;
-      padding: 8px 14px;
       border-radius: var(--radius-sm);
-      transition: var(--transition);
+      transition: color 0.15s ease-out, background 0.15s ease-out;
+      outline-offset: 2px;
+      text-decoration: none;
       border: 1px solid transparent;
     }
 
-    .portal-nav-link:hover {
-      color: #ffffff;
+    .portal-nav-link:hover, .portal-nav-link:focus-visible {
+      color: var(--text-primary);
       background: rgba(255, 255, 255, 0.05);
-      border-color: var(--border-subtle);
     }
 
     .portal-nav-link.active {
-      color: var(--gold-hover);
-      background: rgba(212, 175, 55, 0.08);
-      border-color: rgba(212, 175, 55, 0.3);
-    }
-
-    .portal-nav-link.back-portal {
       color: var(--gold);
-      border-color: rgba(212, 175, 55, 0.25);
-      background: rgba(212, 175, 55, 0.06);
-    }
-
-    .portal-nav-link.back-portal:hover {
-      background: rgba(212, 175, 55, 0.15);
-      border-color: var(--gold);
-      color: #ffffff;
+      background: rgba(212, 175, 55, 0.08);
+      font-weight: 600;
     }
 
     .portal-header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
+      flex-shrink: 0;
     }
 
     .portal-lang-btn {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 6px 14px;
-      background: rgba(255, 255, 255, 0.04);
+      min-height: 36px;
+      padding: 0 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
       border: 1px solid var(--border-mid);
       border-radius: var(--radius-sm);
-      color: var(--text-primary);
+      background: transparent;
       cursor: pointer;
-      transition: var(--transition);
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      outline-offset: 2px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
 
-    .portal-lang-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
+    .portal-lang-btn:hover, .portal-lang-btn:focus-visible {
+      color: var(--text-primary);
       border-color: var(--border-strong);
-      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .user-profile-pill {
@@ -259,10 +268,9 @@ const htmlContent = `<!doctype html>
       gap: 10px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-mid);
-      padding: 4px 8px 4px 10px;
+      padding: 4px 6px 4px 10px;
       border-radius: 100px;
-      transition: border-color var(--transition);
-      user-select: none;
+      transition: border-color 0.15s;
     }
 
     .user-profile-pill:hover {
@@ -274,7 +282,7 @@ const htmlContent = `<!doctype html>
       height: 26px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--gold) 0%, #f7d774 100%);
-      color: #000000;
+      color: #000;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -292,7 +300,7 @@ const htmlContent = `<!doctype html>
     .user-email {
       font-size: 12px;
       font-weight: 600;
-      max-width: 140px;
+      max-width: 130px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -306,8 +314,31 @@ const htmlContent = `<!doctype html>
       text-transform: uppercase;
     }
 
-    .badge-free {
-      color: var(--text-gold);
+    .user-tier-badge.badge-free {
+      color: #9494a8;
+    }
+
+    .user-tier-badge.badge-pro {
+      color: var(--gold);
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-signout {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .btn-signout:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
     }
 
     .col-emblem-img {
@@ -1175,27 +1206,40 @@ const htmlContent = `<!doctype html>
     @media (max-width: 768px) {
       .portal-hero { padding: 60px 16px 48px; }
       .hero-title { font-size: 28px; }
-      .portal-header-inner { height: auto; padding: 10px 0; flex-wrap: wrap; }
-      .portal-nav { order: 3; width: 100%; overflow-x: auto; padding-top: 8px; }
+      .portal-header-inner { padding: 0 16px; height: 56px; gap: 12px; }
+      .portal-nav { display: none; }
+      .portal-brand-tag { display: none; }
     }
   </style>
 </head>
 <body>
+  <div id="app">
 
-  <!-- Sticky Global Navigation Header (Home Page Match) -->
+  <!-- Sticky Global Navigation Header (Exact Match to Home Page #app > header > div) -->
   <header class="portal-header" role="banner">
-    <div class="container portal-header-inner">
-      <a href="/" class="portal-brand" aria-label="meCrafts Workstation Home">
+    <div class="portal-header-inner">
+      <a class="portal-brand" href="/" aria-label="meCrafts home">
         <div class="portal-brand-emblem" aria-hidden="true">
-          <img src="/branding/mecraft-suite.png" alt="meCrafts" class="portal-brand-img" onerror="this.onerror=null;this.src='/assets/branding/mecraft-suite.png';" />
+          <img src="/branding/mecraft-suite.png" class="portal-brand-img" alt="meCrafts" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='inline-flex';}" />
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="portal-brand-fallback" style="display:none;">
+            <defs>
+              <linearGradient id="emblem-g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#d4af37"/>
+                <stop offset="100%" stop-color="#f7d774"/>
+              </linearGradient>
+            </defs>
+            <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#emblem-g)" opacity="0.15"/>
+            <path d="M8 24 L16 8 L24 24" stroke="url(#emblem-g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M11 19 h10" stroke="url(#emblem-g)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
         </div>
         <div class="portal-brand-text">
-          <span class="portal-brand-name">me<span>Crafts</span></span>
-          <span class="portal-brand-tag" data-i18n="header_badge">OFFICIAL SUITE</span>
+          <span class="portal-brand-name">meCrafts</span>
+          <span class="portal-brand-tag" data-i18n="header_badge">Official Suite</span>
         </div>
       </a>
 
-      <nav class="portal-nav" aria-label="Downloads directory navigation">
+      <nav class="portal-nav" aria-label="Portal navigation">
         <a href="/#apps-grid" class="portal-nav-link" data-i18n="nav_studios">Studios</a>
         <a href="/#manifesto" class="portal-nav-link" data-i18n="nav_privacy">Privacy Architecture</a>
         <a href="/#specs" class="portal-nav-link" data-i18n="nav_specs">Specs</a>
@@ -1203,16 +1247,19 @@ const htmlContent = `<!doctype html>
       </nav>
 
       <div class="portal-header-actions">
-        <button type="button" id="btn-lang" class="portal-lang-btn" aria-label="Toggle Language">
+        <button class="portal-lang-btn" id="btn-lang" aria-label="Switch language">
           <span id="lang-indicator">TH</span>
         </button>
 
-        <div class="user-profile-pill" id="user-profile-pill" title="methastrategy@gmail.com">
+        <div class="user-profile-pill" id="user-profile-pill" role="button" tabindex="0" title="methastrategy@gmail.com">
           <div class="user-avatar" aria-hidden="true">M</div>
           <div class="user-details">
-            <span class="user-email">methastrategy@gm...</span>
+            <span class="user-email" title="methastrategy@gmail.com">methastrategy@gm...</span>
             <span class="user-tier-badge badge-free" data-i18n="lbl_free_member">FREE MEMBER</span>
           </div>
+          <button class="btn-signout" id="btn-signout" title="Sign Out" aria-label="Sign Out">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
         </div>
       </div>
     </div>
@@ -1379,6 +1426,7 @@ const htmlContent = `<!doctype html>
       </ul>
     </div>
   </footer>
+  </div><!-- /#app -->
 
   <!-- Toast Notification -->
   <div class="toast-pill" id="toast">Copied to Clipboard</div>
@@ -2082,6 +2130,15 @@ const htmlContent = `<!doctype html>
           const cmd = document.getElementById('cmd-sample').textContent;
           window.copyText(cmd, 'toast_cmd_copied');
         });
+
+        const btnSignout = document.getElementById('btn-signout');
+        if (btnSignout) {
+          btnSignout.addEventListener('click', (e) => {
+            e.stopPropagation();
+            localStorage.removeItem('mecraft_session');
+            window.location.reload();
+          });
+        }
 
         try {
           const sessionData = localStorage.getItem('mecraft_session');
