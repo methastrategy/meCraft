@@ -847,6 +847,12 @@ class MeCraftsPortal {
   private updateInfo: SoftwareUpdateInfo | null = null;
   private isUpdateModalOpen = false;
   private isCheckingUpdate = false;
+  public forceDesktopMode = false;
+  public desktopView: 'workbench' | 'studios' | 'recents' | 'vault' = 'workbench';
+
+  public isDesktopMode(): boolean {
+    return this.forceDesktopMode || this.bridge.isTauri();
+  }
 
   constructor() {
     const urlSession = checkUrlAuthHandoff();
@@ -1169,23 +1175,483 @@ class MeCraftsPortal {
 
   private render() {
     this.scrollSpyObserver?.disconnect();
-    this.appEl.innerHTML = `
-      ${this.renderHeader()}
-      <main id="portal-main" class="workstation-main">
-        ${this.renderHero()}
-        ${this.renderFilterBar()}
-        ${this.renderAppsGrid()}
-        ${this.renderManifesto()}
-        ${this.renderSpecs()}
-      </main>
-      ${this.renderFooter()}
-      ${this.renderAuthModal()}
-      ${this.renderUserProfileModal()}
-      ${this.renderDesktopPreviewModal()}
-      ${this.renderFullscreenMockupModal()}
-      ${this.renderDownloadsModal()}
-      ${this.renderUpdateModal()}
-    `;
+    const isDesktop = this.isDesktopMode();
+
+    if (isDesktop) {
+      this.appEl.innerHTML = `
+        <div class="workstation-shell" id="workstation-shell">
+          ${this.renderSidebar()}
+          <main class="workstation-canvas" id="workstation-canvas">
+            ${this.renderDesktopView()}
+          </main>
+        </div>
+        ${this.renderAuthModal()}
+        ${this.renderUserProfileModal()}
+        ${this.renderUpdateModal()}
+      `;
+    } else {
+      this.appEl.innerHTML = `
+        ${this.renderHeader()}
+        <main id="portal-main" class="workstation-main">
+          ${this.renderHero()}
+          ${this.renderFilterBar()}
+          ${this.renderAppsGrid()}
+          ${this.renderManifesto()}
+          ${this.renderSpecs()}
+        </main>
+        ${this.renderFooter()}
+        ${this.renderAuthModal()}
+        ${this.renderUserProfileModal()}
+        ${this.renderDesktopPreviewModal()}
+        ${this.renderFullscreenMockupModal()}
+        ${this.renderDownloadsModal()}
+        ${this.renderUpdateModal()}
+      `;
+    }
+  }
+
+  private renderSidebar(): string {
+    const isTh = this.lang === 'th';
+    const navItems = [
+      { id: 'workbench', icon: '⚡', label: isTh ? 'เวิร์กเบนช์' : 'Workbench', desc: isTh ? 'หน้าทำงานด่วน' : 'Quick Actions' },
+      { id: 'studios', icon: '📦', label: isTh ? 'สตูดิโอ (11)' : 'All Studios (11)', desc: isTh ? 'คลังโปรแกรม' : '11 Studios' },
+      { id: 'recents', icon: '🕒', label: isTh ? 'ประวัติงาน' : 'Recent Work', desc: isTh ? 'ไฟล์ล่าสุด' : 'Recent Files' },
+      { id: 'vault', icon: '🛡️', label: isTh ? 'สถานะเครื่อง' : 'Local Engine', desc: isTh ? 'ความปลอดภัย' : 'Zero-Cloud' },
+    ];
+
+    return `
+    <aside class="ws-sidebar" aria-label="Workstation Navigation">
+      <div class="ws-sidebar-brand">
+        <div class="ws-brand-emblem" aria-hidden="true">
+          <img src="./branding/mecraft-suite.png" class="ws-brand-img" alt="meCraft" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='inline-flex';}" />
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" class="ws-brand-fallback" style="display:none;">
+            <defs>
+              <linearGradient id="ws-emblem-g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#d4af37"/>
+                <stop offset="100%" stop-color="#f7d774"/>
+              </linearGradient>
+            </defs>
+            <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#ws-emblem-g)" opacity="0.15"/>
+            <path d="M8 24 L16 8 L24 24" stroke="url(#ws-emblem-g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M11 19 h10" stroke="url(#ws-emblem-g)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="ws-brand-meta">
+          <span class="ws-brand-title">meCraft</span>
+          <span class="ws-brand-pill">WORKSTATION</span>
+        </div>
+      </div>
+
+      <nav class="ws-sidebar-nav" role="tablist" aria-label="Workstation views">
+        ${navItems.map(item => `
+          <button
+            type="button"
+            class="ws-nav-btn ${this.desktopView === item.id ? 'active' : ''}"
+            data-ws-view="${item.id}"
+            role="tab"
+            aria-selected="${this.desktopView === item.id}"
+            aria-label="${item.label}"
+          >
+            <span class="ws-nav-icon" aria-hidden="true">${item.icon}</span>
+            <div class="ws-nav-labels">
+              <span class="ws-nav-title">${item.label}</span>
+              <span class="ws-nav-desc">${item.desc}</span>
+            </div>
+          </button>
+        `).join('')}
+      </nav>
+
+      <div class="ws-sidebar-spacer"></div>
+
+      <div class="ws-sidebar-footer">
+        ${this.updateInfo?.hasUpdate ? `
+          <button type="button" class="ws-update-banner" id="ws-btn-update" aria-label="Update Available">
+            <span class="ws-pulse-dot"></span>
+            <span>🚀 ${isTh ? `อัปเดต v${escapeHtml(this.updateInfo.latestVersion)}` : `Update v${escapeHtml(this.updateInfo.latestVersion)}`}</span>
+          </button>
+        ` : ''}
+
+        <div class="ws-telemetry-badge" title="${isTh ? 'ประมวลผลบน RAM ภายในเครื่อง 100% ไร้คลาวด์' : '100% Client-Side In-RAM Sandbox'}">
+          <span class="status-dot-green"></span>
+          <span>100% Private Local</span>
+        </div>
+
+        <button type="button" class="ws-lang-btn" id="ws-btn-lang" aria-label="Toggle language">
+          <span>${this.lang === 'en' ? '🇹🇭 ภาษาไทย' : '🇬🇧 English'}</span>
+        </button>
+
+        ${this.currentSession ? `
+          <div class="ws-profile-capsule" id="ws-profile-capsule" role="button" tabindex="0" title="${escapeHtml(this.currentSession.user.email)}">
+            <div class="ws-avatar">${escapeHtml((this.currentSession.user.fullName || this.currentSession.user.email).charAt(0).toUpperCase())}</div>
+            <div class="ws-user-info">
+              <span class="ws-user-email">${escapeHtml(this.currentSession.user.email)}</span>
+              <span class="ws-tier-tag ${getTierBadge(this.currentSession.user.tier).isPro ? 'tier-pro' : 'tier-free'}">
+                ${getTierBadge(this.currentSession.user.tier).label}
+              </span>
+            </div>
+            <button type="button" class="ws-signout-btn" id="ws-btn-signout" title="${this.t.signOutBtn}" aria-label="Sign Out">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </button>
+          </div>
+        ` : `
+          <button type="button" class="ws-signin-btn" id="ws-btn-auth">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>${this.t.signInBtn}</span>
+          </button>
+        `}
+      </div>
+    </aside>`;
+  }
+
+  private renderDesktopView(): string {
+    switch (this.desktopView) {
+      case 'studios':
+        return this.renderStudiosCatalogView();
+      case 'recents':
+        return this.renderRecentsView();
+      case 'vault':
+        return this.renderVaultView();
+      case 'workbench':
+      default:
+        return this.renderWorkbenchView();
+    }
+  }
+
+  private renderWorkbenchView(): string {
+    const isTh = this.lang === 'th';
+    const primaryStudios = SHOWCASE_APPS.filter(a => ['mepdf', 'mephoto', 'medoc', 'medrop'].includes(a.id));
+
+    return `
+    <div class="ws-view ws-view-workbench">
+      <header class="ws-view-header">
+        <div class="ws-view-eyebrow">NATIVE WINDOWS WORKSTATION · 100% IN-DEVICE RAM</div>
+        <h1 class="ws-view-title">${isTh ? 'ศูนย์กลางเครื่องมือสร้างสรรค์และเอกสาร' : 'Creative & Document Workstation'}</h1>
+        <p class="ws-view-subtitle">${isTh ? 'ลากไฟล์มาวางด้านล่างเพื่อเริ่มงานทันที หรือเลือกเปิดสตูดิโอที่ต้องการ' : 'Drop any file below for instant in-device processing or launch your studios.'}</p>
+      </header>
+
+      <!-- Universal Interactive Dropzone -->
+      <section class="ws-dropzone-section">
+        <div class="ws-dropzone" id="ws-universal-dropzone" role="region" aria-label="File dropzone">
+          <input type="file" id="ws-file-input" style="display:none;" />
+          <div class="ws-dropzone-icon" aria-hidden="true">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <div class="ws-dropzone-text">
+            <h3 class="ws-dropzone-title">${this.t.dropzoneTitle}</h3>
+            <p class="ws-dropzone-desc">${this.t.dropzoneSubtitle}</p>
+          </div>
+          <button type="button" class="ws-dropzone-browse-btn" id="ws-btn-browse">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span>${this.t.dropzoneBrowse}</span>
+          </button>
+        </div>
+
+        <!-- 4 Quick Action Seams -->
+        <div class="ws-quick-actions">
+          <button type="button" class="ws-quick-action-pill" data-quick-action="mepdf">
+            <span>📄</span>
+            <span>${isTh ? 'รวมและจัดการไฟล์ PDF' : 'Merge & Edit PDF'}</span>
+          </button>
+          <button type="button" class="ws-quick-action-pill" data-quick-action="mepdf-compress">
+            <span>🗜️</span>
+            <span>${isTh ? 'บีบอัดไฟล์เอกสาร' : 'Compress PDF'}</span>
+          </button>
+          <button type="button" class="ws-quick-action-pill" data-quick-action="mephoto">
+            <span>✨</span>
+            <span>${isTh ? 'ปรับระนาบ & แต่งภาพ' : 'Deskew & Clean Photo'}</span>
+          </button>
+          <button type="button" class="ws-quick-action-pill" data-quick-action="medoc">
+            <span>📝</span>
+            <span>${isTh ? 'เขียนเอกสาร Markdown' : 'New Document'}</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Primary Studios Launch Deck -->
+      <section class="ws-deck-section">
+        <div class="ws-section-header">
+          <h2 class="ws-section-title">${isTh ? 'สตูดิโอหลักพร้อมใช้งาน' : 'Primary Creative Studios'}</h2>
+          <span class="ws-section-tag">${isTh ? 'ทำงานออฟไลน์ 100%' : '100% Offline'}</span>
+        </div>
+        <div class="ws-studios-grid">
+          ${primaryStudios.map(app => `
+            <div class="ws-studio-card" style="--accent:${app.accentColor}; --glow:${app.glowColor};">
+              <div class="ws-studio-card-glow" aria-hidden="true"></div>
+              <div class="ws-studio-card-header">
+                <div class="ws-studio-icon" aria-hidden="true">${getAppIcon(app.id, app.accentColor)}</div>
+                <div class="ws-studio-meta">
+                  <h3 class="ws-studio-name">${app.name}</h3>
+                  <span class="ws-studio-ver">${app.version}</span>
+                </div>
+              </div>
+              <p class="ws-studio-tagline">${app.tagline[this.lang]}</p>
+              <div class="ws-studio-specs">
+                ${(app.specs?.[this.lang] || []).slice(0, 2).map(s => `<span class="ws-spec-chip">✓ ${escapeHtml(s)}</span>`).join('')}
+              </div>
+              <div class="ws-studio-card-footer">
+                <button type="button" class="ws-btn-launch" data-launch-app="${app.id}">
+                  <span>${isTh ? `เปิด ${app.name}` : `Launch ${app.name}`}</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </section>
+
+      <!-- Recent Projects Mini-Deck -->
+      <section class="ws-deck-section">
+        <div class="ws-section-header">
+          <h2 class="ws-section-title">${isTh ? 'งานล่าสุดในเครื่อง' : 'Recent Local Projects'}</h2>
+          ${this.recentProjects.length > 0 ? `
+            <button type="button" class="ws-link-btn" data-switch-view="recents">${isTh ? 'ดูทั้งหมด →' : 'View All →'}</button>
+          ` : ''}
+        </div>
+        ${this.recentProjects.length === 0 ? `
+          <div class="ws-empty-recents">
+            <span class="ws-empty-icon" aria-hidden="true">📂</span>
+            <p>${this.t.noRecentProjects}</p>
+          </div>
+        ` : `
+          <div class="ws-recent-cards-deck">
+            ${this.recentProjects.slice(0, 4).map(p => `
+              <div class="ws-recent-card" data-open-recent="${escapeHtml(p.path)}" data-recent-app="${escapeHtml(p.appId)}">
+                <div class="ws-recent-icon">${p.fileType === 'pdf' ? '📄' : '🖼️'}</div>
+                <div class="ws-recent-meta">
+                  <span class="ws-recent-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</span>
+                  <span class="ws-recent-sub">${escapeHtml(p.appId.toUpperCase())} · ${this.formatTimeAgo(p.lastOpened)} · ${formatBytes(p.sizeBytes)}</span>
+                </div>
+                <button type="button" class="ws-recent-open-btn" aria-label="Open project">
+                  ${isTh ? 'เปิด' : 'Open'}
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </section>
+    </div>`;
+  }
+
+  private renderStudiosCatalogView(): string {
+    const isTh = this.lang === 'th';
+    const apps = this.filteredApps();
+    const categories: Array<{ key: AppCategory | 'all'; label: string }> = [
+      { key: 'all', label: this.t.filterAll },
+      { key: 'document', label: this.t.filterDocument },
+      { key: 'photo', label: this.t.filterPhoto },
+      { key: 'utility', label: this.t.filterUtility },
+      { key: 'vector', label: this.t.filterVector },
+      { key: 'video', label: this.t.filterVideo },
+      { key: 'audio', label: this.t.filterAudio },
+    ];
+
+    return `
+    <div class="ws-view ws-view-studios">
+      <header class="ws-view-header">
+        <div class="ws-view-eyebrow">ALL 11 STANDALONE CREATIVE STUDIOS</div>
+        <h1 class="ws-view-title">${isTh ? 'คลังโปรแกรมสตูดิโอทั้งหมด' : 'All Studios & Workstations'}</h1>
+        <p class="ws-view-subtitle">${isTh ? 'โปรแกรมทั้งหมดทำงานแบบ Standalone ออฟไลน์ 100% ไร้คลาวด์' : 'Every studio runs standalone offline in 100% local device memory.'}</p>
+      </header>
+
+      <div class="ws-toolbar">
+        <div class="ws-search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            type="search"
+            id="ws-studios-search-input"
+            class="ws-search-input"
+            placeholder="${this.t.searchPlaceholder}"
+            value="${this.searchQuery}"
+          />
+        </div>
+        <div class="ws-filter-pills" role="tablist">
+          ${categories.map(c => `
+            <button
+              type="button"
+              class="ws-filter-pill ${this.activeFilter === c.key ? 'active' : ''}"
+              data-cat-filter="${c.key}"
+              role="tab"
+              aria-selected="${this.activeFilter === c.key}"
+            >${c.label}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="ws-studios-full-grid">
+        ${apps.map(app => {
+          const isActive = app.status === 'active';
+          return `
+          <div class="ws-studio-card-full" style="--accent:${app.accentColor}; --glow:${app.glowColor};">
+            <div class="ws-card-full-header">
+              <div class="ws-studio-icon" aria-hidden="true">${getAppIcon(app.id, app.accentColor)}</div>
+              <div class="ws-card-full-titlegroup">
+                <div class="ws-title-row">
+                  <h3 class="ws-card-full-name">${app.name}</h3>
+                  <span class="ws-status-badge ${isActive ? 'badge-active' : 'badge-indev'}">
+                    ${isActive ? (isTh ? 'พร้อมใช้งาน' : 'Ready') : (isTh ? 'กำลังพัฒนา' : 'In Dev')}
+                  </span>
+                </div>
+                <span class="ws-card-full-tagline">${app.tagline[this.lang]}</span>
+              </div>
+            </div>
+            <p class="ws-card-full-desc">${app.description[this.lang]}</p>
+            <div class="ws-card-full-specs">
+              ${(app.specs?.[this.lang] || []).map(s => `
+                <span class="ws-spec-bullet">✓ ${escapeHtml(s)}</span>
+              `).join('')}
+            </div>
+            <div class="ws-card-full-footer">
+              <span class="ws-engine-tag">${app.enginePill?.[this.lang] || '100% In-Device RAM'}</span>
+              ${isActive ? `
+                <button type="button" class="ws-btn-launch" data-launch-app="${app.id}">
+                  <span>${isTh ? `เปิด ${app.name}` : `Launch ${app.name}`}</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              ` : `
+                <span class="ws-indev-notice">✦ ${isTh ? 'กำลังพัฒนาภายใต้สัญญาอนุญาต MIT' : 'In development (MIT License)'}</span>
+              `}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  private renderRecentsView(): string {
+    const isTh = this.lang === 'th';
+    return `
+    <div class="ws-view ws-view-recents">
+      <header class="ws-view-header ws-header-with-actions">
+        <div>
+          <div class="ws-view-eyebrow">LOCAL FILE HISTORY</div>
+          <h1 class="ws-view-title">${isTh ? 'ประวัติโครงการและเอกสารล่าสุด' : 'Recent Projects & Documents'}</h1>
+          <p class="ws-view-subtitle">${isTh ? 'บันทึกบนเครื่องของคุณ 100% ไม่มีข้อมูลใดส่งขึ้นคลาวด์' : 'Stored locally in your device history. Zero data uploaded to cloud.'}</p>
+        </div>
+        ${this.recentProjects.length > 0 ? `
+          <button type="button" class="ws-btn-outline" id="ws-btn-clear-recents">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span>${isTh ? 'ล้างประวัติงาน' : 'Clear History'}</span>
+          </button>
+        ` : ''}
+      </header>
+
+      ${this.recentProjects.length === 0 ? `
+        <div class="ws-empty-state">
+          <div class="ws-empty-icon">📁</div>
+          <h3>${isTh ? 'ยังไม่มีประวัติการเปิดไฟล์' : 'No Recent Files'}</h3>
+          <p>${this.t.noRecentProjects}</p>
+          <button type="button" class="ws-btn-primary" data-switch-view="workbench">
+            <span>${isTh ? 'ไปยังเวิร์กเบนช์' : 'Go to Workbench'}</span>
+          </button>
+        </div>
+      ` : `
+        <div class="ws-table-container">
+          <table class="ws-table">
+            <thead>
+              <tr>
+                <th>${isTh ? 'ชื่อเอกสาร / โครงการ' : 'File / Project'}</th>
+                <th>${isTh ? 'สตูดิโอ' : 'Target Studio'}</th>
+                <th>${isTh ? 'ประเภท' : 'Type'}</th>
+                <th>${isTh ? 'ขนาด' : 'Size'}</th>
+                <th>${isTh ? 'เปิดล่าสุด' : 'Last Opened'}</th>
+                <th style="text-align: right;">${isTh ? 'การทำงาน' : 'Action'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${this.recentProjects.map(p => `
+                <tr class="ws-table-row" data-open-recent="${escapeHtml(p.path)}" data-recent-app="${escapeHtml(p.appId)}">
+                  <td class="ws-td-name">
+                    <span class="ws-td-icon">${p.fileType === 'pdf' ? '📄' : '🖼️'}</span>
+                    <span class="ws-file-title" title="${escapeHtml(p.path)}">${escapeHtml(p.name)}</span>
+                  </td>
+                  <td><span class="ws-app-pill">${escapeHtml(p.appId.toUpperCase())}</span></td>
+                  <td><span class="ws-type-tag">${escapeHtml(p.fileType.toUpperCase())}</span></td>
+                  <td><span class="ws-td-size">${formatBytes(p.sizeBytes)}</span></td>
+                  <td><span class="ws-td-time">${this.formatTimeAgo(p.lastOpened)}</span></td>
+                  <td style="text-align: right;">
+                    <button type="button" class="ws-table-btn" data-open-recent="${escapeHtml(p.path)}" data-recent-app="${escapeHtml(p.appId)}">
+                      ${isTh ? 'เปิดงาน' : 'Open'}
+                    </button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `}
+    </div>`;
+  }
+
+  private renderVaultView(): string {
+    const isTh = this.lang === 'th';
+    const isPro = this.currentSession ? getTierBadge(this.currentSession.user.tier).isPro : false;
+
+    return `
+    <div class="ws-view ws-view-vault">
+      <header class="ws-view-header">
+        <div class="ws-view-eyebrow">SECURITY VAULT &amp; ENGINE DIAGNOSTICS</div>
+        <h1 class="ws-view-title">${isTh ? 'สถานะเครื่องยนต์และความปลอดภัย' : 'Local Engine & Security Vault'}</h1>
+        <p class="ws-view-subtitle">${isTh ? 'ตรวจสอบความปลอดภัย ไร้คลาวด์ 100% สิทธิ์การใช้งาน และเวอร์ชันซอฟต์แวร์' : 'Verify 100% zero-cloud architecture, cryptographic integrity, and entitlements.'}</p>
+      </header>
+
+      <div class="ws-vault-grid">
+        <div class="ws-vault-card">
+          <div class="ws-vault-card-icon">🛡️</div>
+          <h3>${isTh ? 'สถาปัตยกรรมไร้คลาวด์ 100%' : '100% Zero-Cloud Architecture'}</h3>
+          <p>${isTh ? 'ทุกฟังก์ชันของสตูดิโอ mePDF, mePhoto, meDoc ทำงานบน RAM ภายในเครื่องคอมพิวเตอร์ของคุณเท่านั้น ไม่มีการส่งเนื้อหาเอกสารหรือรูปภาพออกสู่เครือข่าย' : 'All studios execute entirely in local RAM. Zero document bytes or photos are ever transmitted to any remote servers.'}</p>
+          <div class="ws-vault-metrics">
+            <div class="ws-metric">
+              <span class="ws-metric-val" style="color: #10b981;">0 Bytes</span>
+              <span class="ws-metric-lbl">${isTh ? 'ข้อมูลอัปโหลดออก' : 'Cloud Uploads'}</span>
+            </div>
+            <div class="ws-metric">
+              <span class="ws-metric-val" style="color: #3b82f6;">DirectComposition</span>
+              <span class="ws-metric-lbl">${isTh ? 'ระบบเรนเดอร์ GPU' : 'Rendering Engine'}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ws-vault-card">
+          <div class="ws-vault-card-icon">🚀</div>
+          <h3>${isTh ? 'เวอร์ชันและการอัปเดต' : 'Software Version & Updates'}</h3>
+          <p>${isTh ? 'เวอร์ชันปัจจุบัน: v1.0.0 (Official Stable Release) ทำงานบนเครื่องยนต์ Tauri v2 Native Windows 64-bit' : 'Current version: v1.0.0 (Official Stable Release). Built with Tauri v2 Native Windows 64-bit engine.'}</p>
+          <div class="ws-vault-status-row">
+            <span class="ws-badge-ok">✓ ${isTh ? 'เวอร์ชันล่าสุดเสถียร' : 'Latest Official Stable'}</span>
+            <button type="button" class="ws-btn-primary" id="ws-btn-check-update-vault">
+              <span>${isTh ? 'ตรวจสอบการอัปเดต' : 'Check for Updates'}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="ws-vault-card">
+          <div class="ws-vault-card-icon">🔑</div>
+          <h3>${isTh ? 'สิทธิ์การใช้งานและความปลอดภัย' : 'License & Cryptographic Vault'}</h3>
+          <p>${isTh ? 'ระบบกุญแจ Ed25519 ประจำเครื่อง ตรวจสอบสิทธิ์ออฟไลน์สูงสุด 30 วันโดยไม่ต้องต่ออินเทอร์เน็ต' : 'Ed25519 local cryptographic verification with 30-day offline grace period.'}</p>
+          <div class="ws-vault-auth-box">
+            ${this.currentSession ? `
+              <div class="ws-auth-active">
+                <span class="ws-auth-email">👤 ${escapeHtml(this.currentSession.user.email)}</span>
+                <span class="ws-tier-tag ${isPro ? 'tier-pro' : 'tier-free'}">
+                  ${getTierBadge(this.currentSession.user.tier).label}
+                </span>
+              </div>
+            ` : `
+              <div class="ws-auth-guest">
+                <span>👤 ${isTh ? 'ผู้ใช้งานทั่วไป (Free Member)' : 'Local User (Free Member)'}</span>
+                <button type="button" class="ws-btn-outline" id="ws-btn-vault-signin">${isTh ? 'เข้าสู่ระบบ / ซิงค์สิทธิ์' : 'Sign In & Sync'}</button>
+              </div>
+            `}
+          </div>
+        </div>
+      </div>
+    </div>`;
   }
 
   private renderUpdateModal(): string {
@@ -2360,10 +2826,6 @@ class MeCraftsPortal {
           <a href="#manifesto" class="portal-nav-link">${this.lang === 'th' ? '🔒 ความเป็นส่วนตัว' : 'Privacy Architecture'}</a>
           <a href="#specs" class="portal-nav-link">${this.lang === 'th' ? '⚙️ สเปก' : 'Specs'}</a>
           <a href="./downloads" target="_blank" rel="noopener noreferrer" class="portal-nav-link">${this.lang === 'th' ? '📥 ดาวน์โหลด (.exe)' : 'Downloads'}</a>
-          <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer" class="portal-nav-link portal-nav-github" aria-label="GitHub Repository">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.63-5.373-12-12-12z"/></svg>
-            GitHub
-          </a>
         </nav>
 
         <div class="portal-header-actions">
@@ -3247,6 +3709,174 @@ class MeCraftsPortal {
     document.getElementById('btn-close-update-modal')?.addEventListener('click', closeUpdate);
     document.getElementById('btn-update-later')?.addEventListener('click', closeUpdate);
     document.getElementById('modal-update-backdrop')?.addEventListener('click', closeUpdate);
+
+    // Desktop Workstation Sidebar & Views Bindings
+    this.bindDesktopWorkstationListeners();
+  }
+
+  private bindDesktopWorkstationListeners() {
+    // 1. Sidebar tab switching
+    document.querySelectorAll<HTMLElement>('.ws-nav-btn[data-ws-view]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const view = btn.getAttribute('data-ws-view') as any;
+        if (view && this.desktopView !== view) {
+          this.desktopView = view;
+          this.render();
+          this.attachListeners();
+        }
+      });
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-switch-view]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const view = btn.getAttribute('data-switch-view') as any;
+        if (view && this.desktopView !== view) {
+          this.desktopView = view;
+          this.render();
+          this.attachListeners();
+        }
+      });
+    });
+
+    // 2. Language toggle in sidebar
+    document.getElementById('ws-btn-lang')?.addEventListener('click', () => {
+      this.lang = this.lang === 'en' ? 'th' : 'en';
+      this.render();
+      this.attachListeners();
+    });
+
+    // 3. Update buttons in sidebar and vault
+    document.getElementById('ws-btn-update')?.addEventListener('click', () => {
+      this.isUpdateModalOpen = true;
+      this.render();
+      this.attachListeners();
+    });
+    document.getElementById('ws-btn-check-update-vault')?.addEventListener('click', () => {
+      this.checkForUpdates(true);
+    });
+
+    // 4. User profile / Auth in sidebar & vault
+    document.getElementById('ws-profile-capsule')?.addEventListener('click', () => {
+      this.isUserProfileModalOpen = true;
+      this.render();
+      this.attachListeners();
+    });
+    document.getElementById('ws-btn-signout')?.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await this.handleSignOut();
+    });
+    document.getElementById('ws-btn-auth')?.addEventListener('click', () => {
+      this.isAuthModalOpen = true;
+      this.render();
+      this.attachListeners();
+    });
+    document.getElementById('ws-btn-vault-signin')?.addEventListener('click', () => {
+      this.isAuthModalOpen = true;
+      this.render();
+      this.attachListeners();
+    });
+
+    // 5. Workbench Dropzone and File Browse
+    const dropzone = document.getElementById('ws-universal-dropzone');
+    const fileInput = document.getElementById('ws-file-input') as HTMLInputElement | null;
+
+    document.getElementById('ws-btn-browse')?.addEventListener('click', () => {
+      fileInput?.click();
+    });
+
+    fileInput?.addEventListener('change', () => {
+      if (fileInput.files && fileInput.files.length > 0) {
+        this.handleDropFiles(fileInput.files);
+      }
+    });
+
+    if (dropzone) {
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.add('drag-active');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.remove('drag-active');
+        }, false);
+      });
+
+      dropzone.addEventListener('drop', (e: DragEvent) => {
+        if (e.dataTransfer && e.dataTransfer.files) {
+          this.handleDropFiles(e.dataTransfer.files);
+        }
+      });
+    }
+
+    // 6. Workbench Quick Action Buttons
+    document.querySelectorAll<HTMLElement>('.ws-quick-action-pill[data-quick-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const action = btn.getAttribute('data-quick-action');
+        if (action === 'mepdf' || action === 'mepdf-compress') {
+          this.handleLaunchApp('mepdf', 'desktop');
+        } else if (action === 'mephoto') {
+          this.handleLaunchApp('mephoto', 'desktop');
+        } else if (action === 'medoc') {
+          this.handleLaunchApp('medoc', 'desktop');
+        }
+      });
+    });
+
+    // 7. Launch Studio Buttons (All Views)
+    document.querySelectorAll<HTMLElement>('[data-launch-app]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const appId = btn.getAttribute('data-launch-app');
+        if (appId) {
+          this.handleLaunchApp(appId, 'desktop');
+        }
+      });
+    });
+
+    // 8. Open Recent Project & Clear History
+    document.querySelectorAll<HTMLElement>('[data-open-recent]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (el !== target && el.tagName === 'TR' && target.tagName === 'BUTTON') return;
+        const filePath = el.getAttribute('data-open-recent');
+        const appId = el.getAttribute('data-recent-app') || 'mepdf';
+        if (filePath) {
+          this.handleLaunchApp(appId, 'desktop', filePath);
+        }
+      });
+    });
+
+    document.getElementById('ws-btn-clear-recents')?.addEventListener('click', async () => {
+      await this.bridge.clearRecentProjects();
+      await this.loadRecentProjects();
+    });
+
+    // 9. Studios Search and Category Filtering
+    document.getElementById('ws-studios-search-input')?.addEventListener('input', (e) => {
+      this.searchQuery = (e.target as HTMLInputElement).value;
+      this.render();
+      this.attachListeners();
+      const input = document.getElementById('ws-studios-search-input') as HTMLInputElement;
+      if (input) {
+        input.focus();
+        input.selectionStart = input.selectionEnd = input.value.length;
+      }
+    });
+
+    document.querySelectorAll<HTMLElement>('.ws-filter-pill[data-cat-filter]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.activeFilter = (btn.getAttribute('data-cat-filter') as AppCategory | 'all') || 'all';
+        this.render();
+        this.attachListeners();
+      });
+    });
   }
 
   private bindStudioNavigatorListeners() {

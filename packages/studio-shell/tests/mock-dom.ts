@@ -304,6 +304,7 @@ export function setupMockDom() {
   const doc: any = {
     body,
     createElement: (tag: string) => new MockElement(tag),
+    getElementById: (id: string) => body.querySelector('#' + id),
     querySelector: (sel: string) => body.querySelector(sel),
     querySelectorAll: (sel: string) => body.querySelectorAll(sel),
     addEventListener: (evt: string, cb: Function) => {

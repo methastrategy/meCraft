@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { setupMockDom } from '../../../packages/studio-shell/tests/mock-dom';
 import {
   getDefaultCatalog,
   createLauncherBridge,
@@ -20,6 +21,7 @@ import {
   importAuthSyncCode,
   escapeHtml,
   TRANSLATIONS,
+  MeCraftsPortal,
 } from '../src/main';
 
 describe('meCraft Launcher Core & Catalog Engine', () => {
@@ -369,6 +371,75 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
         expect(supabase).not.toBeNull();
         expect(supabase?.auth).toBeDefined();
       }
+    });
+
+    it('renders Direction 1 Sidebar Cockpit when in desktop mode without GitHub links', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      (portal as any).render();
+
+      const shell = doc.getElementById('workstation-shell');
+      expect(shell).not.toBeNull();
+
+      const sidebar = doc.querySelector('.ws-sidebar');
+      expect(sidebar).not.toBeNull();
+
+      // Verify no GitHub link inside workstation
+      const ghLinks = doc.querySelectorAll('a[href*="github.com/methastrategy/meCraft"]');
+      expect(ghLinks.length).toBe(0);
+
+      // Verify Left Sidebar Nav Items (Workbench, Studios, Recents, Vault)
+      const navButtons = doc.querySelectorAll('.ws-nav-btn');
+      expect(navButtons.length).toBe(4);
+
+      // Verify Universal Dropzone is present on default workbench view
+      const dropzone = doc.getElementById('ws-universal-dropzone');
+      expect(dropzone).not.toBeNull();
+    });
+
+    it('switches desktop views (workbench, studios, recents, vault) smoothly', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+
+      // 1. Studios View
+      portal.desktopView = 'studios';
+      (portal as any).render();
+      expect(doc.querySelector('.ws-view-studios')).not.toBeNull();
+      const studioCards = doc.querySelectorAll('.ws-studio-card-full');
+      expect(studioCards.length).toBe(11);
+
+      // 2. Recents View
+      portal.desktopView = 'recents';
+      (portal as any).render();
+      expect(doc.querySelector('.ws-view-recents')).not.toBeNull();
+
+      // 3. Vault View
+      portal.desktopView = 'vault';
+      (portal as any).render();
+      expect(doc.querySelector('.ws-view-vault')).not.toBeNull();
+      expect(doc.querySelector('.ws-vault-grid')).not.toBeNull();
+
+      // 4. Back to Workbench
+      portal.desktopView = 'workbench';
+      (portal as any).render();
+      expect(doc.querySelector('.ws-view-workbench')).not.toBeNull();
+    });
+
+    it('ensures web portal navigation does not contain GitHub repository link in navbar', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = false;
+      (portal as any).render();
+
+      const portalNav = doc.querySelector('.portal-nav');
+      expect(portalNav).not.toBeNull();
+      const navGithub = portalNav?.querySelector('.portal-nav-github');
+      expect(navGithub).toBeNull();
     });
   });
 });
