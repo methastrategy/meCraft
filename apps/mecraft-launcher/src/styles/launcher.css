@@ -6327,11 +6327,15 @@ input { font-family: var(--font-sans); }
    meCraft IDE Workspace Styles (VS Code / Windsurf Style)
    ========================================================================== */
 
+.ws-view.ws-view-editor,
 .ws-view-editor {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
   background: #070b14;
   overflow: hidden;
   position: relative;

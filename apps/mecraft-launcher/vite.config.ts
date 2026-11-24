@@ -28,6 +28,9 @@ export default defineConfig({
   server: {
     port: 5175,
     strictPort: true,
+    watch: {
+      ignored: ['**/src-tauri/target/**', '**/target/**'],
+    },
   },
   build: {
     target: 'esnext',
