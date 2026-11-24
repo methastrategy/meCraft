@@ -3013,6 +3013,7 @@ class MeCraftsPortal {
         <nav class="footer-links" aria-label="Footer links">
           <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Repository</a>
           <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="footer-link">Releases (v1.0.0)</a>
+          <button type="button" class="footer-link" id="footer-btn-open-downloads" style="background:none;border:none;cursor:pointer;color:inherit;font:inherit;padding:0;">${this.lang === 'th' ? 'ศูนย์ดาวน์โหลด (.exe)' : 'Downloads Directory'}</button>
           <a href="https://github.com/methastrategy/meCraft/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="footer-link">MIT License</a>
           ${!this.currentSession ? `
             <button type="button" class="footer-link btn-trigger-auth" id="footer-btn-open-auth">${this.t.signInBtn}</button>
@@ -3358,6 +3359,40 @@ class MeCraftsPortal {
         this.render();
         this.attachListeners();
       }
+    });
+
+    // Downloads Directory Modal Open / Close / Filter
+    document.querySelectorAll('#header-cta, #footer-btn-open-downloads').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.isDownloadsModalOpen = true;
+        this.render();
+        this.attachListeners();
+      });
+    });
+
+    document.getElementById('btn-close-downloads-modal')?.addEventListener('click', () => {
+      this.isDownloadsModalOpen = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('modal-downloads-backdrop')?.addEventListener('click', () => {
+      this.isDownloadsModalOpen = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.querySelectorAll<HTMLElement>('.dl-filter-pill').forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        e.preventDefault();
+        const filter = pill.getAttribute('data-dl-filter') as 'all' | 'production' | 'indev';
+        if (filter) {
+          this.downloadsFilter = filter;
+          this.render();
+          this.attachListeners();
+        }
+      });
     });
   }
 
