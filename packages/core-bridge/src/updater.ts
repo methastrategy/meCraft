@@ -151,7 +151,7 @@ export async function checkSoftwareUpdate(options: CheckUpdateOptions = {}): Pro
     const rawTag: string = data.tag_name || 'v1.0.0';
     const latestVersion = rawTag.replace(/^[vV]/, '');
     const releaseTitle = data.name || rawTag;
-    const releaseDate = data.published_at ? data.published_at.split('T')[0] : new Date().toISOString().split('T')[0];
+    const releaseDate = (data.published_at ? data.published_at.split('T')[0] : '') || new Date().toISOString().split('T')[0] || '2026-11-24';
     const changelog = extractChangelogItems(data.body);
     const htmlUrl = data.html_url || `https://github.com/${repoOwner}/${repoName}/releases`;
 
@@ -214,7 +214,7 @@ export async function checkSoftwareUpdate(options: CheckUpdateOptions = {}): Pro
       latestVersion: currentVersion,
       releaseTitle: `meCraft v${currentVersion}`,
       releaseTag: `v${currentVersion}`,
-      releaseDate: new Date().toISOString().split('T')[0],
+      releaseDate: new Date().toISOString().split('T')[0] || '2026-11-24',
       changelog: ['Offline or network check unavailable'],
       htmlUrl: `https://github.com/${repoOwner}/${repoName}/releases`,
       allAssets: [],

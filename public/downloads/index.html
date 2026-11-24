@@ -4,26 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>meCrafts Downloads — ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe) ทุกโปรแกรม</title>
-  <meta name="description" content="ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe) อย่างเป็นทางการของ meCrafts Master Suite และ Standalone Studios ทุกโปรแกรมสำหรับ Windows 11 / 10 ปลอดภัย 100% In-Device Memory Execution" />
-  <meta property="og:title" content="meCrafts Downloads — ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe)" />
-  <meta property="og:description" content="Official Windows .exe Standalone & Suite Releases. 100% In-Device Memory Execution · Zero Telemetry." />
+  <meta name="description" content="Official Windows .exe Standalone & Suite Releases for meCrafts Workstation. 100% In-Device Memory Execution · Zero Telemetry · Open Source MIT." />
+  <meta property="og:title" content="meCrafts Downloads — ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe) ทุกโปรแกรม" />
+  <meta property="og:description" content="Get official standalone studio binaries & master suite installer. 100% In-Device Memory Execution." />
   <meta property="og:image" content="../assets/branding/github-social-preview.png" />
   <link rel="icon" type="image/png" href="../branding/mecraft-suite.png" />
   <link rel="apple-touch-icon" href="../branding/mecraft-suite.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-base: #06080e;
-      --bg-surface: #0b0f19;
-      --bg-card: #0f1524;
-      --bg-card-hover: #141c30;
+      --bg-base: #07090f;
+      --bg-elevated: #0d121f;
+      --bg-card: #111728;
+      --bg-card-hover: #162035;
       --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-accent: rgba(212, 175, 55, 0.35);
+      --border-medium: rgba(255, 255, 255, 0.14);
       --gold: #d4af37;
       --gold-light: #f7d774;
-      --gold-glow: rgba(212, 175, 55, 0.25);
+      --gold-glow: rgba(212, 175, 55, 0.3);
+      --blue-accent: #2563eb;
+      --blue-glow: rgba(37, 99, 235, 0.3);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.3);
+      --purple: #a855f7;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
@@ -54,9 +59,9 @@
       flex-direction: column;
       overflow-x: hidden;
       background-image: 
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212, 175, 55, 0.12), transparent 70%),
-        radial-gradient(ellipse 60% 40% at 90% 20%, rgba(59, 130, 246, 0.08), transparent 60%),
-        radial-gradient(ellipse 60% 40% at 10% 40%, rgba(6, 182, 212, 0.06), transparent 60%);
+        radial-gradient(ellipse 90% 60% at 50% -10%, rgba(212, 175, 55, 0.12), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 95% 25%, rgba(37, 99, 235, 0.08), transparent 60%),
+        radial-gradient(ellipse 50% 35% at 5% 55%, rgba(6, 182, 212, 0.07), transparent 60%);
       background-attachment: fixed;
     }
 
@@ -65,21 +70,21 @@
       text-decoration: none;
     }
 
-    /* ─── Top Navigation Bar ─────────────────────────────────────────────── */
+    /* ─── Top Navigation Bar (Purpur Minimalist Header) ───────────────────── */
     .dl-nav {
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      background: rgba(6, 8, 14, 0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(7, 9, 15, 0.88);
       border-bottom: 1px solid var(--border-subtle);
     }
 
     .dl-nav-inner {
-      max-width: 1240px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 12px 24px;
+      padding: 14px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -97,34 +102,46 @@
       align-items: center;
       gap: 10px;
       font-weight: 800;
-      font-size: 17px;
+      font-size: 18px;
       letter-spacing: -0.4px;
       color: #fff;
     }
 
     .dl-brand-emblem {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
       background: linear-gradient(135deg, var(--gold), var(--gold-light));
       display: flex;
       align-items: center;
       justify-content: center;
       color: #000;
       font-weight: 900;
-      font-size: 16px;
-      box-shadow: 0 0 12px var(--gold-glow);
+      font-size: 18px;
+      box-shadow: 0 0 14px var(--gold-glow);
+    }
+
+    .dl-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .dl-breadcrumb-sep {
+      color: var(--text-dim);
     }
 
     .dl-badge-hub {
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 2px 8px;
+      letter-spacing: 0.6px;
+      padding: 3px 10px;
       border-radius: 999px;
       background: rgba(212, 175, 55, 0.12);
-      border: 1px solid rgba(212, 175, 55, 0.3);
+      border: 1px solid rgba(212, 175, 55, 0.35);
       color: var(--gold-light);
     }
 
@@ -133,18 +150,19 @@
       align-items: center;
       gap: 6px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-muted);
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: var(--radius-sm);
-      border: 1px solid transparent;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.03);
       transition: var(--transition);
     }
 
     .dl-nav-back:hover {
       color: #fff;
-      background: rgba(255, 255, 255, 0.05);
-      border-color: var(--border-subtle);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-medium);
     }
 
     .dl-nav-right {
@@ -157,9 +175,9 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 600;
-      padding: 6px 12px;
+      padding: 7px 14px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
       background: rgba(255, 255, 255, 0.04);
@@ -170,21 +188,21 @@
 
     .dl-nav-btn:hover {
       background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.2);
+      border-color: var(--border-medium);
     }
 
     .dl-lang-btn {
       font-family: var(--font-mono);
       font-size: 12px;
       color: var(--gold);
-      border-color: rgba(212, 175, 55, 0.3);
+      border-color: rgba(212, 175, 55, 0.35);
     }
 
-    /* ─── Hero Section ───────────────────────────────────────────────────── */
+    /* ─── Hero Section (Purpur Centered Clarity + Metrics) ───────────────── */
     .dl-hero {
-      max-width: 1240px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 44px 24px 28px;
+      padding: 48px 24px 28px;
       text-align: center;
     }
 
@@ -194,12 +212,12 @@
       gap: 8px;
       padding: 4px 14px;
       border-radius: 999px;
-      background: rgba(212, 175, 55, 0.1);
+      background: rgba(212, 175, 55, 0.08);
       border: 1px solid rgba(212, 175, 55, 0.25);
       color: var(--gold-light);
       font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.4px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       margin-bottom: 16px;
     }
 
@@ -208,49 +226,49 @@
       height: 7px;
       border-radius: 50%;
       background: #10b981;
-      box-shadow: 0 0 8px #10b981;
+      box-shadow: 0 0 10px #10b981;
       animation: pulse 2s infinite;
     }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.85); }
+      50% { opacity: 0.45; transform: scale(0.85); }
     }
 
     .dl-hero-title {
-      font-size: clamp(26px, 4vw, 38px);
+      font-size: clamp(28px, 4.2vw, 42px);
       font-weight: 800;
-      letter-spacing: -0.6px;
+      letter-spacing: -0.8px;
       color: #fff;
       margin-bottom: 12px;
-      line-height: 1.3;
+      line-height: 1.25;
     }
 
     .dl-hero-sub {
-      max-width: 780px;
+      max-width: 820px;
       margin: 0 auto 24px;
-      font-size: 15px;
+      font-size: 15.5px;
       color: var(--text-muted);
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     .dl-metrics-row {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 32px;
+      gap: 12px;
+      margin-bottom: 34px;
     }
 
     .dl-metric-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
+      gap: 7px;
+      padding: 6px 16px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-subtle);
-      font-size: 12px;
+      font-size: 12.5px;
       color: var(--text-muted);
     }
 
@@ -258,51 +276,65 @@
       color: #fff;
     }
 
-    /* ─── Featured Master Suite Card ─────────────────────────────────────── */
+    /* ─── Featured Recommended Build (Purpur Latest Build + GetBukkit Meta) ─ */
     .dl-featured-suite {
-      max-width: 1240px;
+      max-width: 1280px;
       margin: 0 auto 36px;
       padding: 0 24px;
     }
 
     .featured-card-inner {
-      background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(15, 23, 42, 0.9) 100%);
-      border: 1px solid rgba(212, 175, 55, 0.4);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(212, 175, 55, 0.05);
+      background: linear-gradient(145deg, rgba(212, 175, 55, 0.09) 0%, rgba(17, 24, 39, 0.95) 70%, rgba(13, 18, 31, 0.98) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 24px rgba(212, 175, 55, 0.06);
       border-radius: var(--radius-xl);
-      padding: 28px 32px;
+      padding: 30px 34px;
       display: grid;
       grid-template-columns: auto 1fr auto;
       gap: 28px;
       align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-card-inner::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+      pointer-events: none;
     }
 
     .featured-emblem-wrap {
-      width: 72px;
-      height: 72px;
-      border-radius: 16px;
+      width: 80px;
+      height: 80px;
+      border-radius: 18px;
       background: rgba(212, 175, 55, 0.12);
-      border: 1px solid rgba(212, 175, 55, 0.3);
+      border: 1px solid rgba(212, 175, 55, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 24px var(--gold-glow);
+      box-shadow: 0 0 28px var(--gold-glow);
     }
 
     .featured-emblem-img {
-      width: 52px;
-      height: 52px;
+      width: 58px;
+      height: 58px;
       object-fit: contain;
     }
 
     .featured-info h2 {
-      font-size: 22px;
-      font-weight: 700;
+      font-size: 23px;
+      font-weight: 800;
       color: #fff;
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
     }
 
     .suite-badge-gold {
@@ -315,29 +347,46 @@
       letter-spacing: 0.3px;
     }
 
-    .featured-meta {
+    /* GetBukkit Tabular Spec Matrix */
+    .featured-spec-grid {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--text-muted);
+      gap: 16px;
       margin-bottom: 12px;
+      font-size: 13px;
     }
 
-    .meta-code {
+    .spec-cell {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+    }
+
+    .spec-cell-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-dim);
+    }
+
+    .spec-cell-val {
       font-family: var(--font-mono);
-      color: var(--gold-light);
-      background: rgba(212, 175, 55, 0.1);
-      padding: 2px 7px;
-      border-radius: 4px;
       font-weight: 600;
+      color: #fff;
+    }
+
+    .spec-cell-val.gold {
+      color: var(--gold-light);
     }
 
     .featured-highlights {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+      margin-bottom: 12px;
     }
 
     .f-tag {
@@ -349,12 +398,21 @@
       border-radius: 999px;
     }
 
+    .featured-checksum-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-dim);
+    }
+
     .featured-action {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 10px;
-      min-width: 240px;
+      min-width: 250px;
     }
 
     .btn-download-master {
@@ -362,7 +420,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 13px 24px;
+      padding: 14px 26px;
       font-size: 14px;
       font-weight: 700;
       border-radius: var(--radius-md);
@@ -372,35 +430,30 @@
       transition: var(--transition);
       width: 100%;
       text-align: center;
+      white-space: nowrap;
     }
 
     .btn-download-master:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(212, 175, 55, 0.45);
+      box-shadow: 0 6px 28px rgba(212, 175, 55, 0.5);
     }
 
     .btn-download-master:active {
       transform: translateY(0);
     }
 
-    .featured-subtext {
-      font-size: 11px;
-      color: var(--text-dim);
-      text-align: right;
-    }
-
-    /* ─── Filter & Search Bar ────────────────────────────────────────────── */
+    /* ─── Controls: GetBukkit Segmented Pills & Instant Search ───────────── */
     .dl-controls {
-      max-width: 1240px;
+      max-width: 1280px;
       margin: 0 auto 24px;
       padding: 0 24px;
     }
 
     .dl-controls-inner {
-      background: rgba(15, 21, 36, 0.85);
-      border: 1px solid var(--border-subtle);
+      background: rgba(13, 18, 31, 0.88);
+      border: 1px solid var(--border-medium);
       border-radius: var(--radius-lg);
-      padding: 12px 18px;
+      padding: 14px 20px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -408,7 +461,7 @@
       gap: 16px;
     }
 
-    .dl-filters {
+    .dl-filters-group {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -420,7 +473,7 @@
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
       font-size: 12.5px;
-      font-weight: 500;
+      font-weight: 600;
       padding: 6px 14px;
       border-radius: 999px;
       cursor: pointer;
@@ -429,31 +482,38 @@
 
     .dl-filter-btn:hover {
       color: #fff;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .dl-filter-btn.active {
+      background: var(--blue-accent);
+      color: #fff;
+      border-color: var(--blue-accent);
+      box-shadow: 0 2px 12px var(--blue-glow);
+    }
+
+    .dl-filter-btn.filter-gold.active {
       background: var(--gold);
       color: #000;
-      font-weight: 700;
       border-color: var(--gold);
-      box-shadow: 0 2px 10px var(--gold-glow);
+      box-shadow: 0 2px 12px var(--gold-glow);
     }
 
     .dl-search-wrap {
       position: relative;
       flex: 1;
-      max-width: 320px;
+      max-width: 340px;
       min-width: 220px;
     }
 
     .dl-search-input {
       width: 100%;
-      background: rgba(6, 8, 14, 0.6);
+      background: rgba(7, 9, 15, 0.7);
       border: 1px solid var(--border-subtle);
       color: #fff;
       font-size: 13px;
-      padding: 8px 14px 8px 34px;
+      padding: 9px 14px 9px 36px;
       border-radius: var(--radius-sm);
       outline: none;
       transition: var(--transition);
@@ -461,48 +521,75 @@
     }
 
     .dl-search-input:focus {
-      border-color: rgba(212, 175, 55, 0.5);
-      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15);
+      border-color: var(--blue-accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
     }
 
     .dl-search-icon {
       position: absolute;
-      left: 10px;
+      left: 11px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-dim);
       pointer-events: none;
     }
 
-    /* ─── List of All 12 Binary Cards ────────────────────────────────────── */
+    .dl-clear-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 14px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .dl-clear-btn:hover {
+      color: #fff;
+    }
+
+    /* ─── List Section: GetBukkit Row Table Architecture ─────────────────── */
     .dl-list-section {
-      max-width: 1240px;
+      max-width: 1280px;
       margin: 0 auto;
       padding: 0 24px 60px;
       flex: 1;
     }
 
-    .dl-list {
+    .dl-list-count {
       display: flex;
-      flex-direction: column;
-      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 0 4px;
     }
 
-    .dl-card {
+    .dl-table-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* GetBukkit Compact Row Card */
+    .dl-row-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 20px 24px;
+      border-radius: var(--radius-md);
+      padding: 16px 22px;
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: 240px 1fr auto;
       gap: 20px;
       align-items: center;
       transition: var(--transition);
       position: relative;
-      overflow: hidden;
     }
 
-    .dl-card::before {
+    .dl-row-card::before {
       content: '';
       position: absolute;
       left: 0;
@@ -510,25 +597,35 @@
       bottom: 0;
       width: 4px;
       background: var(--card-accent, var(--gold));
-      opacity: 0.7;
+      opacity: 0.8;
+      border-top-left-radius: var(--radius-md);
+      border-bottom-left-radius: var(--radius-md);
       transition: var(--transition);
     }
 
-    .dl-card:hover {
+    .dl-row-card:hover {
       background: var(--bg-card-hover);
-      border-color: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.18);
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
     }
 
-    .dl-card:hover::before {
+    .dl-row-card:hover::before {
       opacity: 1;
       width: 5px;
     }
 
-    .dl-card-icon-wrap {
-      width: 52px;
-      height: 52px;
+    /* Column 1: Identity & Version */
+    .col-identity {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .col-icon-wrap {
+      width: 48px;
+      height: 48px;
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-subtle);
@@ -538,115 +635,145 @@
       flex-shrink: 0;
     }
 
-    .dl-card-icon-img {
-      width: 36px;
-      height: 36px;
+    .col-icon-img {
+      width: 34px;
+      height: 34px;
       object-fit: contain;
     }
 
-    .dl-card-info {
+    .col-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .col-name {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .col-badges-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .col-ver-tag {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.07);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .col-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+
+    .status-active {
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #34d399;
+    }
+
+    .status-indev {
+      background: rgba(168, 85, 247, 0.14);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      color: #c084fc;
+    }
+
+    .status-dot-inner {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Column 2: GetBukkit-Style Structured Metadata Table */
+    .col-metadata {
       display: flex;
       flex-direction: column;
       gap: 6px;
       min-width: 0;
     }
 
-    .dl-card-header-row {
+    .row-meta-table {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 8px;
-    }
-
-    .dl-card-title {
-      font-size: 17px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .dl-tag-ver {
-      font-size: 11.5px;
-      font-family: var(--font-mono);
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.06);
-      color: #e2e8f0;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .dl-status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 999px;
-    }
-
-    .status-active {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #34d399;
-    }
-
-    .status-indev {
-      background: rgba(168, 85, 247, 0.12);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      color: #c084fc;
-    }
-
-    .status-dot-inner {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: currentColor;
-    }
-
-    .dl-card-meta {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
+      gap: 14px;
       font-size: 12.5px;
       color: var(--text-muted);
     }
 
-    .meta-filename {
-      font-family: var(--font-mono);
+    .meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .meta-lbl {
+      color: var(--text-dim);
+      font-size: 11px;
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .meta-val {
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    .meta-val.file {
+      font-family: var(--font-mono);
+      font-weight: 700;
       color: var(--card-accent, var(--gold));
     }
 
-    .meta-sep {
-      color: var(--text-dim);
+    .meta-val.size {
+      font-weight: 700;
+      color: #fff;
     }
 
-    .dl-card-highlights {
+    .row-highlights {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-top: 2px;
     }
 
-    .card-spec-tag {
+    .row-pill-tag {
       font-size: 11.5px;
       padding: 2px 8px;
       border-radius: 4px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.07);
       color: #cbd5e1;
     }
 
-    .dl-card-checksum {
+    .row-checksum-bar {
       display: flex;
       align-items: center;
       gap: 8px;
       font-family: var(--font-mono);
       font-size: 11px;
       color: var(--text-dim);
-      margin-top: 4px;
+      margin-top: 2px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -659,24 +786,29 @@
       cursor: pointer;
       font-size: 11px;
       font-family: var(--font-sans);
+      font-weight: 600;
       text-decoration: underline;
       padding: 0;
       transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
     }
 
     .btn-copy-hash:hover {
       color: #fff;
     }
 
-    .dl-card-action {
+    /* Column 3: Dual Action Cluster (GetBukkit Style) */
+    .col-actions {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 8px;
-      min-width: 190px;
+      gap: 6px;
+      min-width: 200px;
     }
 
-    .btn-download-item {
+    .btn-action-primary {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -685,25 +817,54 @@
       font-size: 13px;
       font-weight: 700;
       border-radius: var(--radius-sm);
-      background: var(--card-accent, var(--gold));
-      color: #000;
+      background: var(--blue-accent);
+      color: #fff;
       transition: var(--transition);
       white-space: nowrap;
       width: 100%;
+      border: none;
+      cursor: pointer;
     }
 
-    .btn-download-item:hover {
-      opacity: 0.92;
+    .btn-action-primary.suite-accent {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+      color: #000;
+      box-shadow: 0 2px 10px var(--gold-glow);
+    }
+
+    .btn-action-primary:hover {
+      opacity: 0.94;
       transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 14px var(--blue-glow);
     }
 
-    .btn-roadmap-item {
+    .btn-action-primary.suite-accent:hover {
+      box-shadow: 0 4px 18px var(--gold-glow);
+    }
+
+    .btn-action-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-dim);
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+
+    .btn-action-secondary:hover {
+      color: var(--gold-light);
+    }
+
+    .btn-action-roadmap {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 9px 16px;
+      padding: 8px 16px;
       font-size: 12.5px;
       font-weight: 600;
       border-radius: var(--radius-sm);
@@ -715,32 +876,30 @@
       width: 100%;
     }
 
-    .btn-roadmap-item:hover {
+    .btn-action-roadmap:hover {
       background: rgba(255, 255, 255, 0.08);
       border-color: rgba(255, 255, 255, 0.2);
       color: #fff;
     }
 
-    .action-subnote {
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-
-    /* ─── Verification & Integrity Section ───────────────────────────────── */
-    .dl-verify-section {
-      max-width: 1240px;
-      margin: 0 auto 48px;
+    /* ─── Quick-Start & Verification Cockpit (GetBukkit Detail Box) ─────── */
+    .dl-cockpit-section {
+      max-width: 1280px;
+      margin: 0 auto 50px;
       padding: 0 24px;
     }
 
-    .verify-box {
-      background: rgba(15, 21, 36, 0.6);
-      border: 1px solid var(--border-subtle);
+    .cockpit-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-medium);
       border-radius: var(--radius-lg);
-      padding: 24px 28px;
+      padding: 26px 30px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
     }
 
-    .verify-box h3 {
+    .cockpit-col h3 {
       font-size: 16px;
       font-weight: 700;
       color: #fff;
@@ -750,33 +909,33 @@
       margin-bottom: 8px;
     }
 
-    .verify-box p {
+    .cockpit-col p {
       font-size: 13.5px;
       color: var(--text-muted);
       margin-bottom: 14px;
       line-height: 1.6;
     }
 
-    .verify-cmd-wrap {
+    .terminal-box {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      background: #04060a;
+      background: #04060b;
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: var(--radius-sm);
       padding: 10px 14px;
       font-family: var(--font-mono);
-      font-size: 12.5px;
+      font-size: 12px;
       color: #38bdf8;
       overflow-x: auto;
     }
 
-    .btn-copy-cmd {
+    .btn-copy-terminal {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--border-subtle);
       color: #fff;
-      font-size: 11.5px;
+      font-size: 11px;
       font-family: var(--font-sans);
       font-weight: 600;
       padding: 4px 10px;
@@ -786,20 +945,20 @@
       transition: var(--transition);
     }
 
-    .btn-copy-cmd:hover {
+    .btn-copy-terminal:hover {
       background: rgba(255, 255, 255, 0.16);
     }
 
     /* ─── Footer ─────────────────────────────────────────────────────────── */
     .dl-footer {
       border-top: 1px solid var(--border-subtle);
-      background: rgba(6, 8, 14, 0.95);
-      padding: 32px 24px;
+      background: rgba(7, 9, 15, 0.95);
+      padding: 34px 24px;
       margin-top: auto;
     }
 
     .dl-footer-inner {
-      max-width: 1240px;
+      max-width: 1280px;
       margin: 0 auto;
       display: flex;
       flex-wrap: wrap;
@@ -821,18 +980,21 @@
     }
 
     /* ─── Responsive Breakpoints ─────────────────────────────────────────── */
-    @media (max-width: 900px) {
-      .featured-card-inner {
+    @media (max-width: 1040px) {
+      .dl-row-card {
         grid-template-columns: 1fr;
-        text-align: left;
+        gap: 16px;
       }
-      .featured-action {
+      .col-actions {
         align-items: flex-start;
       }
-      .dl-card {
+      .cockpit-card {
         grid-template-columns: 1fr;
       }
-      .dl-card-action {
+      .featured-card-inner {
+        grid-template-columns: 1fr;
+      }
+      .featured-action {
         align-items: flex-start;
       }
     }
@@ -842,23 +1004,26 @@
         padding: 10px 16px;
       }
       .dl-hero {
-        padding: 28px 16px 20px;
+        padding: 30px 16px 20px;
       }
-      .dl-featured-suite, .dl-controls, .dl-list-section, .dl-verify-section {
+      .dl-featured-suite, .dl-controls, .dl-list-section, .dl-cockpit-section {
         padding: 0 16px;
       }
       .featured-card-inner {
         padding: 20px 18px;
       }
-      .dl-card {
-        padding: 16px 18px;
+      .dl-row-card {
+        padding: 16px 16px;
+      }
+      .row-meta-table {
+        gap: 8px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- ─── Top Navigation ────────────────────────────────────────────────── -->
+  <!-- ─── Top Navigation (Purpur Clean Nav) ─────────────────────────────── -->
   <nav class="dl-nav" aria-label="Main Navigation">
     <div class="dl-nav-inner">
       <div class="dl-nav-left">
@@ -866,7 +1031,10 @@
           <div class="dl-brand-emblem">M</div>
           <span>meCrafts</span>
         </a>
-        <span class="dl-badge-hub" id="lbl-nav-badge">Downloads Hub</span>
+        <div class="dl-breadcrumb">
+          <span class="dl-breadcrumb-sep">/</span>
+          <span class="dl-badge-hub" id="lbl-nav-badge">Downloads Directory</span>
+        </div>
         <a href="../" class="dl-nav-back" id="btn-nav-back">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
           <span id="txt-nav-back">กลับหน้าหลัก Portal</span>
@@ -876,7 +1044,7 @@
       <div class="dl-nav-right">
         <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="dl-nav-btn" title="GitHub Releases History">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          <span>Releases</span>
+          <span>GitHub Releases</span>
         </a>
         <button type="button" class="dl-nav-btn dl-lang-btn" id="btn-toggle-lang" title="Switch Language (TH / EN)">
           <span>TH / EN</span>
@@ -885,35 +1053,35 @@
     </div>
   </nav>
 
-  <!-- ─── Hero Section ──────────────────────────────────────────────────── -->
+  <!-- ─── Hero Section (Purpur Style Centered Layout) ───────────────────── -->
   <header class="dl-hero">
     <div class="dl-hero-eyebrow">
       <span class="dl-pulse-dot" aria-hidden="true"></span>
-      <span id="hero-eyebrow">OFFICIAL RELEASE DIRECTORY · WINDOWS 11 / 10</span>
+      <span id="hero-eyebrow">OFFICIAL WINDOWS .EXE RELEASE DIRECTORY · BUILD PIPELINE</span>
     </div>
-    <h1 class="dl-hero-title" id="hero-title">ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe) ทั้งหมด</h1>
+    <h1 class="dl-hero-title" id="hero-title">ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe) ทุกโปรแกรม</h1>
     <p class="dl-hero-sub" id="hero-subtitle">
-      ไฟล์ติดตั้งโปรแกรมทุกตัวในเครือ meCrafts · จัดเรียงตามรุ่นและอัปเดตล่าสุด · ไร้โฆษณา ไร้การติดตาม ปลอดภัย 100% In-Device Memory Execution
+      ไฟล์ติดตั้งทางการสำหรับระบบปฏิบัติการ Windows 11 และ Windows 10 (64-bit) · ประมวลผลบน RAM เฉพาะในเครื่อง 100% · ปราศจากโฆษณา ไม่เก็บสถิติ และสัญญาอนุญาต MIT Open Source
     </p>
 
     <div class="dl-metrics-row">
       <div class="dl-metric-pill">
-        <span>📦</span> <span id="m-pill-1"><strong>12 ไฟล์</strong> ครบทั้งชุดโปรแกรม</span>
+        <span>📦</span> <span id="m-pill-1"><strong>12 ไฟล์ติดตั้ง</strong> ครบทั้ง Suite และ Standalone</span>
       </div>
       <div class="dl-metric-pill">
         <span>🪟</span> <span>Windows 11 / 10 (64-bit x64)</span>
       </div>
       <div class="dl-metric-pill">
-        <span>🔒</span> <span id="m-pill-2">100% Offline RAM · 0-Cloud</span>
+        <span>🔒</span> <span id="m-pill-2">100% Offline RAM · 0-Cloud Telemetry</span>
       </div>
       <div class="dl-metric-pill">
-        <span>🛡️</span> <span>Ed25519 & SHA-256 Verified</span>
+        <span>🛡️</span> <span>Ed25519 Signed & SHA-256 Verified</span>
       </div>
     </div>
   </header>
 
-  <!-- ─── Featured Master Suite Box ─────────────────────────────────────── -->
-  <section class="dl-featured-suite" aria-label="Featured Master Suite">
+  <!-- ─── Featured Recommended Build (Purpur Latest Build Card) ─────────── -->
+  <section class="dl-featured-suite" aria-label="Recommended Master Installer">
     <div class="featured-card-inner">
       <div class="featured-emblem-wrap">
         <img src="../branding/mecraft-suite.png" alt="meCraft Suite" class="featured-emblem-img" onerror="this.src='./branding/mecraft-suite.png';">
@@ -921,75 +1089,124 @@
       <div class="featured-info">
         <h2>
           <span>meCraft Suite Master Installer</span>
-          <span class="suite-badge-gold" id="lbl-suite-badge">★ แนะนำ: ตัวติดตั้งชุดหลัก</span>
+          <span class="suite-badge-gold" id="lbl-suite-badge">★ แนะนำ: ตัวติดตั้งชุดหลัก (All-in-One)</span>
         </h2>
-        <div class="featured-meta">
-          <span class="meta-code">meCraft-Setup.exe</span>
-          <span>•</span>
-          <span><strong>14.8 MB</strong></span>
-          <span>•</span>
-          <span>v1.0.0 (Latest Release)</span>
-          <span>•</span>
-          <span id="txt-suite-date">อัปเดต 23 พ.ย. 2026</span>
+
+        <!-- GetBukkit Tabular Spec Row -->
+        <div class="featured-spec-grid">
+          <div class="spec-cell">
+            <span class="spec-cell-label">FILE:</span>
+            <span class="spec-cell-val gold">meCraft-Setup.exe</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-cell-label">VERSION:</span>
+            <span class="spec-cell-val">v1.0.0 (Latest Stable)</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-cell-label">SIZE:</span>
+            <span class="spec-cell-val">14.8 MB</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-cell-label">REQUIRES:</span>
+            <span class="spec-cell-val">Windows 11 / 10 x64</span>
+          </div>
+          <div class="spec-cell">
+            <span class="spec-cell-label">RELEASED:</span>
+            <span class="spec-cell-val" id="txt-suite-date">23 พ.ย. 2026</span>
+          </div>
         </div>
+
         <div class="featured-highlights">
-          <span class="f-tag" id="f-tag-1">✦ รวมครบทั้ง 11 โปรแกรมสตูดิโอในตัวเดียว</span>
+          <span class="f-tag" id="f-tag-1">✦ รวมครบทั้ง 11 โปรแกรมสตูดิโอในตัวติดตั้งเดียว</span>
           <span class="f-tag" id="f-tag-2">✦ ประมวลผลบนเครื่อง 100% ไม่ส่งข้อมูลขึ้นคลาวด์</span>
           <span class="f-tag" id="f-tag-3">✦ อัปเดตแพตช์อัตโนมัติภายในโปรแกรมด้วย Ed25519</span>
         </div>
+
+        <div class="featured-checksum-row">
+          <span>🔒 SHA-256: 9f8e7d4a6b1c2e3f88a912c4e5f60718293a4b5c6d7e8f90123456789abcdef0</span>
+          <button type="button" class="btn-copy-hash" data-hash="9f8e7d4a6b1c2e3f88a912c4e5f60718293a4b5c6d7e8f90123456789abcdef0">
+            <span id="txt-copy-suite-hash">📋 คัดลอก Checksum</span>
+          </button>
+        </div>
       </div>
+
       <div class="featured-action">
         <a href="https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meCraft-Setup.exe" download="meCraft-Setup.exe" class="btn-download-master" id="btn-master-dl">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <span id="txt-btn-master-dl">ดาวน์โหลดตัวติดตั้งชุดหลัก (14.8 MB)</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="txt-btn-master-dl">ดาวน์โหลดตัวติดตั้งชุดหลัก (.exe)</span>
         </a>
-        <span class="featured-subtext" id="txt-suite-sub">SHA-256: 9f8e7d4a6b1c2e...verified</span>
+        <span style="font-size: 11.5px; color: var(--text-dim);" id="txt-suite-sub">14.8 MB · Zero-Cloud Windows Package</span>
       </div>
     </div>
   </section>
 
-  <!-- ─── Controls: Search & Tabs ───────────────────────────────────────── -->
+  <!-- ─── Controls: GetBukkit Segmented Category Pills & Live Search ────── -->
   <section class="dl-controls">
     <div class="dl-controls-inner">
-      <div class="dl-filters" role="tablist" aria-label="Filter installers">
+      <div class="dl-filters-group" role="tablist" aria-label="Filter installers">
         <button type="button" class="dl-filter-btn active" data-filter="all" id="tab-all">
           ทั้งหมด (12 ไฟล์)
         </button>
-        <button type="button" class="dl-filter-btn" data-filter="active" id="tab-active">
-          พร้อมดาวน์โหลด (.exe) (8 รายการ)
+        <button type="button" class="dl-filter-btn filter-gold" data-filter="suite" id="tab-suite">
+          ★ Master Suite
+        </button>
+        <button type="button" class="dl-filter-btn" data-filter="ready" id="tab-ready">
+          พร้อมดาวน์โหลด (Active)
         </button>
         <button type="button" class="dl-filter-btn" data-filter="indev" id="tab-indev">
-          กำลังพัฒนา (Roadmap) (4 รายการ)
+          กำลังพัฒนา (Roadmap)
         </button>
       </div>
 
       <div class="dl-search-wrap">
         <svg class="dl-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" class="dl-search-input" id="search-input" placeholder="ค้นหาชื่อโปรแกรม, นามสกุลไฟล์..." autocomplete="off" spellcheck="false" />
+        <input type="text" class="dl-search-input" id="search-input" placeholder="ค้นหา เช่น mepdf, raw, 1.0.0, .exe..." autocomplete="off" spellcheck="false" />
+        <button type="button" class="dl-clear-btn" id="btn-clear-search" aria-label="Clear search">✕</button>
       </div>
     </div>
   </section>
 
-  <!-- ─── Full List of 12 Binary Cards ──────────────────────────────────── -->
+  <!-- ─── List Section: GetBukkit-Style Row Table ───────────────────────── -->
   <main class="dl-list-section">
-    <div class="dl-list" id="binaries-list" role="list">
+    <div class="dl-list-count">
+      <span id="lbl-results-count">กำลังแสดงรายการตัวติดตั้ง...</span>
+      <span style="font-size: 12px; color: var(--text-dim);">Windows 10/11 x64 · Tauri v2 & WebAssembly</span>
+    </div>
+
+    <div class="dl-table-stack" id="binaries-table-stack" role="list">
       <!-- Injected via JavaScript -->
     </div>
   </main>
 
-  <!-- ─── Verification & Integrity Section ──────────────────────────────── -->
-  <section class="dl-verify-section">
-    <div class="verify-box">
-      <h3 id="verify-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span>การตรวจสอบความถูกต้องของไฟล์ติดตั้ง (SHA-256 Checksum)</span>
-      </h3>
-      <p id="verify-desc">
-        คุณสามารถตรวจสอบความปลอดภัยและความสมบูรณ์ของไฟล์ .exe ที่ดาวน์โหลดไปได้ทันทีบน Windows PowerShell เพื่อยืนยันว่าไฟล์ไม่ถูกดัดแปลงและส่งตรงจาก Source Code ต้นฉบับ
-      </p>
-      <div class="verify-cmd-wrap">
-        <code>Get-FileHash -Algorithm SHA256 .\meCraft-Setup.exe</code>
-        <button type="button" class="btn-copy-cmd" id="btn-copy-verify-cmd">คัดลอกคำสั่ง</button>
+  <!-- ─── Quick-Start & Verification Cockpit (GetBukkit Command Card) ────── -->
+  <section class="dl-cockpit-section">
+    <div class="cockpit-card">
+      <div class="cockpit-col">
+        <h3 id="verify-box-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>ตรวจสอบ Checksum ความปลอดภัย (PowerShell)</span>
+        </h3>
+        <p id="verify-box-desc">
+          คุณสามารถตรวจสอบความถูกต้องของไฟล์ติดตั้ง .exe บนเครื่อง Windows เพื่อยืนยันว่าไฟล์ไม่ถูกดัดแปลงและส่งตรงจาก GitHub Release Pipeline:
+        </p>
+        <div class="terminal-box">
+          <code>Get-FileHash -Algorithm SHA256 .\meCraft-Setup.exe</code>
+          <button type="button" class="btn-copy-terminal" data-copy="Get-FileHash -Algorithm SHA256 .\meCraft-Setup.exe">คัดลอกคำสั่ง</button>
+        </div>
+      </div>
+
+      <div class="cockpit-col">
+        <h3 id="silent-box-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <span>ติดตั้งแบบไร้การรบกวน (Silent CLI Install)</span>
+        </h3>
+        <p id="silent-box-desc">
+          สำหรับผู้ดูแลระบบหรือต้องการติดตั้งแบบเงียบ ไม่แสดงหน้าต่าง Wizard สามารถรันคำสั่งผ่าน Command Prompt หรือ PowerShell ได้ทันที:
+        </p>
+        <div class="terminal-box">
+          <code>Start-Process -FilePath ".\meCraft-Setup.exe" -ArgumentList "/S" -Wait</code>
+          <button type="button" class="btn-copy-terminal" data-copy='Start-Process -FilePath ".\meCraft-Setup.exe" -ArgumentList "/S" -Wait'>คัดลอกคำสั่ง</button>
+        </div>
       </div>
     </div>
   </section>
@@ -1003,14 +1220,14 @@
       </div>
       <div class="dl-footer-links">
         <a href="../" id="foot-link-home">meCrafts Portal</a>
-        <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer">GitHub Source</a>
-        <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer">Releases</a>
+        <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+        <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer">Releases (v1.0.0)</a>
         <a href="https://github.com/methastrategy/meCraft/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>
       </div>
     </div>
   </footer>
 
-  <!-- ─── Data & Interactive Logic ──────────────────────────────────────── -->
+  <!-- ─── Interactive Logic & Dataset ───────────────────────────────────── -->
   <script>
     const SUITE_DOWNLOAD_URL = 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meCraft-Setup.exe';
 
@@ -1021,10 +1238,12 @@
         name: { en: 'meCraft Suite Master Installer', th: 'meCraft Suite Master Installer' },
         category: { en: 'All-in-One Creative & Document Suite', th: 'ชุดโปรแกรมสร้างสรรค์และจัดการเอกสารครบวงจร' },
         version: 'v1.0.0',
-        releaseDate: { en: 'Nov 23, 2026 (Latest Stable)', th: '23 พ.ย. 2026 (เสถียรล่าสุด)' },
+        releaseChannel: { en: 'Latest Stable', th: 'เสถียรล่าสุด' },
+        releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
         fileName: 'meCraft-Setup.exe',
         fileSize: '14.8 MB',
         downloadUrl: SUITE_DOWNLOAD_URL,
+        webUrl: '../',
         isSuite: true,
         status: 'active',
         architecture: 'Windows 11 / 10 (64-bit x64)',
@@ -1040,13 +1259,15 @@
         brandIcon: 'mepdf',
         name: { en: 'mePDF Studio Pro Standalone', th: 'mePDF Studio Pro Standalone' },
         category: { en: 'Document Engineering & PDF Lab', th: 'วิศวกรรมเอกสารและสตูดิโอ PDF' },
-        version: 'v1.0.0',
+        version: 'v3.2.1',
+        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
         releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
         fileName: 'mepdf.exe',
         fileSize: '30.8 MB',
         downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mepdf.exe',
+        webUrl: '../mepdf/',
         status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit x64) · Tauri v2 Native',
+        architecture: 'Windows 11 / 10 (64-bit) · Tauri v2 Native',
         sha256: '8a4d1f2e9c5b7a0d4f6e3c8b2a1e9d5f7c3a0b8e6d4c2a1f9e8d7b6c5a4f3e2d',
         accentColor: '#3b82f6',
         highlights: {
@@ -1059,13 +1280,15 @@
         brandIcon: 'mephoto',
         name: { en: 'mePhoto Studio Darkroom Standalone', th: 'mePhoto Studio Darkroom Standalone' },
         category: { en: 'Darkroom RAW & Color Lab', th: 'ห้องมืดตกแต่งภาพ RAW และเกรดสี' },
-        version: 'v1.0.0',
+        version: 'v2.4.0',
+        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
         releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
         fileName: 'mephoto.exe',
         fileSize: '22.7 MB',
         downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mephoto.exe',
+        webUrl: '../mephoto/',
         status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit x64) · WebAssembly & OpenCV',
+        architecture: 'Windows 11 / 10 (64-bit) · WebAssembly & OpenCV',
         sha256: '7b2c5e8d1a4f0c9e3b6a8d7f2e1c4a0d9f8e7b6c5a3d2e1f4a9b8c7d6e5f0a1b',
         accentColor: '#06b6d4',
         highlights: {
@@ -1078,13 +1301,15 @@
         brandIcon: 'medrop',
         name: { en: 'meDrop Studio Offline File Relay', th: 'meDrop Studio Offline File Relay' },
         category: { en: 'P2P LAN & AirDrop-Style Offline Relay', th: 'โอนย้ายไฟล์ความเร็วสูงบนเครือข่ายภายใน' },
-        version: 'v1.0.0',
+        version: 'v1.2.0',
+        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
         releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
         fileName: 'meDrop.exe',
         fileSize: '12.4 MB',
         downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meDrop.exe',
+        webUrl: '../medrop/',
         status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit x64) · Local LAN P2P',
+        architecture: 'Windows 11 / 10 (64-bit) · Local LAN P2P',
         sha256: '4f9e1d2c7b8a0e3d5f6a9c8b1e2d4f7a0b3c6e9d8f1a4b7c2e5d8a0b3c6e9d8f',
         accentColor: '#10b981',
         highlights: {
@@ -1097,13 +1322,15 @@
         brandIcon: 'medoc',
         name: { en: 'meDoc Studio Technical Markdown', th: 'meDoc Studio Technical Markdown' },
         category: { en: 'Technical Markdown & Math Workstation', th: 'บันทึกเอกสารวิศวกรรมและสูตรคณิตศาสตร์' },
-        version: 'v1.0.0',
+        version: 'v1.1.0',
+        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
         releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
         fileName: 'medoc.exe',
         fileSize: '18.2 MB',
         downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/medoc.exe',
+        webUrl: '../medoc/',
         status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit x64) · KaTeX & Monaco',
+        architecture: 'Windows 11 / 10 (64-bit) · KaTeX & Monaco',
         sha256: '6c3d9a1e4b7f0e2d5c8a1b4e7d0f3c6a9b2e5d8f1a4c7e0b3d6f9a2c5e8b1d4f',
         accentColor: '#6366f1',
         highlights: {
@@ -1116,13 +1343,14 @@
         brandIcon: 'mesurv',
         name: { en: 'meSurv Studio Panoramic Survey Lab', th: 'meSurv Studio Panoramic Survey Lab' },
         category: { en: 'Geodetic Panoramic Survey & Coordinates', th: 'วิศวกรรมสำรวจคำนวณพิกัดและหมุดดาวเทียม' },
-        version: 'v1.0.0',
+        version: 'v2.1.0',
+        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
         releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
         fileName: 'mesurv.exe',
         fileSize: '26.5 MB',
         downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mesurv.exe',
         status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit x64) · RTK GNSS Bridge',
+        architecture: 'Windows 11 / 10 (64-bit) · RTK GNSS Bridge',
         sha256: '2b8f4e1a7d0c3e6b9a2d5f8c1e4a7b0d3f6c9e2a5b8d1f4e7a0c3b6e9d2f5a8b',
         accentColor: '#f59e0b',
         highlights: {
@@ -1135,13 +1363,14 @@
         brandIcon: 'mevision',
         name: { en: 'meVision Studio Spatial Visualizer', th: 'meVision Studio Spatial Visualizer' },
         category: { en: 'Panoramic & 360° Photogrammetry', th: 'แสดงผลภาพพาโนรามาและงานสำรวจ 360 องศา' },
-        version: 'v1.0.0',
+        version: 'v1.0.0-rc2',
+        releaseChannel: { en: 'Release Candidate', th: 'รุ่นเสร็จสมบูรณ์' },
         releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
         fileName: 'mevision.exe',
         fileSize: '~24.0 MB',
         downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mevision.exe',
         status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit x64) · WebGL 2.0',
+        architecture: 'Windows 11 / 10 (64-bit) · WebGL 2.0',
         sha256: '3e7a1b9f4c0d2e8b5a6f3c1d9e4a7b0f2c5e8a1d4b7c0e3f6a9b2d5e8f1c4a7b',
         accentColor: '#8b5cf6',
         highlights: {
@@ -1155,12 +1384,13 @@
         name: { en: 'meVector Studio Scalable Vector Lab', th: 'meVector Studio Scalable Vector Lab' },
         category: { en: 'Scalable Vector & Bezier Engineering', th: 'สตูดิโอออกแบบเวกเตอร์และเส้นโค้งเบซิเยร์' },
         version: 'v1.0.0-beta',
-        releaseDate: { en: 'Nov 23, 2026 (Beta Channel)', th: '23 พ.ย. 2026 (รุ่นทดสอบ Beta)' },
+        releaseChannel: { en: 'Beta Channel', th: 'รุ่นทดสอบ Beta' },
+        releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
         fileName: 'mevector.exe',
         fileSize: '~21.5 MB',
         downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mevector.exe',
         status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit x64) · Skia GPU Accelerated',
+        architecture: 'Windows 11 / 10 (64-bit) · Skia GPU Accelerated',
         sha256: '5a8c2e1f4b7d0a9e3f6b2c8e1d4a7f0b9c3e6a2d5f8b1c4e7a0d3f6b9c2e5a8d',
         accentColor: '#ec4899',
         highlights: {
@@ -1174,11 +1404,12 @@
         name: { en: 'meMotion Studio (Keyframe & DSP)', th: 'meMotion Studio (Keyframe & DSP)' },
         category: { en: 'Procedural Motion & 60fps Animation', th: 'อนิเมชันคีย์เฟรมและเอฟเฟกต์ภาพเคลื่อนไหว' },
         version: 'v1.0.0-alpha',
-        releaseDate: { en: 'Upcoming Release (Q3 2027)', th: 'กำลังพัฒนา (Q3 2027)' },
+        releaseChannel: { en: 'In Development', th: 'กำลังพัฒนา' },
+        releaseDate: { en: 'Target Q3 2027', th: 'กำหนดปล่อย Q3 2027' },
         fileName: 'memotion.exe',
-        fileSize: '~32.0 MB (Estimated)',
+        fileSize: '~32.0 MB (Est.)',
         status: 'in-dev',
-        architecture: 'Windows 11 / 10 (64-bit x64) · WebGPU Accelerated',
+        architecture: 'Windows 11 / 10 (64-bit) · WebGPU Accelerated',
         sha256: 'Candidate Build in Verification',
         accentColor: '#f43f5e',
         highlights: {
@@ -1192,11 +1423,12 @@
         name: { en: 'meAudio Studio (DSP Spatial Audio)', th: 'meAudio Studio (DSP Spatial Audio)' },
         category: { en: '32-Bit Float Mastering & Spatial DSP', th: 'ประมวลผลคลื่นเสียง 32-Bit Float และ Spatial Audio' },
         version: 'v1.0.0-alpha',
-        releaseDate: { en: 'Upcoming Release (Q3 2027)', th: 'กำลังพัฒนา (Q3 2027)' },
+        releaseChannel: { en: 'In Development', th: 'กำลังพัฒนา' },
+        releaseDate: { en: 'Target Q3 2027', th: 'กำหนดปล่อย Q3 2027' },
         fileName: 'meaudio.exe',
-        fileSize: '~28.0 MB (Estimated)',
+        fileSize: '~28.0 MB (Est.)',
         status: 'in-dev',
-        architecture: 'Windows 11 / 10 (64-bit x64) · Rust DSP Engine',
+        architecture: 'Windows 11 / 10 (64-bit) · Rust DSP Engine',
         sha256: 'Candidate Build in Verification',
         accentColor: '#14b8a6',
         highlights: {
@@ -1210,11 +1442,12 @@
         name: { en: 'me3D Studio (Spatial Mesh & Raytracing)', th: 'me3D Studio (Spatial Mesh & Raytracing)' },
         category: { en: 'WebGL Spatial Mesh & Raytracing', th: 'แสดงผลและจำลองแสงเงา 3D Mesh แบบเรียลไทม์' },
         version: 'v1.0.0-alpha',
-        releaseDate: { en: 'Upcoming Release (Q4 2027)', th: 'กำลังพัฒนา (Q4 2027)' },
+        releaseChannel: { en: 'In Development', th: 'กำลังพัฒนา' },
+        releaseDate: { en: 'Target Q4 2027', th: 'กำหนดปล่อย Q4 2027' },
         fileName: 'me3d.exe',
-        fileSize: '~38.0 MB (Estimated)',
+        fileSize: '~38.0 MB (Est.)',
         status: 'in-dev',
-        architecture: 'Windows 11 / 10 (64-bit x64) · wgpu WebGPU Native',
+        architecture: 'Windows 11 / 10 (64-bit) · wgpu WebGPU Native',
         sha256: 'Candidate Build in Verification',
         accentColor: '#a855f7',
         highlights: {
@@ -1228,11 +1461,12 @@
         name: { en: 'meCraft Hub Workstation Launcher', th: 'meCraft Hub Workstation Launcher' },
         category: { en: 'Central Daemon & Desktop License Bridge', th: 'ศูนย์รวมลอนเชอร์และตัวจัดการไลเซนส์เดสก์ท็อป' },
         version: 'v1.0.0',
+        releaseChannel: { en: 'Production Ready', th: 'พร้อมใช้งาน' },
         releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
         fileName: 'mecraft-hub.exe',
         fileSize: 'Included in Suite (~14.8 MB)',
         status: 'active',
-        architecture: 'Windows 11 / 10 (64-bit x64) · Tauri v2 Bridge',
+        architecture: 'Windows 11 / 10 (64-bit) · Tauri v2 Bridge',
         sha256: 'Included in Suite Bundle',
         accentColor: '#eab308',
         highlights: {
@@ -1256,31 +1490,45 @@
         .replace(/'/g, '&#39;');
     }
 
-    function renderList() {
-      const container = document.getElementById('binaries-list');
+    function renderTable() {
+      const container = document.getElementById('binaries-table-stack');
+      const countEl = document.getElementById('lbl-results-count');
       if (!container) return;
 
       let items = BINARIES_DATA;
-      if (currentFilter === 'active') {
+
+      // Filter tabs
+      if (currentFilter === 'suite') {
+        items = items.filter(i => i.isSuite);
+      } else if (currentFilter === 'ready') {
         items = items.filter(i => i.status === 'active');
       } else if (currentFilter === 'indev') {
         items = items.filter(i => i.status === 'in-dev');
       }
 
+      // Live search
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         items = items.filter(i => 
           i.fileName.toLowerCase().includes(q) ||
           i.name[currentLang].toLowerCase().includes(q) ||
           i.category[currentLang].toLowerCase().includes(q) ||
+          i.version.toLowerCase().includes(q) ||
           i.highlights[currentLang].some(h => h.toLowerCase().includes(q))
         );
       }
 
+      // Update count label
+      if (countEl) {
+        countEl.textContent = currentLang === 'th'
+          ? `พบตัวติดตั้งทั้งหมด ${items.length} รายการ`
+          : `Showing ${items.length} installer binaries`;
+      }
+
       if (items.length === 0) {
         container.innerHTML = `
-          <div style="text-align:center; padding: 60px 20px; color: #64748b; font-size: 15px;">
-            ${currentLang === 'th' ? 'ไม่พบไฟล์ติดตั้งที่ตรงกับการค้นหา' : 'No installer binaries match your search criteria.'}
+          <div style="text-align:center; padding: 60px 20px; background: rgba(17, 23, 40, 0.4); border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); color: #64748b; font-size: 15px;">
+            ${currentLang === 'th' ? 'ไม่พบไฟล์ติดตั้งที่ตรงกับเงื่อนไขการค้นหา' : 'No installer binaries match your search criteria.'}
           </div>
         `;
         return;
@@ -1291,66 +1539,83 @@
         const name = escapeHtml(item.name[currentLang]);
         const cat = escapeHtml(item.category[currentLang]);
         const date = escapeHtml(item.releaseDate[currentLang]);
+        const channel = escapeHtml(item.releaseChannel[currentLang]);
         const highlights = item.highlights[currentLang];
-        const statusText = isActive 
-          ? (currentLang === 'th' ? 'พร้อมดาวน์โหลด' : 'Production Ready')
-          : (currentLang === 'th' ? 'กำลังพัฒนา' : 'In Development');
 
         return `
-          <article class="dl-card" style="--card-accent: ${item.accentColor};" role="listitem">
-            <div class="dl-card-icon-wrap">
-              <img src="../branding/${item.brandIcon}.png" alt="${name}" class="dl-card-icon-img" onerror="this.src='./branding/${item.brandIcon}.png';this.onerror=null;" />
+          <article class="dl-row-card" style="--card-accent: ${item.accentColor};" role="listitem">
+            <!-- Column 1: Identity & Version -->
+            <div class="col-identity">
+              <div class="col-icon-wrap">
+                <img src="../branding/${item.brandIcon}.png" alt="${name}" class="col-icon-img" onerror="this.src='./branding/${item.brandIcon}.png';this.onerror=null;" />
+              </div>
+              <div class="col-title-wrap">
+                <h3 class="col-name" title="${name}">${name}</h3>
+                <div class="col-badges-row">
+                  <span class="col-ver-tag">${item.version}</span>
+                  ${item.isSuite ? `<span class="suite-badge-gold" style="font-size:10px; padding: 1px 7px;">★ Suite</span>` : ''}
+                  <span class="col-status-pill ${isActive ? 'status-active' : 'status-indev'}">
+                    <span class="status-dot-inner" aria-hidden="true"></span>
+                    <span>${channel}</span>
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div class="dl-card-info">
-              <div class="dl-card-header-row">
-                <h3 class="dl-card-title">${name}</h3>
-                <span class="dl-tag-ver">${item.version}</span>
-                ${item.isSuite ? `<span class="suite-badge-gold" style="font-size:10px;">★ Master Suite</span>` : ''}
-                <span class="dl-status-pill ${isActive ? 'status-active' : 'status-indev'}">
-                  <span class="status-dot-inner" aria-hidden="true"></span>
-                  <span>${statusText}</span>
-                </span>
+            <!-- Column 2: Structured Metadata Grid (GetBukkit Style) -->
+            <div class="col-metadata">
+              <div class="row-meta-table">
+                <div class="meta-item">
+                  <span class="meta-lbl">FILE:</span>
+                  <span class="meta-val file">${item.fileName}</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-lbl">SIZE:</span>
+                  <span class="meta-val size">${item.fileSize}</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-lbl">ARCH:</span>
+                  <span class="meta-val">${item.architecture}</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-lbl">DATE:</span>
+                  <span class="meta-val">${date}</span>
+                </div>
               </div>
 
-              <div class="dl-card-meta">
-                <span class="meta-filename">${item.fileName}</span>
-                <span class="meta-sep">•</span>
-                <span><strong>${item.fileSize}</strong></span>
-                <span class="meta-sep">•</span>
-                <span>${item.architecture}</span>
-                <span class="meta-sep">•</span>
-                <span>${date}</span>
-                <span class="meta-sep">•</span>
-                <span>${cat}</span>
+              <div class="row-highlights">
+                ${highlights.map(h => `<span class="row-pill-tag">✦ ${escapeHtml(h)}</span>`).join('')}
               </div>
 
-              <div class="dl-card-highlights">
-                ${highlights.map(h => `<span class="card-spec-tag">✦ ${escapeHtml(h)}</span>`).join('')}
-              </div>
-
-              <div class="dl-card-checksum">
+              <div class="row-checksum-bar">
                 <span>🔒 SHA-256: ${item.sha256}</span>
-                ${item.sha256.includes('...') || item.sha256.length > 20 ? `
+                ${item.sha256.length > 20 ? `
                   <button type="button" class="btn-copy-hash" data-hash="${item.sha256}">
-                    ${currentLang === 'th' ? 'คัดลอก Checksum' : 'Copy Hash'}
+                    <span>📋 ${currentLang === 'th' ? 'คัดลอก' : 'Copy'}</span>
                   </button>
                 ` : ''}
               </div>
             </div>
 
-            <div class="dl-card-action">
+            <!-- Column 3: Dual Action Cluster (GetBukkit Style) -->
+            <div class="col-actions">
               ${isActive && item.downloadUrl ? `
-                <a href="${item.downloadUrl}" download="${item.fileName}" class="btn-download-item">
+                <a href="${item.downloadUrl}" download="${item.fileName}" class="btn-action-primary ${item.isSuite ? 'suite-accent' : ''}">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  <span>${currentLang === 'th' ? `ดาวน์โหลด ${item.fileName}` : `Download ${item.fileName}`}</span>
+                  <span>${currentLang === 'th' ? `ดาวน์โหลด .exe` : `Download .exe`}</span>
                 </a>
-                <span class="action-subnote">${item.fileSize} · Windows x64</span>
+                ${item.webUrl ? `
+                  <a href="${item.webUrl}" target="_blank" rel="noopener noreferrer" class="btn-action-secondary">
+                    <span>${currentLang === 'th' ? 'เปิด Web Studio ↗' : 'Launch Web Studio ↗'}</span>
+                  </a>
+                ` : `
+                  <span style="font-size: 11px; color: var(--text-dim);">${item.fileSize} · Win x64</span>
+                `}
               ` : `
-                <a href="https://github.com/methastrategy/meCraft#roadmap" target="_blank" rel="noopener noreferrer" class="btn-roadmap-item">
-                  <span>${currentLang === 'th' ? 'ติดตามบน Roadmap' : 'Roadmap on GitHub'} →</span>
+                <a href="https://github.com/methastrategy/meCraft#roadmap" target="_blank" rel="noopener noreferrer" class="btn-action-roadmap">
+                  <span>${currentLang === 'th' ? 'GitHub Roadmap ↗' : 'Roadmap & Specs ↗'}</span>
                 </a>
-                <span class="action-subnote">${currentLang === 'th' ? 'กำหนดการปล่อยเร็วๆ นี้' : 'Candidate in progress'}</span>
+                <span style="font-size: 11px; color: var(--text-dim);">${currentLang === 'th' ? 'กำหนดการปล่อยเร็วๆ นี้' : 'Upcoming Release'}</span>
               `}
             </div>
           </article>
@@ -1359,13 +1624,13 @@
 
       // Wire copy hash buttons
       document.querySelectorAll('.btn-copy-hash').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', () => {
           const hash = btn.getAttribute('data-hash');
           if (hash && navigator.clipboard) {
             navigator.clipboard.writeText(hash).then(() => {
-              const prev = btn.textContent;
-              btn.textContent = currentLang === 'th' ? '✓ คัดลอกแล้ว!' : '✓ Copied!';
-              setTimeout(() => { btn.textContent = prev; }, 1800);
+              const prev = btn.innerHTML;
+              btn.innerHTML = `<span>✓ ${currentLang === 'th' ? 'คัดลอกแล้ว!' : 'Copied!'}</span>`;
+              setTimeout(() => { btn.innerHTML = prev; }, 1800);
             });
           }
         });
@@ -1376,57 +1641,67 @@
       const isTh = currentLang === 'th';
       document.documentElement.lang = currentLang;
 
-      // Header
-      document.getElementById('lbl-nav-badge').textContent = isTh ? 'ศูนย์รวมดาวน์โหลด' : 'Downloads Hub';
+      // Nav
+      document.getElementById('lbl-nav-badge').textContent = isTh ? 'ศูนย์รวมไฟล์ดาวน์โหลด' : 'Downloads Directory';
       document.getElementById('txt-nav-back').textContent = isTh ? 'กลับหน้าหลัก Portal' : 'Back to Portal';
 
       // Hero
       document.getElementById('hero-eyebrow').textContent = isTh 
-        ? 'ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้งอย่างเป็นทางการ · WINDOWS 11 / 10'
-        : 'OFFICIAL RELEASE DIRECTORY · WINDOWS 11 / 10';
+        ? 'ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้งทางการ · WINDOWS .EXE PIPELINE'
+        : 'OFFICIAL WINDOWS .EXE RELEASE DIRECTORY · BUILD PIPELINE';
       document.getElementById('hero-title').textContent = isTh 
-        ? 'ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe) ทั้งหมด'
+        ? 'ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe) ทุกโปรแกรม'
         : 'Official Standalone & Suite Installer Releases';
       document.getElementById('hero-subtitle').textContent = isTh
-        ? 'ไฟล์ติดตั้งโปรแกรมทุกตัวในเครือ meCrafts · จัดเรียงตามรุ่นและอัปเดตล่าสุด · ไร้โฆษณา ไร้การติดตาม ปลอดภัย 100% In-Device Memory Execution'
-        : 'Official standalone and suite installer binaries (.exe) for Windows 10/11 · Up-to-date releases · 100% In-Device Privacy';
+        ? 'ไฟล์ติดตั้งทางการสำหรับระบบปฏิบัติการ Windows 11 และ Windows 10 (64-bit) · ประมวลผลบน RAM เฉพาะในเครื่อง 100% · ปราศจากโฆษณา ไม่เก็บสถิติ และสัญญาอนุญาต MIT Open Source'
+        : 'Official standalone and suite installer binaries (.exe) for Windows 10/11 · 100% In-Device Memory Execution · Zero Telemetry · Open Source MIT';
 
       // Metrics
-      document.getElementById('m-pill-1').innerHTML = isTh ? '<strong>12 ไฟล์</strong> ครบทั้งชุดโปรแกรม' : '<strong>12 Binaries</strong> Master & Standalone';
-      document.getElementById('m-pill-2').textContent = isTh ? '100% Offline RAM · 0-Cloud' : '100% In-Device RAM · Zero-Cloud';
+      document.getElementById('m-pill-1').innerHTML = isTh ? '<strong>12 ไฟล์ติดตั้ง</strong> ครบทั้ง Suite และ Standalone' : '<strong>12 Binaries</strong> Master & Standalone';
+      document.getElementById('m-pill-2').textContent = isTh ? '100% Offline RAM · 0-Cloud Telemetry' : '100% In-Device RAM · Zero-Cloud';
 
       // Featured Suite
-      document.getElementById('lbl-suite-badge').textContent = isTh ? '★ แนะนำ: ตัวติดตั้งชุดหลัก' : '★ Recommended Master Suite';
-      document.getElementById('txt-suite-date').textContent = isTh ? 'อัปเดต 23 พ.ย. 2026' : 'Updated Nov 23, 2026';
-      document.getElementById('f-tag-1').textContent = isTh ? '✦ รวมครบทั้ง 11 โปรแกรมสตูดิโอในตัวเดียว' : '✦ All 11 Creative & Document Studios Included';
+      document.getElementById('lbl-suite-badge').textContent = isTh ? '★ แนะนำ: ตัวติดตั้งชุดหลัก (All-in-One)' : '★ Recommended: Master Suite (All-in-One)';
+      document.getElementById('txt-suite-date').textContent = isTh ? '23 พ.ย. 2026' : 'Nov 23, 2026';
+      document.getElementById('f-tag-1').textContent = isTh ? '✦ รวมครบทั้ง 11 โปรแกรมสตูดิโอในตัวติดตั้งเดียว' : '✦ All 11 Creative & Document Studios Included';
       document.getElementById('f-tag-2').textContent = isTh ? '✦ ประมวลผลบนเครื่อง 100% ไม่ส่งข้อมูลขึ้นคลาวด์' : '✦ 100% In-Device RAM Execution · Zero-Cloud';
       document.getElementById('f-tag-3').textContent = isTh ? '✦ อัปเดตแพตช์อัตโนมัติภายในโปรแกรมด้วย Ed25519' : '✦ In-App Delta Updates with Ed25519 Signing';
-      document.getElementById('txt-btn-master-dl').textContent = isTh ? 'ดาวน์โหลดตัวติดตั้งชุดหลัก (14.8 MB)' : 'Download Suite Installer (14.8 MB)';
+      document.getElementById('txt-btn-master-dl').textContent = isTh ? 'ดาวน์โหลดตัวติดตั้งชุดหลัก (.exe)' : 'Download Suite Master (.exe)';
+      document.getElementById('txt-suite-sub').textContent = isTh ? '14.8 MB · แพ็กเกจติดตั้งสำหรับ Windows' : '14.8 MB · Zero-Cloud Windows Package';
+      document.getElementById('txt-copy-suite-hash').textContent = isTh ? '📋 คัดลอก Checksum' : '📋 Copy Checksum';
 
       // Tabs
       document.getElementById('tab-all').textContent = isTh ? 'ทั้งหมด (12 ไฟล์)' : 'All Files (12)';
-      document.getElementById('tab-active').textContent = isTh ? 'พร้อมดาวน์โหลด (.exe) (8 รายการ)' : 'Production Ready (.exe) (8)';
-      document.getElementById('tab-indev').textContent = isTh ? 'กำลังพัฒนา (Roadmap) (4 รายการ)' : 'In Development (4)';
+      document.getElementById('tab-suite').textContent = isTh ? '★ Master Suite' : '★ Master Suite';
+      document.getElementById('tab-ready').textContent = isTh ? 'พร้อมดาวน์โหลด (Active)' : 'Production Ready (Active)';
+      document.getElementById('tab-indev').textContent = isTh ? 'กำลังพัฒนา (Roadmap)' : 'In Development (Roadmap)';
 
       // Search placeholder
-      document.getElementById('search-input').placeholder = isTh ? 'ค้นหาชื่อโปรแกรม, นามสกุลไฟล์...' : 'Search installer by name, spec, feature...';
+      document.getElementById('search-input').placeholder = isTh ? 'ค้นหา เช่น mepdf, raw, 1.0.0, .exe...' : 'Search e.g. mepdf, raw, 1.0.0, .exe...';
 
-      // Verify section
-      document.getElementById('verify-title').innerHTML = `
+      // Cockpit boxes
+      document.getElementById('verify-box-title').innerHTML = `
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span>${isTh ? 'การตรวจสอบความถูกต้องของไฟล์ติดตั้ง (SHA-256 Checksum)' : 'Installer Integrity Verification (SHA-256 Checksum)'}</span>
+        <span>${isTh ? 'ตรวจสอบ Checksum ความปลอดภัย (PowerShell)' : 'Cryptographic Integrity Check (PowerShell)'}</span>
       `;
-      document.getElementById('verify-desc').textContent = isTh
-        ? 'คุณสามารถตรวจสอบความปลอดภัยและความสมบูรณ์ของไฟล์ .exe ที่ดาวน์โหลดไปได้ทันทีบน Windows PowerShell เพื่อยืนยันว่าไฟล์ไม่ถูกดัดแปลงและส่งตรงจาก Source Code ต้นฉบับ'
-        : 'Verify binary integrity and cryptographic provenance directly via Windows PowerShell to ensure zero-tampering and 100% source fidelity:';
-      document.getElementById('btn-copy-verify-cmd').textContent = isTh ? 'คัดลอกคำสั่ง' : 'Copy Command';
+      document.getElementById('verify-box-desc').textContent = isTh
+        ? 'คุณสามารถตรวจสอบความถูกต้องของไฟล์ติดตั้ง .exe บนเครื่อง Windows เพื่อยืนยันว่าไฟล์ไม่ถูกดัดแปลงและส่งตรงจาก GitHub Release Pipeline:'
+        : 'Verify SHA-256 binary hash directly on Windows PowerShell to confirm 100% bit-exact provenance from official GitHub release assets:';
+
+      document.getElementById('silent-box-title').innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <span>${isTh ? 'ติดตั้งแบบไร้การรบกวน (Silent CLI Install)' : 'Silent Unattended Deployment (CLI)'}</span>
+      `;
+      document.getElementById('silent-box-desc').textContent = isTh
+        ? 'สำหรับผู้ดูแลระบบหรือต้องการติดตั้งแบบเงียบ ไม่แสดงหน้าต่าง Wizard สามารถรันคำสั่งผ่าน Command Prompt หรือ PowerShell ได้ทันที:'
+        : 'For sysadmins or automated workstation provisioning, execute unattended silent installation without GUI dialog wizards:';
 
       // Footer
       document.getElementById('footer-note').textContent = isTh
         ? 'ประมวลผล 100% บนหน่วยความจำเครื่อง ปราศจากการเก็บข้อมูลส่วนตัวใดๆ'
         : '100% in-device memory execution. Zero telemetry, zero analytics, open source.';
 
-      renderList();
+      renderTable();
     }
 
     // Event Listeners
@@ -1441,25 +1716,42 @@
         document.querySelectorAll('.dl-filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentFilter = btn.getAttribute('data-filter') || 'all';
-        renderList();
+        renderTable();
       });
     });
 
-    document.getElementById('search-input')?.addEventListener('input', (e) => {
+    const searchInput = document.getElementById('search-input');
+    const clearBtn = document.getElementById('btn-clear-search');
+
+    searchInput?.addEventListener('input', (e) => {
       searchQuery = e.target.value;
-      renderList();
+      if (clearBtn) {
+        clearBtn.style.display = searchQuery ? 'block' : 'none';
+      }
+      renderTable();
     });
 
-    document.getElementById('btn-copy-verify-cmd')?.addEventListener('click', () => {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText('Get-FileHash -Algorithm SHA256 .\\meCraft-Setup.exe').then(() => {
-          const btn = document.getElementById('btn-copy-verify-cmd');
-          btn.textContent = currentLang === 'th' ? '✓ คัดลอกสำเร็จ!' : '✓ Copied!';
-          setTimeout(() => {
-            btn.textContent = currentLang === 'th' ? 'คัดลอกคำสั่ง' : 'Copy Command';
-          }, 1800);
-        });
+    clearBtn?.addEventListener('click', () => {
+      if (searchInput) {
+        searchInput.value = '';
+        searchQuery = '';
+        clearBtn.style.display = 'none';
+        searchInput.focus();
+        renderTable();
       }
+    });
+
+    document.querySelectorAll('.btn-copy-terminal').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.getAttribute('data-copy');
+        if (text && navigator.clipboard) {
+          navigator.clipboard.writeText(text).then(() => {
+            const prev = btn.textContent;
+            btn.textContent = currentLang === 'th' ? '✓ คัดลอกแล้ว!' : '✓ Copied!';
+            setTimeout(() => { btn.textContent = prev; }, 1800);
+          });
+        }
+      });
     });
 
     // Initialize

@@ -13,6 +13,7 @@ import { UpdateBanner } from './components/UpdateBanner.js';
 import { UpdateModal } from './components/UpdateModal.js';
 import { ToastManager } from './components/ToastManager.js';
 import { ModalManager } from './components/ModalManager.js';
+import { checkSoftwareUpdate } from '@mecraft/core-bridge';
 
 export class StudioShell {
   private config: StudioShellConfig;
@@ -47,6 +48,9 @@ export class StudioShell {
     }
 
     this.buildShell();
+
+    // Check for updates in the background without blocking UI
+    this.checkForUpdates();
   }
 
   public getCockpit(): Cockpit {
@@ -130,12 +134,52 @@ export class StudioShell {
     this.statusBar?.updateItem(id, content);
   }
 
-  public showUpdateModal(): void {
+  public async showUpdateModal(): Promise<void> {
     if (this.updateModal) {
       this.updateModal.open();
-    } else if (this.config.update) {
-      this.updateModal = new UpdateModal(this.config.update);
-      this.updateModal.open();
+      return;
+    }
+
+    await this.checkForUpdates(true);
+    if (this.updateModal) {
+      (this.updateModal as UpdateModal).open();
+    } else {
+      this.toast('คุณกำลังใช้งานเวอร์ชันล่าสุดแล้ว (v' + (this.config.version || '1.0.0') + ')', { type: 'success' });
+    }
+  }
+
+  public async checkForUpdates(force = false): Promise<void> {
+    try {
+      const updateInfo = await checkSoftwareUpdate({
+        currentVersion: this.config.version || '1.0.0',
+        appId: this.config.appId,
+        force,
+      });
+
+      if (updateInfo.hasUpdate) {
+        this.config.update = {
+          currentVersion: updateInfo.currentVersion,
+          latestVersion: updateInfo.latestVersion,
+          releaseDate: updateInfo.releaseDate,
+          changelog: updateInfo.changelog,
+          downloadUrl: updateInfo.appAsset?.downloadUrl || updateInfo.suiteAsset?.downloadUrl,
+          hasUpdate: true,
+        };
+        this.updateModal = new UpdateModal(this.config.update);
+        if (!this.updateBanner) {
+          this.updateBanner = new UpdateBanner({
+            config: this.config.update,
+            onOpenModal: () => this.showUpdateModal(),
+          });
+          if (this.titleBar && this.titleBar.getElement().nextSibling) {
+            this.rootEl.insertBefore(this.updateBanner.getElement(), this.titleBar.getElement().nextSibling);
+          } else {
+            this.rootEl.appendChild(this.updateBanner.getElement());
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('[StudioShell] Failed to check for software updates:', err);
     }
   }
 
