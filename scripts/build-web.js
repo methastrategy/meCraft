@@ -89,6 +89,10 @@ copyDir(path.join(rootDir, 'apps/medrop/dist'), path.join(distDir, 'medrop'));
 console.log('[build-web] Assembling meDoc Studio into dist/medoc...');
 copyDir(path.join(rootDir, 'apps/medoc/dist'), path.join(distDir, 'medoc'));
 
+// Subpath (/meide) -> meIDE Studio
+console.log('[build-web] Assembling meIDE Studio into dist/meide...');
+copyDir(path.join(rootDir, 'apps/meide/dist'), path.join(distDir, 'meide'));
+
 // Subpaths for all specialized standalone creative studios
 // Use lightweight root-pathed index.html shells pointing directly to root /assets/ bundle
 // Eliminates ~2GB of redundant bundle and branding asset duplication across 14 studio folders

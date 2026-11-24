@@ -1717,7 +1717,7 @@ class MeCraftsPortal {
   public forceDesktopMode: boolean | null = null;
   private selectedDetailApp: ShowcaseApp | null = null;
   private isDetailModalOpen = false;
-    public desktopView: 'workbench' | 'studios' | 'recents' | 'vault' = 'workbench';
+    public desktopView: 'studios' | 'workbench' | 'recents' | 'vault' = 'studios';
 
   // ── meCraft IDE Workspace State ──
   public openedFolderName: string = 'workspace';
@@ -2229,8 +2229,8 @@ console.log(initializeStudio(pdfStudio));`,
   private renderSidebar(): string {
     const isTh = this.lang === 'th';
     const navItems = [
-      { id: 'workbench', icon: '💻', label: isTh ? 'โปรแกรมแก้ไข' : 'IDE Workspace', desc: isTh ? 'โค้ดและเอกสาร' : 'Code & Editor' },
-      { id: 'studios', icon: '📦', label: isTh ? `สตูดิโอ (${SHOWCASE_APPS.length})` : `All Studios (${SHOWCASE_APPS.length})`, desc: isTh ? 'คลังโปรแกรม' : `${SHOWCASE_APPS.length} Studios` },
+      { id: 'studios', icon: '📦', label: isTh ? 'คลังโปรแกรม' : 'All Studios', desc: isTh ? `${SHOWCASE_APPS.length} สตูดิโอ + meIDE` : `${SHOWCASE_APPS.length} Studios + meIDE` },
+      { id: 'workbench', icon: '💻', label: isTh ? 'meIDE สตูดิโอ' : 'meIDE Studio', desc: isTh ? 'AI IDE ในตัว' : 'In-App AI IDE' },
       { id: 'recents', icon: '🕒', label: isTh ? 'ประวัติงาน' : 'Recent Work', desc: isTh ? 'ไฟล์ล่าสุด' : 'Recent Files' },
       { id: 'vault', icon: '🛡️', label: isTh ? 'สถานะเครื่อง' : 'Local Engine', desc: isTh ? 'ความปลอดภัย' : 'Zero-Cloud' },
     ];
@@ -2636,6 +2636,43 @@ console.log(initializeStudio(pdfStudio));`,
         <h1 class="ws-view-title">${isTh ? 'คลังโปรแกรมสตูดิโอทั้งหมด' : 'All Studios & Workstations'}</h1>
         <p class="ws-view-subtitle">${isTh ? 'โปรแกรมทั้งหมดทำงานแบบ Standalone ออฟไลน์ 100% ไร้คลาวด์' : 'Every studio runs standalone offline in 100% local device memory.'}</p>
       </header>
+      
+      <!-- Universal Hub Dropzone -->
+      <div class="ws-universal-drop-hub" id="ws-universal-dropzone" style="margin-bottom: 24px; padding: 20px; border: 2px dashed rgba(212, 175, 55, 0.35); border-radius: 12px; background: rgba(212, 175, 55, 0.03); display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="font-size: 28px;">⚡</div>
+          <div>
+            <h4 style="font-size: 13px; font-weight: 700; color: #f8fafc; margin: 0;">${isTh ? 'ลากไฟล์มาวางเพื่อเปิดในสตูดิโอที่เกี่ยวข้องทันที' : 'Drop any file here to launch its specialized studio'}</h4>
+            <p style="font-size: 11px; color: #94a3b8; margin: 3px 0 0 0;">${isTh ? 'รองรับ PDF (mePDF), รูปภาพ (mePhoto), โค้ด/เอกสาร (meIDE), 3D (me3D), เสียง (meAudio) — 100% In-Device RAM' : 'Supports PDF (mePDF), Images (mePhoto), Code/Markdown (meIDE), 3D (me3D), Audio (meAudio) — 100% In-Device RAM'}</p>
+          </div>
+        </div>
+        <button type="button" class="ws-btn-launch" id="ws-btn-browse" style="font-size: 11px; padding: 6px 14px; background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); color: #f8fafc;">
+          <span>📁 ${isTh ? 'เลือกไฟล์จากเครื่อง...' : 'Browse Local File...'}</span>
+        </button>
+        <input type="file" id="ws-file-input" style="display:none;" multiple />
+      </div>
+
+      <!-- Flagship Spotlight: meIDE Standalone AI IDE -->
+      <div class="ws-spotlight-card" style="background: linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(10,15,26,0.95) 100%); border: 1px solid rgba(59,130,246,0.28); border-radius: 12px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div style="font-size: 38px; line-height: 1;">💻</div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <h2 style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0;">meIDE — Dedicated Standalone AI IDE</h2>
+              <span style="font-size: 10px; background: rgba(59,130,246,0.25); color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Flagship IDE</span>
+            </div>
+            <p style="font-size: 12px; color: #94a3b8; margin: 4px 0 0 0;">${isTh ? 'โปรแกรมแก้ไขโค้ด AI IDE แยกเดี่ยวระดับ VS Code / Windsurf พร้อม Copilot ใน RAM 100%, Terminal CLI, KaTeX Markdown' : 'VS Code & Windsurf-grade Code & Markdown IDE with In-Device RAM Copilot & Terminal. Zero-Cloud Privacy.'}</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <a href="./downloads/meIDE-Setup.exe" class="ws-btn-launch" style="background: #3b82f6; border-color: #60a5fa; color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 12px;">
+            <span>⬇ ${isTh ? 'ดาวน์โหลด meIDE (.exe)' : 'Download meIDE (.exe)'}</span>
+          </a>
+          <button type="button" class="ws-btn-launch" id="btn-switch-to-meide" style="background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); color: #f8fafc; font-size: 12px; padding: 8px 14px;">
+            <span>💻 ${isTh ? 'เปิด meIDE Studio' : 'Open meIDE Studio'}</span>
+          </button>
+        </div>
+      </div>
 
       <div class="ws-toolbar">
         <div class="ws-search-box">

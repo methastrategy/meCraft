@@ -2,9 +2,9 @@
   <img src="assets/branding/github-social-preview.png" alt="meCraft Master Suite — Autonomous Creative & Document Workstation" width="100%" style="border-radius: 12px; box-shadow: 0 16px 36px rgba(0,0,0,0.6);" />
 </p>
 
-# 🚀 meCraft — The Private-First AI IDE & 18 Creative Studios Suite for Windows
+# 🚀 meCraft — The Private-First Suite Hub & 18 Creative Studios for Windows
 
-> **VS Code & Windsurf-grade Next-Gen AI IDE Workspace + 18 Standalone Creative Studios.**  
+> **Executive Suite Hub & App Store + Standalone meIDE Studio (AI IDE) + 18 Creative Studios.**  
 > Built with **Tauri v2 (Rust), Vite, TypeScript, Web Workers, Canvas API, and WebAssembly**.
 
 [![Official Web Portal](https://img.shields.io/badge/Web%20Portal-mecrafts.vercel.app-6366f1?style=for-the-badge&logo=vercel&logoColor=white)](https://mecrafts.vercel.app)
@@ -14,15 +14,15 @@
 [![GitHub Forks](https://img.shields.io/github/forks/methastrategy/meCraft?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/network)
 [![Tauri v2](https://img.shields.io/badge/Desktop-Tauri%20v2%20(Rust)-ea580c?style=for-the-badge&logo=tauri)](https://tauri.app/)
 [![Client-Side Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-blue?style=for-the-badge&logo=shield)](SECURITY.md)
-[![Tests Passing](https://img.shields.io/badge/Tests-338%2B%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
+[![Tests Passing](https://img.shields.io/badge/Tests-347%2B%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 ---
 
 ### 🌐 Quick Access
-- 🚀 **Official Web Portal (Zero-Install):** [https://mecrafts.vercel.app](https://mecrafts.vercel.app)  
+- 🏰 **Official meCraft Suite Hub (App Store & Downloader):** [https://mecrafts.vercel.app](https://mecrafts.vercel.app)  
   *(Deployment repository: [methastrategy/meCrafts-web](https://github.com/methastrategy/meCrafts-web))*
-- 💻 **meCraft AI IDE Workspace:** [https://mecrafts.vercel.app](https://mecrafts.vercel.app) (Default View)
+- 💻 **meIDE AI IDE Studio (Standalone Web IDE):** [https://mecrafts.vercel.app/meide/](https://mecrafts.vercel.app/meide/)
 - 📄 **mePDF Web Studio:** [https://mecrafts.vercel.app/mepdf/](https://mecrafts.vercel.app/mepdf/)
 - 🪄 **mePhoto Web Studio:** [https://mecrafts.vercel.app/mephoto/](https://mecrafts.vercel.app/mephoto/)
 - 🍩 **meDrop Radial Converter (Zero-Window HUD):** [https://mecrafts.vercel.app/medrop/](https://mecrafts.vercel.app/medrop/)

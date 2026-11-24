@@ -515,6 +515,8 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       doc.body.innerHTML = '<div id="app"></div>';
       const portal = new MeCraftsPortal();
       portal.forceDesktopMode = true;
+      expect(portal.desktopView).toBe('studios'); // default is Suite Hub
+      portal.desktopView = 'workbench'; // switch to in-app IDE
       (portal as any).render();
 
       // 1. Root Workspace Shell & Editor Root
@@ -629,6 +631,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       doc.body.innerHTML = '<div id="app"></div>';
       const portal = new MeCraftsPortal();
       portal.forceDesktopMode = true;
+      portal.desktopView = 'workbench';
 
       const mockFolderFiles: IdeFile[] = [
         {
