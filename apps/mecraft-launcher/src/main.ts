@@ -2382,10 +2382,10 @@ class MeCraftsPortal {
           `}
 
           ${!isDesktop ? `
-            <button type="button" class="portal-cta-btn portal-cta-btn-sm" id="header-cta" title="${this.lang === 'th' ? 'เปิดศูนย์รวมดาวน์โหลดไฟล์ติดตั้งทั้งหมด (.exe)' : 'Open meCrafts Downloads Directory (.exe)'}">
+            <a href="./downloads" target="_blank" rel="noopener noreferrer" class="portal-cta-btn portal-cta-btn-sm" id="header-cta" title="${this.lang === 'th' ? 'เปิดศูนย์รวมดาวน์โหลดไฟล์ติดตั้งทั้งหมด (.exe)' : 'Open meCrafts Downloads Directory (.exe)'}">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               <span>Downloads</span>
-            </button>
+            </a>
           ` : ''}
         </div>
       </div>
@@ -3013,7 +3013,7 @@ class MeCraftsPortal {
         <nav class="footer-links" aria-label="Footer links">
           <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Repository</a>
           <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="footer-link">Releases (v1.0.0)</a>
-          <button type="button" class="footer-link" id="footer-btn-open-downloads" style="background:none;border:none;cursor:pointer;color:inherit;font:inherit;padding:0;">${this.lang === 'th' ? 'ศูนย์ดาวน์โหลด (.exe)' : 'Downloads Directory'}</button>
+          <a href="./downloads" target="_blank" rel="noopener noreferrer" class="footer-link" id="footer-btn-open-downloads">${this.lang === 'th' ? 'ศูนย์ดาวน์โหลด (.exe)' : 'Downloads Directory'}</a>
           <a href="https://github.com/methastrategy/meCraft/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="footer-link">MIT License</a>
           ${!this.currentSession ? `
             <button type="button" class="footer-link btn-trigger-auth" id="footer-btn-open-auth">${this.t.signInBtn}</button>
@@ -3361,16 +3361,7 @@ class MeCraftsPortal {
       }
     });
 
-    // Downloads Directory Modal Open / Close / Filter
-    document.querySelectorAll('#header-cta, #footer-btn-open-downloads').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.isDownloadsModalOpen = true;
-        this.render();
-        this.attachListeners();
-      });
-    });
-
+    // Downloads Directory Modal Close / Filter
     document.getElementById('btn-close-downloads-modal')?.addEventListener('click', () => {
       this.isDownloadsModalOpen = false;
       this.render();

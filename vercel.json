@@ -5,7 +5,8 @@
   "cleanUrls": true,
   "redirects": [
     { "source": "/mepdf", "destination": "/mepdf/", "permanent": true },
-    { "source": "/mephoto", "destination": "/mephoto/", "permanent": true }
+    { "source": "/mephoto", "destination": "/mephoto/", "permanent": true },
+    { "source": "/downloads", "destination": "/downloads/", "permanent": false }
   ],
   "headers": [
     {

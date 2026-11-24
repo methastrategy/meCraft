@@ -74,12 +74,14 @@ if (fs.existsSync(publicDir)) {
     copyDir(brandingDir, path.join(distDir, 'mephoto', 'branding'));
     copyDir(brandingDir, path.join(distDir, 'medrop', 'branding'));
     copyDir(brandingDir, path.join(distDir, 'medoc', 'branding'));
+    copyDir(brandingDir, path.join(distDir, 'downloads', 'branding'));
   }
 }
 
 console.log('[build-web] Multi-app dist assembled:');
-console.log(`  - /         -> Launcher Web Hub (${fs.existsSync(path.join(distDir, 'index.html')) ? 'OK' : 'MISSING'})`);
-console.log(`  - /mepdf/   -> mePDF Studio (${fs.existsSync(path.join(distDir, 'mepdf/index.html')) ? 'OK' : 'MISSING'})`);
+console.log(`  - /           -> Launcher Web Hub (${fs.existsSync(path.join(distDir, 'index.html')) ? 'OK' : 'MISSING'})`);
+console.log(`  - /downloads/ -> Downloads Hub (${fs.existsSync(path.join(distDir, 'downloads/index.html')) ? 'OK' : 'MISSING'})`);
+console.log(`  - /mepdf/     -> mePDF Studio (${fs.existsSync(path.join(distDir, 'mepdf/index.html')) ? 'OK' : 'MISSING'})`);
 console.log(`  - /mephoto/ -> mePhoto Studio (${fs.existsSync(path.join(distDir, 'mephoto/index.html')) ? 'OK' : 'MISSING'})`);
 console.log(`  - /medrop/  -> meDrop Radial Converter (${fs.existsSync(path.join(distDir, 'medrop/index.html')) ? 'OK' : 'MISSING'})`);
 console.log(`  - /medoc/   -> meDoc Studio (${fs.existsSync(path.join(distDir, 'medoc/index.html')) ? 'OK' : 'MISSING'})`);
