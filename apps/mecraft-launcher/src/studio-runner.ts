@@ -417,7 +417,7 @@ function createPdfStudioShell(): StudioShell {
               <button type="button" style="padding: 10px 20px; border-radius: 8px; background: linear-gradient(135deg, #d4af37, #b89628); color: #07090e; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
                 <span>📂 Browse Local PDF</span>
               </button>
-              <a href="./mepdf/" target="_blank" style="padding: 10px 20px; border-radius: 8px; background: rgba(255,255,255,0.06); color: #e2e8f0; font-weight: 500; border: 1px solid rgba(255,255,255,0.12); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
+              <a href="./mepdf/" target="_blank" rel="noopener noreferrer" style="padding: 10px 20px; border-radius: 8px; background: rgba(255,255,255,0.06); color: #e2e8f0; font-weight: 500; border: 1px solid rgba(255,255,255,0.12); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
                 <span>🚀 Open Full Standalone PDF App</span>
               </a>
             </div>
@@ -538,7 +538,7 @@ function createPhotoStudioShell(): StudioShell {
               <button type="button" style="padding: 10px 20px; border-radius: 8px; background: linear-gradient(135deg, #10b981, #059669); color: #07090e; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
                 <span>📂 Browse Local Image</span>
               </button>
-              <a href="./mephoto/" target="_blank" style="padding: 10px 20px; border-radius: 8px; background: rgba(255,255,255,0.06); color: #e2e8f0; font-weight: 500; border: 1px solid rgba(255,255,255,0.12); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
+              <a href="./mephoto/" target="_blank" rel="noopener noreferrer" style="padding: 10px 20px; border-radius: 8px; background: rgba(255,255,255,0.06); color: #e2e8f0; font-weight: 500; border: 1px solid rgba(255,255,255,0.12); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
                 <span>🚀 Open Full Standalone Photo App</span>
               </a>
             </div>
@@ -614,7 +614,7 @@ function createDropStudioShell(): StudioShell {
               In Windows native desktop, hold Ctrl while dragging any file in File Explorer to summon the dynamic 8-wedge radial converter wheel directly around your cursor.
             </p>
             <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-              <a href="./medrop/" target="_blank" style="padding: 10px 20px; border-radius: 8px; background: linear-gradient(135deg, #06b6d4, #0891b2); color: #07090e; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
+              <a href="./medrop/" target="_blank" rel="noopener noreferrer" style="padding: 10px 20px; border-radius: 8px; background: linear-gradient(135deg, #06b6d4, #0891b2); color: #07090e; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
                 <span>🚀 Launch Standalone meDrop HUD</span>
               </a>
             </div>
@@ -710,7 +710,7 @@ function createGenericStudioShell(info: StudioInfo): StudioShell {
               <button type="button" style="padding: 10px 20px; border-radius: 8px; background: ${info.accentColor}; color: #07090e; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
                 <span>✨ New Project</span>
               </button>
-              <a href="./${info.id}/" target="_blank" style="padding: 10px 20px; border-radius: 8px; background: rgba(255,255,255,0.06); color: #e2e8f0; font-weight: 500; border: 1px solid rgba(255,255,255,0.12); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
+              <a href="./${info.id}/" target="_blank" rel="noopener noreferrer" style="padding: 10px 20px; border-radius: 8px; background: rgba(255,255,255,0.06); color: #e2e8f0; font-weight: 500; border: 1px solid rgba(255,255,255,0.12); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
                 <span>🚀 Open Standalone View</span>
               </a>
             </div>

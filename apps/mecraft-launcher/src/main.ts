@@ -144,7 +144,7 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     specsSubtitle: 'Built for Windows. Engineered for speed.',
     footerTagline: 'Private-First Creative Workstation Suite for Windows',
     footerCopyright: '© 2024 MeStrategy. Open-Source under MIT License.',
-    appsCount: '17 Apps',
+    appsCount: '11 Apps',
     signInBtn: 'Sign In',
     signUpBtn: 'Create Account',
     authModalTitle: 'meCraft Studio Account',
@@ -193,7 +193,7 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     specsSubtitle: 'สร้างสำหรับ Windows วิศวกรรมเพื่อความเร็ว',
     footerTagline: 'ชุดโปรแกรมสร้างสรรค์ที่ให้ความเป็นส่วนตัวก่อน สำหรับ Windows',
     footerCopyright: '© 2024 MeStrategy. Open-Source ภายใต้สัญญาอนุญาต MIT',
-    appsCount: '17 โปรแกรม',
+    appsCount: '11 โปรแกรม',
     signInBtn: 'เข้าสู่ระบบ',
     signUpBtn: 'สมัครสมาชิก',
     authModalTitle: 'บัญชี meCraft Studio',
@@ -1509,7 +1509,7 @@ class MeCraftsPortal {
             id="ws-studios-search-input"
             class="ws-search-input"
             placeholder="${this.t.searchPlaceholder}"
-            value="${this.searchQuery}"
+            value="${escapeHtml(this.searchQuery)}"
           />
         </div>
         <div class="ws-filter-pills" role="tablist">
@@ -2232,7 +2232,7 @@ class MeCraftsPortal {
             <span class="mockup-tool-chip">✨ AI Remove BG</span>
           </div>
           <div class="mockup-ribbon-center">
-            <span style="font-weight: 600; color: #f1f5f9;">Alpine_Landscape_RAW.dng</span>
+            <span style="font-weight: 600; color: #f1f5f9;">Creative_Project_Master.dng</span>
             <span class="mockup-tool-chip" style="margin-left: 12px;">Zoom: 67%</span>
           </div>
           <div class="mockup-ribbon-right">
@@ -2976,7 +2976,7 @@ class MeCraftsPortal {
             type="search"
             class="filter-search-input"
             placeholder="${this.t.searchPlaceholder}"
-            value="${this.searchQuery}"
+            value="${escapeHtml(this.searchQuery)}"
             aria-label="${this.t.searchPlaceholder}"
             autocomplete="off"
             spellcheck="false"
@@ -3121,7 +3121,7 @@ class MeCraftsPortal {
           <div class="spotlight-action-row">
             ${isActive ? `
               <div class="spotlight-actions-flex" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                <a href="${app.downloadUrl || './downloads'}" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank"'} class="spotlight-cta-btn" style="background: ${app.accentColor}; color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700;">
+                <a href="${app.downloadUrl || './downloads'}" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank" rel="noopener noreferrer"'} class="spotlight-cta-btn" style="background: ${app.accentColor}; color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700;">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   <span>${this.lang === 'th' ? `ดาวน์โหลด ${app.exeName || (app.name + '.exe')}` : `Download ${app.exeName || (app.name + '.exe')}`}</span>
                 </a>
@@ -3219,7 +3219,7 @@ class MeCraftsPortal {
         <button type="button" class="eco-btn-web" data-launch-web-studio="${app.id}" title="${this.lang === 'th' ? `เปิด ${app.name} บนเบราว์เซอร์` : `Launch ${app.name} in Web Browser`}">
           <span>🚀 ${this.lang === 'th' ? 'เปิดบนเว็บ' : 'Open Web'}</span>
         </button>
-        <a href="${app.downloadUrl || SUITE_DOWNLOAD_URL}" class="eco-btn-dl" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank"'} title="${this.lang === 'th' ? `ดาวน์โหลด ${app.exeName || (app.name + '.exe')}` : `Download ${app.exeName || (app.name + '.exe')}`}">
+        <a href="${app.downloadUrl || SUITE_DOWNLOAD_URL}" class="eco-btn-dl" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank" rel="noopener noreferrer"'} title="${this.lang === 'th' ? `ดาวน์โหลด ${app.exeName || (app.name + '.exe')}` : `Download ${app.exeName || (app.name + '.exe')}`}">
           <span>⬇️ .exe</span>
         </a>
         <button type="button" class="eco-btn-detail" data-open-detail-modal="${app.id}" title="${this.lang === 'th' ? 'ดูสเปกและคีย์ลัด' : 'View Specifications & Shortcuts'}">
@@ -3316,7 +3316,7 @@ class MeCraftsPortal {
             <button type="button" class="btn-detail-launch-web" data-launch-web-studio="${app.id}">
               <span>🚀 ${isTh ? `เปิด ${app.name} บนเบราว์เซอร์` : `Open ${app.name} in Browser`}</span>
             </button>
-            <a href="${app.downloadUrl || SUITE_DOWNLOAD_URL}" class="btn-detail-download" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank"'}>
+            <a href="${app.downloadUrl || SUITE_DOWNLOAD_URL}" class="btn-detail-download" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank" rel="noopener noreferrer"'}>
               <span>⬇️ ${isTh ? `ดาวน์โหลด .exe (${app.exeSize || 'Installer'})` : `Download .exe (${app.exeSize || 'Installer'})`}</span>
             </a>
           </div>
