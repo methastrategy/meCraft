@@ -1707,6 +1707,7 @@ class MeCraftsPortal {
   private activeStudioId: string = 'mepdf';
   private isFullscreenMockupOpen = false;
   private isUserProfileModalOpen = false;
+  public profileActiveTab: 'profile' | 'security' | 'preferences' | 'storage' = 'profile';
   private isDownloadsModalOpen = false;
   private downloadsFilter: 'all' | 'production' | 'indev' = 'all';
   private scrollSpyObserver: IntersectionObserver | null = null;
