@@ -20,7 +20,9 @@
       "@mecraft/ui-tokens": ["../../packages/ui-tokens/src/index.ts"],
       "@mecraft/ui-tokens/*": ["../../packages/ui-tokens/*"],
       "@mecraft/photo-core": ["../../packages/photo-core/src/index.ts"],
-      "@mecraft/photo-core/*": ["../../packages/photo-core/src/*"]
+      "@mecraft/photo-core/*": ["../../packages/photo-core/src/*"],
+      "@mecraft/studio-shell": ["../../packages/studio-shell/src/index.ts"],
+      "@mecraft/studio-shell/*": ["../../packages/studio-shell/src/*"]
     }
   },
   "include": ["src", "tests"]

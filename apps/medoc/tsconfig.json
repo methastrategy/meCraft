@@ -7,7 +7,17 @@
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@mecraft/core-bridge": ["../../packages/core-bridge/src/index.ts"],
+      "@mecraft/core-bridge/*": ["../../packages/core-bridge/src/*"],
+      "@mecraft/ui-tokens": ["../../packages/ui-tokens/src/index.ts"],
+      "@mecraft/ui-tokens/*": ["../../packages/ui-tokens/*"],
+      "@mecraft/studio-shell": ["../../packages/studio-shell/src/index.ts"],
+      "@mecraft/studio-shell/*": ["../../packages/studio-shell/src/*"],
+      "@mecraft/photo-core": ["../../packages/photo-core/src/index.ts"],
+      "@mecraft/photo-core/*": ["../../packages/photo-core/src/*"]
+    }
   },
   "include": [
     "src",

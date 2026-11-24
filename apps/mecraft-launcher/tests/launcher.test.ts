@@ -482,6 +482,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
 
     it('keeps PORTAL_I18N studio counts synchronized with SHOWCASE_APPS.length', () => {
       const count = SHOWCASE_APPS.length;
+      expect(count).toBe(18);
       expect(TRANSLATIONS.en.appsCount).toBe(`${count} Apps`);
       expect(TRANSLATIONS.en.filterAll).toBe(`All (${count})`);
       expect(TRANSLATIONS.th.appsCount).toBe(`${count} โปรแกรม`);
