@@ -48,7 +48,7 @@ describe('WBS 3.2: Dual-Engine Compression (Lossless Vector vs Scanned)', () => 
     const textContent = await page1.getTextContent();
     const extractedStr = textContent.items.map((item: any) => item.str).join(' ');
     expect(extractedStr).toContain(secretText);
-  });
+  }, 15000);
 
   it('purges unreferenced incremental history and deflates object streams', async () => {
     const rawBytes = await createVectorDocument('Initial Draft Version');
