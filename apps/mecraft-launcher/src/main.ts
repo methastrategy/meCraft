@@ -248,8 +248,8 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
     accentColor: '#d4af37',
     glowColor: 'rgba(212, 175, 55, 0.4)',
     highlights: {
-      en: ['All 11 Creative & Document Studios Included', '100% In-Device Memory Execution · Zero-Cloud', 'Automated in-app delta updates with Ed25519 signing'],
-      th: ['รวมทั้ง 11 โปรแกรมสตูดิโอและยูทิลิตี้ในตัวติดตั้งเดียว', 'ประมวลผลบนเครื่อง 100% ปราศจากคลาวด์ ปลอดภัยสูงสุด', 'ระบบตรวจจับและอัปเดตอัตโนมัติพร้อมลายเซ็น Ed25519'],
+      en: ['All 18 Creative & Document Studios Included', '100% In-Device Memory Execution · Zero-Cloud', 'Automated in-app delta updates with Ed25519 signing'],
+      th: ['รวมทั้ง 18 โปรแกรมสตูดิโอและยูทิลิตี้ในตัวติดตั้งเดียว', 'ประมวลผลบนเครื่อง 100% ปราศจากคลาวด์ ปลอดภัยสูงสุด', 'ระบบตรวจจับและอัปเดตอัตโนมัติพร้อมลายเซ็น Ed25519'],
     },
   },
   {
@@ -4809,7 +4809,7 @@ class MeCraftsPortal {
 
     // 3. Hero Section
     const countTag = document.querySelector('.hero-count-tag');
-    if (countTag) countTag.textContent = this.lang === 'th' ? '11 โปรแกรม · WINDOWS' : '11 APPS · WINDOWS';
+    if (countTag) countTag.textContent = this.lang === 'th' ? `${SHOWCASE_APPS.length} โปรแกรม · WINDOWS` : `${SHOWCASE_APPS.length} APPS · WINDOWS`;
 
     const heroTitle = document.querySelector('.hero-title');
     if (heroTitle) heroTitle.textContent = this.t.heroTitle;
@@ -4829,7 +4829,7 @@ class MeCraftsPortal {
     if (heroCta1) heroCta1.textContent = this.lang === 'th' ? 'ศูนย์ดาวน์โหลดตัวติดตั้งทั้งหมด (.exe)' : 'Downloads Directory (.exe)';
 
     const heroCta2 = document.querySelector('.hero-cta-secondary span') || document.querySelector('.hero-cta-secondary');
-    if (heroCta2) heroCta2.textContent = this.lang === 'th' ? 'สำรวจโปรแกรมทั้งหมด (11 สตูดิโอ) ↓' : 'Explore All 11 Studios ↓';
+    if (heroCta2) heroCta2.textContent = this.lang === 'th' ? `สำรวจโปรแกรมทั้งหมด (${SHOWCASE_APPS.length} สตูดิโอ) ↓` : `Explore All ${SHOWCASE_APPS.length} Studios ↓`;
 
     // 4. Search and Filter
     const searchInput = document.getElementById('apps-search') as HTMLInputElement | null;
@@ -4859,7 +4859,7 @@ class MeCraftsPortal {
     if (sectionSub) sectionSub.textContent = this.lang === 'th' ? 'เลือกสตูดิโอด้านล่างเพื่อสำรวจฟีเจอร์เชิงลึก พร้อมพรีวิวหน้าต่างซอฟต์แวร์จริงบน Windows แบบเรียลไทม์' : 'Select a studio below to inspect deep specifications alongside real-time native Windows desktop window previews.';
 
     const ecoTitle = document.querySelector('.ecosystem-overview-title');
-    if (ecoTitle) ecoTitle.textContent = this.lang === 'th' ? 'สำรวจทั้ง 11 โปรแกรมในเครือ meCrafts' : 'Explore All 11 meCrafts Workstations & Utilities';
+    if (ecoTitle) ecoTitle.textContent = this.lang === 'th' ? `สำรวจทั้ง ${SHOWCASE_APPS.length} โปรแกรมในเครือ meCrafts` : `Explore All ${SHOWCASE_APPS.length} meCrafts Workstations & Utilities`;
 
     const ecoPill = document.querySelector('.ecosystem-count-pill');
     if (ecoPill) ecoPill.textContent = `${this.filteredApps().length} / ${SHOWCASE_APPS.length} ${this.lang === 'th' ? 'โปรแกรม' : 'Apps'}`;
@@ -4929,7 +4929,7 @@ class MeCraftsPortal {
     const specsBoxH4 = document.querySelector('.specs-box-desc h4');
     if (specsBoxH4) specsBoxH4.textContent = this.lang === 'th' ? 'meCraft Installer สำหรับ Windows 11 / 10' : 'meCraft Installer for Windows 11 / 10';
     const specsBoxP = document.querySelector('.specs-box-desc p');
-    if (specsBoxP) specsBoxP.textContent = this.lang === 'th' ? 'รวมครบทั้ง 11 โปรแกรมในตัวติดตั้งเดียว ติดตั้งออฟไลน์ 100% ไร้โฆษณา ไร้การติดตาม' : 'All 11 standalone studios bundled in one lightweight offline installer. Zero ads, zero telemetry.';
+    if (specsBoxP) specsBoxP.textContent = this.lang === 'th' ? `รวมครบทั้ง ${SHOWCASE_APPS.length} โปรแกรมในตัวติดตั้งเดียว ติดตั้งออฟไลน์ 100% ไร้โฆษณา ไร้การติดตาม` : `All ${SHOWCASE_APPS.length} standalone studios bundled in one lightweight offline installer. Zero ads, zero telemetry.`;
 
     const footerDl = document.getElementById('footer-btn-open-downloads');
     if (footerDl) footerDl.textContent = this.lang === 'th' ? 'ศูนย์ดาวน์โหลด (.exe)' : 'Downloads Directory';
