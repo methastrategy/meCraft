@@ -186,6 +186,66 @@ export const ALL_STUDIOS: StudioInfo[] = [
     accentColor: '#14b8a6',
     version: 'v1.0.0',
   },
+  {
+    id: 'mecad',
+    name: 'meCAD Studio',
+    tagline: {
+      en: '2D Engineering CAD Drafting & Millimeter Precision Plotter',
+      th: 'เขียนแบบวิศวกรรม 2D CAD ความแม่นยำสูงระดับมิลลิเมตร และจัดการ DXF',
+    },
+    icon: '📐',
+    category: 'Vector & CAD',
+    accentColor: '#0ea5e9',
+    version: 'v1.0.0',
+  },
+  {
+    id: 'metexture',
+    name: 'meTexture Studio',
+    tagline: {
+      en: 'Direct 3D Mesh Brush Painter & UV Unwrapping Workbench',
+      th: 'เพนต์ลวดลายบนผิวโมเดล 3D Mesh โดยตรง และกางระนาบ UV เกาะผิวโมเดล',
+    },
+    icon: '🎨',
+    category: '3D & Sound',
+    accentColor: '#f43f5e',
+    version: 'v1.0.0',
+  },
+  {
+    id: 'mematerial',
+    name: 'meMaterial Studio',
+    tagline: {
+      en: 'Procedural Node-Based PBR Material & Shader Synthesizer',
+      th: 'สังเคราะห์พื้นผิว PBR เสมือนจริงด้วยโหนดเชื่อมต่อ และเขียน WebGPU Shader',
+    },
+    icon: '💎',
+    category: '3D & Sound',
+    accentColor: '#8b5cf6',
+    version: 'v1.0.0',
+  },
+  {
+    id: 'meani',
+    name: 'meAni Studio',
+    tagline: {
+      en: '2D Skeletal Animation, Inverse Kinematics & Sprite Rigging',
+      th: 'แอนิเมชัน 2 มิติติดกระดูกโครงสร้าง สรีระจำลอง IK และทำ Sprite Sheet เกม',
+    },
+    icon: '🏃',
+    category: 'Video & Motion',
+    accentColor: '#d946ef',
+    version: 'v1.0.0',
+  },
+  {
+    id: 'merea',
+    name: 'meREA Studio',
+    tagline: {
+      en: 'Forensic Binary Reverse Engineering & Clean-Room Code Synthesis',
+      th: 'แกะรอยระบบ ถอดรหัสไบนารี สถาปัตยกรรมย้อนรอย และสร้างโค้ดอัตโนมัติ',
+    },
+    icon: '⚡',
+    category: 'Utility & REA',
+    accentColor: '#00f0ff',
+    version: 'v1.0.0',
+  },
 ];
 
 /**

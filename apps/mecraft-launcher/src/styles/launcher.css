@@ -289,7 +289,7 @@ input { font-family: var(--font-sans); }
   z-index: 0;
   background-image: 
     radial-gradient(ellipse at 50% 18%, rgba(13, 17, 23, 0.4) 0%, rgba(9, 10, 15, 0.94) 75%),
-    url('/assets/branding/hero-cyber-sanctuary.jpg');
+    url('/assets/branding/hero-cyber-sanctuary.webp');
   background-position: center 12%;
   background-size: cover;
   background-repeat: no-repeat;
