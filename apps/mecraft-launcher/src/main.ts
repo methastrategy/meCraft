@@ -2444,71 +2444,17 @@ class MeCraftsPortal {
           `).join('')}
         </div>
 
-        <!-- Universal Interactive Dropzone -->
-        <div class="hero-dropzone-cockpit" id="hero-dropzone" role="region" aria-label="Universal File Dropzone">
-          <input type="file" id="hero-file-input" style="display: none;" accept="application/pdf,image/*,.doc,.docx,.txt" multiple />
-          <div class="dropzone-inner">
-            <div class="dropzone-icon-halo" aria-hidden="true">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="17 8 12 3 7 8"/>
-                <line x1="12" y1="3" x2="12" y2="15"/>
-              </svg>
-            </div>
-            <div class="dropzone-content">
-              <h3 class="dropzone-title">${this.t.dropzoneTitle}</h3>
-              <p class="dropzone-desc">${this.t.dropzoneSubtitle}</p>
-            </div>
-            <button type="button" class="dropzone-browse-btn" id="btn-browse-dropzone">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-              <span>${this.t.dropzoneBrowse}</span>
-            </button>
-          </div>
+        <div class="hero-official-ctas" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 32px 0 24px;">
+          <a href="./downloads" target="_blank" rel="noopener noreferrer" class="hero-cta-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 700; text-decoration: none; font-size: 15px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>${this.lang === 'th' ? 'ศูนย์ดาวน์โหลดตัวติดตั้งทั้งหมด (.exe)' : 'Downloads Directory (.exe)'}</span>
+          </a>
+          <a href="#apps-grid" class="hero-cta-secondary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; font-size: 15px;">
+            <span>${this.lang === 'th' ? 'สำรวจโปรแกรมทั้งหมด (11 สตูดิโอ) ↓' : 'Explore All 11 Studios ↓'}</span>
+          </a>
         </div>
 
-        <!-- Quick Studio Launchers -->
-        <div class="hero-quick-launch-row">
-          <button type="button" class="quick-launch-chip chip-mepdf btn-launch-app" data-appid="mepdf" data-target="desktop">
-            <span class="chip-icon">📑</span>
-            <span class="chip-name">mePDF Studio Pro</span>
-            <span class="chip-action">${this.t.launchDesktopBtn}</span>
-          </button>
-          <button type="button" class="quick-launch-chip chip-mephoto btn-launch-app" data-appid="mephoto" data-target="desktop">
-            <span class="chip-icon">🖼️</span>
-            <span class="chip-name">mePhoto Studio</span>
-            <span class="chip-action">${this.t.launchDesktopBtn}</span>
-          </button>
-          <button type="button" class="quick-launch-chip chip-medrop btn-launch-app" data-appid="medrop" data-target="desktop">
-            <span class="chip-icon">🍩</span>
-            <span class="chip-name">meDrop Radial HUD</span>
-            <span class="chip-action">${this.t.launchDesktopBtn}</span>
-          </button>
-          <button type="button" class="quick-launch-chip chip-medoc btn-launch-app" data-appid="medoc" data-target="desktop">
-            <span class="chip-icon">📝</span>
-            <span class="chip-name">meDoc Typewriter</span>
-            <span class="chip-action">${this.t.launchDesktopBtn}</span>
-          </button>
-        </div>
-
-        <div class="hero-member-bar">
-          ${!this.currentSession ? `
-            <span class="hero-member-label">${this.lang === 'en' ? 'Already have an account or desktop license?' : 'มีบัญชีสมาชิกหรือไลเซนส์เดสก์ท็อปแล้ว?'}</span>
-            <button type="button" class="hero-member-link btn-trigger-auth" id="hero-btn-open-auth">
-              <span>${this.t.signInBtn}</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-          ` : `
-            <span class="hero-member-label">
-              ${this.lang === 'en' ? `Signed in as ${escapeHtml(this.currentSession.user.email)}` : `เข้าสู่ระบบแล้ว: ${escapeHtml(this.currentSession.user.email)}`}
-            </span>
-            <button type="button" class="hero-member-link" id="hero-btn-open-sync">
-              <span>${this.t.syncDesktopBtn}</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-          `}
-        </div>
-
-        <p class="hero-meta">Windows 10/11 64-bit · 100% In-Device Privacy · Zero Cloud Uploads · MIT License</p>
+        <p class="hero-meta">Windows 11 / 10 (64-bit) · 100% In-Device Memory Execution · Zero Cloud Uploads · MIT Open Source</p>
       </div>
     </section>`;
   }
@@ -2678,19 +2624,18 @@ class MeCraftsPortal {
           <div class="spotlight-action-row">
             ${isActive ? `
               <div class="spotlight-actions-flex" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                <button type="button" class="spotlight-cta-btn btn-launch-app" data-appid="${app.id}" data-target="desktop" style="background: ${app.accentColor}; color: #ffffff; border: none; cursor: pointer;">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                  <span>${this.lang === 'th' ? `เปิดใช้งาน ${app.name}` : `Launch ${app.name}`}</span>
-                </button>
-                <button type="button" class="quick-launch-chip btn-launch-app" data-appid="${app.id}" data-target="web" style="cursor: pointer;">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                  <span>${this.t.openWebBtn}</span>
-                </button>
-                ${app.downloadUrl && !this.bridge.isTauri() ? `
-                  <a href="${app.downloadUrl}" download="${app.exeName || 'setup.exe'}" class="quick-launch-chip" style="font-size: 11px; opacity: 0.8;" title="${app.exeName}">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    <span>${app.exeSize || '.exe'}</span>
-                  </a>
+                <a href="${app.downloadUrl || './downloads'}" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank"'} class="spotlight-cta-btn" style="background: ${app.accentColor}; color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>${this.lang === 'th' ? `ดาวน์โหลด ${app.exeName || (app.name + '.exe')}` : `Download ${app.exeName || (app.name + '.exe')}`}</span>
+                </a>
+                <a href="./downloads" target="_blank" rel="noopener noreferrer" class="quick-launch-chip" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                  <span>${this.lang === 'th' ? 'ศูนย์ดาวน์โหลด' : 'Downloads Hub'}</span>
+                </a>
+                ${app.exeSize ? `
+                  <span class="quick-launch-chip" style="font-size: 11px; opacity: 0.8;">
+                    ${app.exeSize}
+                  </span>
                 ` : ''}
               </div>
             ` : `
@@ -3086,78 +3031,6 @@ class MeCraftsPortal {
   }
 
   private attachListeners() {
-    // ── Universal File Dropzone & Browse Handlers ──
-    const fileInput = document.getElementById('hero-file-input') as HTMLInputElement | null;
-    document.getElementById('btn-browse-dropzone')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      fileInput?.click();
-    });
-
-    const dropzone = document.getElementById('hero-dropzone');
-    dropzone?.addEventListener('click', () => {
-      fileInput?.click();
-    });
-    dropzone?.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropzone.classList.add('drag-over');
-    });
-    dropzone?.addEventListener('dragleave', () => {
-      dropzone.classList.remove('drag-over');
-    });
-    dropzone?.addEventListener('drop', async (e) => {
-      e.preventDefault();
-      dropzone.classList.remove('drag-over');
-      if (e.dataTransfer?.files) {
-        await this.handleDropFiles(e.dataTransfer.files);
-      }
-    });
-
-    fileInput?.addEventListener('change', async (e) => {
-      const files = (e.target as HTMLInputElement).files;
-      if (files) {
-        await this.handleDropFiles(files);
-      }
-    });
-
-    // ── Quick Studio Launcher Buttons ──
-    document.querySelectorAll('.btn-launch-app').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const appId = btn.getAttribute('data-appid') || 'mepdf';
-        const target = (btn.getAttribute('data-target') || 'desktop') as 'desktop' | 'web';
-        await this.handleLaunchApp(appId, target);
-      });
-    });
-
-    // ── Recent Projects Handlers ──
-    document.getElementById('btn-clear-recents')?.addEventListener('click', async () => {
-      await this.bridge.clearRecentProjects();
-      this.recentProjects = [];
-      this.render();
-      this.attachListeners();
-    });
-
-    document.querySelectorAll('.btn-open-recent').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const path = btn.getAttribute('data-path');
-        const appId = btn.getAttribute('data-appid') || 'mepdf';
-        if (path) {
-          await this.handleLaunchApp(appId, 'desktop', path);
-        }
-      });
-    });
-
-    document.querySelectorAll('.recent-project-card').forEach(card => {
-      card.addEventListener('click', async () => {
-        const path = card.getAttribute('data-path');
-        const appId = card.getAttribute('data-appid') || 'mepdf';
-        if (path) {
-          await this.handleLaunchApp(appId, 'desktop', path);
-        }
-      });
-    });
-
     // ── User Profile Capsule & Modal Handlers ──
     document.getElementById('user-profile-pill')?.addEventListener('click', () => {
       this.isUserProfileModalOpen = true;
@@ -3179,17 +3052,6 @@ class MeCraftsPortal {
 
     document.getElementById('btn-profile-signout')?.addEventListener('click', async () => {
       await this.handleSignOut();
-    });
-
-    document.getElementById('btn-copy-profile-sync')?.addEventListener('click', () => {
-      const textarea = document.getElementById('profile-sync-code') as HTMLTextAreaElement | null;
-      if (textarea) {
-        textarea.select();
-        navigator.clipboard?.writeText(textarea.value);
-        this.syncCodeCopied = true;
-        this.render();
-        this.attachListeners();
-      }
     });
 
     // ── Auth Modal Open / Close Triggers ──
@@ -3272,46 +3134,6 @@ class MeCraftsPortal {
       e.preventDefault();
       const email = (document.getElementById('modal-auth-email') as HTMLInputElement)?.value.trim();
       this.handlePasswordReset(email);
-    });
-
-    // Sync to Desktop Modal Open / Close / Copy
-    document.getElementById('btn-open-sync')?.addEventListener('click', () => {
-      this.isSyncModalOpen = true;
-      this.syncCodeCopied = false;
-      this.render();
-      this.attachListeners();
-    });
-
-    document.getElementById('btn-close-sync-modal')?.addEventListener('click', () => {
-      this.isSyncModalOpen = false;
-      this.render();
-      this.attachListeners();
-    });
-
-    document.getElementById('modal-sync-backdrop')?.addEventListener('click', () => {
-      this.isSyncModalOpen = false;
-      this.render();
-      this.attachListeners();
-    });
-
-    document.getElementById('btn-copy-sync-code')?.addEventListener('click', () => {
-      const textarea = document.getElementById('display-sync-code') as HTMLTextAreaElement | null;
-      if (textarea) {
-        textarea.select();
-        if (typeof navigator !== 'undefined' && navigator.clipboard) {
-          navigator.clipboard.writeText(textarea.value).then(() => {
-            this.syncCodeCopied = true;
-            const btn = document.getElementById('btn-copy-sync-code');
-            if (btn) btn.textContent = this.lang === 'en' ? '✓ Copied to Clipboard!' : '✓ คัดลอกสำเร็จแล้ว!';
-          }).catch(() => {
-            // fallback
-            document.execCommand('copy');
-            this.syncCodeCopied = true;
-            const btn = document.getElementById('btn-copy-sync-code');
-            if (btn) btn.textContent = this.lang === 'en' ? '✓ Copied to Clipboard!' : '✓ คัดลอกสำเร็จแล้ว!';
-          });
-        }
-      }
     });
 
     // Clean URL Invariant: Smooth scroll without updating or mutating browser URL with hash
