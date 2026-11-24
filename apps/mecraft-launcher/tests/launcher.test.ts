@@ -459,5 +459,33 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(container.querySelector('.studio-global-nav')).not.toBeNull();
       expect(container.querySelector('.studio-quick-picker')).not.toBeNull();
     });
+
+    it('escapes searchQuery in HTML input attributes to prevent attribute XSS', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      (portal as any).searchQuery = '" onfocus="alert(1)" data-x="';
+
+      portal.forceDesktopMode = false;
+      (portal as any).render();
+      const webInput = doc.getElementById('apps-search') as HTMLInputElement;
+      expect(webInput.getAttribute('onfocus')).toBeNull();
+      expect(webInput.getAttribute('value')).toBe('&quot; onfocus=&quot;alert(1)&quot; data-x=&quot;');
+
+      portal.forceDesktopMode = true;
+      portal.desktopView = 'studios';
+      (portal as any).render();
+      const wsInput = doc.getElementById('ws-studios-search-input') as HTMLInputElement;
+      expect(wsInput.getAttribute('onfocus')).toBeNull();
+      expect(wsInput.getAttribute('value')).toBe('&quot; onfocus=&quot;alert(1)&quot; data-x=&quot;');
+    });
+
+    it('keeps PORTAL_I18N studio counts synchronized with SHOWCASE_APPS.length', () => {
+      const count = SHOWCASE_APPS.length;
+      expect(TRANSLATIONS.en.appsCount).toBe(`${count} Apps`);
+      expect(TRANSLATIONS.en.filterAll).toBe(`All (${count})`);
+      expect(TRANSLATIONS.th.appsCount).toBe(`${count} โปรแกรม`);
+      expect(TRANSLATIONS.th.filterAll).toBe(`ทั้งหมด (${count})`);
+    });
   });
 });
