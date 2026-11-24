@@ -2836,11 +2836,6 @@ class MeCraftsPortal {
             </button>
           ` : ''}
 
-          <div class="desktop-engine-status-pill" title="${this.lang === 'th' ? 'ประมวลผลบน RAM ภายในเครื่อง 100% ไร้คลาวด์' : '100% Client-Side Local Sandbox'}">
-            <span class="status-dot-green"></span>
-            <span>${this.lang === 'th' ? '100% Private Local' : '100% Private Local'}</span>
-          </div>
-
           <button class="portal-lang-btn" id="btn-lang" aria-label="Switch language">
             ${this.lang === 'en' ? '🇹🇭 TH' : '🇬🇧 EN'}
           </button>
