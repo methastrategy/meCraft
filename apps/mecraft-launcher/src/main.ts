@@ -1426,7 +1426,7 @@ class MeCraftsPortal {
                 <div class="ws-recent-icon">${p.fileType === 'pdf' ? '📄' : '🖼️'}</div>
                 <div class="ws-recent-meta">
                   <span class="ws-recent-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</span>
-                  <span class="ws-recent-sub">${escapeHtml(p.appId.toUpperCase())} · ${this.formatTimeAgo(p.lastOpened)} · ${formatBytes(p.sizeBytes)}</span>
+                  <span class="ws-recent-sub">${escapeHtml(p.appId.toUpperCase())} · ${this.formatTimeAgo(p.lastOpened)} · ${formatBytes(p.sizeBytes || 0)}</span>
                 </div>
                 <button type="button" class="ws-recent-open-btn" aria-label="Open project">
                   ${isTh ? 'เปิด' : 'Open'}
@@ -1573,7 +1573,7 @@ class MeCraftsPortal {
                   </td>
                   <td><span class="ws-app-pill">${escapeHtml(p.appId.toUpperCase())}</span></td>
                   <td><span class="ws-type-tag">${escapeHtml(p.fileType.toUpperCase())}</span></td>
-                  <td><span class="ws-td-size">${formatBytes(p.sizeBytes)}</span></td>
+                  <td><span class="ws-td-size">${formatBytes(p.sizeBytes || 0)}</span></td>
                   <td><span class="ws-td-time">${this.formatTimeAgo(p.lastOpened)}</span></td>
                   <td style="text-align: right;">
                     <button type="button" class="ws-table-btn" data-open-recent="${escapeHtml(p.path)}" data-recent-app="${escapeHtml(p.appId)}">
