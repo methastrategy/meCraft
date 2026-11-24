@@ -5,6 +5,7 @@
 
 export * from './clip-bus';
 export * from './auth';
+export * from './updater';
 import { clipBus } from './clip-bus';
 
 export type AppId = 'mepdf' | 'mephoto' | 'mevector' | 'medoc' | string;
