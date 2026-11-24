@@ -25,6 +25,10 @@ export class MockElement {
     this.children = parseHtml(html, this);
   }
 
+  public get firstElementChild(): MockElement | null {
+    return this.children[0] || null;
+  }
+
   public get innerHTML(): string {
     if (this.children.length > 0) {
       return this.children.map(c => c.outerHTML).join('');

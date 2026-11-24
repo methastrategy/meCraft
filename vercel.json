@@ -6,6 +6,17 @@
   "redirects": [
     { "source": "/mepdf", "destination": "/mepdf/", "permanent": true },
     { "source": "/mephoto", "destination": "/mephoto/", "permanent": true },
+    { "source": "/medoc", "destination": "/medoc/", "permanent": true },
+    { "source": "/medrop", "destination": "/medrop/", "permanent": true },
+    { "source": "/mevector", "destination": "/mevector/", "permanent": true },
+    { "source": "/me3d", "destination": "/me3d/", "permanent": true },
+    { "source": "/meaudio", "destination": "/meaudio/", "permanent": true },
+    { "source": "/medeck", "destination": "/medeck/", "permanent": true },
+    { "source": "/medesign", "destination": "/medesign/", "permanent": true },
+    { "source": "/mefilm", "destination": "/mefilm/", "permanent": true },
+    { "source": "/melight", "destination": "/melight/", "permanent": true },
+    { "source": "/memotion", "destination": "/memotion/", "permanent": true },
+    { "source": "/mesheet", "destination": "/mesheet/", "permanent": true },
     { "source": "/downloads", "destination": "/downloads/", "permanent": false }
   ],
   "headers": [

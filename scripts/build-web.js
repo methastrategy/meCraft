@@ -60,6 +60,24 @@ copyDir(path.join(rootDir, 'apps/medrop/dist'), path.join(distDir, 'medrop'));
 console.log('[build-web] Assembling meDoc Studio into dist/medoc...');
 copyDir(path.join(rootDir, 'apps/medoc/dist'), path.join(distDir, 'medoc'));
 
+// Subpaths for all specialized standalone creative studios
+const additionalStudios = [
+  'mevector',
+  'me3d',
+  'meaudio',
+  'medeck',
+  'medesign',
+  'mefilm',
+  'melight',
+  'memotion',
+  'mesheet',
+];
+
+for (const studio of additionalStudios) {
+  console.log(`[build-web] Assembling ${studio} studio into dist/${studio}...`);
+  copyDir(path.join(rootDir, 'apps/mecraft-launcher/dist'), path.join(distDir, studio));
+}
+
 // Public assets if available
 const publicDir = path.join(rootDir, 'public');
 if (fs.existsSync(publicDir)) {

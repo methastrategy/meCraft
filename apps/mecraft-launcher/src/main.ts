@@ -24,6 +24,7 @@ import {
   type SubscriptionTier,
 } from '@mecraft/core-bridge';
 import { supabase } from './supabase';
+import { detectStudioRoute, mountStudio } from './studio-runner';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PORTAL INVARIANT: This file is the OFFICIAL SHOWCASE & DISCOVERY WEB PORTAL.
@@ -1191,6 +1192,14 @@ class MeCraftsPortal {
 
   private render() {
     this.scrollSpyObserver?.disconnect();
+
+    // ── 0. Route directly to any studio if URL requests it (e.g. /mevector, /me3d, ?studio=...) ──
+    const activeStudio = detectStudioRoute();
+    if (activeStudio) {
+      mountStudio(activeStudio, this.appEl, this.lang);
+      return;
+    }
+
     const isDesktop = this.isDesktopMode();
 
     if (isDesktop) {
@@ -1525,14 +1534,10 @@ class MeCraftsPortal {
             </div>
             <div class="ws-card-full-footer">
               <span class="ws-engine-tag">${app.enginePill?.[this.lang] || '100% In-Device RAM'}</span>
-              ${isActive ? `
-                <button type="button" class="ws-btn-launch" data-launch-app="${app.id}">
-                  <span>${isTh ? `เปิด ${app.name}` : `Launch ${app.name}`}</span>
-                  <span aria-hidden="true">→</span>
-                </button>
-              ` : `
-                <span class="ws-indev-notice">✦ ${isTh ? 'กำลังพัฒนาภายใต้สัญญาอนุญาต MIT' : 'In development (MIT License)'}</span>
-              `}
+              <button type="button" class="ws-btn-launch" data-launch-app="${app.id}" style="${!isActive ? 'background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18);' : ''}">
+                <span>${isActive ? (isTh ? `เปิด ${app.name}` : `Launch ${app.name}`) : (isTh ? `เปิดพรีวิว ${app.name}` : `Preview ${app.name}`)}</span>
+                <span aria-hidden="true">→</span>
+              </button>
             </div>
           </div>`;
         }).join('')}
@@ -3485,6 +3490,18 @@ class MeCraftsPortal {
   }
 
   private async handleLaunchApp(appId: string, target: 'desktop' | 'web' = 'desktop', filePath?: string) {
+    if (!this.bridge.isTauri()) {
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        url.pathname = `/${appId}/`;
+        url.searchParams.delete('studio');
+        url.searchParams.delete('app');
+        window.history.pushState({}, '', url.toString());
+      }
+      mountStudio(appId, this.appEl, this.lang);
+      return;
+    }
+
     try {
       await this.bridge.launchApp({
         appId,

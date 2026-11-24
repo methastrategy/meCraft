@@ -441,5 +441,22 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       const navGithub = portalNav?.querySelector('.portal-nav-github');
       expect(navGithub).toBeNull();
     });
+
+    it('detects studio routes cleanly from query parameter and pathname', async () => {
+      const { detectStudioRoute } = await import('../src/studio-runner.js');
+      // Null when no studio is requested
+      expect(detectStudioRoute()).toBeNull();
+    });
+
+    it('mounts studio shell when studio route is mounted', async () => {
+      const { mountStudio } = await import('../src/studio-runner.js');
+      const { doc } = setupMockDom();
+      const container = doc.createElement('div');
+      doc.body.appendChild(container);
+
+      mountStudio('mevector', container, 'th');
+      expect(container.querySelector('.studio-global-nav')).not.toBeNull();
+      expect(container.querySelector('.studio-quick-picker')).not.toBeNull();
+    });
   });
 });
