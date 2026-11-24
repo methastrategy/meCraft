@@ -823,7 +823,7 @@ function escapeHtml(str: string): string {
 // ─── Main Portal Class ────────────────────────────────────────────────────────
 class MeCraftsPortal {
   private bridge = createLauncherBridge();
-  private lang: 'en' | 'th' = 'en';
+  private lang: 'en' | 'th' = (typeof localStorage !== 'undefined' && (localStorage.getItem('mecrafts_lang') as 'en' | 'th')) || 'en';
   private searchQuery = '';
   private activeFilter: AppCategory | 'all' = 'all';
   private appEl!: HTMLElement;
@@ -2838,10 +2838,10 @@ class MeCraftsPortal {
         </a>
 
         <nav class="portal-nav" aria-label="Portal navigation">
-          <a href="#apps-grid" class="portal-nav-link active">${this.lang === 'th' ? '📦 โปรแกรมสตูดิโอ' : 'Studios'}</a>
-          <a href="#manifesto" class="portal-nav-link">${this.lang === 'th' ? '🔒 ความเป็นส่วนตัว' : 'Privacy Architecture'}</a>
-          <a href="#specs" class="portal-nav-link">${this.lang === 'th' ? '⚙️ สเปก' : 'Specs'}</a>
-          <a href="./downloads" target="_blank" rel="noopener noreferrer" class="portal-nav-link">${this.lang === 'th' ? '📥 ดาวน์โหลด (.exe)' : 'Downloads'}</a>
+          <a href="#apps-grid" class="portal-nav-link active">${this.lang === 'th' ? 'โปรแกรมสตูดิโอ' : 'Studios'}</a>
+          <a href="#manifesto" class="portal-nav-link">${this.lang === 'th' ? 'ความเป็นส่วนตัว' : 'Privacy Architecture'}</a>
+          <a href="#specs" class="portal-nav-link">${this.lang === 'th' ? 'สเปก' : 'Specs'}</a>
+          <a href="./downloads" target="_blank" rel="noopener noreferrer" class="portal-nav-link">${this.lang === 'th' ? 'ดาวน์โหลด' : 'Downloads'}</a>
         </nav>
 
         <div class="portal-header-actions">
@@ -2853,7 +2853,7 @@ class MeCraftsPortal {
           ` : ''}
 
           <button class="portal-lang-btn" id="btn-lang" aria-label="Switch language">
-            ${this.lang === 'en' ? '🇹🇭 TH' : '🇬🇧 EN'}
+            <span>${this.lang === 'en' ? 'TH' : 'EN'}</span>
           </button>
 
           ${this.currentSession ? `
@@ -3631,6 +3631,9 @@ class MeCraftsPortal {
     // Language toggle
     document.getElementById('btn-lang')?.addEventListener('click', () => {
       this.lang = this.lang === 'en' ? 'th' : 'en';
+      try {
+        localStorage.setItem('mecrafts_lang', this.lang);
+      } catch {}
       this.render();
       this.attachListeners();
     });
