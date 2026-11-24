@@ -626,6 +626,127 @@ function createDropStudioShell(): StudioShell {
 }
 
 /**
+ * Generic Studio Shell Factory for specialized studios
+ */
+function createGenericStudioShell(info: StudioInfo): StudioShell {
+  return new StudioShell({
+    appId: info.id,
+    appName: info.name,
+    appTag: info.category,
+    version: info.version,
+    documentTitle: `${info.name} — ${info.tagline.en}`,
+    theme: 'luxury-dark',
+    menu: [
+      {
+        id: 'file',
+        label: 'File',
+        items: [
+          { id: 'new', label: 'New Project', shortcut: 'Ctrl+N' },
+          { id: 'open', label: 'Open File...', shortcut: 'Ctrl+O' },
+          { id: 'save', label: 'Save', shortcut: 'Ctrl+S' },
+          { id: 'export', label: 'Export Asset...' },
+        ],
+      },
+      {
+        id: 'edit',
+        label: 'Edit',
+        items: [
+          { id: 'undo', label: 'Undo', shortcut: 'Ctrl+Z' },
+          { id: 'redo', label: 'Redo', shortcut: 'Ctrl+Y' },
+          { id: 'preferences', label: 'Preferences' },
+        ],
+      },
+      {
+        id: 'view',
+        label: 'View',
+        items: [
+          { id: 'zoom-in', label: 'Zoom In', shortcut: 'Ctrl++' },
+          { id: 'zoom-out', label: 'Zoom Out', shortcut: 'Ctrl+-' },
+          { id: 'reset-view', label: 'Reset View', shortcut: 'Ctrl+0' },
+        ],
+      },
+    ],
+    ribbon: [
+      {
+        id: 'tools',
+        tools: [
+          { id: 'select', label: '👆 Select' },
+          { id: 'draw', label: '✏️ Tool Canvas' },
+          { id: 'inspect', label: '🔍 Inspector' },
+          { id: 'export-btn', label: '⬇ Export' },
+        ],
+      },
+    ],
+    panes: {
+      left: {
+        title: `${info.name} Navigator`,
+        initialWidth: 260,
+        minWidth: 180,
+        collapsible: true,
+        content: `
+          <div style="padding: 16px; font-size: 12px; color: #94a3b8; display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-weight: 600; color: #e2e8f0; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+              ${info.icon} ${info.name} Assets
+            </div>
+            <div style="border: 2px dashed ${info.accentColor}50; border-radius: 8px; padding: 24px 12px; text-align: center; background: ${info.accentColor}08;">
+              <span style="font-size: 24px; display: block; margin-bottom: 8px;">${info.icon}</span>
+              <strong style="color: #f8fafc; display: block;">Drop Files Here</strong>
+              <span style="font-size: 11px; color: #64748b;">100% In-Device RAM Isolation</span>
+            </div>
+          </div>
+        `,
+      },
+      center: {
+        content: `
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 480px; padding: 40px; text-align: center; background: radial-gradient(circle at 50% 30%, ${info.accentColor}15 0%, rgba(6,9,19,0.95) 70%);">
+            <div style="width: 72px; height: 72px; border-radius: 18px; background: ${info.accentColor}20; border: 1px solid ${info.accentColor}50; display: flex; align-items: center; justify-content: center; font-size: 36px; margin-bottom: 20px; box-shadow: 0 12px 32px ${info.accentColor}25;">
+              ${info.icon}
+            </div>
+            <h2 style="font-size: 22px; font-weight: 700; color: #f8fafc; margin: 0 0 8px 0;">${info.name} Workbench</h2>
+            <p style="font-size: 14px; color: #94a3b8; max-width: 580px; line-height: 1.6; margin: 0 0 24px 0;">
+              ${info.tagline.en}. Powered by local client-side WebAssembly & WebGPU. Zero telemetry.
+            </p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+              <button type="button" style="padding: 10px 20px; border-radius: 8px; background: ${info.accentColor}; color: #07090e; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
+                <span>✨ New Project</span>
+              </button>
+              <a href="./${info.id}/" target="_blank" style="padding: 10px 20px; border-radius: 8px; background: rgba(255,255,255,0.06); color: #e2e8f0; font-weight: 500; border: 1px solid rgba(255,255,255,0.12); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
+                <span>🚀 Open Standalone View</span>
+              </a>
+            </div>
+          </div>
+        `,
+      },
+      right: {
+        title: 'Properties & Telemetry',
+        initialWidth: 260,
+        minWidth: 180,
+        collapsible: true,
+        content: `
+          <div style="padding: 16px; font-size: 11px; color: #94a3b8; display: flex; flex-direction: column; gap: 10px;">
+            <div style="font-weight: 600; color: #e2e8f0; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+              📊 Engine Status
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>Architecture:</span>
+              <strong style="color: #f1f5f9;">WASM + WebGPU</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>Device Memory:</span>
+              <span style="color: #10b981;">100% In-Device RAM</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>Network Upload:</span>
+              <strong style="color: #10b981;">0 Bytes (Zero-Cloud)</strong>
+            </div>
+          </div>
+        `,
+      },
+    },
+  });
+}
+
+/**
  * Mounts any specified studio into the given container element
  */
 export function mountStudio(studioId: string, container: HTMLElement, lang: 'en' | 'th' = 'en'): void {
@@ -687,8 +808,15 @@ export function mountStudio(studioId: string, container: HTMLElement, lang: 'en'
     case 'mesheet':
       shell = createSheetShell();
       break;
+    case 'mecad':
+    case 'metexture':
+    case 'mematerial':
+    case 'meani':
+    case 'merea':
+      shell = createGenericStudioShell(targetStudio);
+      break;
     default:
-      shell = createVectorShell();
+      shell = createGenericStudioShell(targetStudio);
       break;
   }
 
