@@ -1538,6 +1538,25 @@
         border-bottom: 1px solid var(--border-subtle);
       }
     }
+
+    /* ── High-Craft Telemetry & Focus Invariants ── */
+    code, pre, kbd, .col-hash, .col-ver, .col-size, .cmd-code, .hero-pill, .meta-tag {
+      font-variant-numeric: tabular-nums;
+    }
+
+    *:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+      border-radius: var(--radius-sm);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .hero-glow, .pulse-dot { animation: none; }
+    }
   </style>
 </head>
 <body>

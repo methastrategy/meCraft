@@ -1090,6 +1090,10 @@ input { font-family: var(--font-sans); }
   letter-spacing: 0;
 }
 
+code, pre, kbd, samp, .font-mono, [class*="version"], [class*="hash"], [class*="stat-num"], .app-version {
+  font-variant-numeric: tabular-nums;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    FOCUS VISIBLE (Accessibility)
 ═══════════════════════════════════════════════════════════════ */
