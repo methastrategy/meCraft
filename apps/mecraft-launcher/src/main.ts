@@ -230,7 +230,7 @@ export interface ReleaseBinaryItem {
 export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
   {
     id: 'mecraft-suite',
-    name: 'meCraft Suite Master Installer',
+    name: 'meCraft Installer',
     category: { en: 'All-in-One Creative & Document Suite', th: 'ชุดโปรแกรมสร้างสรรค์และจัดการเอกสารครบวงจร' },
     version: 'v1.0.0',
     releaseDate: { en: 'Nov 23, 2026 (Latest Stable)', th: '23 พ.ย. 2026 (เวอร์ชันเสถียรล่าสุด)' },
@@ -2794,7 +2794,7 @@ class MeCraftsPortal {
                   <div class="dl-item-emblem" aria-hidden="true">${getAppIcon(item.id, item.accentColor)}</div>
                   <h3 class="dl-item-title">${item.name}</h3>
                   <span class="dl-version-tag">${item.version}</span>
-                  ${item.isSuite ? `<span class="dl-suite-badge">${this.lang === 'th' ? '★ ชุดโปรแกรมหลัก' : '★ Master Suite'}</span>` : ''}
+                  ${item.isSuite ? `<span class="dl-suite-badge">${this.lang === 'th' ? '★ ชุดโปรแกรมหลัก' : '★ All-in-One'}</span>` : ''}
                   <span class="dl-status-badge ${isActive ? 'status-active' : 'status-indev'}">
                     <span class="status-dot" aria-hidden="true"></span>
                     ${isActive ? (this.lang === 'th' ? 'พร้อมดาวน์โหลด' : 'Production Ready') : (this.lang === 'th' ? 'กำลังพัฒนา' : 'In Development')}
@@ -2955,7 +2955,7 @@ class MeCraftsPortal {
           <div class="specs-box-showcase">
             <img src="./branding/suite-installer-box.png" class="specs-box-img" alt="meCraft Suite Windows Package" loading="lazy" />
             <div class="specs-box-desc">
-              <h4>${this.lang === 'th' ? 'meCraft Master Suite สำหรับ Windows 11 / 10' : 'meCraft Master Suite for Windows 11 / 10'}</h4>
+              <h4>${this.lang === 'th' ? 'meCraft Installer สำหรับ Windows 11 / 10' : 'meCraft Installer for Windows 11 / 10'}</h4>
               <p>${this.lang === 'th' ? 'รวมครบทั้ง 11 โปรแกรมในตัวติดตั้งเดียว ติดตั้งออฟไลน์ 100% ไร้โฆษณา ไร้การติดตาม' : 'All 11 standalone studios bundled in one lightweight offline installer. Zero ads, zero telemetry.'}</p>
             </div>
           </div>
