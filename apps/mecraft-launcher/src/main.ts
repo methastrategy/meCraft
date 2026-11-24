@@ -207,6 +207,248 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
 
 const SUITE_DOWNLOAD_URL = 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meCraft-Setup.exe';
 
+export interface ReleaseBinaryItem {
+  id: string;
+  name: string;
+  category: { en: string; th: string };
+  version: string;
+  releaseDate: { en: string; th: string };
+  fileName: string;
+  fileSize: string;
+  downloadUrl?: string;
+  isSuite?: boolean;
+  status: 'active' | 'in-dev';
+  architecture: string;
+  sha256: string;
+  accentColor: string;
+  glowColor: string;
+  highlights: { en: string[]; th: string[] };
+}
+
+export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
+  {
+    id: 'mecraft-suite',
+    name: 'meCraft Suite Master Installer',
+    category: { en: 'All-in-One Creative & Document Suite', th: 'ชุดโปรแกรมสร้างสรรค์และจัดการเอกสารครบวงจร' },
+    version: 'v1.0.0 (Latest Release)',
+    releaseDate: { en: 'Nov 23, 2026 (Latest Stable)', th: '23 พ.ย. 2026 (เวอร์ชันเสถียรล่าสุด)' },
+    fileName: 'meCraft-Setup.exe',
+    fileSize: '14.8 MB',
+    downloadUrl: SUITE_DOWNLOAD_URL,
+    isSuite: true,
+    status: 'active',
+    architecture: 'Windows 11 / 10 (64-bit x64)',
+    sha256: '9f8e7d4a6b1c2e3f...ed25519_verified',
+    accentColor: '#d4af37',
+    glowColor: 'rgba(212, 175, 55, 0.4)',
+    highlights: {
+      en: ['All 11 Creative & Document Studios Included', '100% In-Device Memory Execution · Zero-Cloud', 'Automated in-app delta updates with Ed25519 signing'],
+      th: ['รวมทั้ง 11 โปรแกรมสตูดิโอและยูทิลิตี้ในตัวติดตั้งเดียว', 'ประมวลผลบนเครื่อง 100% ปราศจากคลาวด์ ปลอดภัยสูงสุด', 'ระบบตรวจจับและอัปเดตอัตโนมัติพร้อมลายเซ็น Ed25519'],
+    },
+  },
+  {
+    id: 'mepdf',
+    name: 'mePDF Studio Pro Standalone',
+    category: { en: 'Document Engineering & PDF Lab', th: 'วิศวกรรมเอกสารและสตูดิโอ PDF' },
+    version: 'v3.2.1 / Suite v1.0.0',
+    releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
+    fileName: 'mepdf.exe',
+    fileSize: '30.8 MB',
+    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mepdf.exe',
+    status: 'active',
+    architecture: 'Windows 11 / 10 (64-bit x64) · Tauri v2 Native',
+    sha256: '8a4d1f2e9c5b7a0d...ed25519_verified',
+    accentColor: '#3b82f6',
+    glowColor: 'rgba(59, 130, 246, 0.4)',
+    highlights: {
+      en: ['Visual Page Cockpit: Drag, Split, Merge', '4-Point Deskew & Local Otsu Binarization', 'Bank-Grade AES-256 Encryption & PDF Sanitization'],
+      th: ['ค็อกพิทจัดการหน้า ลาก สลับ แยก รวมหน้าเอกสาร', 'ปรับระนาบเอกสารเอียง (Deskew) และปรับภาพขาวดำ Otsu', 'เข้ารหัสเอกสาร AES-256 ระดับธนาคารและลบลายเซ็นลับ'],
+    },
+  },
+  {
+    id: 'mephoto',
+    name: 'mePhoto Studio Darkroom Standalone',
+    category: { en: 'Darkroom RAW & Color Lab', th: 'ห้องมืดตกแต่งภาพ RAW และเกรดสี' },
+    version: 'v2.4.0 / Suite v1.0.0',
+    releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
+    fileName: 'mephoto.exe',
+    fileSize: '22.7 MB',
+    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mephoto.exe',
+    status: 'active',
+    architecture: 'Windows 11 / 10 (64-bit x64) · WebAssembly & OpenCV',
+    sha256: '7b2c5e8d1a4f0c9e...ed25519_verified',
+    accentColor: '#06b6d4',
+    glowColor: 'rgba(6, 182, 212, 0.4)',
+    highlights: {
+      en: ['16-Bit RAW / DNG Digital Darkroom', '32-Bit Floating Point Grading & 3D LUTs', 'On-Device Searchable Thai/English OCR Text Extraction'],
+      th: ['แต่งไฟล์ภาพ RAW / DNG แบบ 16-Bit คุณภาพสูงสุด', 'เกรดสีระดับ 32-Bit Float และรองรับ 3D LUTs', 'สแกนข้อความ OCR ภาษาไทยและสากลในตัวทันที'],
+    },
+  },
+  {
+    id: 'medrop',
+    name: 'meDrop Utility Standalone',
+    category: { en: 'Direct LAN Transfer & PDF Squeezer', th: 'ส่งไฟล์ความเร็วสูงข้าม LAN และบีบอัด PDF' },
+    version: 'v1.1.0 / Suite v1.0.0',
+    releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
+    fileName: 'meDrop.exe',
+    fileSize: '18.5 MB',
+    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meDrop.exe',
+    status: 'active',
+    architecture: 'Windows 11 / 10 (64-bit x64) · Rust TCP Zero-Copy',
+    sha256: '6c3d9a0f4e2b8c1d...ed25519_verified',
+    accentColor: '#10b981',
+    glowColor: 'rgba(16, 185, 129, 0.4)',
+    highlights: {
+      en: ['P2P Zero-Cloud Local LAN AirDrop-Class Transfer', 'Extreme Lossless & Scanned PDF Compression (-85%)', 'Floating Dropzone Widget for Desktop'],
+      th: ['ส่งไฟล์ตรงผ่าน LAN ข้ามเครื่องเร็วเต็มสปีดเครือข่าย', 'บีบอัดเอกสาร PDF ให้เล็กลงสูงสุด 85% โดยภาพไม่แตก', 'วิดเจ็ตลากวางลอยบนหน้าจอเดสก์ท็อป'],
+    },
+  },
+  {
+    id: 'medoc',
+    name: 'meDoc Studio (Technical Documentation)',
+    category: { en: 'Markdown & KaTeX Lab', th: 'บันทึกเอกสารวิจัย Markdown และ KaTeX' },
+    version: 'v1.0.0-rc1',
+    releaseDate: { en: 'Upcoming Release (Q1 2027)', th: 'กำลังพัฒนา (Q1 2027)' },
+    fileName: 'medoc.exe',
+    fileSize: '~24.5 MB (Estimated)',
+    status: 'in-dev',
+    architecture: 'Windows 11 / 10 (64-bit x64) · Rust & KaTeX Engine',
+    sha256: 'Planned Candidate Build',
+    accentColor: '#8b5cf6',
+    glowColor: 'rgba(139, 92, 246, 0.4)',
+    highlights: {
+      en: ['KaTeX Mathematical Formulas & Mermaid Diagrams', 'Zero-Latency Live Split Typography Preview', 'Direct Export to Clean PDF & Publication EPUB'],
+      th: ['พิมพ์สมการคณิตศาสตร์ KaTeX และไดอะแกรม Mermaid', 'พรีวิวสด 0ms สองฝั่งแบบเรียลไทม์', 'แปลงเป็น PDF และ EPUB สวยงามพร้อมพิมพ์'],
+    },
+  },
+  {
+    id: 'mesurv',
+    name: 'meSurv Studio (Geodetic CAD)',
+    category: { en: 'Surveying & Cadastral Computation', th: 'คำนวณงานรังวัดและพิกัดแผนที่ CAD' },
+    version: 'v1.0.0-beta',
+    releaseDate: { en: 'Upcoming Release (Q1 2027)', th: 'กำลังพัฒนา (Q1 2027)' },
+    fileName: 'mesurv.exe',
+    fileSize: '~28.0 MB (Estimated)',
+    status: 'in-dev',
+    architecture: 'Windows 11 / 10 (64-bit x64) · PROJ Geodesy C++',
+    sha256: 'Planned Candidate Build',
+    accentColor: '#f59e0b',
+    glowColor: 'rgba(245, 158, 11, 0.4)',
+    highlights: {
+      en: ['UTM / WGS84 Traverse & Coordinate Adjustment', 'Direct 2D/3D DXF & DWG CAD Plan Generation', 'Thai Land Department Cadastral Math Compliant'],
+      th: ['คำนวณวงรอบและแปลงพิกัด UTM / WGS84 กรมที่ดิน', 'ส่งออกและสร้างแบบแปลน CAD DXF/DWG ทันที', 'ฟังก์ชันรังวัดและตรวจสอบแปลงที่ดินอัตโนมัติ'],
+    },
+  },
+  {
+    id: 'mevision',
+    name: 'meVision Studio (On-Device Vision AI)',
+    category: { en: 'Local AI & Semantic Document QA', th: 'ปัญญาประดิษฐ์วิเคราะห์เอกสารในเครื่อง' },
+    version: 'v1.0.0-beta',
+    releaseDate: { en: 'Upcoming Release (Q2 2027)', th: 'กำลังพัฒนา (Q2 2027)' },
+    fileName: 'mevision.exe',
+    fileSize: '~35.2 MB (Estimated)',
+    status: 'in-dev',
+    architecture: 'Windows 11 / 10 (64-bit x64) · ONNX DirectML',
+    sha256: 'Planned Candidate Build',
+    accentColor: '#ec4899',
+    glowColor: 'rgba(236, 72, 153, 0.4)',
+    highlights: {
+      en: ['Visual Document Question Answering (DocVQA)', '100% Offline GPU Inference (Zero-Data Leaving)', 'Semantic Vector Search across Gigabytes of PDFs'],
+      th: ['ค้นหาความหมายและถามตอบข้อมูลในเอกสารด้วย AI', 'ประมวลผลบนการ์ดจอออฟไลน์ 100% ปลอดภัยจากภายนอก', 'สแกนเอกสารกองโตพร้อมแยกประเภทอัจฉริยะ'],
+    },
+  },
+  {
+    id: 'mevector',
+    name: 'meVector Studio (Precision Geometry)',
+    category: { en: 'Radial Vector Math & SVG Studio', th: 'ออกแบบลายเส้นเวกเตอร์และเรขาคณิตความแม่นยำสูง' },
+    version: 'v1.0.0-alpha',
+    releaseDate: { en: 'Upcoming Release (Q2 2027)', th: 'กำลังพัฒนา (Q2 2027)' },
+    fileName: 'mevector.exe',
+    fileSize: '~26.0 MB (Estimated)',
+    status: 'in-dev',
+    architecture: 'Windows 11 / 10 (64-bit x64) · Vello GPU Vector',
+    sha256: 'Planned Candidate Build',
+    accentColor: '#f97316',
+    glowColor: 'rgba(249, 115, 22, 0.4)',
+    highlights: {
+      en: ['Infinite Non-Destructive Vector Pen Precision', 'Radial Symmetry & Parametric Geometry Tools', 'Native SVG, EPS, PDF & CAD DXF Exporter'],
+      th: ['ปากกาเวกเตอร์ความแม่นยำสูง ซูมไม่แตกไม่จำกัด', 'คำนวณเรขาคณิตและมุมองศาแบบเรเดียล', 'ส่งออกไฟล์ SVG, PDF, EPS และ DXF ครบถ้วน'],
+    },
+  },
+  {
+    id: 'memotion',
+    name: 'meMotion Studio (Keyframe Animator)',
+    category: { en: 'Motion DSP & Keyframe Engine', th: 'โมชันกราฟิกและแอนิเมชันคีย์เฟรม' },
+    version: 'v1.0.0-alpha',
+    releaseDate: { en: 'Upcoming Release (Q3 2027)', th: 'กำลังพัฒนา (Q3 2027)' },
+    fileName: 'memotion.exe',
+    fileSize: '~32.0 MB (Estimated)',
+    status: 'in-dev',
+    architecture: 'Windows 11 / 10 (64-bit x64) · Vulkan Video DSP',
+    sha256: 'Planned Candidate Build',
+    accentColor: '#6366f1',
+    glowColor: 'rgba(99, 102, 241, 0.4)',
+    highlights: {
+      en: ['120fps Bezier Animation Curves & Morphing', 'Real-Time Particle Physics & Motion Shaders', 'High-Efficiency MP4, WebM & Lottie Output'],
+      th: ['สร้างแอนิเมชันกราฟิกเคลื่อนไหว 120fps ลื่นไหล', 'ระบบพาร์ติเคิลและจำลองการเคลื่อนที่ทางฟิสิกส์', 'เรนเดอร์เป็น MP4, WebM และ Lottie Json'],
+    },
+  },
+  {
+    id: 'meaudio',
+    name: 'meAudio Studio (Spatial Sound Lab)',
+    category: { en: '32-Bit Float Audio & DSP Lab', th: 'สตูดิโอบันทึกและปรับแต่งเสียงความละเอียดสูง' },
+    version: 'v1.0.0-alpha',
+    releaseDate: { en: 'Upcoming Release (Q3 2027)', th: 'กำลังพัฒนา (Q3 2027)' },
+    fileName: 'meaudio.exe',
+    fileSize: '~21.5 MB (Estimated)',
+    status: 'in-dev',
+    architecture: 'Windows 11 / 10 (64-bit x64) · CPAL Low Latency',
+    sha256: 'Planned Candidate Build',
+    accentColor: '#14b8a6',
+    glowColor: 'rgba(20, 184, 166, 0.4)',
+    highlights: {
+      en: ['32-Bit Float Low-Latency Audio Pipeline', 'Spectral De-Noising & Multi-Stem Isolation', 'Lossless FLAC, WAV, AAC & MP3 Exporter'],
+      th: ['ตัดต่อและบันทึกเสียงแบบ 32-Bit Float ไร้ Latency', 'ตัดเสียงรบกวน Spectral Denoise และแยกเสียงร้อง/เครื่องดนตรี', 'แปลงไฟล์เสียง FLAC, WAV, AAC และ MP3 ความละเอียดสูง'],
+    },
+  },
+  {
+    id: 'me3d',
+    name: 'me3D Studio (Spatial Mesh & Raytracing)',
+    category: { en: 'WebGL Spatial Mesh & Raytracing', th: 'แสดงผลและจำลองแสงเงา 3D Mesh แบบเรียลไทม์' },
+    version: 'v1.0.0-alpha',
+    releaseDate: { en: 'Upcoming Release (Q4 2027)', th: 'กำลังพัฒนา (Q4 2027)' },
+    fileName: 'me3d.exe',
+    fileSize: '~38.0 MB (Estimated)',
+    status: 'in-dev',
+    architecture: 'Windows 11 / 10 (64-bit x64) · wgpu WebGPU Native',
+    sha256: 'Planned Candidate Build',
+    accentColor: '#a855f7',
+    glowColor: 'rgba(168, 85, 247, 0.4)',
+    highlights: {
+      en: ['Real-Time PBR Shaders & Hardware Raytracing', 'Import & Export OBJ, STL, GLTF & USDZ', 'Automated 3D Print Slicing & Mesh Topology Repair'],
+      th: ['แสดงผลโมเดล 3D และเรนเดอร์แสงเงา Raytracing แบบเรียลไทม์', 'รองรับไฟล์สากล OBJ, STL, GLTF และ USDZ', 'เครื่องมือเตรียมโมเดลสำหรับ 3D Printer และซ่อม Mesh'],
+    },
+  },
+  {
+    id: 'mecraft-hub',
+    name: 'meCraft Hub Workstation Launcher',
+    category: { en: 'Central Daemon & Desktop License Bridge', th: 'ศูนย์รวมลอนเชอร์และตัวจัดการไลเซนส์เดสก์ท็อป' },
+    version: 'v1.0.0',
+    releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
+    fileName: 'mecraft-hub.exe',
+    fileSize: 'Included in Suite (~14.8 MB)',
+    status: 'active',
+    architecture: 'Windows 11 / 10 (64-bit x64) · Tauri v2 Bridge',
+    sha256: 'Included in Suite Bundle',
+    accentColor: '#eab308',
+    glowColor: 'rgba(234, 179, 8, 0.4)',
+    highlights: {
+      en: ['Central Workstation Switcher & Recent Projects', 'Local Ed25519 License Vault & Account Sync', 'Background Delta Updates & Integrity Checks'],
+      th: ['หน้าต่างศูนย์กลางเปิดโปรแกรมทั้งหมดและประวัติโปรเจกต์ล่าสุด', 'ซิงค์ไลเซนส์และบัญชีปลอดภัยด้วย Ed25519 ภายในเครื่อง', 'ตรวจจับและดาวน์โหลดตัวอัปเดตอัตโนมัติ'],
+    },
+  },
+];
+
 export const SHOWCASE_APPS: ShowcaseApp[] = [
   {
     id: 'mepdf',
@@ -596,6 +838,8 @@ class MeCraftsPortal {
   private activeStudioId: string = 'mepdf';
   private isFullscreenMockupOpen = false;
   private isUserProfileModalOpen = false;
+  private isDownloadsModalOpen = false;
+  private downloadsFilter: 'all' | 'production' | 'indev' = 'all';
   private scrollSpyObserver: IntersectionObserver | null = null;
   private recentProjects: RecentProject[] = [];
 
@@ -910,6 +1154,7 @@ class MeCraftsPortal {
       ${this.renderUserProfileModal()}
       ${this.renderDesktopPreviewModal()}
       ${this.renderFullscreenMockupModal()}
+      ${this.renderDownloadsModal()}
     `;
   }
 
@@ -2137,10 +2382,10 @@ class MeCraftsPortal {
           `}
 
           ${!isDesktop ? `
-            <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="portal-cta-btn portal-cta-btn-sm" id="header-cta" title="${this.lang === 'th' ? 'ดาวน์โหลดตัวติดตั้ง meCraft Suite สำหรับ Windows (14.8 MB)' : 'Download meCraft Suite Installer for Windows (14.8 MB)'}">
+            <button type="button" class="portal-cta-btn portal-cta-btn-sm" id="header-cta" title="${this.lang === 'th' ? 'เปิดศูนย์รวมดาวน์โหลดไฟล์ติดตั้งทั้งหมด (.exe)' : 'Open meCrafts Downloads Directory (.exe)'}">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              <span>${this.lang === 'th' ? 'ดาวน์โหลด .exe' : 'Download .exe'}</span>
-            </a>
+              <span>Downloads</span>
+            </button>
           ` : ''}
         </div>
       </div>
@@ -2162,7 +2407,7 @@ class MeCraftsPortal {
         <div class="hero-glow hero-glow-cyan"></div>
       </div>
       <div class="portal-hero-inner">
-        <div class="hero-pill" aria-label="Suite version">meCraft Workstation · v1.0.0 · Windows</div>
+        <div class="hero-pill" aria-label="Suite version">${this.t.appsCount} · Windows</div>
         <h1 class="hero-title" id="hero-title">${this.t.heroTitle}</h1>
         <p class="hero-subtitle">${this.t.heroSubtitle}</p>
         <div class="hero-badges" role="list" aria-label="Key features">
@@ -2509,6 +2754,132 @@ class MeCraftsPortal {
         </div>
         <div class="fullscreen-modal-body">
           ${this.renderDesktopPreviewInline(activeApp)}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  private renderDownloadsModal(): string {
+    if (!this.isDownloadsModalOpen) return '';
+
+    let items = RELEASE_BINARIES;
+    if (this.downloadsFilter === 'production') {
+      items = items.filter(i => i.status === 'active');
+    } else if (this.downloadsFilter === 'indev') {
+      items = items.filter(i => i.status === 'in-dev');
+    }
+
+    return `
+    <div class="downloads-modal-overlay active" id="downloads-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-downloads-title">
+      <div class="downloads-modal-backdrop" id="modal-downloads-backdrop"></div>
+      <div class="downloads-modal-card">
+        <div class="downloads-modal-header">
+          <div class="downloads-modal-header-info">
+            <div class="downloads-header-emblem" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <div>
+              <h2 class="downloads-modal-title" id="modal-downloads-title">
+                ${this.lang === 'th' ? 'ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe)' : 'meCrafts Downloads & Release Directory'}
+              </h2>
+              <p class="downloads-modal-subtitle">
+                ${this.lang === 'th'
+                  ? 'ไฟล์ติดตั้ง (.exe) ทุกโปรแกรมในเครือ meCrafts · จัดเรียงตามรุ่นและอัปเดตล่าสุด · ปลอดภัย 100% In-Device Memory'
+                  : 'Official standalone and suite installer binaries (.exe) for Windows 10/11 · Up-to-date releases · 100% In-Device Privacy'}
+              </p>
+            </div>
+          </div>
+          <button type="button" class="downloads-modal-close" id="btn-close-downloads-modal" aria-label="Close dialog">✕</button>
+        </div>
+
+        <div class="downloads-toolbar">
+          <div class="downloads-filter-pills" role="tablist" aria-label="Filter release binaries">
+            <button type="button" class="dl-filter-pill ${this.downloadsFilter === 'all' ? 'active' : ''}" data-dl-filter="all">
+              ${this.lang === 'th' ? 'ทั้งหมด (12 ไฟล์)' : 'All Files (12)'}
+            </button>
+            <button type="button" class="dl-filter-pill ${this.downloadsFilter === 'production' ? 'active' : ''}" data-dl-filter="production">
+              ${this.lang === 'th' ? 'พร้อมดาวน์โหลด (.exe)' : 'Active Releases (.exe)'}
+            </button>
+            <button type="button" class="dl-filter-pill ${this.downloadsFilter === 'indev' ? 'active' : ''}" data-dl-filter="indev">
+              ${this.lang === 'th' ? 'กำลังพัฒนา (Roadmap)' : 'In Development'}
+            </button>
+          </div>
+          <div class="downloads-meta-badge">
+            <span class="dl-pulse-dot" aria-hidden="true"></span>
+            <span>${this.lang === 'th' ? 'สถานะ: เผยแพร่เวอร์ชัน v1.0.0' : 'Channel: Stable v1.0.0'}</span>
+          </div>
+        </div>
+
+        <div class="downloads-list" id="downloads-list" role="list">
+          ${items.map(item => {
+            const isActive = item.status === 'active';
+            const cat = item.category[this.lang];
+            const date = item.releaseDate[this.lang];
+            const highlights = item.highlights[this.lang];
+
+            return `
+            <article class="download-item-card ${item.isSuite ? 'is-suite' : ''}" role="listitem" style="--item-accent: ${item.accentColor};">
+              <div class="download-item-left">
+                <div class="dl-item-top">
+                  <div class="dl-item-emblem" aria-hidden="true">${getAppIcon(item.id, item.accentColor)}</div>
+                  <h3 class="dl-item-title">${item.name}</h3>
+                  <span class="dl-version-tag">${item.version}</span>
+                  ${item.isSuite ? `<span class="dl-suite-badge">${this.lang === 'th' ? '★ ชุดโปรแกรมหลัก' : '★ Master Suite'}</span>` : ''}
+                  <span class="dl-status-badge ${isActive ? 'status-active' : 'status-indev'}">
+                    <span class="status-dot" aria-hidden="true"></span>
+                    ${isActive ? (this.lang === 'th' ? 'พร้อมดาวน์โหลด' : 'Production Ready') : (this.lang === 'th' ? 'กำลังพัฒนา' : 'In Development')}
+                  </span>
+                </div>
+
+                <div class="dl-item-meta">
+                  <span class="dl-meta-filename">${item.fileName}</span>
+                  <span class="dl-meta-sep">•</span>
+                  <span>${item.fileSize}</span>
+                  <span class="dl-meta-sep">•</span>
+                  <span>${item.architecture}</span>
+                  <span class="dl-meta-sep">•</span>
+                  <span>${date}</span>
+                  <span class="dl-meta-sep">•</span>
+                  <span>${cat}</span>
+                </div>
+
+                <div class="dl-item-highlights">
+                  ${highlights.map(h => `<span class="dl-spec-tag">✦ ${escapeHtml(h)}</span>`).join('')}
+                </div>
+
+                <div class="dl-checksum-note">
+                  <span>🔒 SHA-256:</span>
+                  <span>${item.sha256}</span>
+                </div>
+              </div>
+
+              <div class="download-item-right">
+                ${isActive && item.downloadUrl ? `
+                  <a href="${item.downloadUrl}" download="${item.fileName}" class="dl-action-btn dl-btn-download">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>${this.lang === 'th' ? `ดาวน์โหลด ${item.fileName}` : `Download ${item.fileName}`}</span>
+                    <span class="dl-btn-size">${item.fileSize}</span>
+                  </a>
+                ` : `
+                  <a href="https://github.com/methastrategy/meCraft#roadmap" target="_blank" rel="noopener noreferrer" class="dl-action-btn dl-btn-roadmap">
+                    <span>${this.lang === 'th' ? 'ติดตามบน GitHub Roadmap' : 'Roadmap & GitHub'} →</span>
+                  </a>
+                `}
+              </div>
+            </article>`;
+          }).join('')}
+        </div>
+
+        <div class="downloads-modal-footer">
+          <div class="dl-footer-left">
+            <span>🛡️ ${this.lang === 'th' ? 'ทุกไฟล์คอมไพล์จากโค้ดต้นฉบับ ปราศจากโฆษณา และทำงานบนหน่วยความจำเครื่อง 100%' : 'All binaries compiled from source, ad-free, zero-telemetry, and MIT licensed.'}</span>
+          </div>
+          <div class="dl-footer-right">
+            <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="dl-gh-link">
+              <span>GitHub Releases & Release History</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
         </div>
       </div>
     </div>`;
