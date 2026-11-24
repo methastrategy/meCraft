@@ -873,6 +873,8 @@ class MeCraftsPortal {
   private isUpdateModalOpen = false;
   private isCheckingUpdate = false;
   public forceDesktopMode: boolean | null = null;
+  private selectedDetailApp: ShowcaseApp | null = null;
+  private isDetailModalOpen = false;
   public desktopView: 'workbench' | 'studios' | 'recents' | 'vault' = 'workbench';
 
   public isDesktopMode(): boolean {
@@ -1237,6 +1239,7 @@ class MeCraftsPortal {
         ${this.renderAuthModal()}
         ${this.renderUserProfileModal()}
         ${this.renderUpdateModal()}
+        ${this.renderStudioDetailModal()}
       `;
     } else {
       this.appEl.innerHTML = `
@@ -1255,6 +1258,7 @@ class MeCraftsPortal {
         ${this.renderFullscreenMockupModal()}
         ${this.renderDownloadsModal()}
         ${this.renderUpdateModal()}
+        ${this.renderStudioDetailModal()}
       `;
     }
   }
@@ -1371,7 +1375,7 @@ class MeCraftsPortal {
 
   private renderWorkbenchView(): string {
     const isTh = this.lang === 'th';
-    const primaryStudios = SHOWCASE_APPS.filter(a => ['mepdf', 'mephoto', 'medoc', 'medrop'].includes(a.id));
+    const primaryStudios = SHOWCASE_APPS.filter(a => ['mepdf', 'mephoto', 'medoc', 'medrop', 'mevector', 'me3d'].includes(a.id));
 
     return `
     <div class="ws-view ws-view-workbench">
@@ -1402,7 +1406,7 @@ class MeCraftsPortal {
           </button>
         </div>
 
-        <!-- 4 Quick Action Seams -->
+        <!-- 6 Quick Action Seams -->
         <div class="ws-quick-actions">
           <button type="button" class="ws-quick-action-pill" data-quick-action="mepdf">
             <span>📄</span>
@@ -1419,6 +1423,14 @@ class MeCraftsPortal {
           <button type="button" class="ws-quick-action-pill" data-quick-action="medoc">
             <span>📝</span>
             <span>${isTh ? 'เขียนเอกสาร Markdown' : 'New Document'}</span>
+          </button>
+          <button type="button" class="ws-quick-action-pill" data-quick-action="mevector">
+            <span>✒️</span>
+            <span>${isTh ? 'วาดภาพเวกเตอร์' : 'Vector Illustration'}</span>
+          </button>
+          <button type="button" class="ws-quick-action-pill" data-quick-action="mefilm">
+            <span>🎬</span>
+            <span>${isTh ? 'ตัดต่อวิดีโอ & ไทม์ไลน์' : 'Video & Motion Timeline'}</span>
           </button>
         </div>
       </section>
@@ -1440,6 +1452,11 @@ class MeCraftsPortal {
                   <span class="ws-studio-ver">${app.version}</span>
                 </div>
               </div>
+              ${app.industryCounterpart ? `
+                <div class="ws-counterpart-badge">
+                  <span>✦ ${app.industryCounterpart[this.lang]}</span>
+                </div>
+              ` : ''}
               <p class="ws-studio-tagline">${app.tagline[this.lang]}</p>
               <div class="ws-studio-specs">
                 ${(app.specs?.[this.lang] || []).slice(0, 2).map(s => `<span class="ws-spec-chip">✓ ${escapeHtml(s)}</span>`).join('')}
@@ -1449,41 +1466,16 @@ class MeCraftsPortal {
                   <span>${isTh ? `เปิด ${app.name}` : `Launch ${app.name}`}</span>
                   <span aria-hidden="true">→</span>
                 </button>
+                <button type="button" class="ws-btn-web-pill" data-launch-web-studio="${app.id}" title="${isTh ? 'เปิดบนเว็บ' : 'Launch Web Studio'}">
+                  <span>🚀</span>
+                </button>
+                <button type="button" class="ws-btn-detail-pill" data-open-detail-modal="${app.id}" title="${isTh ? 'ดูสเปกและคีย์ลัด' : 'View Specifications & Shortcuts'}">
+                  <span>ℹ️</span>
+                </button>
               </div>
             </div>
           `).join('')}
         </div>
-      </section>
-
-      <!-- Recent Projects Mini-Deck -->
-      <section class="ws-deck-section">
-        <div class="ws-section-header">
-          <h2 class="ws-section-title">${isTh ? 'งานล่าสุดในเครื่อง' : 'Recent Local Projects'}</h2>
-          ${this.recentProjects.length > 0 ? `
-            <button type="button" class="ws-link-btn" data-switch-view="recents">${isTh ? 'ดูทั้งหมด →' : 'View All →'}</button>
-          ` : ''}
-        </div>
-        ${this.recentProjects.length === 0 ? `
-          <div class="ws-empty-recents">
-            <span class="ws-empty-icon" aria-hidden="true">📂</span>
-            <p>${this.t.noRecentProjects}</p>
-          </div>
-        ` : `
-          <div class="ws-recent-cards-deck">
-            ${this.recentProjects.slice(0, 4).map(p => `
-              <div class="ws-recent-card" data-open-recent="${escapeHtml(p.path)}" data-recent-app="${escapeHtml(p.appId)}">
-                <div class="ws-recent-icon">${p.fileType === 'pdf' ? '📄' : '🖼️'}</div>
-                <div class="ws-recent-meta">
-                  <span class="ws-recent-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</span>
-                  <span class="ws-recent-sub">${escapeHtml(p.appId.toUpperCase())} · ${this.formatTimeAgo(p.lastOpened)} · ${formatBytes(p.sizeBytes || 0)}</span>
-                </div>
-                <button type="button" class="ws-recent-open-btn" aria-label="Open project">
-                  ${isTh ? 'เปิด' : 'Open'}
-                </button>
-              </div>
-            `).join('')}
-          </div>
-        `}
       </section>
     </div>`;
   }
@@ -1547,6 +1539,11 @@ class MeCraftsPortal {
                     ${isActive ? (isTh ? 'พร้อมใช้งาน' : 'Ready') : (isTh ? 'กำลังพัฒนา' : 'In Dev')}
                   </span>
                 </div>
+                ${app.industryCounterpart ? `
+                  <div class="ws-counterpart-badge" style="margin-top: 2px;">
+                    <span>✦ ${app.industryCounterpart[this.lang]}</span>
+                  </div>
+                ` : ''}
                 <span class="ws-card-full-tagline">${app.tagline[this.lang]}</span>
               </div>
             </div>
@@ -1558,14 +1555,21 @@ class MeCraftsPortal {
             </div>
             <div class="ws-card-full-footer">
               <span class="ws-engine-tag">${app.enginePill?.[this.lang] || '100% In-Device RAM'}</span>
-              <button type="button" class="ws-btn-launch" data-launch-app="${app.id}" style="${!isActive ? 'background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18);' : ''}">
-                <span>${isActive ? (isTh ? `เปิด ${app.name}` : `Launch ${app.name}`) : (isTh ? `เปิดพรีวิว ${app.name}` : `Preview ${app.name}`)}</span>
-                <span aria-hidden="true">→</span>
-              </button>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="ws-btn-launch" data-launch-app="${app.id}" style="${!isActive ? 'background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18);' : ''}">
+                  <span>${isActive ? (isTh ? `เปิด ${app.name}` : `Launch ${app.name}`) : (isTh ? `เปิดพรีวิว ${app.name}` : `Preview ${app.name}`)}</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+                <button type="button" class="ws-btn-web-pill" data-launch-web-studio="${app.id}" title="${isTh ? 'เปิดบนเว็บ' : 'Launch Web Studio'}">
+                  <span>🚀</span>
+                </button>
+                <button type="button" class="ws-btn-detail-pill" data-open-detail-modal="${app.id}" title="${isTh ? 'ดูสเปกและคีย์ลัด' : 'View Specifications & Shortcuts'}">
+                  <span>ℹ️</span>
+                </button>
+              </div>
             </div>
           </div>`;
-        }).join('')}
-      </div>
+        }).join('')}</div>
     </div>`;
   }
 
@@ -3173,9 +3177,8 @@ class MeCraftsPortal {
     <div
       class="ecosystem-card ${isActive ? 'card-active' : ''} ${isAppActive ? 'card-status-active' : 'card-status-indev'}"
       data-studio-jump="${app.id}"
-      role="button"
-      tabindex="0"
-      aria-label="Inspect ${app.name}"
+      role="region"
+      aria-label="${app.name}"
       style="--card-accent: ${app.accentColor}; --card-glow: ${app.glowColor};"
     >
       <div class="eco-card-top">
@@ -3189,12 +3192,135 @@ class MeCraftsPortal {
         </div>
       </div>
       <div class="eco-card-body">
-        <h4 class="eco-card-name">${app.name}</h4>
+        <div class="eco-card-title-row">
+          <h4 class="eco-card-name">${app.name}</h4>
+          <span class="eco-version">${app.version}</span>
+        </div>
+        ${app.industryCounterpart ? `
+          <div class="eco-counterpart-chip" title="Alternative to ${app.industryCounterpart.en}">
+            <span>✦ ${app.industryCounterpart[this.lang]}</span>
+          </div>
+        ` : ''}
         <p class="eco-card-tagline">${tagline}</p>
+
+        <!-- 3 Key Specs Bullets -->
+        <div class="eco-specs-preview">
+          ${(app.specs?.[this.lang] || []).slice(0, 3).map(s => `
+            <div class="eco-spec-item">
+              <span class="eco-spec-check">✓</span>
+              <span class="eco-spec-text">${escapeHtml(s)}</span>
+            </div>
+          `).join('')}
+        </div>
       </div>
-      <div class="eco-card-footer">
-        <span class="eco-version">${app.version}</span>
-        <span class="eco-jump-hint">${isActive ? (this.lang === 'th' ? '● กำลังดูในค็อกพิท' : '● In Cockpit') : (this.lang === 'th' ? 'สลับดูหน้าต่างนี้ →' : 'Inspect UI →')}</span>
+
+      <!-- High-Impact Dual Action Buttons matching getartcraft.com -->
+      <div class="eco-card-actions">
+        <button type="button" class="eco-btn-web" data-launch-web-studio="${app.id}" title="${this.lang === 'th' ? `เปิด ${app.name} บนเบราว์เซอร์` : `Launch ${app.name} in Web Browser`}">
+          <span>🚀 ${this.lang === 'th' ? 'เปิดบนเว็บ' : 'Open Web'}</span>
+        </button>
+        <a href="${app.downloadUrl || SUITE_DOWNLOAD_URL}" class="eco-btn-dl" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank"'} title="${this.lang === 'th' ? `ดาวน์โหลด ${app.exeName || (app.name + '.exe')}` : `Download ${app.exeName || (app.name + '.exe')}`}">
+          <span>⬇️ .exe</span>
+        </a>
+        <button type="button" class="eco-btn-detail" data-open-detail-modal="${app.id}" title="${this.lang === 'th' ? 'ดูสเปกและคีย์ลัด' : 'View Specifications & Shortcuts'}">
+          <span>ℹ️</span>
+        </button>
+      </div>
+    </div>`;
+  }
+
+  private renderStudioDetailModal(): string {
+    if (!this.isDetailModalOpen || !this.selectedDetailApp) return '';
+    const app = this.selectedDetailApp;
+    const isTh = this.lang === 'th';
+    const isActive = app.status === 'active';
+
+    return `
+    <div class="studio-detail-modal-backdrop" id="modal-studio-detail-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-detail-title">
+      <div class="studio-detail-modal-container" style="--detail-accent: ${app.accentColor}; --detail-glow: ${app.glowColor};">
+        <div class="studio-detail-modal-header">
+          <div class="detail-header-left">
+            <div class="detail-modal-emblem" aria-hidden="true">${getAppIcon(app.id, app.accentColor)}</div>
+            <div class="detail-modal-titles">
+              <div class="detail-modal-name-row">
+                <h3 class="detail-modal-title" id="modal-detail-title">${app.name}</h3>
+                <span class="detail-modal-version">${app.version}</span>
+                <span class="detail-modal-status ${isActive ? 'status-active' : 'status-indev'}">
+                  ${isActive ? (isTh ? 'พร้อมใช้งาน' : 'Active') : (isTh ? 'กำลังพัฒนา' : 'In Dev')}
+                </span>
+              </div>
+              ${app.industryCounterpart ? `
+                <div class="detail-modal-counterpart">
+                  <span>✦ ${app.industryCounterpart[this.lang]}</span>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+          <button type="button" class="studio-detail-modal-close" id="btn-close-detail-modal" aria-label="Close modal">✕</button>
+        </div>
+
+        <div class="studio-detail-modal-body">
+          <div class="detail-section">
+            <h4 class="detail-section-heading">${isTh ? 'คำอธิบายสตูดิโอ' : 'Studio Overview'}</h4>
+            <p class="detail-description">${app.description[this.lang]}</p>
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-privacy-banner">
+              <span class="privacy-banner-icon">🛡️</span>
+              <div class="privacy-banner-text">
+                <strong>${isTh ? 'ประมวลผลบนหน่วยความจำ RAM ภายในเครื่อง 100%' : '100% Client-Side In-Device RAM Isolation'}</strong>
+                <span>${isTh ? 'ไม่มีการส่งข้อมูลหรืออัปโหลดไฟล์ไปยังเซิร์ฟเวอร์ภายนอก ไฟล์ทั้งหมดประมวลผลและจัดเก็บในเครื่องของคุณ' : 'Zero telemetry, zero cloud uploads. All memory buffers and files remain isolated within your local device.'}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4 class="detail-section-heading">${isTh ? 'ขีดความสามารถทางวิศวกรรมและสเปกเด่น' : 'Key Engineering Specifications'}</h4>
+            <div class="detail-specs-grid">
+              ${(app.specs?.[this.lang] || []).map(s => `
+                <div class="detail-spec-item">
+                  <span class="detail-spec-icon">✓</span>
+                  <span>${escapeHtml(s)}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          ${app.supportedFormats && app.supportedFormats.length > 0 ? `
+            <div class="detail-section">
+              <h4 class="detail-section-heading">${isTh ? 'นามสกุลและรูปแบบไฟล์ที่รองรับ' : 'Supported File Formats'}</h4>
+              <div class="detail-formats-wrap">
+                ${app.supportedFormats.map(f => `<span class="detail-format-pill">.${f}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${app.shortcuts && app.shortcuts.length > 0 ? `
+            <div class="detail-section">
+              <h4 class="detail-section-heading">${isTh ? 'ปุ่มลัดแป้นพิมพ์ระดับโปร (Muscle-Memory Shortcuts)' : 'Muscle-Memory Keyboard Shortcuts'}</h4>
+              <div class="detail-shortcuts-table">
+                ${app.shortcuts.map(sc => `
+                  <div class="detail-shortcut-row">
+                    <kbd class="detail-kbd">${sc.key}</kbd>
+                    <span class="detail-action">${sc.action[this.lang]}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+
+        <div class="studio-detail-modal-footer">
+          <div class="detail-footer-actions">
+            <button type="button" class="btn-detail-launch-web" data-launch-web-studio="${app.id}">
+              <span>🚀 ${isTh ? `เปิด ${app.name} บนเบราว์เซอร์` : `Open ${app.name} in Browser`}</span>
+            </button>
+            <a href="${app.downloadUrl || SUITE_DOWNLOAD_URL}" class="btn-detail-download" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank"'}>
+              <span>⬇️ ${isTh ? `ดาวน์โหลด .exe (${app.exeSize || 'Installer'})` : `Download .exe (${app.exeSize || 'Installer'})`}</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>`;
   }
@@ -3698,6 +3824,48 @@ class MeCraftsPortal {
     this.bindEcosystemCardListeners();
     this.bindSpotlightListeners();
     this.setupScrollSpy();
+
+    // Studio Detail Drawer Modal Listeners
+    document.querySelectorAll<HTMLElement>('[data-open-detail-modal]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const appId = btn.getAttribute('data-open-detail-modal');
+        const app = SHOWCASE_APPS.find(a => a.id === appId);
+        if (app) {
+          this.selectedDetailApp = app;
+          this.isDetailModalOpen = true;
+          this.render();
+          this.attachListeners();
+        }
+      });
+    });
+
+    const closeDetailModal = () => {
+      this.isDetailModalOpen = false;
+      this.selectedDetailApp = null;
+      this.render();
+      this.attachListeners();
+    };
+
+    document.getElementById('btn-close-detail-modal')?.addEventListener('click', closeDetailModal);
+    document.getElementById('modal-studio-detail-backdrop')?.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).id === 'modal-studio-detail-backdrop') {
+        closeDetailModal();
+      }
+    });
+
+    // Launch Web Studio Listeners
+    document.querySelectorAll<HTMLElement>('[data-launch-web-studio]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const appId = btn.getAttribute('data-launch-web-studio');
+        if (appId) {
+          this.handleLaunchApp(appId, 'web');
+        }
+      });
+    });
 
     // Fullscreen Inspector Modal Close
     document.getElementById('btn-close-fullscreen-modal')?.addEventListener('click', () => {
