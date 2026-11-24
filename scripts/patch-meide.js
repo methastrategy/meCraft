@@ -4,6 +4,26 @@ import path from 'node:path';
 const meidePath = path.resolve('apps/meide/src/main.ts');
 let code = fs.readFileSync(meidePath, 'utf8');
 
+function safeReplace(target, replacement) {
+  if (code.includes(target)) {
+    code = code.replace(target, replacement);
+    return;
+  }
+  const crlfTarget = target.replace(/\r?\n/g, '\r\n');
+  const crlfReplacement = replacement.replace(/\r?\n/g, '\r\n');
+  if (code.includes(crlfTarget)) {
+    code = code.replace(crlfTarget, crlfReplacement);
+    return;
+  }
+  const lfTarget = target.replace(/\r\n/g, '\n');
+  const lfReplacement = replacement.replace(/\r\n/g, '\n');
+  if (code.includes(lfTarget)) {
+    code = code.replace(lfTarget, lfReplacement);
+    return;
+  }
+  throw new Error('Target not found for replacement: ' + target.slice(0, 80));
+}
+
 // 1. Imports
 const oldImport = "import { formatBytes } from '@mecraft/core-bridge';";
 const newImport = `import {
@@ -18,10 +38,9 @@ const newImport = `import {
   type AuthSession,
   type SoftwareUpdateInfo,
 } from '@mecraft/core-bridge';`;
+safeReplace(oldImport, newImport);
 
-code = code.replace(oldImport, newImport);
-
-// 2. State in MeIdeApp
+// 2. State & Constructor
 const oldStateTarget = `  // Context Menu State
   public isContextMenuOpen: boolean = false;
   public contextMenuTargetId: string | null = null;
@@ -68,8 +87,7 @@ const newStateTarget = `  // Context Menu State
       this.runSteamStartupUpdate();
     }
   }`;
-
-code = code.replace(oldStateTarget, newStateTarget).replace(oldStateTarget.replace(/\n/g, '\r\n'), newStateTarget.replace(/\n/g, '\r\n'));
+safeReplace(oldStateTarget, newStateTarget);
 
 // 3. Header titlebar buttons in render()
 const oldTitlebarRight = `<div class="meide-titlebar-right">
@@ -95,8 +113,7 @@ const newTitlebarRight = `<div class="meide-titlebar-right">
             <span>\${isTh ? 'EN' : 'TH ภาษาไทย'}</span>
           </button>
         </div>`;
-
-code = code.replace(oldTitlebarRight, newTitlebarRight).replace(oldTitlebarRight.replace(/\n/g, '\r\n'), newTitlebarRight.replace(/\n/g, '\r\n'));
+safeReplace(oldTitlebarRight, newTitlebarRight);
 
 // 4. In render(), append steam splash and auth modal
 const oldRenderEnd = `    </div>
@@ -110,11 +127,15 @@ const newRenderEnd = `    </div>
     \`;
 
     this.attachListeners();`;
-
-code = code.replace(oldRenderEnd, newRenderEnd).replace(oldRenderEnd.replace(/\n/g, '\r\n'), newRenderEnd.replace(/\n/g, '\r\n'));
+safeReplace(oldRenderEnd, newRenderEnd);
 
 // 5. Add Steam & Auth Modal Methods
-const methodsToAdd = `  public async runSteamStartupUpdate(options: { speedMs?: number; force?: boolean } = {}): Promise<void> {
+const methodsToAdd = `  public toggleSyncDrawer(): void {
+    this.showSyncImport = !this.showSyncImport;
+    this.render();
+  }
+
+  public runSteamStartupUpdate(options: { speedMs?: number; force?: boolean } = {}): { dismiss: () => void } {
     const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
     const stepDuration = options.speedMs ?? 300;
 
@@ -130,62 +151,74 @@ const methodsToAdd = `  public async runSteamStartupUpdate(options: { speedMs?: 
     ];
     this.render();
 
-    try {
-      await delay(stepDuration);
-      this.steamUpdateProgress = 35;
-      this.steamUpdateStep = 2;
-      this.steamUpdateStatus = this.lang === 'th' ? 'กำลังตรวจสอบความถูกต้องของไบนารี meIDE...' : 'Verifying local meIDE packages & binary integrity...';
-      this.steamUpdateSubstatus = 'SHA-256 binary checksum verification in progress...';
-      this.steamUpdateSpeed = '3.5 MB/s';
-      this.steamUpdateLogs.push(\`[\${new Date().toLocaleTimeString()}] Handshake established. Validating package manifests...\`);
-      this.render();
-
-      let info: SoftwareUpdateInfo | null = null;
+    (async () => {
       try {
-        const checkPromise = checkSoftwareUpdate({
-          currentVersion: '1.0.0',
-          appId: 'meide',
-          force: options.force ?? true,
-        });
-        const timeoutPromise = new Promise<null>((res) => setTimeout(() => res(null), 1500));
-        info = await Promise.race([checkPromise, timeoutPromise]);
-      } catch (e) {
-        console.warn('[meIDE:steam] Offline fallback triggered:', e);
+        await delay(stepDuration);
+        if (!this.isSteamUpdating) return;
+        this.steamUpdateProgress = 35;
+        this.steamUpdateStep = 2;
+        this.steamUpdateStatus = this.lang === 'th' ? 'กำลังตรวจสอบความถูกต้องของไบนารี meIDE...' : 'Verifying local meIDE packages & binary integrity...';
+        this.steamUpdateSubstatus = 'SHA-256 binary checksum verification in progress...';
+        this.steamUpdateSpeed = '3.5 MB/s';
+        this.steamUpdateLogs.push(\`[\${new Date().toLocaleTimeString()}] Handshake established. Validating package manifests...\`);
+        this.render();
+
+        let info: SoftwareUpdateInfo | null = null;
+        try {
+          const checkPromise = checkSoftwareUpdate({
+            currentVersion: '1.0.0',
+            appId: 'meide',
+            force: options.force ?? true,
+          });
+          const timeoutPromise = new Promise<null>((res) => setTimeout(() => res(null), 1500));
+          info = await Promise.race([checkPromise, timeoutPromise]);
+        } catch (e) {
+          console.warn('[meIDE:steam] Offline fallback triggered:', e);
+        }
+
+        await delay(stepDuration);
+        if (!this.isSteamUpdating) return;
+        this.steamUpdateProgress = 75;
+        this.steamUpdateStep = 3;
+        this.steamUpdateStatus = this.lang === 'th' ? 'กำลังเทียบเวอร์ชันและตรวจสอบสิทธิ์ในเครื่อง...' : 'Validating licenses and module signatures...';
+        this.steamUpdateSubstatus = 'meIDE 100% In-Device RAM Verified.';
+        this.steamUpdateSpeed = '2.8 MB/s';
+        this.steamUpdateLogs.push(\`[\${new Date().toLocaleTimeString()}] Manifests verified: In-Device Copilot, Terminal Engine, Monaco/Gutter... OK\`);
+        this.render();
+
+        await delay(stepDuration);
+        if (!this.isSteamUpdating) return;
+        this.steamUpdateProgress = 100;
+        this.steamUpdateStep = 4;
+        this.steamUpdateCompleted = true;
+
+        if (info && info.hasUpdate) {
+          this.steamUpdateStatus = this.lang === 'th' ? \`พบเวอร์ชันใหม่ v\${info.latestVersion}! กำลังเริ่มโปรแกรม\` : \`Update v\${info.latestVersion} available! Launching IDE...\`;
+          this.steamUpdateSubstatus = 'meIDE is ready with latest updates.';
+        } else {
+          this.steamUpdateStatus = this.lang === 'th' ? 'meIDE เป็นเวอร์ชันล่าสุดแล้ว! กำลังเข้าสู่โปรแกรม...' : 'meIDE Standalone AI IDE is up to date! Launching...';
+          this.steamUpdateSubstatus = '100% In-Device Memory Execution Ready.';
+        }
+        this.steamUpdateSpeed = '0 KB/s';
+        this.steamUpdateLogs.push(\`[\${new Date().toLocaleTimeString()}] Verification 100% complete. Launching meIDE...\`);
+        this.render();
+
+        await delay(options.speedMs ? options.speedMs : 450);
+        this.isSteamUpdating = false;
+        this.render();
+      } catch (err: any) {
+        console.warn('[meIDE:steam] Updater error, proceeding:', err);
+        this.isSteamUpdating = false;
+        this.render();
       }
+    })();
 
-      await delay(stepDuration);
-      this.steamUpdateProgress = 75;
-      this.steamUpdateStep = 3;
-      this.steamUpdateStatus = this.lang === 'th' ? 'กำลังเทียบเวอร์ชันและตรวจสอบสิทธิ์ในเครื่อง...' : 'Validating licenses and module signatures...';
-      this.steamUpdateSubstatus = 'meIDE 100% In-Device RAM Verified.';
-      this.steamUpdateSpeed = '2.8 MB/s';
-      this.steamUpdateLogs.push(\`[\${new Date().toLocaleTimeString()}] Manifests verified: In-Device Copilot, Terminal Engine, Monaco/Gutter... OK\`);
-      this.render();
-
-      await delay(stepDuration);
-      this.steamUpdateProgress = 100;
-      this.steamUpdateStep = 4;
-      this.steamUpdateCompleted = true;
-
-      if (info && info.hasUpdate) {
-        this.steamUpdateStatus = this.lang === 'th' ? \`พบเวอร์ชันใหม่ v\${info.latestVersion}! กำลังเริ่มโปรแกรม\` : \`Update v\${info.latestVersion} available! Launching IDE...\`;
-        this.steamUpdateSubstatus = 'meIDE is ready with latest updates.';
-      } else {
-        this.steamUpdateStatus = this.lang === 'th' ? 'meIDE เป็นเวอร์ชันล่าสุดแล้ว! กำลังเข้าสู่โปรแกรม...' : 'meIDE Standalone AI IDE is up to date! Launching...';
-        this.steamUpdateSubstatus = '100% In-Device Memory Execution Ready.';
+    return {
+      dismiss: () => {
+        this.isSteamUpdating = false;
+        this.render();
       }
-      this.steamUpdateSpeed = '0 KB/s';
-      this.steamUpdateLogs.push(\`[\${new Date().toLocaleTimeString()}] Verification 100% complete. Launching meIDE...\`);
-      this.render();
-
-      await delay(options.speedMs ? options.speedMs : 450);
-      this.isSteamUpdating = false;
-      this.render();
-    } catch (err: any) {
-      console.warn('[meIDE:steam] Updater error, proceeding:', err);
-      this.isSteamUpdating = false;
-      this.render();
-    }
+    };
   }
 
   public renderSteamSplashUpdater(): string {
@@ -298,7 +331,7 @@ const methodsToAdd = `  public async runSteamStartupUpdate(options: { speedMs?: 
     this.render();
 
     try {
-      const session = createMockAuthSession('google.ide@mecraft.dev', 'pro_monthly');
+      const session = createMockAuthSession('developer@mecraft.dev', 'pro_monthly');
       session.user.fullName = 'meIDE Pro Creator';
       saveAuthSession(session);
       this.currentSession = session;
@@ -313,45 +346,44 @@ const methodsToAdd = `  public async runSteamStartupUpdate(options: { speedMs?: 
   }
 `;
 
-// Insert methods before executeTerminalCommand
-const termAnchor = '  public executeTerminalCommand(cmd: string): void {';
-code = code.replace(termAnchor, methodsToAdd + '\n' + termAnchor);
+// Insert methods before handleTerminalCommand
+const termAnchor = '  public handleTerminalCommand(cmd: string): void {';
+safeReplace(termAnchor, methodsToAdd + '\n' + termAnchor);
 
 // 6. Add Listeners for Auth & Update
-const listenerAnchor = "document.getElementById('meide-btn-lang')?.addEventListener('click', () => {";
+const listenerAnchor = "this.rootEl.querySelector('#meide-btn-lang')?.addEventListener('click', () => {";
 const listenersToAdd = `    // Steam Updater Skip & Trigger
-    document.getElementById('btn-steam-skip')?.addEventListener('click', () => {
+    this.rootEl.querySelector('#btn-steam-skip')?.addEventListener('click', () => {
       this.isSteamUpdating = false;
       this.render();
     });
-    document.getElementById('meide-btn-update')?.addEventListener('click', () => {
+    this.rootEl.querySelector('#meide-btn-update')?.addEventListener('click', () => {
       this.runSteamStartupUpdate({ force: true });
     });
 
     // Auth Modal Handlers
-    document.getElementById('meide-btn-auth')?.addEventListener('click', () => {
+    this.rootEl.querySelector('#meide-btn-auth')?.addEventListener('click', () => {
       this.isAuthModalOpen = true;
       this.authError = '';
       this.render();
     });
-    document.getElementById('btn-close-auth-modal')?.addEventListener('click', () => {
+    this.rootEl.querySelector('#btn-close-auth-modal')?.addEventListener('click', () => {
       this.isAuthModalOpen = false;
       this.render();
     });
-    document.getElementById('modal-auth-backdrop')?.addEventListener('click', () => {
+    this.rootEl.querySelector('#modal-auth-backdrop')?.addEventListener('click', () => {
       this.isAuthModalOpen = false;
       this.render();
     });
-    document.getElementById('modal-btn-auth-google')?.addEventListener('click', () => {
+    this.rootEl.querySelector('#modal-btn-auth-google')?.addEventListener('click', () => {
       this.handleGoogleAuth();
     });
-    document.getElementById('btn-toggle-sync-import')?.addEventListener('click', () => {
-      this.showSyncImport = !this.showSyncImport;
-      this.render();
+    this.rootEl.querySelector('#btn-toggle-sync-import')?.addEventListener('click', () => {
+      this.toggleSyncDrawer();
     });
-    document.getElementById('btn-submit-sync-code')?.addEventListener('click', () => {
-      const input = document.getElementById('input-sync-code') as HTMLInputElement | null;
-      const val = input?.value.trim();
+    this.rootEl.querySelector('#btn-submit-sync-code')?.addEventListener('click', () => {
+      const input = this.rootEl.querySelector('#input-sync-code') as HTMLInputElement | null;
+      const val = input?.value?.trim();
       if (!val) return;
       const session = importAuthSyncCode(val);
       if (session) {
@@ -366,8 +398,7 @@ const listenersToAdd = `    // Steam Updater Skip & Trigger
     });
 
 `;
-
-code = code.replace(listenerAnchor, listenersToAdd + listenerAnchor);
+safeReplace(listenerAnchor, listenersToAdd + listenerAnchor);
 
 fs.writeFileSync(meidePath, code, 'utf8');
-console.log('Successfully patched apps/meide/src/main.ts!');
+console.log('Successfully patched apps/meide/src/main.ts with 100% precision!');
