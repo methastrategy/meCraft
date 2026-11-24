@@ -7,6 +7,7 @@ export default defineConfig({
     alias: {
       '@mecraft/core-bridge': fileURLToPath(new URL('../../packages/core-bridge/src/index.ts', import.meta.url)),
       '@mecraft/photo-core': fileURLToPath(new URL('../../packages/photo-core/src/index.ts', import.meta.url)),
+      '@mecraft/studio-shell/styles.css': fileURLToPath(new URL('../../packages/studio-shell/src/styles/shell.css', import.meta.url)),
       '@mecraft/studio-shell/shell.css': fileURLToPath(new URL('../../packages/studio-shell/src/styles/shell.css', import.meta.url)),
       '@mecraft/studio-shell': fileURLToPath(new URL('../../packages/studio-shell/src/index.ts', import.meta.url)),
       '@mecraft/mevector': fileURLToPath(new URL('../../apps/mevector/src/index.ts', import.meta.url)),
