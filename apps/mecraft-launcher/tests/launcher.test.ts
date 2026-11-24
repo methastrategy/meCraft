@@ -23,6 +23,10 @@ import {
   TRANSLATIONS,
   SHOWCASE_APPS,
   MeCraftsPortal,
+  renderMarkdownHtml,
+  getFileLanguage,
+  getFileIcon,
+  type IdeFile,
 } from '../src/main';
 
 describe('meCraft Launcher Core & Catalog Engine', () => {
@@ -489,4 +493,134 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(TRANSLATIONS.th.filterAll).toBe(`ทั้งหมด (${count})`);
     });
   });
+
+  describe('meCraft AI IDE Workspace Architecture (VS Code / Windsurf Style)', () => {
+    it('initializes IDE workspace with memory-safe default files', () => {
+      const portal = new MeCraftsPortal();
+      expect(portal.ideFiles.length).toBeGreaterThanOrEqual(4);
+      expect(portal.activeIdeFileId).toBe('welcome-md');
+      expect(portal.openIdeFileIds).toContain('welcome-md');
+      expect(portal.openIdeFileIds).toContain('scratchpad-txt');
+
+      const welcome = portal.ideFiles.find((f: IdeFile) => f.id === 'welcome-md');
+      expect(welcome).toBeDefined();
+      expect(welcome?.language).toBe('markdown');
+      expect(welcome?.content).toContain('meCraft AI IDE Workstation');
+    });
+
+    it('renders full IDE Workspace layout when in default workstation view', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      (portal as any).render();
+
+      // 1. Root Workspace Shell & Editor Root
+      const ideRoot = doc.getElementById('ide-workspace-root');
+      expect(ideRoot).not.toBeNull();
+      expect(ideRoot?.classList.contains('ws-view-editor')).toBe(true);
+      expect(ideRoot?.classList.contains('ws-view-workbench')).toBe(true);
+
+      // 2. Left Explorer Pane
+      const explorer = doc.querySelector('.ide-explorer-pane');
+      expect(explorer).not.toBeNull();
+      expect(doc.getElementById('ide-btn-new-file')).not.toBeNull();
+      expect(doc.getElementById('ide-btn-open-file')).not.toBeNull();
+      expect(doc.getElementById('ws-universal-dropzone')).not.toBeNull();
+
+      // 3. Central Editor Container & Code Surface
+      const editorArea = doc.querySelector('.ide-editor-container');
+      expect(editorArea).not.toBeNull();
+      const textarea = doc.getElementById('ide-editor-textarea') as HTMLTextAreaElement;
+      expect(textarea).not.toBeNull();
+      expect(textarea.textContent || (textarea as any).value).toContain('meCraft AI IDE Workstation');
+
+      // 4. Integrated Terminal Panel
+      const terminal = doc.getElementById('ide-bottom-panel');
+      expect(terminal).not.toBeNull();
+      expect(doc.getElementById('ide-terminal-input')).not.toBeNull();
+
+      // 5. AI Copilot Dock
+      const aiDock = doc.querySelector('.ide-ai-dock');
+      expect(aiDock).not.toBeNull();
+      expect(doc.getElementById('ide-ai-prompt-input')).not.toBeNull();
+      expect(doc.getElementById('ide-btn-send-ai')).not.toBeNull();
+
+      // 6. Bottom Status Bar
+      const privacyBadge = doc.querySelector('.ide-sb-privacy');
+      expect(privacyBadge).not.toBeNull();
+      expect(privacyBadge?.textContent).toContain('100% In-Device Memory');
+    });
+
+    it('detects file languages and icons accurately', () => {
+      expect(getFileLanguage('README.md')).toBe('markdown');
+      expect(getFileLanguage('script.ts')).toBe('typescript');
+      expect(getFileLanguage('component.tsx')).toBe('typescript');
+      expect(getFileLanguage('config.json')).toBe('json');
+      expect(getFileLanguage('solver.py')).toBe('python');
+      expect(getFileLanguage('notes.txt')).toBe('plaintext');
+
+      expect(getFileIcon('markdown', 'README.md')).toBe('📝');
+      expect(getFileIcon('json', 'config.json')).toBe('⚙️');
+      expect(getFileIcon('typescript', 'index.ts')).toBe('🔷');
+      expect(getFileIcon('python', 'app.py')).toBe('🐍');
+      expect(getFileIcon('plaintext', 'doc.pdf')).toBe('📄');
+    });
+
+    it('renders Markdown and KaTeX math blocks securely via renderMarkdownHtml', () => {
+      const sampleMd = '# Header 1\n\n**Bold text** and `inline code`\n\n$$E = mc^2$$\n\n- [x] Done\n- [ ] Pending';
+      const html = renderMarkdownHtml(sampleMd);
+
+      expect(html).toContain('<h1 class="ide-md-h1">Header 1</h1>');
+      expect(html).toContain('<strong>Bold text</strong>');
+      expect(html).toContain('<code class="ide-inline-code">inline code</code>');
+      expect(html).toContain('class="ide-math-block"');
+      expect(html).toContain('E = mc^2');
+      expect(html).toContain('ide-md-task checked');
+    });
+
+    it('executes in-memory terminal commands cleanly without network calls', () => {
+      const portal = new MeCraftsPortal();
+      
+      // 1. help command
+      (portal as any).executeTerminalCommand('help');
+      expect(portal.ideTerminalHistory.some((l: string) => l.includes('Available commands'))).toBe(true);
+
+      // 2. version command
+      (portal as any).executeTerminalCommand('version');
+      expect(portal.ideTerminalHistory.some((l: string) => l.includes('v1.0.0'))).toBe(true);
+
+      // 3. stats command
+      (portal as any).executeTerminalCommand('stats');
+      expect(portal.ideTerminalHistory.some((l: string) => l.includes('100% In-Device RAM'))).toBe(true);
+
+      // 4. studios command
+      (portal as any).executeTerminalCommand('studios');
+      expect(portal.ideTerminalHistory.some((l: string) => l.includes('Standalone Studios'))).toBe(true);
+
+      // 5. clear command
+      (portal as any).executeTerminalCommand('clear');
+      expect(portal.ideTerminalHistory.length).toBe(0);
+    });
+
+    it('dispatches AI copilot in-memory explanations and security audits safely', () => {
+      const portal = new MeCraftsPortal();
+      const initialCount = portal.aiChatMessages.length;
+
+      // Explain query
+      (portal as any).handleAiPrompt('explain');
+      expect(portal.aiChatMessages.length).toBe(initialCount + 2);
+      const aiReply = portal.aiChatMessages[portal.aiChatMessages.length - 1];
+      expect(aiReply.sender).toBe('ai');
+      expect(aiReply.text).toContain('welcome.md');
+      expect(aiReply.text).toContain('without cloud exposure');
+
+      // Security audit query
+      (portal as any).handleAiPrompt('audit security');
+      const auditReply = portal.aiChatMessages[portal.aiChatMessages.length - 1];
+      expect(auditReply.text).toContain('Local Security Audit');
+      expect(auditReply.text).toContain('100% Client-Side RAM');
+    });
+  });
+
 });
