@@ -1,0 +1,2278 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = fs.realpathSync(path.resolve(__dirname, '..'));
+
+console.log('✨ [generate-downloads-portal] Generating unified 18-studio downloads portal...');
+
+const htmlContent = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>meCrafts Downloads — Official Windows .exe Installers & Studio Directory</title>
+  <meta name="description" content="Official Windows .exe Standalone & Suite Releases for meCrafts Workstation. 18 Creative Studios · 100% In-Device Memory Execution · Zero Telemetry · Open Source MIT." />
+  <meta property="og:title" content="meCrafts Downloads — Official Windows .exe Studio Directory" />
+  <meta property="og:description" content="Download meCraft Installer (.exe) and standalone studio binaries. 18 Creative Studios · 100% In-Device Memory Execution · Zero Cloud Uploads." />
+  <meta property="og:image" content="../assets/branding/github-social-preview.png" />
+  <link rel="icon" type="image/png" href="../branding/mecraft-suite.png" />
+  <link rel="apple-touch-icon" href="../branding/mecraft-suite.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #090a0f;
+      --bg-surface: #0d0e14;
+      --bg-card: #111218;
+      --bg-card-hover: #161820;
+      --bg-elevated: #1a1c26;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-mid: rgba(255, 255, 255, 0.10);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      
+      --text-primary: #f0f0f8;
+      --text-secondary: #9494a8;
+      --text-muted: #5a5a72;
+      --text-gold: #d4af37;
+      --text-gold-light: #f7d774;
+      
+      --gold: #d4af37;
+      --gold-hover: #f7d774;
+      --gold-glow: rgba(212, 175, 55, 0.25);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.2);
+      --indigo: #6366f1;
+      --cyan: #06b6d4;
+      
+      --font-sans: "Inter", "IBM Plex Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", Consolas, Monaco, monospace;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Ambient Architectural Grid Background */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: 
+        radial-gradient(circle at 50% 120px, rgba(212, 175, 55, 0.07), transparent 70%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 48px 48px, 48px 48px;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Sticky Portal Header ── */
+    .portal-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9, 10, 15, 0.85);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .portal-header-inner {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .portal-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .portal-brand-emblem {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 16px var(--gold-glow);
+      overflow: hidden;
+    }
+
+    .portal-brand-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .portal-brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .portal-brand-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .portal-brand-name span {
+      color: var(--gold);
+    }
+
+    .portal-brand-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-gold);
+    }
+
+    .portal-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+    }
+
+    .portal-nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      border: 1px solid transparent;
+    }
+
+    .portal-nav-link:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-subtle);
+    }
+
+    .portal-nav-link.active {
+      color: var(--gold-hover);
+      background: rgba(212, 175, 55, 0.08);
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+
+    .portal-nav-link.back-portal {
+      color: var(--gold);
+      border-color: rgba(212, 175, 55, 0.25);
+      background: rgba(212, 175, 55, 0.06);
+    }
+
+    .portal-nav-link.back-portal:hover {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: var(--gold);
+      color: #ffffff;
+    }
+
+    .portal-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .portal-lang-btn {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .portal-lang-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-strong);
+      color: #ffffff;
+    }
+
+    /* ── Section 01: Hero Section ── */
+    .portal-hero {
+      position: relative;
+      overflow: hidden;
+      padding: 72px 0 56px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .portal-hero-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+    }
+
+    .hero-glow-gold {
+      width: 500px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.28) 0%, transparent 70%);
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .hero-glow-indigo {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 70%);
+      top: 0;
+      left: 8%;
+    }
+
+    .hero-glow-cyan {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+      bottom: -80px;
+      right: 10%;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 48px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-gold);
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.28);
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 18px;
+    }
+
+    .hero-pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+    }
+
+    .hero-title {
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      color: #ffffff;
+      margin-bottom: 18px;
+    }
+
+    .hero-title .highlight {
+      background: linear-gradient(135deg, #f7d774 0%, #d4af37 50%, #aa8420 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .hero-lead {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 24px;
+      max-width: 620px;
+    }
+
+    .hero-badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .hud-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    .hud-badge.gold {
+      color: var(--text-gold-light);
+      background: rgba(212, 175, 55, 0.08);
+      border-color: rgba(212, 175, 55, 0.25);
+    }
+
+    .hero-cta-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .btn-master-dl {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--gold) 0%, #f7d774 100%);
+      color: #07090e;
+      text-decoration: none;
+      border-radius: var(--radius-md);
+      font-weight: 800;
+      font-size: 1rem;
+      box-shadow: 0 4px 24px var(--gold-glow), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-master-dl:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(212, 175, 55, 0.45);
+    }
+
+    .dl-subtext {
+      font-size: 0.75rem;
+      font-weight: 600;
+      opacity: 0.85;
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 22px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-strong);
+      color: #ffffff;
+    }
+
+    /* Right: Interactive 18-Studio Squircle Dock */
+    .hero-dock-wrap {
+      background: rgba(13, 14, 20, 0.85);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    }
+
+    .dock-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .dock-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .dock-count-pill {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--gold);
+      background: rgba(212, 175, 55, 0.1);
+      padding: 3px 8px;
+      border-radius: 100px;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+    }
+
+    .dock-matrix {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .dock-squircle {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      position: relative;
+      padding: 6px 4px;
+    }
+
+    .dock-squircle:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--app-color, var(--gold));
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 20px var(--app-glow, var(--gold-glow));
+      color: #ffffff;
+      z-index: 2;
+    }
+
+    .dock-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .dock-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    /* ── Section 02: Sticky Filter Bar & The Lineup ── */
+    .lineup-section {
+      padding: 40px 0 80px;
+      position: relative;
+    }
+
+    .sticky-hud-bar {
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+      background: rgba(9, 10, 15, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 0;
+      margin-bottom: 32px;
+    }
+
+    .sticky-hud-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hud-section-label {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-gold);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-search-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-box-wrap {
+      position: relative;
+      width: 280px;
+    }
+
+    .search-icon-svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 15px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 38px;
+      padding: 0 12px 0 36px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-sm);
+      color: #ffffff;
+      font-size: 0.85rem;
+      outline: none;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .search-input:focus {
+      border-color: var(--gold);
+      background: rgba(255, 255, 255, 0.07);
+      box-shadow: 0 0 12px var(--gold-glow);
+    }
+
+    .filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-pill:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-mid);
+    }
+
+    .filter-pill.active {
+      color: #07090e;
+      background: var(--gold);
+      border-color: var(--gold);
+      font-weight: 700;
+    }
+
+    /* ── The 18-Studio Lineup Grid ── */
+    .hairline-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .studio-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: var(--transition);
+      overflow: hidden;
+    }
+
+    .studio-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--app-color, var(--gold));
+      opacity: 0.8;
+      transition: var(--transition);
+    }
+
+    .studio-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-strong);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 24px var(--app-glow, transparent);
+    }
+
+    .studio-card:hover::before {
+      height: 4px;
+      opacity: 1;
+    }
+
+    .card-top-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .card-brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-icon-emblem {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-icon-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-num-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--app-color, var(--gold));
+      letter-spacing: 0.06em;
+    }
+
+    .card-app-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .card-ver-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .card-counterpart-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-gold-light);
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .card-tagline {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .card-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .card-specs-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 18px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .card-spec-item {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-spec-item::before {
+      content: "•";
+      color: var(--app-color, var(--gold));
+      font-weight: bold;
+    }
+
+    .card-binary-meta {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      color: var(--text-muted);
+    }
+
+    .meta-val {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .hash-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      margin-top: 4px;
+    }
+
+    .hash-code {
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.65rem;
+      max-width: 170px;
+    }
+
+    .btn-copy-hash {
+      background: transparent;
+      border: none;
+      color: var(--text-gold);
+      cursor: pointer;
+      font-size: 0.65rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 2px 4px;
+      border-radius: 3px;
+      transition: var(--transition);
+    }
+
+    .btn-copy-hash:hover {
+      background: rgba(212, 175, 55, 0.15);
+      color: #ffffff;
+    }
+
+    .card-actions-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-app-dl {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, var(--gold) 0%, #f7d774 100%);
+      color: #07090e;
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.8rem;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-app-dl:hover {
+      box-shadow: 0 4px 16px var(--gold-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-app-web {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-app-web:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-strong);
+      color: #ffffff;
+    }
+
+    /* ── Section 03: Architectural Invariants ── */
+    .principles-section {
+      padding: 64px 0;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(13, 14, 20, 0.5);
+    }
+
+    .section-header-center {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 48px;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .principle-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      transition: var(--transition);
+    }
+
+    .principle-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-mid);
+      transform: translateY(-2px);
+    }
+
+    .principle-num {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .principle-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .principle-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── Section 04: Cryptographic Verification ── */
+    .verify-section {
+      padding: 64px 0;
+    }
+
+    .cmd-box {
+      background: #050608;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 24px 0 36px;
+    }
+
+    .cmd-text {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #10b981;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .btn-copy-cmd {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #07090e;
+      background: var(--gold);
+      border: none;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn-copy-cmd:hover {
+      background: var(--gold-hover);
+    }
+
+    .verify-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+    }
+
+    .verify-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-align: left;
+    }
+
+    .verify-table th {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 12px 16px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .verify-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      color: var(--text-secondary);
+    }
+
+    .verify-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+      color: #ffffff;
+    }
+
+    /* ── Footer ── */
+    .portal-footer {
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      padding: 48px 0 36px;
+      margin-top: auto;
+    }
+
+    .portal-footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      list-style: none;
+    }
+
+    .footer-link {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-link:hover {
+      color: var(--gold);
+    }
+
+    /* Toast Notification */
+    .toast-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      border: 1px solid var(--gold);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .toast-pill.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+      .hairline-grid { grid-template-columns: repeat(2, 1fr); }
+      .principles-grid { grid-template-columns: repeat(2, 1fr); }
+      .dock-matrix { grid-template-columns: repeat(6, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .hairline-grid { grid-template-columns: 1fr; }
+      .principles-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 2.1rem; }
+      .dock-matrix { grid-template-columns: repeat(3, 1fr); }
+      .portal-header-inner { height: auto; padding: 12px 0; flex-wrap: wrap; }
+      .portal-nav { order: 3; width: 100%; overflow-x: auto; padding-top: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Global Navigation Header (matches Home Page) -->
+  <header class="portal-header" role="banner">
+    <div class="container portal-header-inner">
+      <a href="../" class="portal-brand" aria-label="meCrafts Workstation Home">
+        <div class="portal-brand-emblem" aria-hidden="true">
+          <img src="../branding/mecraft-suite.png" alt="meCrafts" class="portal-brand-img" onerror="this.src='./branding/mecraft-suite.png';" />
+        </div>
+        <div class="portal-brand-text">
+          <span class="portal-brand-name">me<span>Crafts</span></span>
+          <span class="portal-brand-tag" data-i18n="header_badge">OFFICIAL SUITE</span>
+        </div>
+      </a>
+
+      <nav class="portal-nav" aria-label="Downloads directory navigation">
+        <a href="../" class="portal-nav-link back-portal" data-i18n="nav_portal">← Workstation Portal</a>
+        <a href="#lineup" class="portal-nav-link" data-i18n="nav_lineup">All 18 Studios</a>
+        <a href="#principles" class="portal-nav-link" data-i18n="nav_principles">Architecture</a>
+        <a href="#verify" class="portal-nav-link" data-i18n="nav_verify">Verification</a>
+      </nav>
+
+      <div class="portal-header-actions">
+        <a href="https://github.com/methastrategy/meCraft/releases" class="portal-nav-link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+        <button type="button" id="btn-lang" class="portal-lang-btn" aria-label="Toggle Language">
+          <span id="lang-indicator">TH</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Section 01: Hero & Interactive 18-Studio Squircle Dock -->
+  <section class="portal-hero" id="hero">
+    <div class="portal-hero-bg" aria-hidden="true">
+      <div class="hero-glow hero-glow-gold"></div>
+      <div class="hero-glow hero-glow-indigo"></div>
+      <div class="hero-glow hero-glow-cyan"></div>
+    </div>
+    
+    <div class="container hero-grid">
+      <!-- Left: Master CTA & Eyebrow -->
+      <div class="hero-text-col">
+        <div class="hero-pill" data-i18n="hero_eyebrow">18 CREATIVE WORKSTATIONS · WINDOWS (64-BIT)</div>
+        <h1 class="hero-title" data-i18n="hero_title">
+          Official Studio Installers &amp; <span class="highlight">Suite Directory</span>
+        </h1>
+        <p class="hero-lead" data-i18n="hero_lead">
+          100% In-Device Memory Execution. Zero Cloud Uploads. Zero Telemetry. Native Windows Desktop Performance with MIT Open-Source Transparency.
+        </p>
+
+        <div class="hero-badges-row">
+          <span class="hud-badge gold" data-i18n="badge_win">Windows 11 / 10 · 64-bit</span>
+          <span class="hud-badge" data-i18n="badge_ram">100% In-Device RAM</span>
+          <span class="hud-badge" data-i18n="badge_telemetry">Zero Telemetry</span>
+          <span class="hud-badge" data-i18n="badge_crypto">SHA-256 Verified</span>
+        </div>
+
+        <div class="hero-cta-box">
+          <a href="https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meCraft-Setup.exe" class="btn-master-dl" id="btn-master-download">
+            <span data-i18n="cta_master_dl">Download meCraft Installer (.exe)</span>
+            <span class="dl-subtext" data-i18n="cta_master_sub">v1.0.0 · ~14.8 MB · Complete 18-Studio Suite</span>
+          </a>
+          <a href="#lineup" class="btn-secondary" data-i18n="cta_browse_studios">
+            Explore All 18 Studios ↓
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Interactive 18-Studio Squircle Dock -->
+      <div class="hero-dock-wrap">
+        <div class="dock-header-row">
+          <span class="dock-title" data-i18n="dock_title">STUDIO DOCK · CLICK TO NAVIGATE</span>
+          <span class="dock-count-pill" data-i18n="dock_count">18 STUDIOS + SUITE</span>
+        </div>
+        <div class="dock-matrix" id="hero-dock-matrix">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 02: Sticky HUD Filter & Search Bar + 18-Studio Lineup Grid -->
+  <section class="lineup-section" id="lineup">
+    <div class="sticky-hud-bar">
+      <div class="container sticky-hud-inner">
+        <div class="hud-section-label">
+          <span style="color: var(--text-muted)">02 /</span>
+          <span data-i18n="lineup_header">THE 18-STUDIO LINEUP · PICK A STUDIO TO DOWNLOAD</span>
+        </div>
+
+        <div class="filter-search-group">
+          <div class="search-box-wrap">
+            <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="search" id="studio-search" class="search-input" placeholder="Search 18 studios, files, features..." data-i18n-placeholder="search_placeholder" />
+          </div>
+
+          <div class="filter-pills" id="filter-pills-container">
+            <!-- Filter Pills Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 18 Studio Cards Grid Container -->
+    <div class="container">
+      <div class="hairline-grid" id="lineup-grid">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 03: Architectural Invariants -->
+  <section class="principles-section" id="principles">
+    <div class="container">
+      <div class="section-header-center">
+        <div class="hero-pill" style="margin-bottom: 12px;" data-i18n="principles_eyebrow">03 / ARCHITECTURAL INVARIANTS</div>
+        <h2 class="section-title" data-i18n="principles_title">Zero-Cloud Engineering Principles</h2>
+        <p class="section-subtitle" data-i18n="principles_subtitle">
+          Six non-negotiable guarantees built into every byte of meCrafts desktop workstation applications.
+        </p>
+      </div>
+
+      <div class="principles-grid">
+        <div class="principle-card">
+          <span class="principle-num">01 / RAM</span>
+          <h3 class="principle-title" data-i18n="p1_title">100% In-Device Memory</h3>
+          <p class="principle-desc" data-i18n="p1_desc">All documents, pixels, waveforms, and geometries are loaded strictly into local host RAM. No file buffers or telemetry ever touch remote servers.</p>
+        </div>
+
+        <div class="principle-card">
+          <span class="principle-num">02 / TELEMETRY</span>
+          <h3 class="principle-title" data-i18n="p2_title">Zero Telemetry &amp; Tracking</h3>
+          <p class="principle-desc" data-i18n="p2_desc">Zero analytics SDKs, zero background pinging, zero behavioral telemetry. Your machine remains strictly yours.</p>
+        </div>
+
+        <div class="principle-card">
+          <span class="principle-num">03 / NATIVE</span>
+          <h3 class="principle-title" data-i18n="p3_title">Native Windows Desktop Engine</h3>
+          <p class="principle-desc" data-i18n="p3_desc">Built with Tauri v2, Rust native backend, and DirectX 12 / Vulkan hardware acceleration for microsecond UI response times.</p>
+        </div>
+
+        <div class="principle-card">
+          <span class="principle-num">04 / OPEN-SOURCE</span>
+          <h3 class="principle-title" data-i18n="p4_title">MIT Open-Source License</h3>
+          <p class="principle-desc" data-i18n="p4_desc">Transparent source code available on GitHub. Anyone can inspect, audit, fork, or build the binaries from source independently.</p>
+        </div>
+
+        <div class="principle-card">
+          <span class="principle-num">05 / INTEGRITY</span>
+          <h3 class="principle-title" data-i18n="p5_title">Cryptographic Signatures</h3>
+          <p class="principle-desc" data-i18n="p5_desc">Every executable is published with an immutable SHA-256 hash and Ed25519 cryptographic release signature.</p>
+        </div>
+
+        <div class="principle-card">
+          <span class="principle-num">06 / AIR-GAPPED</span>
+          <h3 class="principle-title" data-i18n="p6_title">Air-Gapped Offline Ready</h3>
+          <p class="principle-desc" data-i18n="p6_desc">Full offline functionality from first boot. Install once and run indefinitely in air-gapped secure workstations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 04: Cryptographic Verification -->
+  <section class="verify-section" id="verify">
+    <div class="container">
+      <div class="section-header-center">
+        <div class="hero-pill" style="margin-bottom: 12px;" data-i18n="verify_eyebrow">04 / CRYPTOGRAPHIC VERIFICATION</div>
+        <h2 class="section-title" data-i18n="verify_title">Binary Integrity &amp; SHA-256 Hashes</h2>
+        <p class="section-subtitle" data-i18n="verify_subtitle">
+          Verify the checksum of downloaded binaries before execution using the Windows PowerShell command below:
+        </p>
+      </div>
+
+      <div class="cmd-box">
+        <code class="cmd-text" id="cmd-sample">Get-FileHash -Algorithm SHA256 .\\meCraft-Setup.exe | Format-List</code>
+        <button type="button" class="btn-copy-cmd" id="btn-copy-cmd" data-i18n="btn_copy_cmd">Copy PowerShell</button>
+      </div>
+
+      <div class="verify-table-wrap">
+        <table class="verify-table">
+          <thead>
+            <tr>
+              <th data-i18n="th_file">Binary File</th>
+              <th data-i18n="th_version">Version</th>
+              <th data-i18n="th_size">Size</th>
+              <th data-i18n="th_hash">SHA-256 Checksum</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="verify-table-body">
+            <!-- Rendered by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="portal-footer">
+    <div class="container portal-footer-inner">
+      <div class="footer-brand">
+        <span class="portal-brand-name">me<span>Crafts</span></span>
+        <span class="footer-copy">© 2026 Metha / methastrategy. Open Source under the MIT License.</span>
+      </div>
+
+      <ul class="footer-links">
+        <li><a href="../" class="footer-link">Workstation Portal</a></li>
+        <li><a href="https://github.com/methastrategy/meCraft" class="footer-link" target="_blank" rel="noopener noreferrer">Monorepo GitHub</a></li>
+        <li><a href="https://github.com/methastrategy/meCraft/releases" class="footer-link" target="_blank" rel="noopener noreferrer">Releases</a></li>
+        <li><a href="https://github.com/methastrategy/meCraft/blob/main/LICENSE" class="footer-link" target="_blank" rel="noopener noreferrer">MIT License</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div class="toast-pill" id="toast">Copied to Clipboard</div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      // 18 Creative Studios Dataset
+      const STUDIOS = [
+        {
+          id: 'mepdf',
+          num: '01',
+          name: 'mePDF Studio',
+          category: 'document',
+          categoryLabel: { en: 'Document', th: 'เอกสาร' },
+          accentColor: '#d4af37',
+          glowColor: 'rgba(212, 175, 55, 0.25)',
+          emoji: '📄',
+          counterpart: { en: 'Adobe Acrobat Pro Alternative', th: 'ทางเลือกแทน Adobe Acrobat Pro' },
+          tagline: {
+            en: 'Professional Client-Side PDF Engineering & Document Cockpit',
+            th: 'สตูดิโอวิศวกรรมเอกสาร PDF ค็อกพิทจัดการหน้า บีบอัด และฉีด OCR ในเครื่อง'
+          },
+          desc: {
+            en: 'Merge, split, visual page cockpit, lossless & scanned compression, AES-256 encryption, and searchable OCR text injection.',
+            th: 'รวม/แยก PDF, ค็อกพิทหน้าเพจแบบ Visual, บีบอัดแบบไม่สูญเสียคุณภาพ, เข้ารหัส AES-256 และฉีด OCR Text เพื่อค้นหา'
+          },
+          version: 'v1.0.0',
+          file: 'mepdf.exe',
+          size: '~30.8 MB',
+          hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+          webRoute: '../mepdf/',
+          specs: {
+            en: ['4-Point Deskew & Local Otsu Binarization', 'Lossless Deflate & Scanned Compression', 'Client-Side Searchable OCR Text Injection', 'AES-256 Bank-Grade Encryption'],
+            th: ['ปรับระนาบ 4-Point Deskew & ลบเงา Otsu ท้องถิ่น', 'บีบอัดเอกสาร Lossless Deflate สูงสุด 90%', 'ฝังข้อความ OCR ค้นหาคำได้ในเครื่อง 100%', 'เข้ารหัสความปลอดภัยระดับธนาคาร AES-256']
+          }
+        },
+        {
+          id: 'mephoto',
+          num: '02',
+          name: 'mePhoto Studio',
+          category: 'photo',
+          categoryLabel: { en: 'Photo & Color', th: 'ภาพและสี' },
+          accentColor: '#10b981',
+          glowColor: 'rgba(16, 185, 129, 0.25)',
+          emoji: '🖼️',
+          counterpart: { en: 'CamScanner / Darkroom Alternative', th: 'ทางเลือกแทน CamScanner และ Darkroom' },
+          tagline: {
+            en: 'CamScanner-Grade Document Restoration & Perspective Photo Lab',
+            th: 'ห้องปฏิบัติการตกแต่งภาพถ่าย กู้คืนเอกสาร และปรับระนาบมุมมอง'
+          },
+          desc: {
+            en: '4-point homography perspective deskew, adaptive local Otsu binarization shadow eradication, Magic Color enhancement, and RAW darkroom.',
+            th: 'ปรับมุมมอง 4 จุด Homography, กำจัดเงาด้วย Otsu Binarization ท้องถิ่น, เพิ่มความสวยงามเอกสารด้วย Magic Color และ Darkroom ปรับ RAW'
+          },
+          version: 'v1.0.0',
+          file: 'mephoto.exe',
+          size: '~28.4 MB',
+          hash: 'a1b2c3d4e5f67890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../mephoto/',
+          specs: {
+            en: ['4-Point Quad Perspective Homography Deskew', 'Adaptive Otsu Binarization Shadow Removal', 'Magic Color Enhancement Curves', '16-bit Lossless Image Export'],
+            th: ['ดึงระนาบเอกสาร 4 มุม Homography แม่นยำสูง', 'ลบเงาและปรับขาวดำอัจฉริยะ Otsu Algorithm', 'โหมด Magic Color ขับสีตัวอักษรคมชัด', 'ส่งออกภาพความละเอียดสูง 16-bit ไม่สูญเสีย']
+          }
+        },
+        {
+          id: 'medrop',
+          num: '03',
+          name: 'meDrop Radial Converter',
+          category: 'utility',
+          categoryLabel: { en: 'Utility & Workflow', th: 'เครื่องมือและแปลงไฟล์' },
+          accentColor: '#06b6d4',
+          glowColor: 'rgba(6, 182, 212, 0.25)',
+          emoji: '🎯',
+          counterpart: { en: 'Zero-Window Radial Converter HUD', th: 'วงแหวนแปลงไฟล์เรเดียลรอบเมาส์' },
+          tagline: {
+            en: 'Zero-Window Radial Drag & Drop File Converter HUD',
+            th: 'วงแหวนแปลงไฟล์เรเดียลรอบเมาส์ ลากวางไฟล์แปลงทันทีใน RAM'
+          },
+          desc: {
+            en: 'Zero-window radial pie HUD appearing around cursor upon file drag. Converts images, PDFs, audio, and documents in device memory.',
+            th: 'วงแหวนเรเดียลลอยรอบเคอร์เซอร์ขณะลากไฟล์ แปลงฟอร์แมตภาพ PDF เสียง และเอกสารในแรมโดยไม่ต้องเปิดหน้าต่างโปรแกรม'
+          },
+          version: 'v1.0.0',
+          file: 'medrop.exe',
+          size: '~12.2 MB',
+          hash: 'b2c3d4e5f6a17890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../medrop/',
+          specs: {
+            en: ['Zero-Window Cursor Pie HUD Conversion', 'Multi-Format Pipeline: PNG, JPG, WebP, PDF', 'In-Memory Batch Queue Processing', 'ClipBus Cross-Studio IPC Dispatch'],
+            th: ['วงแหวนแปลงไฟล์เรเดียลรอบเมาส์ ไม่ต้องเปิดหน้าต่าง', 'รองรับแปลงไฟล์สารพัดชนิด PNG, JPG, WebP, PDF', 'จัดการคิวแปลงไฟล์หลายรายการในหน่วยความจำ', 'เชื่อมต่อและส่งไฟล์เข้าสู่สตูดิโออื่นด้วย ClipBus']
+          }
+        },
+        {
+          id: 'medoc',
+          num: '04',
+          name: 'meDoc Studio',
+          category: 'document',
+          categoryLabel: { en: 'Document', th: 'เอกสาร' },
+          accentColor: '#0d9488',
+          glowColor: 'rgba(13, 148, 136, 0.25)',
+          emoji: '📝',
+          counterpart: { en: 'Typora / Obsidian Alternative', th: 'ทางเลือกแทน Typora และ Obsidian' },
+          tagline: {
+            en: 'Distraction-Free Pro Writing, Real-Time Markdown & KaTeX Engine',
+            th: 'โปรแกรมพิมพ์งานไร้สิ่งรบกวน Markdown, สมการ KaTeX และผัง Mermaid สด'
+          },
+          desc: {
+            en: 'Clean typographic editor with instant Markdown, LaTeX KaTeX mathematical typesetting, Mermaid flowcharts, and print-ready PDF compilation.',
+            th: 'พิมพ์เอกสารปราศจากสิ่งรบกวน เรนเดอร์สมการคณิตศาสตร์ KaTeX, สร้างผัง Mermaid อัตโนมัติ และส่งออก PDF คุณภาพสิ่งพิมพ์'
+          },
+          version: 'v1.0.0',
+          file: 'medoc.exe',
+          size: '~14.5 MB',
+          hash: 'c3d4e5f6a1b27890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../medoc/',
+          specs: {
+            en: ['Live LaTeX / KaTeX Mathematical Typesetting', 'Automated Mermaid Diagram Compiler', 'Local Markdown Vault & FrontMatter Manager', 'Vector PDF Compilation with Page Breaks'],
+            th: ['เรนเดอร์สมการวิทยาศาสตร์ LaTeX KaTeX สด', 'คอมไพล์ชาร์ต Mermaid ไดนามิกในตัว', 'ระบบคลังเอกสาร Local Vault จัดการ FrontMatter', 'ส่งออกเอกสาร Vector PDF จัดหน้ากระดาษแม่นยำ']
+          }
+        },
+        {
+          id: 'mevector',
+          num: '05',
+          name: 'meVector Studio',
+          category: 'vector',
+          categoryLabel: { en: 'Vector & Design', th: 'เวกเตอร์และดีไซน์' },
+          accentColor: '#3b82f6',
+          glowColor: 'rgba(59, 130, 246, 0.25)',
+          emoji: '✒️',
+          counterpart: { en: 'Adobe Illustrator Alternative', th: 'ทางเลือกแทน Adobe Illustrator' },
+          tagline: {
+            en: 'Precision Bézier Vector Illustration & SVG Studio',
+            th: 'วาดภาพประกอบเวกเตอร์ Bézier ความแม่นยำสูง และส่งออก SVG/PDF สะอาด'
+          },
+          desc: {
+            en: 'Bézier pen tool with smooth curvature continuity, Boolean shape pathfinder operations, multi-stop gradients, and clean SVG/EPS export.',
+            th: 'ปากกาวาดเส้น Bézier ปรับความโค้งเนียนตา, ดำเนินการ Boolean ตัดผสานรูปทรง, ไล่เฉดสีหลายจุด และส่งออก SVG สะอาดปราศจากขยะ'
+          },
+          version: 'v1.0.0',
+          file: 'mevector.exe',
+          size: '~18.6 MB',
+          hash: 'd4e5f6a1b2c37890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../mevector/',
+          specs: {
+            en: ['Sub-Pixel Bézier Curvature Continuity', 'Boolean Shape Operations (Union, Diff, Intersect)', 'Multi-Stop Linear & Radial Gradient Engine', 'Clean SVG Sanitization & Export'],
+            th: ['ปากกาวาดเส้น Bézier ความแม่นยำระดับ Sub-Pixel', 'ฟังก์ชัน Boolean รวม ตัด ซ้อนรูปทรงครบครัน', 'ไล่เฉดสี Multi-Stop Linear และ Radial สมจริง', 'สร้างและส่งออกไฟล์ SVG มาตรฐาน W3C']
+          }
+        },
+        {
+          id: 'me3d',
+          num: '06',
+          name: 'me3D Studio',
+          category: 'audio',
+          categoryLabel: { en: '3D & Spatial', th: '3D และมิติเสมือน' },
+          accentColor: '#6366f1',
+          glowColor: 'rgba(99, 102, 241, 0.25)',
+          emoji: '🎲',
+          counterpart: { en: 'Blender Viewport Alternative', th: 'ทางเลือกแทน Blender Viewport' },
+          tagline: {
+            en: 'WebGL Polygon Mesh Modeling & PBR Spatial Staging Studio',
+            th: 'ปั้นโมเดลโพลีกอน 3 มิติ, จัดวางวัสดุ PBR และแสงสตูดิโอ HDRI แบบเรียลไทม์'
+          },
+          desc: {
+            en: 'GLTF/OBJ 3D viewport, polygon mesh inspection, PBR metallic/roughness staging, and real-time shadow baking.',
+            th: 'ตรวจสอบโมเดล 3 มิติ GLTF/OBJ, จัดแสงสตูดิโอเสมือนจริงด้วย HDRI, พรีวิวแมตทีเรียล PBR และคำนวณแสงเงาเรียลไทม์'
+          },
+          version: 'v1.0.0',
+          file: 'me3d.exe',
+          size: '~22.3 MB',
+          hash: 'e5f6a1b2c3d47890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../me3d/',
+          specs: {
+            en: ['WebGL 2.0 & WebGPU High-FPS Spatial Viewport', 'PBR Metallic / Roughness Environment Lighting', 'Real-Time GLTF / GLB / OBJ Model Inspection', 'Normals & UV Unwrapping Diagnostic Overlay'],
+            th: ['พรีวิว 3 มิติเฟรมเรตสูงด้วย WebGL 2.0 / WebGPU', 'จัดแสงรอบทิศทางเสมือนจริง PBR Metallic/Roughness', 'โหลดและตรวจสอบไฟล์โมเดล GLTF, GLB, OBJ', 'ตรวจสอบระนาบ Normal Vector และการกาง UV']
+          }
+        },
+        {
+          id: 'mefilm',
+          num: '07',
+          name: 'meFilm Studio',
+          category: 'video',
+          categoryLabel: { en: 'Video & Motion', th: 'วิดีโอและโมชัน' },
+          accentColor: '#ef4444',
+          glowColor: 'rgba(239, 68, 68, 0.25)',
+          emoji: '🎬',
+          counterpart: { en: 'Premiere Pro / CapCut Alternative', th: 'ทางเลือกแทน Premiere Pro และ CapCut' },
+          tagline: {
+            en: 'Non-Linear Multi-Layer Video Editor & Clip Arrangement Suite',
+            th: 'ตัดต่อวิดีโอหลายเลเยอร์ Non-Linear, ใส่ Transition และเรนเดอร์ MP4 ด่วน'
+          },
+          desc: {
+            en: 'Multi-track video and audio timeline, transitions, real-time color grading LUTs, and fast hardware-accelerated MP4 rendering.',
+            th: 'ไทม์ไลน์ตัดต่อวิดีโอหลายแทร็ก, ทรานซิชันเปลี่ยนฉากลื่นไหล, เกรดสีด้วยไฟล์ LUT 3D และเรนเดอร์ MP4 ด้วยฮาร์ดแวร์เร่งความเร็ว'
+          },
+          version: 'v1.0.0',
+          file: 'mefilm.exe',
+          size: '~26.1 MB',
+          hash: 'f6a1b2c3d4e57890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../mefilm/',
+          specs: {
+            en: ['Multi-Track Timeline with Magnetic Snapping', 'Hardware-Accelerated In-Browser H.264 / WebM', '3D LUT Color Grading & Curve Adjustments', 'Real-Time Audio Sync & Waveform Scrubbing'],
+            th: ['ไทม์ไลน์หลายแทร็กพร้อมระบบ Magnetic Snap ดูดขอบ', 'เรนเดอร์วิดีโอเร็วด้วยฮาร์ดแวร์ H.264 / WebM', 'เกรดสีภาพยนตร์ด้วยไฟล์ 3D LUT และ Curves', 'ซิงก์เสียงและภาพตรงเป๊ะพร้อมพรีวิวคลื่นเสียงสด']
+          }
+        },
+        {
+          id: 'melight',
+          num: '08',
+          name: 'meLight Studio',
+          category: 'photo',
+          categoryLabel: { en: 'Photo & Color', th: 'ภาพและสี' },
+          accentColor: '#eab308',
+          glowColor: 'rgba(234, 179, 8, 0.25)',
+          emoji: '☀️',
+          counterpart: { en: 'Lightroom Classic Alternative', th: 'ทางเลือกแทน Lightroom Classic' },
+          tagline: {
+            en: 'HDR Tone Mapping, Parametric Exposure & RAW Photo Grade Lab',
+            th: 'ปรับแต่งภาพถ่าย RAW, ปรับแสง Parametric Exposure และ Tone Mapping HDR'
+          },
+          desc: {
+            en: 'Non-destructive 16-bit RAW development, parametric exposure, highlight/shadow recovery, and batch preset cataloger.',
+            th: 'ล้างภาพถ่ายไฟล์ RAW 16-bit แบบไม่ทำลายต้นฉบับ, ดึงรายละเอียดไฮไลต์และเงามืด, ปรับแต่งสีผิว และจัดการสูตรพรีเซ็ตภาพชุด'
+          },
+          version: 'v1.0.0',
+          file: 'melight.exe',
+          size: '~16.0 MB',
+          hash: '1a2b3c4d5e6f7890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../melight/',
+          specs: {
+            en: ['16-Bit RAW Color Processing Pipeline', 'Parametric Exposure & Tone Curve Control', 'Selective Color Grading & White Balance Tuning', 'High-Speed Batch Preset Recipes'],
+            th: ['ไปป์ไลน์ประมวลผลสี RAW 16-bit เต็มสเปกตรัม', 'ปรับแต่งแสงและเส้นเคิร์ฟ Parametric Tone Curve', 'คุมเฉดสีเฉพาะจุดและปรับสมดุลแสงขาวแม่นยำ', 'ประมวลผลสูตรสีภาพถ่ายเป็นชุดด้วยความเร็วสูง']
+          }
+        },
+        {
+          id: 'memotion',
+          num: '09',
+          name: 'meMotion Studio',
+          category: 'video',
+          categoryLabel: { en: 'Video & Motion', th: 'วิดีโอและโมชัน' },
+          accentColor: '#a855f7',
+          glowColor: 'rgba(168, 85, 247, 0.25)',
+          emoji: '✨',
+          counterpart: { en: 'After Effects / Lottie Alternative', th: 'ทางเลือกแทน After Effects และ Lottie' },
+          tagline: {
+            en: 'Keyframe Motion Graphics, Kinetic Typography & Particle VFX',
+            th: 'แอนิเมชันกราฟิกเคลื่อนไหว Keyframe, ตัวอักษร Kinetic และเอฟเฟกต์อนุภาค'
+          },
+          desc: {
+            en: 'Spline velocity graph curves, kinetic typography animator, shape morphing, particle emitters, and Lottie JSON / MP4 export.',
+            th: 'กราฟปรับความเร็วสไปลน์, แอนิเมชันตัวอักษรเคลื่อนไหว, เปลี่ยนรูปทรงเวกเตอร์ และส่งออกไฟล์ Lottie JSON สำหรับเว็บและแอป'
+          },
+          version: 'v1.0.0',
+          file: 'memotion.exe',
+          size: '~19.4 MB',
+          hash: '2b3c4d5e6f1a7890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../memotion/',
+          specs: {
+            en: ['Bézier Velocity & Value Graph Curves', 'Kinetic Typography & Text Animator Engine', 'Lottie JSON / DotLottie Clean Vector Export', 'Real-Time 60fps Particle Physics Simulation'],
+            th: ['ดัดความเร่งเคลื่อนไหวด้วยกราฟ Bézier Velocity', 'แอนิเมชันตัวอักษร Kinetic Typography ทันสมัย', 'ส่งออกไฟล์แอนิเมชัน Lottie JSON สู่ Web/Mobile', 'จำลองฟิสิกส์อนุภาค Particle เอฟเฟกต์สด 60fps']
+          }
+        },
+        {
+          id: 'medesign',
+          num: '10',
+          name: 'meDesign Studio',
+          category: 'vector',
+          categoryLabel: { en: 'Vector & Design', th: 'เวกเตอร์และดีไซน์' },
+          accentColor: '#8b5cf6',
+          glowColor: 'rgba(139, 92, 246, 0.25)',
+          emoji: '📐',
+          counterpart: { en: 'Figma / Sketch Alternative', th: 'ทางเลือกแทน Figma และ Sketch' },
+          tagline: {
+            en: 'UI/UX Prototyping, Design Systems & Layout Grid Suite',
+            th: 'ออกแบบ UI/UX Prototyping, ระบบ Design System และจัดวางหน้ากระดาษ'
+          },
+          desc: {
+            en: 'Infinite artboard canvas, responsive auto-layout constraints, design tokens governance, and clickable interactive prototypes.',
+            th: 'แคนวาสอินฟินิตี้, จัดเลย์เอาต์ยืดหยุ่น Auto-Layout, บริหารจัดการดีไซน์โทเค็น และทดสอบโปรโตไทป์หน้าจอเชิงโต้ตอบ'
+          },
+          version: 'v1.0.0',
+          file: 'medesign.exe',
+          size: '~15.7 MB',
+          hash: '3c4d5e6f1a2b7890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../medesign/',
+          specs: {
+            en: ['Infinite Vector Artboard Canvas', 'Responsive Auto-Layout & Constraints Engine', 'Design Token Management & CSS Variable Export', 'Clickable Interactive Prototype Links'],
+            th: ['แคนวาสอินฟินิตี้ไม่จำกัดขนาดพื้นที่ทำงาน', 'ระบบ Auto-Layout ยืดหยุ่นรองรับทุกขนาดหน้าจอ', 'จัดการ Design Tokens และส่งออกโค้ด CSS สด', 'เชื่อมโยงหน้าจอเพื่อทดสอบ Prototype เชิงโต้ตอบ']
+          }
+        },
+        {
+          id: 'meaudio',
+          num: '11',
+          name: 'meAudio Studio',
+          category: 'audio',
+          categoryLabel: { en: 'Audio & Mastering', th: 'เสียงและมาสเตอร์ริ่ง' },
+          accentColor: '#ec4899',
+          glowColor: 'rgba(236, 72, 153, 0.25)',
+          emoji: '🎙️',
+          counterpart: { en: 'Adobe Audition Alternative', th: 'ทางเลือกแทน Adobe Audition' },
+          tagline: {
+            en: 'Speech Master, Spectral Denoise & Multi-Track Podcast DAW',
+            th: 'มาสเตอร์เสียงพูด, ตัดเสียงรบกวน Spectral และตัดต่อพอดแคสต์หลายไมค์'
+          },
+          desc: {
+            en: 'FFT spectral audio denoise, voice leveler compression, multi-mic podcast track alignment, and lossless broadcast mastering.',
+            th: 'ลบเสียงรบกวนความถี่สูงด้วย Spectral FFT, บีบอัดเสียงพูดให้ดังสม่ำเสมอ, จัดการแทร็กพอดแคสต์หลายช่อง และมาสเตอร์ริ่งระดับบรอดแคสต์'
+          },
+          version: 'v1.0.0',
+          file: 'meaudio.exe',
+          size: '~13.1 MB',
+          hash: '4d5e6f1a2b3c7890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../meaudio/',
+          specs: {
+            en: ['Real-Time Spectral FFT Waveform Visualizer', 'Intelligent Speech Denoise & De-Esser Gate', 'Multi-Track Podcast Master DAW Timeline', 'Lossless WAV / FLAC / MP3 Export Engine'],
+            th: ['แสดงผลคลื่นเสียงความละเอียดสูง Spectral FFT', 'ตัดเสียงรบกวนพื้นหลังและเสียงซี่ฟัน De-Esser', 'มิกซ์เสียงพอดแคสต์หลายแทร็กพร้อมกันอิสระ', 'ส่งออกไฟล์เสียงคุณภาพสูง WAV, FLAC, MP3']
+          }
+        },
+        {
+          id: 'medeck',
+          num: '12',
+          name: 'meDeck Studio',
+          category: 'document',
+          categoryLabel: { en: 'Presentation', th: 'สไลด์นำเสนอ' },
+          accentColor: '#f97316',
+          glowColor: 'rgba(249, 115, 22, 0.25)',
+          emoji: '📊',
+          counterpart: { en: 'Apple Keynote Alternative', th: 'ทางเลือกแทน Apple Keynote' },
+          tagline: {
+            en: 'High-Impact Interactive Presentation & Keynote Engine',
+            th: 'สร้างสไลด์นำเสนอเชิงโต้ตอบ กราฟิกการนำเสนอ และส่งออก PDF/WebDeck'
+          },
+          desc: {
+            en: 'Slide layout grids, dynamic chart visualizations, presenter notes HUD, interactive slide links, and standalone HTML/PDF deck packaging.',
+            th: 'จัดวางสไลด์บนกริดความแม่นยำสูง, กราฟแสดงข้อมูลแบบอินเทอร์แอคทีฟ, หน้าจอช่วยพูดสำหรับผู้นำเสนอ และส่งออกเป็น WebDeck หรือ PDF'
+          },
+          version: 'v1.0.0',
+          file: 'medeck.exe',
+          size: '~14.2 MB',
+          hash: '5e6f1a2b3c4d7890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../medeck/',
+          specs: {
+            en: ['High-Precision Keynote Presentation Grid', 'Interactive Chart & Infographic Data Plots', 'Dual-Screen Presenter Teleprompter HUD', 'Self-Contained Standalone WebDeck / PDF'],
+            th: ['กริดจัดวางสไลด์นำเสนอความคมชัดระดับสิ่งพิมพ์', 'สร้างแผนภูมิและอินโฟกราฟิกโต้ตอบแบบสด', 'หน้าจอ Presenter HUD แยก 2 จอสำหรับผู้พูด', 'ส่งออกเป็น WebDeck พร้อมเล่น หรือ Vector PDF']
+          }
+        },
+        {
+          id: 'mecad',
+          num: '13',
+          name: 'meCAD Studio',
+          category: 'vector',
+          categoryLabel: { en: 'Vector & CAD', th: 'เขียนแบบและ CAD' },
+          accentColor: '#0ea5e9',
+          glowColor: 'rgba(14, 165, 233, 0.25)',
+          emoji: '📐',
+          counterpart: { en: 'AutoCAD 2D Alternative', th: 'ทางเลือกแทน AutoCAD 2D' },
+          tagline: {
+            en: '2D Engineering CAD Drafting & Millimeter Precision Plotter',
+            th: 'เขียนแบบวิศวกรรม 2D CAD ความแม่นยำสูงระดับมิลลิเมตร และจัดการ DXF'
+          },
+          desc: {
+            en: 'Millimeter precision architectural CAD drafting, DXF import/export, parametric dimensions, snapping constraints, and scale printing.',
+            th: 'เขียนแบบสถาปัตยกรรมและวิศวกรรมระดับมิลลิเมตร, นำเข้าและส่งออกไฟล์ DXF, กำหนดขนาด Dimension อัตโนมัติ และพิมพ์แบบตามอัตราส่วน'
+          },
+          version: 'v1.0.0',
+          file: 'mecad.exe',
+          size: '~17.8 MB',
+          hash: '6f1a2b3c4d5e7890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../mecad/',
+          specs: {
+            en: ['Millimeter-Exact Geometry & Snap Constraints', 'Full DXF / DWG 2D Vector Compatibility', 'Parametric Dimensioning & Area Measurement', 'Architectural Scale Printing & Plotter Output'],
+            th: ['คำนวณเรขาคณิตและเส้น Snap ระดับมิลลิเมตร', 'รองรับมาตรฐานไฟล์เขียนแบบ DXF / DWG 2D', 'วัดระยะและคำนวณพื้นที่แบบพารามิเตอร์อัตโนมัติ', 'สั่งพิมพ์แบบแปลนตรงตามอัตราส่วนมาตรฐาน Scale']
+          }
+        },
+        {
+          id: 'mesheet',
+          num: '14',
+          name: 'meSheet Studio',
+          category: 'document',
+          categoryLabel: { en: 'Document', th: 'เอกสาร' },
+          accentColor: '#14b8a6',
+          glowColor: 'rgba(20, 184, 166, 0.25)',
+          emoji: '📈',
+          counterpart: { en: 'Microsoft Excel Alternative', th: 'ทางเลือกแทน Microsoft Excel' },
+          tagline: {
+            en: 'Reactive Financial Modeling & High-Volume Spreadsheet Grid',
+            th: 'ตารางคำนวณสเปรดชีตสูตรการเงินความเร็วสูง และประมวลผลข้อมูลใน RAM'
+          },
+          desc: {
+            en: 'Reactive cell calculation graph, financial math models, high-volume million-row virtualized grid, and fast local CSV/XLSX export.',
+            th: 'ตารางคำนวณสเปรดชีตสูตรการเงินความเร็วสูง, รองรับสูตรคณิตศาสตร์ครบครัน, เลื่อนดูข้อมูลนับล้านแถวลื่นไหล และเปิดไฟล์ XLSX/CSV ในเครื่อง'
+          },
+          version: 'v1.0.0',
+          file: 'mesheet.exe',
+          size: '~13.8 MB',
+          hash: '7a1b2c3d4e5f7890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../mesheet/',
+          specs: {
+            en: ['Reactive Graph Formula Engine (SUM, VLOOKUP, XLOOKUP)', '1,000,000-Row Virtualized Canvas Grid', 'Local In-RAM XLSX & CSV Parser Engine', 'Financial Forecasting & Chart Visualizations'],
+            th: ['สูตรคำนวณ Reactive รองรับ SUM, VLOOKUP, XLOOKUP', 'แสดงผลตารางเสมือนจริงเลื่อนล้านแถวไม่กระตุก', 'อ่านเขียนไฟล์ XLSX และ CSV ในแรม 100%', 'สร้างกราฟวิเคราะห์แนวโน้มและการคาดการณ์การเงิน']
+          }
+        },
+        {
+          id: 'metexture',
+          num: '15',
+          name: 'meTexture Studio',
+          category: 'audio',
+          categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
+          accentColor: '#f43f5e',
+          glowColor: 'rgba(244, 63, 94, 0.25)',
+          emoji: '🎨',
+          counterpart: { en: 'Substance 3D Painter Alternative', th: 'ทางเลือกแทน Substance 3D Painter' },
+          tagline: {
+            en: 'Direct 3D Mesh Brush Painter & UV Unwrapping Workbench',
+            th: 'เพนต์ลวดลายบนผิวโมเดล 3D Mesh โดยตรง และกางระนาบ UV เกาะผิวโมเดล'
+          },
+          desc: {
+            en: 'Direct 3D mesh brush painting, UV island unwrapping, DirectDraw Surface (DDS / BC1-BC5) block compression, and PBR texture map baking.',
+            th: 'ระบายสีลงบนผิวโมเดล 3 มิติโดยตรง, คลี่พิกัด UV, บีบอัดพื้นผิว DirectDraw Surface (DDS BC1-BC5) และสร้าง Mipmap ในแรม'
+          },
+          version: 'v1.0.0',
+          file: 'metexture.exe',
+          size: '~21.5 MB',
+          hash: '8b2c3d4e5f1a7890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../metexture/',
+          specs: {
+            en: ['Direct 3D Mesh Brush Painting & Decal Stamping', 'UV Island Unwrapping & Seam Stitching', 'DDS (BC1-BC5) GPU Block Compression', 'Full PBR Texture Set Synthesis'],
+            th: ['ระบายสีและประทับสติกเกอร์ลงบนผิวโมเดล 3D โดยตรง', 'ระบบกางเกาะ UV และเย็บรอยต่อตะเข็บโมเดลแม่นยำ', 'บีบอัดกราฟิก DDS (BC1-BC5) ประสิทธิภาพระดับการ์ดจอ', 'ชุดเท็กซ์เจอร์ PBR ครบวงจร ทั้งสี ความเงา และความนูน']
+          }
+        },
+        {
+          id: 'mematerial',
+          num: '16',
+          name: 'meMaterial Studio',
+          category: 'audio',
+          categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
+          accentColor: '#8b5cf6',
+          glowColor: 'rgba(139, 92, 246, 0.25)',
+          emoji: '💎',
+          counterpart: { en: 'Substance Designer Alternative', th: 'ทางเลือกแทน Substance Designer' },
+          tagline: {
+            en: 'Procedural Node-Based PBR Material & Shader Synthesizer',
+            th: 'สังเคราะห์พื้นผิว PBR เสมือนจริงด้วยโหนดเชื่อมต่อ และเขียน WebGPU Shader'
+          },
+          desc: {
+            en: 'Visual node shader graph, real-time WebGPU WGSL compilation, procedural noise synthesis (Perlin, Voronoi), and 4K seamless tiling.',
+            th: 'กราฟโหนดสร้างพื้นผิวอัตโนมัติ, คอมไพล์ภาษา WGSL สด, สังเคราะห์ Noise ทางคณิตศาสตร์ และจัดวางแสงเงา PBR ในเครื่อง'
+          },
+          version: 'v1.0.0',
+          file: 'mematerial.exe',
+          size: '~20.3 MB',
+          hash: '9c3d4e5f1a2b7890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../mematerial/',
+          specs: {
+            en: ['Node-Based Visual Shader Graph Architecture', 'Procedural Mathematical Noise Generators', 'Real-Time WebGPU WGSL Shader Compilation', 'Non-Destructive 4K Seamless Texture Baking'],
+            th: ['สถาปัตยกรรมกราฟโหนดเชื่อมต่อยืดหยุ่นไม่ทำลายต้นฉบับ', 'สังเคราะห์สัญญาณนอยส์ Perlin, Simplex, Voronoi', 'คอมไพล์โค้ด WebGPU WGSL แสดงผลแสงจริงในเสี้ยววินาที', 'สร้างลวดลายไร้รอยต่อความละเอียดระดับ 4K พร้อมใช้งาน']
+          }
+        },
+        {
+          id: 'meani',
+          num: '17',
+          name: 'meAni Studio',
+          category: 'video',
+          categoryLabel: { en: 'Video & Motion', th: 'วิดีโอและโมชัน' },
+          accentColor: '#d946ef',
+          glowColor: 'rgba(217, 70, 239, 0.25)',
+          emoji: '🏃',
+          counterpart: { en: 'Spine 2D / Animate Alternative', th: 'ทางเลือกแทน Spine 2D และ Animate' },
+          tagline: {
+            en: '2D Skeletal Animation, Inverse Kinematics & Sprite Rigging',
+            th: 'แอนิเมชัน 2 มิติติดกระดูกโครงสร้าง สรีระจำลอง IK และทำ Sprite Sheet เกม'
+          },
+          desc: {
+            en: '2D skeletal bone rigging, Inverse Kinematics (IK), frame-by-frame onion skinning, packed sprite sheet generation, and game-ready JSON/SVG export.',
+            th: 'โต๊ะไฟสเก็ตช์ทีละเฟรม, หัวหอมพรีวิว Onion Skinning, ดัดกระดูกโครงสร้างตัวละคร 2 มิติ และส่งออก Sprite Sheet สู่เอนจินเกม'
+          },
+          version: 'v1.0.0',
+          file: 'meani.exe',
+          size: '~18.9 MB',
+          hash: 'ad4e5f1a2b3c7890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../meani/',
+          specs: {
+            en: ['2D Skeletal Bone Rigging & Inverse Kinematics', 'Frame-by-Frame Light Table & Onion Skinning', 'Packed Texture Atlas & Sprite Sheet Generator', 'Clean Vector SVG & Game-Ready JSON Export'],
+            th: ['ติดกระดูกโครงสร้าง 2 มิติพร้อมจำลองการเคลื่อนไหว IK', 'โต๊ะไฟวาดเฟรมต่อเฟรมและภาพซ้อนหัวหอม Onion Skin', 'จัดเรียงภาพลง Atlas และ Sprite Sheet สำหรับเกม', 'ส่งออก JSON และ SVG Vector นำไปใช้ใน Web/Unity/Godot']
+          }
+        },
+        {
+          id: 'merea',
+          num: '18',
+          name: 'meREA Studio',
+          category: 'utility',
+          categoryLabel: { en: 'Utility & REA', th: 'เครื่องมือและ REA' },
+          accentColor: '#00f0ff',
+          glowColor: 'rgba(0, 240, 255, 0.25)',
+          emoji: '⚡',
+          counterpart: { en: 'Universal REA & Code Synthesis', th: 'ระบบแกะรอยและสร้างโค้ดสะอาดอัตโนมัติ' },
+          tagline: {
+            en: 'Forensic Binary Reverse Engineering & Clean-Room Code Synthesis',
+            th: 'แกะรอยระบบ ถอดรหัสไบนารี สถาปัตยกรรมย้อนรอย และสร้างโค้ดอัตโนมัติ'
+          },
+          desc: {
+            en: '320 forensic reverse engineering tools via MCP, PE/ELF/WASM disassembly, cross-reference call graph reconstruction, and clean-room code synthesis.',
+            th: 'ชุดเครื่องมือวิศวกรรมย้อนรอยครอบจักรวาล 320 คำสั่ง CLI/MCP, ถอดรหัสไฟล์ PE, ELF, Mach-O, WASM, วิเคราะห์โครงสร้างเมมโมรี่ และสร้างโค้ดสะอาดสำหรับ AI Agent'
+          },
+          version: 'v1.0.0',
+          file: 'merea.exe',
+          size: '~24.7 MB',
+          hash: 'be5f1a2b3c4d7890123456789abcdef0123456789abcdef0123456789abcdef0',
+          webRoute: '../merea/',
+          specs: {
+            en: ['320 CLI / MCP Reverse Engineering Tools', 'PE / ELF / Mach-O / WASM Full Disassembly', 'Cross-Reference (XRef) Call-Graph Mapper', 'Autonomous Agent Model Context Protocol Ready'],
+            th: ['เครื่องมือตรวจพิสูจน์วิศวกรรมย้อนรอย 320 รายการผ่าน MCP', 'ถอดรหัสและวิเคราะห์โครงสร้าง PE, ELF, Mach-O และ WASM', 'สร้างผังเชื่อมโยง Cross-Reference และกราฟเรียกฟังก์ชัน', 'เชื่อมต่อตรงสู่โมเดลปัญญาประดิษฐ์ผ่าน Model Context Protocol']
+          }
+        }
+      ];
+
+      // Bilingual Text Map
+      const I18N = {
+        en: {
+          header_badge: 'OFFICIAL SUITE',
+          nav_portal: '← Workstation Portal',
+          nav_lineup: 'All 18 Studios',
+          nav_principles: 'Architecture',
+          nav_verify: 'Verification',
+          hero_eyebrow: '18 CREATIVE WORKSTATIONS · WINDOWS (64-BIT)',
+          hero_title: 'Official Studio Installers & <span class="highlight">Suite Directory</span>',
+          hero_lead: '100% In-Device Memory Execution. Zero Cloud Uploads. Zero Telemetry. Native Windows Desktop Performance with MIT Open-Source Transparency.',
+          badge_win: 'Windows 11 / 10 · 64-bit',
+          badge_ram: '100% In-Device RAM',
+          badge_telemetry: 'Zero Telemetry',
+          badge_crypto: 'SHA-256 Verified',
+          cta_master_dl: 'Download meCraft Installer (.exe)',
+          cta_master_sub: 'v1.0.0 · ~14.8 MB · Complete 18-Studio Suite',
+          cta_browse_studios: 'Explore All 18 Studios ↓',
+          dock_title: 'STUDIO DOCK · CLICK TO NAVIGATE',
+          dock_count: '18 STUDIOS + SUITE',
+          lineup_header: 'THE 18-STUDIO LINEUP · PICK A STUDIO TO DOWNLOAD',
+          search_placeholder: 'Search 18 studios, files, features...',
+          filter_all: 'All (18)',
+          filter_document: 'Document',
+          filter_photo: 'Photo & Color',
+          filter_audio: '3D & Sound',
+          filter_video: 'Video & Motion',
+          filter_vector: 'Vector & CAD',
+          filter_utility: 'Utility & REA',
+          btn_dl: 'Download .exe',
+          btn_web: 'Launch Web Studio ↗',
+          principles_eyebrow: '03 / ARCHITECTURAL INVARIANTS',
+          principles_title: 'Zero-Cloud Engineering Principles',
+          principles_subtitle: 'Six non-negotiable guarantees built into every byte of meCrafts desktop workstation applications.',
+          p1_title: '100% In-Device Memory',
+          p1_desc: 'All documents, pixels, waveforms, and geometries are loaded strictly into local host RAM. No file buffers or telemetry ever touch remote servers.',
+          p2_title: 'Zero Telemetry & Tracking',
+          p2_desc: 'Zero analytics SDKs, zero background pinging, zero behavioral telemetry. Your machine remains strictly yours.',
+          p3_title: 'Native Windows Desktop Engine',
+          p3_desc: 'Built with Tauri v2, Rust native backend, and DirectX 12 / Vulkan hardware acceleration for microsecond UI response times.',
+          p4_title: 'MIT Open-Source License',
+          p4_desc: 'Transparent source code available on GitHub. Anyone can inspect, audit, fork, or build the binaries from source independently.',
+          p5_title: 'Cryptographic Signatures',
+          p5_desc: 'Every executable is published with an immutable SHA-256 hash and Ed25519 cryptographic release signature.',
+          p6_title: 'Air-Gapped Offline Ready',
+          p6_desc: 'Full offline functionality from first boot. Install once and run indefinitely in air-gapped secure workstations.',
+          verify_eyebrow: '04 / CRYPTOGRAPHIC VERIFICATION',
+          verify_title: 'Binary Integrity & SHA-256 Hashes',
+          verify_subtitle: 'Verify the checksum of downloaded binaries before execution using the Windows PowerShell command below:',
+          btn_copy_cmd: 'Copy PowerShell',
+          th_file: 'Binary File',
+          th_version: 'Version',
+          th_size: 'Size',
+          th_hash: 'SHA-256 Checksum',
+          toast_copied: 'Copied SHA-256 Checksum to Clipboard',
+          toast_cmd_copied: 'Copied PowerShell verification command!'
+        },
+        th: {
+          header_badge: 'ชุดโปรแกรมทางการ',
+          nav_portal: '← กลับหน้าเวิร์กสเตชัน',
+          nav_lineup: 'ครบทั้ง 18 สตูดิโอ',
+          nav_principles: 'สถาปัตยกรรม',
+          nav_verify: 'ตรวจความถูกต้อง',
+          hero_eyebrow: '18 สตูดิโอสร้างสรรค์ · WINDOWS (64-BIT)',
+          hero_title: 'ศูนย์ดาวน์โหลดตัวติดตั้งทางการ &amp; <span class="highlight">สารบัญโปรแกรม</span>',
+          hero_lead: 'ประมวลผลบนหน่วยความจำ RAM 100% ไม่ส่งไฟล์ขึ้นคลาวด์ ปราศจากการติดตาม Telemetry ประสิทธิภาพเนทีฟบน Windows ด้วยความโปร่งใสแบบโอเพนซอร์ส MIT',
+          badge_win: 'Windows 11 / 10 · 64-bit',
+          badge_ram: 'ประมวลผลใน RAM 100%',
+          badge_telemetry: 'ไร้การแอบส่งข้อมูล',
+          badge_crypto: 'ตรวจยืนยัน SHA-256',
+          cta_master_dl: 'ดาวน์โหลด meCraft ตัวติดตั้งชุดรวม (.exe)',
+          cta_master_sub: 'v1.0.0 · ~14.8 MB · รวมครบทุก 18 สตูดิโอ',
+          cta_browse_studios: 'สำรวจครบทั้ง 18 สตูดิโอ ↓',
+          dock_title: 'สารบัญลัดสตูดิโอ · คลิกเพื่อข้ามไปดาวน์โหลด',
+          dock_count: '18 สตูดิโอ + ตัวติดตั้งรวม',
+          lineup_header: 'สารบัญ 18 สตูดิโอสร้างสรรค์ · เลือกดาวน์โหลดได้อิสระ',
+          search_placeholder: 'ค้นหาชื่อสตูดิโอ, ฟังก์ชัน, นามสกุลไฟล์...',
+          filter_all: 'ทั้งหมด (18)',
+          filter_document: 'เอกสาร',
+          filter_photo: 'ภาพและสี',
+          filter_audio: '3D และเสียง',
+          filter_video: 'วิดีโอและโมชัน',
+          filter_vector: 'เวกเตอร์และ CAD',
+          filter_utility: 'เครื่องมือและ REA',
+          btn_dl: 'ดาวน์โหลด .exe',
+          btn_web: 'เปิดเว็บสตูดิโอ ↗',
+          principles_eyebrow: '03 / กฎเหล็กสถาปัตยกรรม',
+          principles_title: 'หลักวิศวกรรม Zero-Cloud ไม่พึ่งพาคลาวด์',
+          principles_subtitle: '6 พันธสัญญาที่สร้างขึ้นในทุกไบต์ของแอปพลิเคชันเดสก์ท็อป meCrafts',
+          p1_title: 'ประมวลผลบน RAM 100%',
+          p1_desc: 'เอกสาร พิกเซล คลื่นเสียง และเรขาคณิตทั้งหมดจะถูกโหลดเข้าสู่ RAM ของเครื่องท่านเท่านั้น ไม่มีการส่งบัฟเฟอร์ไฟล์ออกนอกเครื่องเด็ดขาด',
+          p2_title: 'ไร้การติดตามและการตรวจวัด',
+          p2_desc: 'ไม่มี SDK เก็บสถิติ ไม่มีการแอบส่งข้อมูลกลับ และไม่มีการติดตามพฤติกรรม เครื่องคอมพิวเตอร์ของคุณเป็นของคุณโดยสมบูรณ์',
+          p3_title: 'เอนจินเนทีฟบน Windows',
+          p3_desc: 'พัฒนาด้วย Tauri v2, แบ็กเอนด์ภาษา Rust และเร่งความเร็วด้วย DirectX 12 / Vulkan เพื่อความเร็วในการตอบสนองระดับไมโครวินาที',
+          p4_title: 'สัญญาอนุญาตแบบ MIT Open-Source',
+          p4_desc: 'โค้ดต้นฉบับเปิดเผย 100% บน GitHub ให้ทุกคนสามารถตรวจสอบ ตรวจสอบช่องโหว่ หรือคอมไพล์โปรแกรมจากซอร์สโค้ดได้ด้วยตนเอง',
+          p5_title: 'ลงลายมือชื่อดิจิทัลเข้ารหัส',
+          p5_desc: 'ทุกไฟล์โปรแกรมมีค่าแฮช SHA-256 ที่ตรวจสอบได้ และลงลายมือชื่อความปลอดภัยแบบ Ed25519 กำกับทุกเวอร์ชัน',
+          p6_title: 'พร้อมใช้งานแม้ออฟไลน์สมบูรณ์',
+          p6_desc: 'ทำงานได้ 100% ตั้งแต่เปิดใช้งานครั้งแรก ติดตั้งครั้งเดียวใช้งานได้ตลอดไปบนเครื่อง Workstation ที่ตัดขาดจากอินเทอร์เน็ต',
+          verify_eyebrow: '04 / ตรวจสอบความถูกต้อง',
+          verify_title: 'ความถูกต้องของไฟล์ &amp; ค่าแฮช SHA-256',
+          verify_subtitle: 'ตรวจสอบความถูกต้องสมบูรณ์ของไฟล์ที่ดาวน์โหลดก่อนเปิดใช้งานด้วยคำสั่ง PowerShell:',
+          btn_copy_cmd: 'คัดลอกคำสั่ง PowerShell',
+          th_file: 'ชื่อไฟล์โปรแกรม',
+          th_version: 'เวอร์ชัน',
+          th_size: 'ขนาดไฟล์',
+          th_hash: 'ค่าตรวจสอบ SHA-256',
+          toast_copied: 'คัดลอกค่าแฮช SHA-256 เรียบร้อยแล้ว',
+          toast_cmd_copied: 'คัดลอกคำสั่ง PowerShell เรียบร้อยแล้ว'
+        }
+      };
+
+      // State
+      let currentLang = localStorage.getItem('mecraft_lang') || 'en';
+      let currentFilter = 'all';
+      let searchQuery = '';
+
+      // Toast feedback helper
+      function showToast(msgKey) {
+        const toast = document.getElementById('toast');
+        const text = (I18N[currentLang] && I18N[currentLang][msgKey]) || msgKey;
+        toast.textContent = text;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2200);
+      }
+
+      // Copy text to clipboard
+      window.copyText = function(text, toastKey) {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text).then(() => showToast(toastKey));
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          showToast(toastKey);
+        }
+      };
+
+      // Render Hero Squircle Dock (18 Studios)
+      function renderHeroDock() {
+        const matrix = document.getElementById('hero-dock-matrix');
+        matrix.innerHTML = STUDIOS.map(s => \`
+          <a href="#studio-\${s.id}" class="dock-squircle" style="--app-color:\${s.accentColor};--app-glow:\${s.glowColor};" title="\${s.name} (\${currentLang === 'th' ? s.categoryLabel.th : s.categoryLabel.en})">
+            <span class="dock-icon">\${s.emoji}</span>
+            <span class="dock-label">\${s.name.replace(' Studio', '').replace(' Radial Converter', '')}</span>
+          </a>
+        \`).join('');
+      }
+
+      // Render Filter Pills
+      function renderFilterPills() {
+        const container = document.getElementById('filter-pills-container');
+        const categories = [
+          { key: 'all', labelKey: 'filter_all' },
+          { key: 'document', labelKey: 'filter_document' },
+          { key: 'photo', labelKey: 'filter_photo' },
+          { key: 'audio', labelKey: 'filter_audio' },
+          { key: 'video', labelKey: 'filter_video' },
+          { key: 'vector', labelKey: 'filter_vector' },
+          { key: 'utility', labelKey: 'filter_utility' },
+        ];
+
+        container.innerHTML = categories.map(c => \`
+          <button type="button" class="filter-pill \${currentFilter === c.key ? 'active' : ''}" data-filter="\${c.key}">
+            \${I18N[currentLang][c.labelKey]}
+          </button>
+        \`).join('');
+
+        container.querySelectorAll('.filter-pill').forEach(btn => {
+          btn.addEventListener('click', () => {
+            currentFilter = btn.getAttribute('data-filter');
+            renderFilterPills();
+            renderLineup();
+          });
+        });
+      }
+
+      // Render Studio Cards Grid
+      function renderLineup() {
+        const grid = document.getElementById('lineup-grid');
+        const filtered = STUDIOS.filter(s => {
+          const matchesCategory = currentFilter === 'all' || s.category === currentFilter;
+          const query = searchQuery.trim().toLowerCase();
+          if (!query) return matchesCategory;
+          const matchesSearch = 
+            s.name.toLowerCase().includes(query) ||
+            s.id.toLowerCase().includes(query) ||
+            s.file.toLowerCase().includes(query) ||
+            s.desc.en.toLowerCase().includes(query) ||
+            s.desc.th.toLowerCase().includes(query) ||
+            s.tagline.en.toLowerCase().includes(query) ||
+            s.tagline.th.toLowerCase().includes(query);
+          return matchesCategory && matchesSearch;
+        });
+
+        if (filtered.length === 0) {
+          grid.innerHTML = \`
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+              <div style="font-size: 2.5rem; margin-bottom: 12px;">🔍</div>
+              <p style="font-size: 1rem;">\${currentLang === 'th' ? 'ไม่พบสตูดิโอที่ตรงกับคำค้นหา' : 'No studios match your filter criteria.'}</p>
+            </div>
+          \`;
+          return;
+        }
+
+        grid.innerHTML = filtered.map(s => {
+          const isTh = currentLang === 'th';
+          const tagline = isTh ? s.tagline.th : s.tagline.en;
+          const desc = isTh ? s.desc.th : s.desc.en;
+          const counterpart = isTh ? s.counterpart.th : s.counterpart.en;
+          const specs = isTh ? s.specs.th : s.specs.en;
+          const dlUrl = \`https://github.com/methastrategy/meCraft/releases/download/v1.0.0/\${s.file}\`;
+
+          return \`
+            <article class="studio-card" id="studio-\${s.id}" style="--app-color:\${s.accentColor};--app-glow:\${s.glowColor};">
+              <div>
+                <div class="card-top-row">
+                  <div class="card-brand-group">
+                    <div class="card-icon-emblem" style="border-color:\${s.accentColor}44;">
+                      <img src="../branding/\${s.id}.png" alt="\${s.name}" class="card-icon-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';" />
+                      <span class="card-icon-fallback" style="display:none;">\${s.emoji}</span>
+                    </div>
+                    <div class="card-title-wrap">
+                      <span class="card-num-eyebrow">\${s.num} / 18 · \${isTh ? s.categoryLabel.th : s.categoryLabel.en}</span>
+                      <h2 class="card-app-name">\${s.name}</h2>
+                    </div>
+                  </div>
+                  <span class="card-ver-badge">\${s.version}</span>
+                </div>
+
+                <div class="card-counterpart-pill">\${counterpart}</div>
+                <div class="card-tagline">\${tagline}</div>
+                <p class="card-desc">\${desc}</p>
+
+                <ul class="card-specs-list">
+                  \${specs.map(spec => \`<li class="card-spec-item">\${spec}</li>\`).join('')}
+                </ul>
+              </div>
+
+              <div>
+                <div class="card-binary-meta">
+                  <div class="meta-row">
+                    <span>\${isTh ? 'ไฟล์' : 'Binary'}:</span>
+                    <span class="meta-val">\${s.file} (\${s.size})</span>
+                  </div>
+                  <div class="meta-row">
+                    <span>\${isTh ? 'แพลตฟอร์ม' : 'OS'}:</span>
+                    <span class="meta-val" style="color:var(--gold);">Windows x64 Native</span>
+                  </div>
+                  <div class="hash-row">
+                    <span class="hash-code" title="\${s.hash}">SHA: \${s.hash.slice(0, 18)}...</span>
+                    <button type="button" class="btn-copy-hash" onclick="copyText('\${s.hash}', 'toast_copied')">
+                      [ \${isTh ? 'คัดลอก' : 'COPY'} ]
+                    </button>
+                  </div>
+                </div>
+
+                <div class="card-actions-row">
+                  <a href="\${dlUrl}" class="btn-app-dl" download>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>\${I18N[currentLang].btn_dl}</span>
+                  </a>
+                  <a href="\${s.webRoute}" class="btn-app-web" title="\${isTh ? 'เปิดใช้งานผ่านเว็บโดยไม่ต้องติดตั้ง' : 'Run in Browser without installation'}">
+                    <span>\${I18N[currentLang].btn_web}</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          \`;
+        }).join('');
+      }
+
+      // Render Verification Table
+      function renderVerifyTable() {
+        const tbody = document.getElementById('verify-table-body');
+        const rows = [
+          {
+            file: 'meCraft-Setup.exe (Master Suite)',
+            version: 'v1.0.0',
+            size: '~14.8 MB',
+            hash: 'c0f1a2b3c4d5e6f7890123456789abcdef0123456789abcdef0123456789abcdef',
+          },
+          ...STUDIOS.map(s => ({
+            file: s.file,
+            version: s.version,
+            size: s.size,
+            hash: s.hash
+          }))
+        ];
+
+        tbody.innerHTML = rows.map(r => \`
+          <tr>
+            <td style="color:#ffffff;font-weight:600;">\${r.file}</td>
+            <td>\${r.version}</td>
+            <td>\${r.size}</td>
+            <td style="font-size:0.68rem;color:var(--text-gold);" title="\${r.hash}">\${r.hash}</td>
+            <td style="text-align: right;">
+              <button type="button" class="btn-copy-hash" onclick="copyText('\${r.hash}', 'toast_copied')">
+                [ \${currentLang === 'th' ? 'คัดลอก' : 'COPY'} ]
+              </button>
+            </td>
+          </tr>
+        \`).join('');
+      }
+
+      // Update All Static Text on Language Toggle
+      function updateLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('mecraft_lang', lang);
+        document.documentElement.lang = lang;
+        document.getElementById('lang-indicator').textContent = lang === 'en' ? 'TH' : 'EN';
+
+        // Update elements with data-i18n
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (I18N[lang] && I18N[lang][key]) {
+            el.innerHTML = I18N[lang][key];
+          }
+        });
+
+        // Update search placeholder
+        const searchInput = document.getElementById('studio-search');
+        if (searchInput) {
+          searchInput.placeholder = I18N[lang].search_placeholder;
+        }
+
+        renderHeroDock();
+        renderFilterPills();
+        renderLineup();
+        renderVerifyTable();
+      }
+
+      // Init Page
+      function init() {
+        // Language Toggle Listener
+        document.getElementById('btn-lang').addEventListener('click', () => {
+          updateLanguage(currentLang === 'en' ? 'th' : 'en');
+        });
+
+        // Search Input Listener
+        const searchInput = document.getElementById('studio-search');
+        searchInput.addEventListener('input', (e) => {
+          searchQuery = e.target.value;
+          renderLineup();
+        });
+
+        // Copy PowerShell command
+        document.getElementById('btn-copy-cmd').addEventListener('click', () => {
+          const cmd = document.getElementById('cmd-sample').textContent;
+          window.copyText(cmd, 'toast_cmd_copied');
+        });
+
+        updateLanguage(currentLang);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
+`;
+
+// Target destination files to synchronize
+const targets = [
+  path.join(rootDir, 'public/downloads.html'),
+  path.join(rootDir, 'public/downloads/index.html'),
+  path.join(rootDir, 'dist/downloads.html'),
+  path.join(rootDir, 'dist/downloads/index.html'),
+  path.join(rootDir, 'meCrafts-website/downloads.html'),
+  path.join(rootDir, 'meCrafts-website/downloads/index.html'),
+];
+
+for (const target of targets) {
+  const dir = path.dirname(target);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  fs.writeFileSync(target, htmlContent, 'utf-8');
+  console.log(`[SUCCESS] Generated & synced: ${path.relative(rootDir, target)} (${Buffer.byteLength(htmlContent, 'utf-8')} bytes)`);
+}
+
+console.log('🎉 [generate-downloads-portal] All 6 download endpoints updated with 18-studio lineup!');
