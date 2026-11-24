@@ -121,6 +121,9 @@ export interface StudioShellConfig {
   theme?: 'navy-black' | 'obsidian' | 'luxury-dark';
   isTauri?: boolean;
   showBackButton?: boolean;
+  showUpdateBtn?: boolean;
+  showAuthBtn?: boolean;
+  autoSteamStartup?: boolean;
   onBack?: () => void;
   menu?: MenuGroup[];
   ribbon?: RibbonGroup[];

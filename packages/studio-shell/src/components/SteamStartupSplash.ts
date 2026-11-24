@@ -130,6 +130,10 @@ export class SteamStartupSplash {
     }
   }
 
+  public destroy(): void {
+    this.dismiss();
+  }
+
   private render(): void {
     const isTh = this.options.lang === 'th';
     this.element.innerHTML = `

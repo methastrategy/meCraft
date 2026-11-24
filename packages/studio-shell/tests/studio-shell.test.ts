@@ -10,6 +10,8 @@ import {
   StatusBar,
   UpdateBanner,
   UpdateModal,
+  SteamStartupSplash,
+  DesktopGoogleAuthModal,
   ToastManager,
   ModalManager,
 } from '../src/index.js';
@@ -323,6 +325,61 @@ describe('@mecraft/studio-shell Architecture & Components Suite', () => {
       });
       expect(document.body.innerHTML).toContain('Export Vector');
       close();
+    });
+  });
+
+  describe('8. Steam Startup Splash & Desktop Google Auth Engine', () => {
+    it('executes SteamStartupSplash with speed telemetry and terminal logs', () => {
+      const splash = new SteamStartupSplash({
+        appName: 'meVector Studio',
+        appId: 'mevector',
+        currentVersion: '1.0.0',
+        speedMs: 5,
+        force: true,
+      });
+
+      const root = splash.run();
+      expect(root).not.toBeNull();
+      expect(document.body.innerHTML).toContain('meVector Studio');
+      expect(document.body.innerHTML).toContain('Steam-Class Engine');
+      splash.destroy();
+    });
+
+    it('mounts DesktopGoogleAuthModal with Google-only button and web registration link', () => {
+      const modal = new DesktopGoogleAuthModal({
+        appName: 'meVector Studio',
+      });
+
+      const el = modal.open();
+      expect(el).not.toBeNull();
+      expect(document.body.innerHTML).toContain('meVector Studio');
+      expect(document.body.innerHTML).toContain('studio-btn-auth-google');
+      expect(document.body.innerHTML).toContain('studio-link-web-signup');
+      modal.close();
+    });
+
+    it('triggers Steam startup and Desktop Google auth from StudioShell TitleBar', () => {
+      let updateTriggered = false;
+      let authTriggered = false;
+
+      const titleBar = new TitleBar({
+        appName: 'mePhoto Studio',
+        onUpdate: () => { updateTriggered = true; },
+        onAuth: () => { authTriggered = true; },
+      });
+
+      const el = titleBar.getElement();
+      const updateBtn = el.querySelector('#titlebar-btn-update') as any;
+      const authBtn = el.querySelector('#titlebar-btn-auth') as any;
+
+      expect(updateBtn).not.toBeNull();
+      expect(authBtn).not.toBeNull();
+
+      updateBtn.click();
+      authBtn.click();
+
+      expect(updateTriggered).toBe(true);
+      expect(authTriggered).toBe(true);
     });
   });
 });

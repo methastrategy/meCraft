@@ -53,6 +53,16 @@ export class StudioShell {
 
     // Check for updates in the background without blocking UI
     this.checkForUpdates();
+
+    // Auto-run Steam-style startup updater if desktop mode
+    const isDesktop = Boolean(
+      this.config.isTauri ||
+      (typeof window !== 'undefined' && ((window as any).__TAURI__ || (window as any).__TAURI_INTERNALS__ || new URLSearchParams(window.location.search || '').get('mode') === 'desktop'))
+    );
+    const skipSteam = typeof window !== 'undefined' && Boolean(window.location && window.location.search && window.location.search.includes('skipSteam'));
+    if (this.config.autoSteamStartup ?? (isDesktop && !skipSteam)) {
+      this.runSteamStartupSplash();
+    }
   }
 
   public getCockpit(): Cockpit {
@@ -223,7 +233,11 @@ export class StudioShell {
       documentTitle: this.config.documentTitle,
       isTauri: this.config.isTauri,
       showBackButton: this.config.showBackButton,
+      showUpdateBtn: this.config.showUpdateBtn,
+      showAuthBtn: this.config.showAuthBtn,
       onBack: this.config.onBack,
+      onUpdate: () => this.runSteamStartupSplash({ force: true }),
+      onAuth: () => this.openDesktopAuthModal(),
     });
     this.rootEl.appendChild(this.titleBar.getElement());
 

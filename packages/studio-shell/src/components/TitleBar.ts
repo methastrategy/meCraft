@@ -10,6 +10,10 @@ export interface TitleBarOptions {
   documentTitle?: string;
   isTauri?: boolean;
   showBackButton?: boolean;
+  showUpdateBtn?: boolean;
+  showAuthBtn?: boolean;
+  onUpdate?: () => void;
+  onAuth?: () => void;
   onBack?: () => void;
   onMinimize?: () => void;
   onMaximize?: () => void;
@@ -42,13 +46,20 @@ export class TitleBar {
   }
 
   private render(): void {
-    const { appName, appIcon, appTag, documentTitle, showBackButton } = this.options;
+    const { appName, appIcon, appTag, documentTitle, showBackButton, showUpdateBtn, showAuthBtn } = this.options;
     const backBtnHtml = showBackButton !== false
       ? `<button type="button" class="titlebar-btn-back" id="titlebar-btn-back" title="Back to IDE Workspace"><span class="titlebar-back-arrow">‹</span><span>IDE</span></button>`
       : '';
     const iconHtml = appIcon ? `<span class="titlebar-app-icon">${appIcon}</span>` : '🎨';
     const tagHtml = appTag ? `<span class="titlebar-app-tag">${appTag}</span>` : '<span class="titlebar-app-tag">STUDIO</span>';
     const docText = documentTitle ? `— [${documentTitle}]` : '';
+
+    const updateBtnHtml = showUpdateBtn !== false
+      ? `<button type="button" class="titlebar-btn titlebar-btn-action" id="titlebar-btn-update" title="Check for Updates (Steam Mode)">⚡</button>`
+      : '';
+    const authBtnHtml = showAuthBtn !== false
+      ? `<button type="button" class="titlebar-btn titlebar-btn-action" id="titlebar-btn-auth" title="Google Account / Sync">👤</button>`
+      : '';
 
     this.element.innerHTML = `
       <div class="titlebar-left" data-tauri-drag-region="true">
@@ -60,6 +71,8 @@ export class TitleBar {
         <span class="titlebar-native-pill">100% Native Desktop</span>
       </div>
       <div class="titlebar-controls">
+        ${updateBtnHtml}
+        ${authBtnHtml}
         <button type="button" class="titlebar-btn titlebar-btn-min" id="titlebar-btn-min" title="Minimize">─</button>
         <button type="button" class="titlebar-btn titlebar-btn-max" id="titlebar-btn-max" title="Maximize">□</button>
         <button type="button" class="titlebar-btn titlebar-btn-close" id="titlebar-btn-close" title="Close">✕</button>
@@ -68,6 +81,13 @@ export class TitleBar {
   }
 
   private attachEvents(): void {
+    this.element.querySelector('#titlebar-btn-update')?.addEventListener('click', () => {
+      if (this.options.onUpdate) this.options.onUpdate();
+    });
+
+    this.element.querySelector('#titlebar-btn-auth')?.addEventListener('click', () => {
+      if (this.options.onAuth) this.options.onAuth();
+    });
     this.element.querySelector('#titlebar-btn-back')?.addEventListener('click', () => {
       if (this.options.onBack) {
         this.options.onBack();

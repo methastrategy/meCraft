@@ -181,4 +181,44 @@ describe('meIDE Standalone AI IDE Engine Suite', () => {
     expect(app.isContextMenuOpen).toBe(false);
     expect(app.contextMenuTargetId).toBeNull();
   });
+
+  it('manages Steam-style startup auto-updater lifecycle', async () => {
+    const { doc } = setupMockDom();
+    doc.body.innerHTML = '<div id="app"></div>';
+    const app = new MeIDEApp();
+    app.mount(doc.getElementById('app')!);
+
+    const splash = app.runSteamStartupUpdate({ speedMs: 5, force: true });
+    expect(app.isSteamUpdating).toBe(true);
+    expect(doc.body.innerHTML).toContain('meCraft Steam-Class Engine');
+    expect(doc.body.innerHTML).toContain('Updating meIDE Standalone');
+
+    // Manually dismiss
+    splash.dismiss();
+    expect(app.isSteamUpdating).toBe(false);
+  });
+
+  it('renders and manages desktop Google-only auth modal and sync import drawer', () => {
+    const { doc } = setupMockDom();
+    doc.body.innerHTML = '<div id="app"></div>';
+    const app = new MeIDEApp();
+    app.mount(doc.getElementById('app')!);
+
+    app.isAuthModalOpen = true;
+    app.renderDesktopGoogleAuthModal();
+
+    expect(doc.body.innerHTML).toContain('modal-btn-auth-google');
+    expect(doc.body.innerHTML).toContain('modal-link-web-signup');
+    expect(doc.body.innerHTML).toContain('btn-toggle-sync-import');
+
+    // Test toggle sync drawer
+    app.toggleSyncDrawer();
+    expect(app.isSyncDrawerOpen).toBe(true);
+
+    // Test Google auth execution
+    app.handleGoogleAuth();
+    expect(app.currentSession).not.toBeNull();
+    expect(app.currentSession?.email).toBe('developer@mecraft.dev');
+    expect(app.isAuthModalOpen).toBe(false);
+  });
 });

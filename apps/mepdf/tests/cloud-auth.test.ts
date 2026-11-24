@@ -486,6 +486,23 @@ describe('Phase 2B - Cloud & Auth Service Layer', () => {
       expect(modal.isOpen()).toBe(false);
     });
 
+    it('mounts AuthModal in desktop mode with Google-only button and web registration link', () => {
+      const modal = new AuthModal();
+      modal.setDesktopMode(true);
+      modal.open();
+      expect(modal.isOpen()).toBe(true);
+
+      const overlay = (globalThis as any).document.querySelector('#auth-modal-overlay');
+      const googleBtn = overlay.querySelector('#auth-google-btn');
+      const webSignupLink = overlay.querySelector('#modal-link-web-signup');
+      expect(googleBtn).not.toBeNull();
+      expect(webSignupLink).not.toBeNull();
+      expect(webSignupLink.getAttribute('href')).toContain('action=signup');
+
+      modal.close();
+      modal.setDesktopMode(null);
+    });
+
     it('renders UserAccountMenu in unauthenticated and authenticated states', () => {
       const container = (globalThis as any).document.createElement('div');
       (globalThis as any).document.body.appendChild(container);

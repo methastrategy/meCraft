@@ -26,6 +26,8 @@ import {
   LayoutGrid,
 } from 'lucide';
 import { clipBus } from '@mecraft/core-bridge';
+import { SteamStartupSplash } from '@mecraft/studio-shell';
+import '@mecraft/studio-shell/styles.css';
 import { registerSW } from 'virtual:pwa-register';
 
 import type { PDFPageItem, DocumentMetadata } from './core/types';
@@ -141,6 +143,29 @@ class MeCraftApp {
     this.initRouterAndStorage();
     this.initClipBus();
     this.updateUI();
+    this.runSteamStartupIfDesktop();
+  }
+
+  public runSteamStartupIfDesktop(options?: { speedMs?: number; force?: boolean }): SteamStartupSplash | null {
+    if (typeof window === 'undefined') return null;
+    const isDesktop = Boolean(
+      (window as any).__TAURI__ ||
+      (window as any).__TAURI_INTERNALS__ ||
+      (window.location && new URLSearchParams(window.location.search || '').get('mode') === 'desktop')
+    );
+    const skipSteam = Boolean(window.location && window.location.search && window.location.search.includes('skipSteam'));
+    if (options?.force || (isDesktop && !skipSteam)) {
+      const splash = new SteamStartupSplash({
+        appName: 'mePDF Studio Pro',
+        appId: 'mepdf',
+        currentVersion: '1.0.0',
+        speedMs: options?.speedMs,
+        force: options?.force,
+      });
+      splash.run();
+      return splash;
+    }
+    return null;
   }
 
   private renderShell(): void {
