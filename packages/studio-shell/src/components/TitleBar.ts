@@ -9,6 +9,8 @@ export interface TitleBarOptions {
   appTag?: string;
   documentTitle?: string;
   isTauri?: boolean;
+  showBackButton?: boolean;
+  onBack?: () => void;
   onMinimize?: () => void;
   onMaximize?: () => void;
   onClose?: () => void;
@@ -40,13 +42,17 @@ export class TitleBar {
   }
 
   private render(): void {
-    const { appName, appIcon, appTag, documentTitle } = this.options;
+    const { appName, appIcon, appTag, documentTitle, showBackButton } = this.options;
+    const backBtnHtml = showBackButton !== false
+      ? `<button type="button" class="titlebar-btn-back" id="titlebar-btn-back" title="Back to IDE Workspace"><span class="titlebar-back-arrow">‹</span><span>IDE</span></button>`
+      : '';
     const iconHtml = appIcon ? `<span class="titlebar-app-icon">${appIcon}</span>` : '🎨';
     const tagHtml = appTag ? `<span class="titlebar-app-tag">${appTag}</span>` : '<span class="titlebar-app-tag">STUDIO</span>';
     const docText = documentTitle ? `— [${documentTitle}]` : '';
 
     this.element.innerHTML = `
       <div class="titlebar-left" data-tauri-drag-region="true">
+        ${backBtnHtml}
         ${iconHtml}
         <span class="titlebar-app-name">${appName}</span>
         ${tagHtml}
@@ -62,6 +68,15 @@ export class TitleBar {
   }
 
   private attachEvents(): void {
+    this.element.querySelector('#titlebar-btn-back')?.addEventListener('click', () => {
+      if (this.options.onBack) {
+        this.options.onBack();
+      } else if (typeof window !== 'undefined') {
+        window.history.pushState({}, '', './');
+        window.location.reload();
+      }
+    });
+
     this.element.querySelector('#titlebar-btn-min')?.addEventListener('click', () => {
       if (this.options.onMinimize) {
         this.options.onMinimize();

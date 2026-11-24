@@ -2,9 +2,9 @@
   <img src="assets/branding/github-social-preview.png" alt="meCraft Master Suite — Autonomous Creative & Document Workstation" width="100%" style="border-radius: 12px; box-shadow: 0 16px 36px rgba(0,0,0,0.6);" />
 </p>
 
-# 🎨 meCraft Suite — Autonomous Creative & Document Workstation
+# 🚀 meCraft — The Private-First AI IDE & 18 Creative Studios Suite for Windows
 
-> **100% Private, Zero-Server-Upload Document & Photo Engineering Ecosystem.**  
+> **VS Code & Windsurf-grade Next-Gen AI IDE Workspace + 18 Standalone Creative Studios.**  
 > Built with **Tauri v2 (Rust), Vite, TypeScript, Web Workers, Canvas API, and WebAssembly**.
 
 [![Official Web Portal](https://img.shields.io/badge/Web%20Portal-mecrafts.vercel.app-6366f1?style=for-the-badge&logo=vercel&logoColor=white)](https://mecrafts.vercel.app)
@@ -14,7 +14,7 @@
 [![GitHub Forks](https://img.shields.io/github/forks/methastrategy/meCraft?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/network)
 [![Tauri v2](https://img.shields.io/badge/Desktop-Tauri%20v2%20(Rust)-ea580c?style=for-the-badge&logo=tauri)](https://tauri.app/)
 [![Client-Side Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-blue?style=for-the-badge&logo=shield)](SECURITY.md)
-[![Tests Passing](https://img.shields.io/badge/Tests-326%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
+[![Tests Passing](https://img.shields.io/badge/Tests-332%2B%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 ---
@@ -22,11 +22,27 @@
 ### 🌐 Quick Access
 - 🚀 **Official Web Portal (Zero-Install):** [https://mecrafts.vercel.app](https://mecrafts.vercel.app)  
   *(Deployment repository: [methastrategy/meCrafts-web](https://github.com/methastrategy/meCrafts-web))*
+- 💻 **meCraft AI IDE Workspace:** [https://mecrafts.vercel.app](https://mecrafts.vercel.app) (Default View)
 - 📄 **mePDF Web Studio:** [https://mecrafts.vercel.app/mepdf/](https://mecrafts.vercel.app/mepdf/)
 - 🪄 **mePhoto Web Studio:** [https://mecrafts.vercel.app/mephoto/](https://mecrafts.vercel.app/mephoto/)
 - 🍩 **meDrop Radial Converter (Zero-Window HUD):** [https://mecrafts.vercel.app/medrop/](https://mecrafts.vercel.app/medrop/)
 - 📝 **meDoc Markdown Studio:** [https://mecrafts.vercel.app/medoc/](https://mecrafts.vercel.app/medoc/)
 - 💾 **Download Desktop Installer (.exe):** [GitHub Releases](https://github.com/methastrategy/meCraft/releases)
+
+---
+
+## ⚡ Keyboard Shortcuts & Quick Navigation
+
+| Action | Shortcut | Description |
+| :--- | :--- | :--- |
+| **Direct File Save** | `Ctrl + S` | Direct disk write via File System API & dirty state `●` clearing |
+| **Open Folder** | `Ctrl + K Ctrl + O` | Opens real local directory into Explorer pane |
+| **Open File** | `Ctrl + O` | Open local file into editor |
+| **New File** | `Ctrl + N` | Create new file in workspace |
+| **Toggle Split Preview** | Click 📖 Preview | Real-time KaTeX math & GitHub-flavored Markdown preview |
+| **Toggle AI Copilot** | Click ✨ AI Copilot | 100% In-Device RAM Copilot dock |
+| **Toggle Terminal** | Click 💻 Terminal | Integrated terminal and command runner |
+| **Switch to Studios** | Click 📦 Studios | Access all 18 Thai Mythology Guardian Studios |
 
 ---
 
@@ -152,7 +168,7 @@ cd meCraft
 # Install all workspace dependencies
 npm install
 
-# Run automated test suites (226 passing tests across 19 suites)
+# Run automated test suites (332+ passing tests across 29 test suites)
 npm test
 
 # Typecheck across all 6 workspaces (0 errors)

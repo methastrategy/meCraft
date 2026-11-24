@@ -120,6 +120,8 @@ export interface StudioShellConfig {
   documentTitle?: string;
   theme?: 'navy-black' | 'obsidian' | 'luxury-dark';
   isTauri?: boolean;
+  showBackButton?: boolean;
+  onBack?: () => void;
   menu?: MenuGroup[];
   ribbon?: RibbonGroup[];
   panes: {

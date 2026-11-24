@@ -1,6 +1,7 @@
 """
 build_desktop_installer.py
-Compiles the production Windows Desktop Installer (meCraft-Setup.exe) using Tauri v2, Rust MSVC, and NSIS:
+Compiles the production Windows Desktop Installer (meCraft-Setup.exe) for the meCraft Dual-Powerhouse:
+Private-First AI IDE & 18 Standalone Creative Studios Suite using Tauri v2, Rust MSVC, and NSIS:
 1. Ensures ~/.cargo/bin is in PATH.
 2. Invokes `npm run desktop:build --workspace=@mecraft/launcher`.
 3. Locates generated NSIS installer (.exe) in src-tauri/target/release/bundle/nsis/
@@ -20,7 +21,7 @@ CARGO_BIN = os.path.expanduser('~/.cargo/bin')
 
 def main():
     t0 = time.time()
-    print("=== meCraft Desktop NSIS Installer Build Pipeline ===")
+    print("=== meCraft Dual-Powerhouse AI IDE & 18 Creative Studios Desktop Installer Pipeline ===")
     
     # 1. Environment preparation
     env = os.environ.copy()

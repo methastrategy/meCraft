@@ -27,6 +27,7 @@ export interface StudioInfo {
   category: string;
   accentColor: string;
   version: string;
+  guardian: { th: string; en: string };
 }
 
 export const ALL_STUDIOS: StudioInfo[] = [
@@ -41,6 +42,10 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: 'Document',
     accentColor: '#d4af37',
     version: 'v1.0.0',
+    guardian: {
+      th: 'ท้าวเวสสุวรรณ (Thao Vessuwan)',
+      en: 'Thao Vessuwan — Guardian of Treasures & Diamond Mace',
+    },
   },
   {
     id: 'mephoto',
@@ -53,6 +58,10 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: 'Photo & Color',
     accentColor: '#10b981',
     version: 'v1.0.0',
+    guardian: {
+      th: 'พญานาค (Phraya Naga)',
+      en: 'Phraya Naga — Emerald Serpent with Radiant Gem',
+    },
   },
   {
     id: 'medrop',
@@ -65,6 +74,10 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: 'Utility',
     accentColor: '#06b6d4',
     version: 'v1.0.0',
+    guardian: {
+      th: 'ม้านิลมังกร (Ma Nil Mangkon)',
+      en: 'Ma Nil Mangkon — Swift Dragon-Horse & Radial Wheel',
+    },
   },
   {
     id: 'medoc',
@@ -77,6 +90,10 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: 'Document',
     accentColor: '#0d9488',
     version: 'v1.0.0',
+    guardian: {
+      th: 'พระสุนทรีวาณี (Sunthari Vani)',
+      en: 'Sunthari Vani — Goddess of Eloquence & Crystal Lotus',
+    },
   },
   {
     id: 'mevector',
@@ -89,6 +106,10 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: 'Vector & Design',
     accentColor: '#3b82f6',
     version: 'v1.0.0',
+    guardian: {
+      th: 'พญาครุฑ (Phraya Garuda)',
+      en: 'Phraya Garuda — King of Birds with Feather Splines',
+    },
   },
   {
     id: 'me3d',
@@ -97,46 +118,14 @@ export const ALL_STUDIOS: StudioInfo[] = [
       en: 'WebGL Polygon Mesh Modeling & PBR Spatial Staging Studio',
       th: 'ปั้นโมเดลโพลีกอน 3 มิติ, จัดวางวัสดุ PBR และแสงสตูดิโอ HDRI แบบเรียลไทม์',
     },
-    icon: '🎲',
+    icon: '🧊',
     category: 'Audio & 3D',
     accentColor: '#6366f1',
     version: 'v1.0.0',
-  },
-  {
-    id: 'meaudio',
-    name: 'meAudio Studio',
-    tagline: {
-      en: 'Speech Master, Spectral Denoise & Multi-Track Podcast Audio Studio',
-      th: 'มาสเตอร์เสียงพูด, ตัดเสียงรบกวน Spectral และตัดต่อพอดแคสต์หลายไมค์',
+    guardian: {
+      th: 'พระวิศวกรรม (Vishvakarman)',
+      en: 'Vishvakarman — Celestial Architect & Builder of Worlds',
     },
-    icon: '🎙️',
-    category: 'Audio & 3D',
-    accentColor: '#ec4899',
-    version: 'v1.0.0',
-  },
-  {
-    id: 'medeck',
-    name: 'meDeck Studio',
-    tagline: {
-      en: 'High-Impact Interactive Presentation & Keynote Slide Studio',
-      th: 'สร้างสไลด์นำเสนอเชิงโต้ตอบ กราฟิกการนำเสนอ และส่งออก PDF/WebDeck',
-    },
-    icon: '📊',
-    category: 'Creative',
-    accentColor: '#f97316',
-    version: 'v1.0.0',
-  },
-  {
-    id: 'medesign',
-    name: 'meDesign Studio',
-    tagline: {
-      en: 'UI/UX Prototyping, Design Systems & Layout Grid Suite',
-      th: 'ออกแบบ UI/UX Prototyping, ระบบ Design System และจัดวางหน้ากระดาษ',
-    },
-    icon: '📐',
-    category: 'Vector & Design',
-    accentColor: '#8b5cf6',
-    version: 'v1.0.0',
   },
   {
     id: 'mefilm',
@@ -149,6 +138,10 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: 'Video & Motion',
     accentColor: '#ef4444',
     version: 'v1.0.0',
+    guardian: {
+      th: 'นางกินรี (Kinnari Maiden)',
+      en: 'Kinnari Maiden — Celestial Creature with Golden Wings',
+    },
   },
   {
     id: 'melight',
@@ -161,6 +154,10 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: 'Photo & Color',
     accentColor: '#eab308',
     version: 'v1.0.0',
+    guardian: {
+      th: 'นางสุพรรณมัจฉา (Suphannamatcha)',
+      en: 'Suphannamatcha — Golden Mermaid with Iridescent Scales',
+    },
   },
   {
     id: 'memotion',
@@ -173,18 +170,58 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: 'Video & Motion',
     accentColor: '#a855f7',
     version: 'v1.0.0',
+    guardian: {
+      th: 'หนุมาน (Hanuman)',
+      en: 'Hanuman — White Monkey God of Agile Motion',
+    },
   },
   {
-    id: 'mesheet',
-    name: 'meSheet Studio',
+    id: 'medesign',
+    name: 'meDesign Studio',
     tagline: {
-      en: 'Reactive Financial Modeling & High-Volume Spreadsheet Grid',
-      th: 'ตารางคำนวณสเปรดชีตสูตรการเงินความเร็วสูง และประมวลผลข้อมูลใน RAM',
+      en: 'UI/UX Prototyping, Design Systems & Layout Grid Suite',
+      th: 'ออกแบบ UI/UX Prototyping, ระบบ Design System และจัดวางหน้ากระดาษ',
     },
-    icon: '📈',
-    category: 'Document',
-    accentColor: '#14b8a6',
+    icon: '📐',
+    category: 'Vector & Design',
+    accentColor: '#8b5cf6',
     version: 'v1.0.0',
+    guardian: {
+      th: 'ช้างเอราวัณ (Erawan Elephant)',
+      en: 'Erawan Elephant — 3-Headed Divine Architect Elephant',
+    },
+  },
+  {
+    id: 'meaudio',
+    name: 'meAudio Studio',
+    tagline: {
+      en: 'Speech Master, Spectral Denoise & Multi-Track Podcast Audio Studio',
+      th: 'มาสเตอร์เสียงพูด, ตัดเสียงรบกวน Spectral และตัดต่อพอดแคสต์หลายไมค์',
+    },
+    icon: '🎙️',
+    category: 'Audio & 3D',
+    accentColor: '#ec4899',
+    version: 'v1.0.0',
+    guardian: {
+      th: 'พระพิราพ (Phra Phirap)',
+      en: 'Phra Phirap — Master Deity of Dramatic Arts & Sound',
+    },
+  },
+  {
+    id: 'medeck',
+    name: 'meDeck Studio',
+    tagline: {
+      en: 'High-Impact Interactive Presentation & Keynote Slide Studio',
+      th: 'สร้างสไลด์นำเสนอเชิงโต้ตอบ กราฟิกการนำเสนอ และส่งออก PDF/WebDeck',
+    },
+    icon: '📊',
+    category: 'Creative',
+    accentColor: '#f97316',
+    version: 'v1.0.0',
+    guardian: {
+      th: 'พระพิฆเนศ (Ganesha)',
+      en: 'Ganesha — Lord of Intellect, Wisdom & High-Impact Arts',
+    },
   },
   {
     id: 'mecad',
@@ -197,18 +234,42 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: 'Vector & CAD',
     accentColor: '#0ea5e9',
     version: 'v1.0.0',
+    guardian: {
+      th: 'พระพรหม (Phra Phrom)',
+      en: 'Phra Phrom — Four-Faced Divine Creator & Universal Blueprint',
+    },
+  },
+  {
+    id: 'mesheet',
+    name: 'meSheet Studio',
+    tagline: {
+      en: 'Reactive Financial Modeling & High-Volume Spreadsheet Grid',
+      th: 'ตารางคำนวณสเปรดชีตสูตรการเงินความเร็วสูง และประมวลผลข้อมูลใน RAM',
+    },
+    icon: '📈',
+    category: 'Document',
+    accentColor: '#14b8a6',
+    version: 'v1.0.0',
+    guardian: {
+      th: 'พระแม่โพสพ (Phra Mae Phosop)',
+      en: 'Phra Mae Phosop — Goddess of Abundance & Financial Balance',
+    },
   },
   {
     id: 'metexture',
     name: 'meTexture Studio',
     tagline: {
-      en: 'Direct 3D Mesh Brush Painter & UV Unwrapping Workbench',
+      en: 'Direct 3D Mesh Brush Painter & UV Unwrapping Workspace',
       th: 'เพนต์ลวดลายบนผิวโมเดล 3D Mesh โดยตรง และกางระนาบ UV เกาะผิวโมเดล',
     },
     icon: '🎨',
     category: '3D & Sound',
     accentColor: '#f43f5e',
     version: 'v1.0.0',
+    guardian: {
+      th: 'พาลี (Vali)',
+      en: 'Vali — Emerald Simian Sovereign with Immeasurable Force',
+    },
   },
   {
     id: 'mematerial',
@@ -221,6 +282,10 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: '3D & Sound',
     accentColor: '#8b5cf6',
     version: 'v1.0.0',
+    guardian: {
+      th: 'สุครีพ (Sugriva)',
+      en: 'Sugriva — Solar Simian King of Radiant Light & Refraction',
+    },
   },
   {
     id: 'meani',
@@ -233,6 +298,10 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: 'Video & Motion',
     accentColor: '#d946ef',
     version: 'v1.0.0',
+    guardian: {
+      th: 'องคต (Angada)',
+      en: 'Angada — Peerless Messenger of Velocity & Sovereign Leap',
+    },
   },
   {
     id: 'merea',
@@ -245,6 +314,10 @@ export const ALL_STUDIOS: StudioInfo[] = [
     category: 'Utility & REA',
     accentColor: '#00f0ff',
     version: 'v1.0.0',
+    guardian: {
+      th: 'มัยราพณ์ (Maiyarap)',
+      en: 'Maiyarap — Lord of the Underworld & Occult Decryption',
+    },
   },
 ];
 
@@ -289,18 +362,19 @@ function renderStudioHeader(currentStudio: StudioInfo, lang: 'en' | 'th'): strin
   return `
     <header class="studio-global-nav" style="--studio-accent: ${currentStudio.accentColor};">
       <div class="studio-nav-left">
-        <a href="./" class="studio-back-btn" id="studio-btn-back-workstation" title="${isTh ? 'กลับไปยังหน้าเวิร์กเบนช์ meCraft' : 'Back to meCraft Workstation'}">
+        <a href="./" class="studio-back-btn" id="studio-btn-back-workstation" title="${isTh ? 'กลับไปยังโปรแกรมแก้ไข meCraft' : 'Back to meCraft IDE Workspace'}">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
           <span class="studio-back-emblem">⚡</span>
-          <span class="studio-back-text"><strong>meCraft</strong> Workstation</span>
+          <span class="studio-back-text"><strong>meCraft</strong> IDE Workspace</span>
         </a>
         <div class="studio-nav-divider"></div>
         <div class="studio-nav-current">
           <span class="studio-nav-icon">${currentStudio.icon}</span>
           <span class="studio-nav-title">${currentStudio.name}</span>
           <span class="studio-nav-ver">${currentStudio.version}</span>
+          <span class="studio-nav-guardian" style="margin-left: 8px; font-size: 11px; color: #f7d774; background: rgba(212,175,55,0.12); border: 1px solid rgba(212,175,55,0.25); border-radius: 4px; padding: 2px 8px;">🛡️ ${currentStudio.guardian ? currentStudio.guardian[lang] : ''}</span>
         </div>
       </div>
 
@@ -409,7 +483,7 @@ function createPdfStudioShell(): StudioShell {
             <div style="width: 72px; height: 72px; border-radius: 18px; background: rgba(212,175,55,0.12); border: 1px solid rgba(212,175,55,0.3); display: flex; align-items: center; justify-content: center; font-size: 36px; margin-bottom: 20px; box-shadow: 0 12px 32px rgba(212,175,55,0.15);">
               📄
             </div>
-            <h2 style="font-size: 22px; font-weight: 700; color: #f8fafc; margin: 0 0 8px 0;">mePDF Studio Document Workbench</h2>
+            <h2 style="font-size: 22px; font-weight: 700; color: #f8fafc; margin: 0 0 8px 0;">mePDF Studio Document Workspace</h2>
             <p style="font-size: 14px; color: #94a3b8; max-width: 580px; line-height: 1.6; margin: 0 0 24px 0;">
               High-performance client-side document engineering with PDF-Lib and WebAssembly. 100% In-Device RAM isolation ensures absolute confidentiality.
             </p>
@@ -702,7 +776,7 @@ function createGenericStudioShell(info: StudioInfo): StudioShell {
             <div style="width: 72px; height: 72px; border-radius: 18px; background: ${info.accentColor}20; border: 1px solid ${info.accentColor}50; display: flex; align-items: center; justify-content: center; font-size: 36px; margin-bottom: 20px; box-shadow: 0 12px 32px ${info.accentColor}25;">
               ${info.icon}
             </div>
-            <h2 style="font-size: 22px; font-weight: 700; color: #f8fafc; margin: 0 0 8px 0;">${info.name} Workbench</h2>
+            <h2 style="font-size: 22px; font-weight: 700; color: #f8fafc; margin: 0 0 8px 0;">${info.name} Studio Workspace</h2>
             <p style="font-size: 14px; color: #94a3b8; max-width: 580px; line-height: 1.6; margin: 0 0 24px 0;">
               ${info.tagline.en}. Powered by local client-side WebAssembly & WebGPU. Zero telemetry.
             </p>

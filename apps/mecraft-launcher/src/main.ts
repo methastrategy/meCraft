@@ -58,6 +58,7 @@ export interface ShowcaseApp {
   industryCounterpart?: { en: string; th: string };
   supportedFormats?: string[];
   shortcuts?: Array<{ key: string; action: { en: string; th: string } }>;
+  guardian?: { th: string; en: string };
 }
 
 export interface PortalTranslations {
@@ -115,8 +116,8 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     brandTitle: 'meCrafts',
     brandSubtitle: 'Official Creative Suite',
     headerCta: 'Download Suite (.exe)',
-    heroTitle: 'The Private-First Creative & Document Workstation Suite',
-    heroSubtitle: '100% Client-Side Local Execution. Zero-Cloud Uploads. Native Windows Desktop Engine. 18 Purpose-Built Creative Tools & Utilities — All Free, Forever.',
+    heroTitle: 'The Private-First AI IDE & 18 Creative Studios Suite for Windows',
+    heroSubtitle: 'VS Code & Windsurf-grade Next-Gen AI IDE Workspace with 100% Client-Side Local Execution, Real Folder Opening, In-Device Copilot, and 18 Purpose-Built Creative Studios — All Free, Forever.',
     heroBadge1: '100% In-Device Privacy',
     heroBadge2: 'Zero Telemetry',
     heroBadge3: 'Open-Source',
@@ -142,7 +143,7 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     col2Title: 'meCrafts Private-First',
     specsTitle: 'Technical Specifications',
     specsSubtitle: 'Built for Windows. Engineered for speed.',
-    footerTagline: 'Private-First Creative Workstation Suite for Windows',
+    footerTagline: 'The Private-First AI IDE & 18 Creative Studios Suite for Windows',
     footerCopyright: '© 2024 MeStrategy. Open-Source under MIT License.',
     appsCount: '18 Apps',
     signInBtn: 'Sign In',
@@ -164,8 +165,8 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     brandTitle: 'meCrafts',
     brandSubtitle: 'ชุดโปรแกรมสร้างสรรค์ทางการ',
     headerCta: 'ดาวน์โหลด Suite (.exe)',
-    heroTitle: 'ชุดโปรแกรมสร้างสรรค์และเอกสารที่ให้ความเป็นส่วนตัวก่อน',
-    heroSubtitle: 'ประมวลผล 100% บนเครื่อง ไม่อัปโหลดไฟล์ไปที่ Cloud เครื่องยนต์ Windows Desktop จริง โปรแกรมสร้างสรรค์และเครื่องมือเฉพาะทาง 18 ตัว — ฟรีทั้งหมด ตลอดชีวิต',
+    heroTitle: 'ชุดโปรแกรมแก้ไขโค้ด AI IDE และ 18 สตูดิโอสร้างสรรค์ที่ให้ความเป็นส่วนตัว 100% สำหรับ Windows',
+    heroSubtitle: 'โปรแกรมแก้ไขโค้ด AI IDE ระดับเวิลด์คลาส เปิดโฟลเดอร์เครื่องจริง AI Copilot ใน RAM 100% พร้อม 18 สตูดิโอสร้างสรรค์และเครื่องมือเฉพาะทาง — ทำงานออฟไลน์สมบูรณ์แบบ ฟรีตลอดชีพ',
     heroBadge1: 'ความเป็นส่วนตัว 100%',
     heroBadge2: 'ไม่มีการเก็บข้อมูล',
     heroBadge3: 'Open-Source',
@@ -254,6 +255,10 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
   },
   {
     id: 'mepdf',
+    guardian: {
+      th: 'ท้าวเวสสุวรรณ (Thao Vessuwan)',
+      en: 'Thao Vessuwan — Guardian of Treasures & Diamond Mace',
+    },
     name: 'mePDF Studio Pro Standalone',
     category: { en: 'Document Engineering & PDF Lab', th: 'วิศวกรรมเอกสารและสตูดิโอ PDF' },
     version: 'v1.0.0',
@@ -273,6 +278,10 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
   },
   {
     id: 'mephoto',
+    guardian: {
+      th: 'พญานาค (Phraya Naga)',
+      en: 'Phraya Naga — Emerald Serpent with Radiant Gem',
+    },
     name: 'mePhoto Studio Darkroom Standalone',
     category: { en: 'Darkroom RAW & Color Lab', th: 'ห้องมืดตกแต่งภาพ RAW และเกรดสี' },
     version: 'v1.0.0',
@@ -292,6 +301,10 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
   },
   {
     id: 'medrop',
+    guardian: {
+      th: 'ม้านิลมังกร (Ma Nil Mangkon)',
+      en: 'Ma Nil Mangkon — Swift Dragon-Horse & Radial Wheel',
+    },
     name: 'meDrop Utility Standalone',
     category: { en: 'Direct LAN Transfer & PDF Squeezer', th: 'ส่งไฟล์ความเร็วสูงข้าม LAN และบีบอัด PDF' },
     version: 'v1.0.0',
@@ -311,6 +324,10 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
   },
   {
     id: 'medoc',
+    guardian: {
+      th: 'พระสุนทรีวาณี (Sunthari Vani)',
+      en: 'Sunthari Vani — Goddess of Eloquence & Crystal Lotus',
+    },
     name: 'meDoc Studio (Technical Documentation)',
     category: { en: 'Markdown & KaTeX Lab', th: 'บันทึกเอกสารวิจัย Markdown และ KaTeX' },
     version: 'v1.0.0',
@@ -365,6 +382,10 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
   },
   {
     id: 'mevector',
+    guardian: {
+      th: 'พญาครุฑ (Phraya Garuda)',
+      en: 'Phraya Garuda — King of Birds with Feather Splines',
+    },
     name: 'meVector Studio (Precision Geometry)',
     category: { en: 'Radial Vector Math & SVG Studio', th: 'ออกแบบลายเส้นเวกเตอร์และเรขาคณิตความแม่นยำสูง' },
     version: 'v1.0.0-alpha',
@@ -419,6 +440,10 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
   },
   {
     id: 'me3d',
+    guardian: {
+      th: 'พระวิศวกรรม (Vishvakarman)',
+      en: 'Vishvakarman — Celestial Architect & Builder of Worlds',
+    },
     name: 'me3D Studio (Spatial Mesh & Raytracing)',
     category: { en: 'WebGL Spatial Mesh & Raytracing', th: 'แสดงผลและจำลองแสงเงา 3D Mesh แบบเรียลไทม์' },
     version: 'v1.0.0-alpha',
@@ -665,8 +690,8 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
       th: 'สตูดิโอวาดภาพเวกเตอร์ Bézier ความแม่นยำสูง และส่งออก SVG/PDF สะอาด',
     },
     description: {
-      en: 'Resolution-independent path editing, node manipulation, boolean vector geometry, and SVG/PDF icon workbench.',
-      th: 'แก้ไขเส้นพาธอิสระจากความละเอียด, ดัดแปลง Node, ตรรกะเวกเตอร์ Boolean และ Workbench ไอคอน SVG/PDF',
+      en: 'Resolution-independent path editing, node manipulation, boolean vector geometry, and SVG/PDF icon workspace.',
+      th: 'แก้ไขเส้นพาธอิสระจากความละเอียด, ดัดแปลง Node, ตรรกะเวกเตอร์ Boolean และพื้นที่ทำงานไอคอน SVG/PDF',
     },
     status: 'active',
     version: 'v1.0.0',
@@ -708,7 +733,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     category: 'audio',
     categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
     tagline: {
-      en: 'Spatial 3D Modeling, Scene Lighting & Geometry Workbench',
+      en: 'Spatial 3D Modeling, Scene Lighting & Geometry Workspace',
       th: 'ปั้นโมเดลโพลีกอน 3 มิติ, จัดวางวัสดุ PBR และแสงสตูดิโอ HDRI แบบเรียลไทม์',
     },
     description: {
@@ -734,7 +759,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     ],
     specs: {
       en: [
-        'Subdivision Polygon Mesh Modeling Workbench',
+        'Subdivision Polygon Mesh Modeling Workspace',
         'PBR Metallic/Roughness Material Staging',
         'Real-Time HDRI Environmental Scene Lighting',
         'GLTF 2.0, OBJ & STL 3D Print Geometry Export',
@@ -1131,7 +1156,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     category: 'audio',
     categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
     tagline: {
-      en: 'Direct 3D Mesh Brush Painter & UV Unwrapping Workbench',
+      en: 'Direct 3D Mesh Brush Painter & UV Unwrapping Workspace',
       th: 'เพนต์ลวดลายบนผิวโมเดล 3D Mesh โดยตรง และกางระนาบ UV เกาะผิวโมเดล',
     },
     description: {
@@ -1158,7 +1183,7 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     specs: {
       en: [
         'Direct 3D Mesh Brush Painting & Decal Stamping',
-        'UV Island Unwrapping & Seam Stitching Workbench',
+        'UV Island Unwrapping & Seam Stitching Workspace',
         'DirectDraw Surface (DDS / BC1-BC5) Block Compression',
         'Multi-Resolution Mipmap Synthesis in Device Memory',
         'PBR Texture Sets (BaseColor, Normal, Roughness, Metalness)',
@@ -1316,6 +1341,46 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
 ];
 
 // ─── App Icons & 3D Thai Mythology Emblems ────────────────────────────────
+    guardian: {
+      th: 'มัยราพณ์ (Maiyarap)',
+      en: 'Maiyarap — Lord of the Underworld & Occult Decryption',
+    },
+    guardian: {
+      th: 'องคต (Angada)',
+      en: 'Angada — Peerless Messenger of Velocity & Sovereign Leap',
+    },
+    guardian: {
+      th: 'สุครีพ (Sugriva)',
+      en: 'Sugriva — Solar Simian King of Radiant Light & Refraction',
+    },
+    guardian: {
+      th: 'พาลี (Vali)',
+      en: 'Vali — Emerald Simian Sovereign with Immeasurable Force',
+    },
+    guardian: {
+      th: 'พระแม่โพสพ (Phra Mae Phosop)',
+      en: 'Phra Mae Phosop — Goddess of Abundance & Financial Balance',
+    },
+    guardian: {
+      th: 'พระพรหม (Phra Phrom)',
+      en: 'Phra Phrom — Four-Faced Divine Creator & Universal Blueprint',
+    },
+    guardian: {
+      th: 'พระพิฆเนศ (Ganesha)',
+      en: 'Ganesha — Lord of Intellect, Wisdom & High-Impact Arts',
+    },
+    guardian: {
+      th: 'ช้างเอราวัณ (Erawan Elephant)',
+      en: 'Erawan Elephant — 3-Headed Divine Architect Elephant',
+    },
+    guardian: {
+      th: 'นางสุพรรณมัจฉา (Suphannamatcha)',
+      en: 'Suphannamatcha — Golden Mermaid with Iridescent Scales',
+    },
+    guardian: {
+      th: 'นางกินรี (Kinnari Maiden)',
+      en: 'Kinnari Maiden — Celestial Creature with Golden Wings',
+    },
 const APP_ICON_MAP: Record<string, string> = {
   mepdf: 'mepdf',
   pdf: 'mepdf',
@@ -2362,6 +2427,46 @@ console.log(initializeStudio(pdfStudio));`,
         ` : ''}
       </div>
 
+      <!-- Explorer Context Menu Overlay -->
+      ${this.isContextMenuOpen && this.contextMenuTargetId ? (() => {
+        const targetFile = this.ideFiles.find(f => f.id === this.contextMenuTargetId);
+        const specStudio = targetFile ? getSpecializedStudioForFile(targetFile.name) : { id: 'mepdf', name: 'mePDF Studio' };
+        return `
+          <div class="ide-context-menu" style="top:${this.contextMenuPos.y}px; left:${this.contextMenuPos.x}px;" role="menu">
+            <button type="button" class="ide-context-item" data-context-action="open">
+              <span>📄</span>
+              <span>${isTh ? 'เปิดในโปรแกรมแก้ไข' : 'Open in Editor'}</span>
+              <span class="ide-context-shortcut">Enter</span>
+            </button>
+            <button type="button" class="ide-context-item ide-context-item-studio" data-context-action="studio">
+              <span>✨</span>
+              <span>${isTh ? 'เปิดใน ' + specStudio.name : 'Open in ' + specStudio.name}</span>
+              <span class="ide-context-shortcut">Studio</span>
+            </button>
+            <div class="ide-context-divider"></div>
+            <button type="button" class="ide-context-item" data-context-action="new-file">
+              <span>＋</span>
+              <span>${isTh ? 'สร้างไฟล์ใหม่' : 'New File'}</span>
+            </button>
+            <button type="button" class="ide-context-item" data-context-action="new-folder">
+              <span>📁</span>
+              <span>${isTh ? 'สร้างโฟลเดอร์ใหม่' : 'New Folder'}</span>
+            </button>
+            <div class="ide-context-divider"></div>
+            <button type="button" class="ide-context-item" data-context-action="rename">
+              <span>✏️</span>
+              <span>${isTh ? 'เปลี่ยนชื่อ' : 'Rename'}</span>
+              <span class="ide-context-shortcut">F2</span>
+            </button>
+            <button type="button" class="ide-context-item ide-context-item-danger" data-context-action="delete">
+              <span>🗑️</span>
+              <span>${isTh ? 'ลบไฟล์' : 'Delete'}</span>
+              <span class="ide-context-shortcut">Del</span>
+            </button>
+          </div>
+        `;
+      })() : ''}
+
       <!-- 5. Bottom Status Bar -->
       <footer class="ide-status-bar" role="status">
         <div class="ide-sb-left">
@@ -2498,7 +2603,7 @@ console.log(initializeStudio(pdfStudio));`,
           <h3>${isTh ? 'ยังไม่มีประวัติการเปิดไฟล์' : 'No Recent Files'}</h3>
           <p>${this.t.noRecentProjects}</p>
           <button type="button" class="ws-btn-primary" data-switch-view="workbench">
-            <span>${isTh ? 'ไปยังเวิร์กเบนช์' : 'Go to Workbench'}</span>
+            <span>${isTh ? 'ไปยังโปรแกรมแก้ไข' : 'Go to IDE Workspace'}</span>
           </button>
         </div>
       ` : `
@@ -3728,7 +3833,7 @@ console.log(initializeStudio(pdfStudio));`,
       </div>
       <div class="mockup-ribbon">
         <div class="mockup-ribbon-left">
-          <span class="mockup-tool-chip active">🔨 Studio Workbench</span>
+          <span class="mockup-tool-chip active">💻 IDE Workspace</span>
           <span class="mockup-tool-chip">${app.artcraftEquivalent || 'Native Engine'}</span>
         </div>
         <div class="mockup-ribbon-right">
@@ -4932,7 +5037,7 @@ console.log(initializeStudio(pdfStudio));`,
       this.attachListeners();
     });
 
-    // 5. Workbench Dropzone and File Browse
+    // 5. IDE Dropzone and File Browse
     const dropzone = document.getElementById('ws-universal-dropzone');
     const fileInput = document.getElementById('ws-file-input') as HTMLInputElement | null;
 
@@ -4970,7 +5075,7 @@ console.log(initializeStudio(pdfStudio));`,
       });
     }
 
-    // 6. Workbench Quick Action Buttons
+    // 6. Studio Quick Action Buttons
     document.querySelectorAll<HTMLElement>('.ws-quick-action-pill[data-quick-action]').forEach(btn => {
       btn.addEventListener('click', () => {
         const action = btn.getAttribute('data-quick-action');
@@ -5035,6 +5140,185 @@ console.log(initializeStudio(pdfStudio));`,
 
 
   // ── meCraft IDE Workspace Handlers ──
+  public async handleOpenFolder(mockDirName?: string, mockFiles?: IdeFile[]): Promise<boolean> {
+    if (mockDirName) {
+      this.openedFolderName = mockDirName;
+      if (mockFiles && mockFiles.length > 0) {
+        this.ideFiles = mockFiles;
+        this.openIdeFileIds = mockFiles.map(f => f.id);
+        this.activeIdeFileId = mockFiles[0].id;
+      }
+      this.ideTerminalHistory.push(`[IDE] Opened folder "${mockDirName}" (${this.ideFiles.length} files indexed).`);
+      this.render();
+      this.attachListeners();
+      return true;
+    }
+
+    if (typeof window !== 'undefined' && typeof (window as any).showDirectoryPicker === 'function') {
+      try {
+        const dirHandle = await (window as any).showDirectoryPicker();
+        this.openedDirectoryHandle = dirHandle;
+        this.openedFolderName = dirHandle.name;
+        const loadedFiles: IdeFile[] = [];
+
+        const readDir = async (handle: any, currentPath: string) => {
+          for await (const entry of handle.values()) {
+            if (entry.kind === 'file') {
+              try {
+                const f = await entry.getFile();
+                const isCodeOrDoc = /\.(txt|md|markdown|json|ts|tsx|js|jsx|py|html|css|yaml|yml|toml|ini|csv|log|sh|bat|cmd)$/i.test(entry.name);
+                let content = '';
+                if (isCodeOrDoc && f.size < 2 * 1024 * 1024) {
+                  content = await f.text();
+                }
+                loadedFiles.push({
+                  id: 'file-' + Math.random().toString(36).slice(2, 9),
+                  name: entry.name,
+                  path: currentPath + '/' + entry.name,
+                  content,
+                  language: getFileLanguage(entry.name),
+                  fileHandle: entry,
+                });
+              } catch {}
+            } else if (entry.kind === 'directory' && !['node_modules', '.git', 'dist', 'target'].includes(entry.name)) {
+              await readDir(entry, currentPath + '/' + entry.name);
+            }
+          }
+        };
+
+        await readDir(dirHandle, '/' + dirHandle.name);
+        if (loadedFiles.length > 0) {
+          this.ideFiles = loadedFiles;
+          this.openIdeFileIds = [loadedFiles[0].id];
+          this.activeIdeFileId = loadedFiles[0].id;
+          this.ideTerminalHistory.push(`[IDE] Opened folder "${dirHandle.name}" (${loadedFiles.length} files indexed).`);
+          this.render();
+          this.attachListeners();
+          return true;
+        }
+      } catch (err) {
+        console.warn('[meCraft:ide] showDirectoryPicker cancelled or failed:', err);
+      }
+    } else {
+      const folderInput = document.getElementById('ws-folder-input') as HTMLInputElement | null;
+      folderInput?.click();
+    }
+    return false;
+  }
+
+  public async handleSaveActiveFile(): Promise<boolean> {
+    const activeFile = this.ideFiles.find(f => f.id === this.activeIdeFileId);
+    if (!activeFile) return false;
+
+    if (activeFile.fileHandle && typeof activeFile.fileHandle.createWritable === 'function') {
+      try {
+        const writable = await activeFile.fileHandle.createWritable();
+        await writable.write(activeFile.content);
+        await writable.close();
+      } catch (err) {
+        console.warn('[meCraft:ide] Error writing to FileSystemFileHandle:', err);
+      }
+    }
+
+    activeFile.isDirty = false;
+    this.ideTerminalHistory.push(`[IDE] Saved ${activeFile.name} successfully.`);
+
+    const dirtyDots = document.querySelectorAll(`[data-ide-file="${activeFile.id}"] .ide-dirty-dot`);
+    dirtyDots.forEach(dot => dot.remove());
+
+    const sbReady = document.querySelector('.ide-sb-ready');
+    if (sbReady) {
+      sbReady.textContent = `✓ Saved ${activeFile.name}`;
+      setTimeout(() => {
+        if (sbReady) sbReady.textContent = '✓ Ready';
+      }, 3000);
+    }
+    return true;
+  }
+
+  public showContextMenu(fileId: string, x: number, y: number): void {
+    this.isContextMenuOpen = true;
+    this.contextMenuTargetId = fileId;
+    this.contextMenuPos = { x, y };
+    this.render();
+    this.attachListeners();
+  }
+
+  public closeContextMenu(): void {
+    this.isContextMenuOpen = false;
+    this.contextMenuTargetId = null;
+    this.render();
+    this.attachListeners();
+  }
+
+  public executeContextMenuAction(action: 'open' | 'studio' | 'new-file' | 'new-folder' | 'rename' | 'delete', targetFileId?: string): void {
+    const fileId = targetFileId || this.contextMenuTargetId;
+    const file = this.ideFiles.find(f => f.id === fileId);
+    this.closeContextMenu();
+
+    if (action === 'open' && file) {
+      if (!this.openIdeFileIds.includes(file.id)) {
+        this.openIdeFileIds.push(file.id);
+      }
+      this.activeIdeFileId = file.id;
+      this.render();
+      this.attachListeners();
+    } else if (action === 'studio' && file) {
+      const studio = getSpecializedStudioForFile(file.name);
+      this.handleLaunchApp(studio.id, 'desktop', file.path);
+    } else if (action === 'new-file') {
+      const name = typeof window !== 'undefined' && window.prompt ? window.prompt(this.lang === 'th' ? 'ชื่อไฟล์ใหม่:' : 'New File Name:', 'document.md') : 'document.md';
+      if (name && name.trim()) {
+        const id = 'file-' + Date.now();
+        this.ideFiles.push({
+          id,
+          name: name.trim(),
+          path: '/' + this.openedFolderName + '/' + name.trim(),
+          language: getFileLanguage(name.trim()),
+          content: '',
+        });
+        this.openIdeFileIds.push(id);
+        this.activeIdeFileId = id;
+        this.render();
+        this.attachListeners();
+      }
+    } else if (action === 'new-folder') {
+      const folderName = typeof window !== 'undefined' && window.prompt ? window.prompt(this.lang === 'th' ? 'ชื่อโฟลเดอร์ใหม่:' : 'New Folder Name:', 'subfolder') : 'subfolder';
+      if (folderName && folderName.trim()) {
+        const id = 'file-' + Date.now();
+        this.ideFiles.push({
+          id,
+          name: folderName.trim() + '/.keep',
+          path: '/' + this.openedFolderName + '/' + folderName.trim() + '/.keep',
+          language: 'plaintext',
+          content: '',
+        });
+        this.render();
+        this.attachListeners();
+      }
+    } else if (action === 'rename' && file) {
+      const newName = typeof window !== 'undefined' && window.prompt ? window.prompt(this.lang === 'th' ? 'เปลี่ยนชื่อไฟล์เป็น:' : 'Rename file to:', file.name) : 'renamed.txt';
+      if (newName && newName.trim()) {
+        file.name = newName.trim();
+        file.language = getFileLanguage(newName.trim());
+        file.path = '/' + this.openedFolderName + '/' + newName.trim();
+        this.render();
+        this.attachListeners();
+      }
+    } else if (action === 'delete' && file) {
+      const confirmed = typeof window !== 'undefined' && window.confirm ? window.confirm(this.lang === 'th' ? `ต้องการลบ ${file.name} หรือไม่?` : `Are you sure you want to delete ${file.name}?`) : true;
+      if (confirmed) {
+        this.ideFiles = this.ideFiles.filter(f => f.id !== file.id);
+        this.openIdeFileIds = this.openIdeFileIds.filter(id => id !== file.id);
+        if (this.activeIdeFileId === file.id) {
+          this.activeIdeFileId = this.openIdeFileIds[this.openIdeFileIds.length - 1] || (this.ideFiles[0]?.id || '');
+        }
+        this.render();
+        this.attachListeners();
+      }
+    }
+  }
+
   private updateGutter(textarea: HTMLTextAreaElement) {
     const gutter = document.getElementById('ide-editor-gutter');
     if (!gutter) return;

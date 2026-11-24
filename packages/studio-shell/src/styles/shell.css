@@ -62,6 +62,33 @@
   color: var(--shell-text-secondary);
 }
 
+.titlebar-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--shell-radius-sm, 4px);
+  color: var(--shell-text, #f8fafc);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  cursor: pointer;
+  margin-right: 4px;
+  transition: all 150ms ease;
+}
+
+.titlebar-btn-back:hover {
+  background: rgba(212, 175, 55, 0.25);
+  border-color: rgba(212, 175, 55, 0.5);
+  color: #f7d774;
+}
+
+.titlebar-back-arrow {
+  font-size: 13px;
+  line-height: 1;
+}
+
 .titlebar-app-icon {
   display: inline-flex;
   align-items: center;

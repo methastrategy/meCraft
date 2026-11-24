@@ -64,6 +64,21 @@ describe('@mecraft/studio-shell Architecture & Components Suite', () => {
       (titleBar.getElement().querySelector('#titlebar-btn-close') as HTMLElement)?.click();
       expect(onClose).toHaveBeenCalledTimes(1);
     });
+
+    it('renders and triggers back button to return to IDE Workspace cleanly', () => {
+      const onBack = vi.fn();
+      const titleBar = new TitleBar({
+        appName: 'mePDF Studio',
+        onBack: onBack,
+      });
+
+      const backBtn = titleBar.getElement().querySelector('#titlebar-btn-back') as HTMLElement;
+      expect(backBtn).not.toBeNull();
+      expect(backBtn.textContent).toContain('IDE');
+
+      backBtn.click();
+      expect(onBack).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('2. MenuBar Component', () => {

@@ -199,6 +199,8 @@ export class StudioShell {
       appTag: this.config.appTag,
       documentTitle: this.config.documentTitle,
       isTauri: this.config.isTauri,
+      showBackButton: this.config.showBackButton,
+      onBack: this.config.onBack,
     });
     this.rootEl.appendChild(this.titleBar.getElement());
 
