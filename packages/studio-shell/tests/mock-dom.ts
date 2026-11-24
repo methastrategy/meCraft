@@ -6,7 +6,16 @@
 export class MockElement {
   public tagName: string;
   public className = '';
-  public textContent = '';
+  private _textContent = '';
+  public get textContent(): string {
+    if (this.children.length > 0) {
+      return this.children.map(c => c.textContent).filter(Boolean).join(' ');
+    }
+    return this._textContent;
+  }
+  public set textContent(val: string) {
+    this._textContent = val;
+  }
   public id = '';
   public disabled = false;
   public style: Record<string, string> = {};

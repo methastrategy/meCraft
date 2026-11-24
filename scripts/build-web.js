@@ -124,6 +124,10 @@ for (const studio of additionalStudios) {
   fs.writeFileSync(path.join(studioDir, 'index.html'), rootPathedHtml, 'utf-8');
 }
 
+// Generate unified 18-studio downloads portal with Home Page sanctuary aesthetic + ArtCraft card-table architecture
+console.log('[build-web] Generating downloads portal HTML...');
+execSync('node scripts/generate-downloads-portal.js', { cwd: rootDir, stdio: 'inherit' });
+
 // Public assets if available
 const publicDir = path.join(rootDir, 'public');
 if (fs.existsSync(publicDir)) {

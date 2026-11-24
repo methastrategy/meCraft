@@ -1809,9 +1809,11 @@ const htmlContent = `<!doctype html>
       const I18N = {
         en: {
           header_badge: 'OFFICIAL SUITE',
-          nav_portal: '← Workstation Portal',
-          nav_lineup: 'All 18 Studios',
-          nav_verify: 'Verification',
+          nav_studios: 'Studios',
+          nav_privacy: 'Privacy Architecture',
+          nav_specs: 'Specs',
+          nav_downloads: 'Downloads',
+          lbl_free_member: 'FREE MEMBER',
           hero_pill: '18 APPS · WINDOWS',
           hero_title: 'The Private-First Creative & <span class="highlight">Document Workstation Suite</span>',
           hero_subtitle: '100% Client-Side Local Execution. Zero-Cloud Uploads. Native Windows Desktop Engine. 18 Purpose-Built Creative Tools & Utilities — All Free, Forever.',
@@ -1851,9 +1853,11 @@ const htmlContent = `<!doctype html>
         },
         th: {
           header_badge: 'ชุดโปรแกรมทางการ',
-          nav_portal: '← กลับหน้าเวิร์กสเตชัน',
-          nav_lineup: 'ครบทั้ง 18 สตูดิโอ',
-          nav_verify: 'ตรวจความถูกต้อง',
+          nav_studios: 'โปรแกรมสตูดิโอ',
+          nav_privacy: 'สถาปัตยกรรมความเป็นส่วนตัว',
+          nav_specs: 'สเปกเครื่อง',
+          nav_downloads: 'ดาวน์โหลด',
+          lbl_free_member: 'สมาชิกฟรี',
           hero_pill: '18 สตูดิโอ · WINDOWS',
           hero_title: 'ชุดโปรแกรมสร้างสรรค์และเอกสารที่ให้<span class="highlight">ความเป็นส่วนตัวก่อน</span>',
           hero_subtitle: 'ประมวลผล 100% บนเครื่อง ไม่อัปโหลดไฟล์ไปที่ Cloud เครื่องยนต์ Windows Desktop จริง โปรแกรมสร้างสรรค์และเครื่องมือเฉพาะทาง 18 ตัว — ฟรีทั้งหมด ตลอดชีวิต',
@@ -1984,7 +1988,7 @@ const htmlContent = `<!doctype html>
               <!-- Column 1: Identity -->
               <div class="col-identity">
                 <div class="col-emblem" style="border-color:\${s.accentColor}44;">
-                  <img src="../branding/\${s.id}.png" alt="\${s.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';" />
+                  <img src="/branding/\${s.id}.png" alt="\${s.name}" class="col-emblem-img" onerror="this.onerror=null;this.src='/assets/branding/\${s.id}.png';if(!this.complete){this.style.display='none';this.nextElementSibling.style.display='inline-flex';}" />
                   <span style="display:none;">\${s.emoji}</span>
                 </div>
                 <div class="col-title-group">
@@ -2078,6 +2082,26 @@ const htmlContent = `<!doctype html>
           const cmd = document.getElementById('cmd-sample').textContent;
           window.copyText(cmd, 'toast_cmd_copied');
         });
+
+        try {
+          const sessionData = localStorage.getItem('mecraft_session');
+          if (sessionData) {
+            const session = JSON.parse(sessionData);
+            if (session?.user?.email) {
+              const email = session.user.email;
+              const initial = (session.user.fullName || email).charAt(0).toUpperCase();
+              const elAvatar = document.querySelector('.user-avatar');
+              const elEmail = document.querySelector('.user-email');
+              if (elAvatar) elAvatar.textContent = initial;
+              if (elEmail) {
+                elEmail.textContent = email.length > 18 ? email.slice(0, 15) + '...' : email;
+                elEmail.title = email;
+              }
+            }
+          }
+        } catch (e) {
+          // Fallback to default user profile chip
+        }
 
         updateLanguage(currentLang);
       }

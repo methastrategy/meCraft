@@ -26,8 +26,10 @@ import {
   renderMarkdownHtml,
   getFileLanguage,
   getFileIcon,
+  getSpecializedStudioForFile,
   type IdeFile,
 } from '../src/main';
+import { ALL_STUDIOS } from '../src/studio-runner';
 
 describe('meCraft Launcher Core & Catalog Engine', () => {
   beforeEach(() => {
@@ -620,6 +622,127 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       const auditReply = portal.aiChatMessages[portal.aiChatMessages.length - 1];
       expect(auditReply.text).toContain('Local Security Audit');
       expect(auditReply.text).toContain('100% Client-Side RAM');
+    });
+
+    it('supports real folder opening and updates workspace hierarchy', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+
+      const mockFolderFiles: IdeFile[] = [
+        {
+          id: 'f1',
+          name: 'index.ts',
+          path: '/my-project/index.ts',
+          language: 'typescript',
+          content: 'console.log("hello world");',
+        },
+        {
+          id: 'f2',
+          name: 'README.md',
+          path: '/my-project/README.md',
+          language: 'markdown',
+          content: '# Demo Project',
+        },
+      ];
+
+      const res = await portal.handleOpenFolder('my-project', mockFolderFiles);
+      expect(res).toBe(true);
+      expect(portal.openedFolderName).toBe('my-project');
+      expect(portal.ideFiles.length).toBe(2);
+      expect(portal.activeIdeFileId).toBe('f1');
+      expect(portal.ideTerminalHistory.some(l => l.includes('Opened folder "my-project"'))).toBe(true);
+
+      (portal as any).render();
+      const folderHeader = doc.querySelector('.ide-pane-folder-title');
+      expect(folderHeader).not.toBeNull();
+      expect(folderHeader?.textContent).toContain('MY-PROJECT');
+    });
+
+    it('handles direct file save (Ctrl+S) clearing dirty state and writing to handle', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+
+      let writtenData = '';
+      let closed = false;
+      const mockWritable = {
+        write: async (data: string) => { writtenData = data; },
+        close: async () => { closed = true; },
+      };
+
+      const active = portal.ideFiles.find(f => f.id === portal.activeIdeFileId)!;
+      active.content = 'Updated content from user editing';
+      active.isDirty = true;
+      active.fileHandle = {
+        createWritable: async () => mockWritable,
+      };
+
+      const saved = await portal.handleSaveActiveFile();
+      expect(saved).toBe(true);
+      expect(active.isDirty).toBe(false);
+      expect(writtenData).toBe('Updated content from user editing');
+      expect(closed).toBe(true);
+      expect(portal.ideTerminalHistory.some(l => l.includes('Saved ' + active.name))).toBe(true);
+    });
+
+    it('provides specialized studio routing for explorer items and drop events', () => {
+      expect(getSpecializedStudioForFile('invoice.pdf').id).toBe('mepdf');
+      expect(getSpecializedStudioForFile('receipt.jpg').id).toBe('mephoto');
+      expect(getSpecializedStudioForFile('icon.png').id).toBe('mephoto');
+      expect(getSpecializedStudioForFile('scene.obj').id).toBe('me3d');
+      expect(getSpecializedStudioForFile('model.gltf').id).toBe('me3d');
+      expect(getSpecializedStudioForFile('firmware.bin').id).toBe('merea');
+      expect(getSpecializedStudioForFile('module.wasm').id).toBe('merea');
+      expect(getSpecializedStudioForFile('notes.md').id).toBe('medoc');
+      expect(getSpecializedStudioForFile('budget.csv').id).toBe('mesheet');
+      expect(getSpecializedStudioForFile('blueprint.dxf').id).toBe('mecad');
+      expect(getSpecializedStudioForFile('podcast.mp3').id).toBe('meaudio');
+      expect(getSpecializedStudioForFile('trailer.mp4').id).toBe('mefilm');
+      expect(getSpecializedStudioForFile('pitch.deck').id).toBe('medeck');
+      expect(getSpecializedStudioForFile('logo.svg').id).toBe('mevector');
+    });
+
+    it('handles explorer context menu lifecycle and actions', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+
+      // Open context menu
+      portal.showContextMenu('scratchpad-txt', 120, 240);
+      expect(portal.isContextMenuOpen).toBe(true);
+      expect(portal.contextMenuTargetId).toBe('scratchpad-txt');
+      expect(portal.contextMenuPos).toEqual({ x: 120, y: 240 });
+
+      // Close context menu
+      portal.closeContextMenu();
+      expect(portal.isContextMenuOpen).toBe(false);
+      expect(portal.contextMenuTargetId).toBeNull();
+    });
+
+    it('verifies 18 creative studios metadata parity, guardians, and exact order', () => {
+      expect(SHOWCASE_APPS.length).toBe(18);
+      expect(ALL_STUDIOS.length).toBe(18);
+
+      const showcaseIds = SHOWCASE_APPS.map(a => a.id);
+      const allStudioIds = ALL_STUDIOS.map(s => s.id);
+      expect(showcaseIds).toEqual(allStudioIds);
+
+      // Verify every studio has Thai and English Guardian Deities
+      SHOWCASE_APPS.forEach(app => {
+        expect(app.guardian).toBeDefined();
+        expect(app.guardian?.th.length).toBeGreaterThan(0);
+        expect(app.guardian?.en.length).toBeGreaterThan(0);
+      });
+
+      ALL_STUDIOS.forEach(studio => {
+        expect(studio.guardian).toBeDefined();
+        expect(studio.guardian.th.length).toBeGreaterThan(0);
+        expect(studio.guardian.en.length).toBeGreaterThan(0);
+      });
     });
   });
 

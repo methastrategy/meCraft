@@ -217,6 +217,7 @@ const SUITE_DOWNLOAD_URL = 'https://github.com/methastrategy/meCraft/releases/do
 export interface ReleaseBinaryItem {
   id: string;
   name: string;
+  guardian?: { en: string; th: string };
   category: { en: string; th: string };
   version: string;
   releaseDate: { en: string; th: string };
@@ -483,6 +484,10 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
 export const SHOWCASE_APPS: ShowcaseApp[] = [
   {
     id: 'mepdf',
+    guardian: {
+      th: 'ท้าวเวสสุวรรณ (Thao Vessuwan)',
+      en: 'Thao Vessuwan — Guardian of Treasures & Diamond Mace',
+    },
     name: 'mePDF Studio',
     category: 'document',
     categoryLabel: { en: 'Document', th: 'เอกสาร' },
@@ -533,6 +538,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'mephoto',
+    guardian: {
+      th: 'พญานาค (Phraya Naga)',
+      en: 'Phraya Naga — Emerald Serpent with Radiant Gem',
+    },
     name: 'mePhoto Studio',
     category: 'photo',
     categoryLabel: { en: 'Photo & Color', th: 'ภาพและสี' },
@@ -583,6 +592,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'medrop',
+    guardian: {
+      th: 'ม้านิลมังกร (Ma Nil Mangkon)',
+      en: 'Ma Nil Mangkon — Swift Dragon-Horse & Radial Wheel',
+    },
     name: 'meDrop Radial Converter',
     category: 'utility',
     categoryLabel: { en: 'Utility & REA', th: 'เครื่องมือและ REA' },
@@ -632,6 +645,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'medoc',
+    guardian: {
+      th: 'พระสุนทรีวาณี (Sunthari Vani)',
+      en: 'Sunthari Vani — Goddess of Eloquence & Crystal Lotus',
+    },
     name: 'meDoc Studio',
     category: 'document',
     categoryLabel: { en: 'Document', th: 'เอกสาร' },
@@ -682,6 +699,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'mevector',
+    guardian: {
+      th: 'พญาครุฑ (Phraya Garuda)',
+      en: 'Phraya Garuda — King of Birds with Feather Splines',
+    },
     name: 'meVector Studio',
     category: 'vector',
     categoryLabel: { en: 'Vector & CAD', th: 'เวกเตอร์และ CAD' },
@@ -729,6 +750,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'me3d',
+    guardian: {
+      th: 'พระวิศวกรรม (Vishvakarman)',
+      en: 'Vishvakarman — Celestial Architect & Builder of Worlds',
+    },
     name: 'me3D Studio',
     category: 'audio',
     categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
@@ -776,6 +801,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'mefilm',
+    guardian: {
+      th: 'นางกินรี (Kinnari Maiden)',
+      en: 'Kinnari Maiden — Celestial Creature with Golden Wings',
+    },
     name: 'meFilm Studio',
     category: 'video',
     categoryLabel: { en: 'Video & Motion', th: 'วิดีโอและโมชัน' },
@@ -823,6 +852,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'melight',
+    guardian: {
+      th: 'นางสุพรรณมัจฉา (Suphannamatcha)',
+      en: 'Suphannamatcha — Golden Mermaid with Iridescent Scales',
+    },
     name: 'meLight Studio',
     category: 'photo',
     categoryLabel: { en: 'Photo & Color', th: 'ภาพและสี' },
@@ -870,6 +903,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'memotion',
+    guardian: {
+      th: 'หนุมาน (Hanuman)',
+      en: 'Hanuman — White Monkey God of Agile Motion',
+    },
     name: 'meMotion Studio',
     category: 'video',
     categoryLabel: { en: 'Video & Motion', th: 'วิดีโอและโมชัน' },
@@ -917,6 +954,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'medesign',
+    guardian: {
+      th: 'ช้างเอราวัณ (Erawan Elephant)',
+      en: 'Erawan Elephant — 3-Headed Divine Architect Elephant',
+    },
     name: 'meDesign Studio',
     category: 'vector',
     categoryLabel: { en: 'Vector & CAD', th: 'เวกเตอร์และ CAD' },
@@ -964,6 +1005,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'meaudio',
+    guardian: {
+      th: 'พระพิราพ (Phra Phirap)',
+      en: 'Phra Phirap — Master Deity of Dramatic Arts & Sound',
+    },
     name: 'meAudio Studio',
     category: 'audio',
     categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
@@ -1011,6 +1056,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'medeck',
+    guardian: {
+      th: 'พระพิฆเนศ (Ganesha)',
+      en: 'Ganesha — Lord of Intellect, Wisdom & High-Impact Arts',
+    },
     name: 'meDeck Studio',
     category: 'document',
     categoryLabel: { en: 'Document', th: 'เอกสาร' },
@@ -1058,6 +1107,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'mecad',
+    guardian: {
+      th: 'พระพรหม (Phra Phrom)',
+      en: 'Phra Phrom — Four-Faced Divine Creator & Universal Blueprint',
+    },
     name: 'meCAD Studio',
     category: 'vector',
     categoryLabel: { en: 'Vector & CAD', th: 'เวกเตอร์และ CAD' },
@@ -1105,6 +1158,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'mesheet',
+    guardian: {
+      th: 'พระแม่โพสพ (Phra Mae Phosop)',
+      en: 'Phra Mae Phosop — Goddess of Abundance & Financial Balance',
+    },
     name: 'meSheet Studio',
     category: 'document',
     categoryLabel: { en: 'Document', th: 'เอกสาร' },
@@ -1152,6 +1209,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'metexture',
+    guardian: {
+      th: 'พาลี (Vali)',
+      en: 'Vali — Emerald Simian Sovereign with Immeasurable Force',
+    },
     name: 'meTexture Studio',
     category: 'audio',
     categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
@@ -1199,6 +1260,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'mematerial',
+    guardian: {
+      th: 'สุครีพ (Sugriva)',
+      en: 'Sugriva — Solar Simian King of Radiant Light & Refraction',
+    },
     name: 'meMaterial Studio',
     category: 'audio',
     categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
@@ -1246,6 +1311,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'meani',
+    guardian: {
+      th: 'องคต (Angada)',
+      en: 'Angada — Peerless Messenger of Velocity & Sovereign Leap',
+    },
     name: 'meAni Studio',
     category: 'video',
     categoryLabel: { en: 'Video & Motion', th: 'วิดีโอและโมชัน' },
@@ -1293,6 +1362,10 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
   },
   {
     id: 'merea',
+    guardian: {
+      th: 'มัยราพณ์ (Maiyarap)',
+      en: 'Maiyarap — Lord of the Underworld & Occult Decryption',
+    },
     name: 'meREA Studio',
     category: 'utility',
     categoryLabel: { en: 'Utility & REA', th: 'เครื่องมือและ REA' },
@@ -1341,46 +1414,6 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
 ];
 
 // ─── App Icons & 3D Thai Mythology Emblems ────────────────────────────────
-    guardian: {
-      th: 'มัยราพณ์ (Maiyarap)',
-      en: 'Maiyarap — Lord of the Underworld & Occult Decryption',
-    },
-    guardian: {
-      th: 'องคต (Angada)',
-      en: 'Angada — Peerless Messenger of Velocity & Sovereign Leap',
-    },
-    guardian: {
-      th: 'สุครีพ (Sugriva)',
-      en: 'Sugriva — Solar Simian King of Radiant Light & Refraction',
-    },
-    guardian: {
-      th: 'พาลี (Vali)',
-      en: 'Vali — Emerald Simian Sovereign with Immeasurable Force',
-    },
-    guardian: {
-      th: 'พระแม่โพสพ (Phra Mae Phosop)',
-      en: 'Phra Mae Phosop — Goddess of Abundance & Financial Balance',
-    },
-    guardian: {
-      th: 'พระพรหม (Phra Phrom)',
-      en: 'Phra Phrom — Four-Faced Divine Creator & Universal Blueprint',
-    },
-    guardian: {
-      th: 'พระพิฆเนศ (Ganesha)',
-      en: 'Ganesha — Lord of Intellect, Wisdom & High-Impact Arts',
-    },
-    guardian: {
-      th: 'ช้างเอราวัณ (Erawan Elephant)',
-      en: 'Erawan Elephant — 3-Headed Divine Architect Elephant',
-    },
-    guardian: {
-      th: 'นางสุพรรณมัจฉา (Suphannamatcha)',
-      en: 'Suphannamatcha — Golden Mermaid with Iridescent Scales',
-    },
-    guardian: {
-      th: 'นางกินรี (Kinnari Maiden)',
-      en: 'Kinnari Maiden — Celestial Creature with Golden Wings',
-    },
 const APP_ICON_MAP: Record<string, string> = {
   mepdf: 'mepdf',
   pdf: 'mepdf',
@@ -1473,6 +1506,94 @@ export interface IdeFile {
   content: string;
   language: 'markdown' | 'typescript' | 'json' | 'plaintext' | 'python';
   isDirty?: boolean;
+  fileHandle?: any;
+}
+
+export function getSpecializedStudioForFile(fileName: string): { id: string; name: string } {
+  const ext = fileName.split('.').pop()?.toLowerCase() || '';
+  switch (ext) {
+    case 'pdf':
+      return { id: 'mepdf', name: 'mePDF Studio' };
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+    case 'webp':
+    case 'avif':
+    case 'bmp':
+    case 'gif':
+      return { id: 'mephoto', name: 'mePhoto Studio' };
+    case 'svg':
+    case 'ai':
+    case 'eps':
+      return { id: 'mevector', name: 'meVector Studio' };
+    case '3d':
+    case 'obj':
+    case 'gltf':
+    case 'glb':
+    case 'stl':
+    case 'fbx':
+      return { id: 'me3d', name: 'me3D Studio' };
+    case 'bin':
+    case 'hex':
+    case 'exe':
+    case 'dll':
+    case 'wasm':
+    case 'so':
+    case 'dylib':
+      return { id: 'merea', name: 'meREA Studio' };
+    case 'doc':
+    case 'docx':
+    case 'md':
+    case 'markdown':
+      return { id: 'medoc', name: 'meDoc Studio' };
+    case 'sheet':
+    case 'csv':
+    case 'xlsx':
+    case 'tsv':
+      return { id: 'mesheet', name: 'meSheet Studio' };
+    case 'cad':
+    case 'dxf':
+    case 'dwg':
+      return { id: 'mecad', name: 'meCAD Studio' };
+    case 'mp3':
+    case 'wav':
+    case 'ogg':
+    case 'flac':
+    case 'aac':
+    case 'm4a':
+      return { id: 'meaudio', name: 'meAudio Studio' };
+    case 'mp4':
+    case 'webm':
+    case 'mov':
+    case 'mkv':
+    case 'avi':
+      return { id: 'mefilm', name: 'meFilm Studio' };
+    case 'deck':
+    case 'pptx':
+    case 'slide':
+      return { id: 'medeck', name: 'meDeck Studio' };
+    case 'motion':
+    case 'lottie':
+      return { id: 'memotion', name: 'meMotion Studio' };
+    case 'texture':
+    case 'uv':
+      return { id: 'metexture', name: 'meTexture Studio' };
+    case 'material':
+    case 'pbr':
+    case 'shader':
+      return { id: 'mematerial', name: 'meMaterial Studio' };
+    case 'ani':
+    case 'spine':
+    case 'sprite':
+      return { id: 'meani', name: 'meAni Studio' };
+    case 'raw':
+    case 'dng':
+    case 'cr2':
+    case 'nef':
+      return { id: 'melight', name: 'meLight Studio' };
+    default:
+      return { id: 'mepdf', name: 'mePDF Studio' };
+  }
 }
 
 export function getFileLanguage(fileName: string): 'markdown' | 'typescript' | 'json' | 'plaintext' | 'python' {
@@ -1599,6 +1720,11 @@ class MeCraftsPortal {
     public desktopView: 'workbench' | 'studios' | 'recents' | 'vault' = 'workbench';
 
   // ── meCraft IDE Workspace State ──
+  public openedFolderName: string = 'workspace';
+  public openedDirectoryHandle: any = null;
+  public isContextMenuOpen: boolean = false;
+  public contextMenuTargetId: string | null = null;
+  public contextMenuPos: { x: number; y: number } = { x: 0, y: 0 };
   public ideFiles: IdeFile[] = [
     {
       id: 'welcome-md',
@@ -2231,6 +2357,10 @@ console.log(initializeStudio(pdfStudio));`,
               <button type="button" class="ide-icon-btn" id="ide-btn-open-file" title="${isTh ? 'เปิดไฟล์จากเครื่อง' : 'Open File (Ctrl+O)'}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
               </button>
+              <button type="button" class="ide-icon-btn" id="ide-btn-open-folder" title="${isTh ? 'เปิดโฟลเดอร์จากเครื่อง (Ctrl+K Ctrl+O)' : 'Open Folder (Ctrl+K Ctrl+O)'}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+              </button>
+              <input type="file" id="ws-folder-input" webkitdirectory directory style="display:none;" />
             </div>
           </div>
 
@@ -2254,7 +2384,7 @@ console.log(initializeStudio(pdfStudio));`,
           <div class="ide-section" style="flex:1; overflow-y:auto;">
             <div class="ide-section-header">
               <span class="ide-section-arrow">▼</span>
-              <span>${isTh ? 'พื้นที่ทำงาน' : 'Workspace Files'}</span>
+              <span class="ide-pane-folder-title">📁 ${escapeHtml((this.openedFolderName || 'workspace').toUpperCase())}</span>
             </div>
             <div class="ide-section-content">
               ${this.ideFiles.map(file => `
