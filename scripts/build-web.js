@@ -16,11 +16,23 @@ execSync('npm run build:all', { cwd: rootDir, stdio: 'inherit' });
 // 2. Prepare root dist directory
 const distDir = path.join(rootDir, 'dist');
 if (fs.existsSync(distDir)) {
-  fs.rmSync(distDir, { recursive: true, force: true });
+  try {
+    const entries = fs.readdirSync(distDir);
+    for (const entry of entries) {
+      try {
+        fs.rmSync(path.join(distDir, entry), { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
+      } catch {
+        // Ignore files locked by active processes; will be overwritten
+      }
+    }
+  } catch {
+    // Directory access fallback
+  }
+} else {
+  fs.mkdirSync(distDir, { recursive: true });
 }
-fs.mkdirSync(distDir, { recursive: true });
 
-// Helper to copy directory recursively
+// Helper to copy directory recursively with Windows EBUSY retry
 function copyDir(src, dest) {
   if (!fs.existsSync(src)) {
     console.warn(`[build-web] Warning: Source directory ${src} does not exist.`);
@@ -34,7 +46,24 @@ function copyDir(src, dest) {
     if (entry.isDirectory()) {
       copyDir(srcPath, destPath);
     } else {
-      fs.copyFileSync(srcPath, destPath);
+      let copied = false;
+      for (let attempt = 0; attempt < 5; attempt++) {
+        try {
+          fs.copyFileSync(srcPath, destPath);
+          copied = true;
+          break;
+        } catch (err) {
+          if (attempt === 4) {
+            console.warn(`[build-web] Non-fatal copy error for ${destPath}: ${err.message}`);
+          } else {
+            try {
+              Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 150);
+            } catch {
+              // Ignore wait errors
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -71,6 +100,11 @@ const additionalStudios = [
   'melight',
   'memotion',
   'mesheet',
+  'mecad',
+  'metexture',
+  'mematerial',
+  'meani',
+  'merea',
 ];
 
 for (const studio of additionalStudios) {
@@ -93,6 +127,9 @@ if (fs.existsSync(publicDir)) {
     copyDir(brandingDir, path.join(distDir, 'medrop', 'branding'));
     copyDir(brandingDir, path.join(distDir, 'medoc', 'branding'));
     copyDir(brandingDir, path.join(distDir, 'downloads', 'branding'));
+    for (const s of additionalStudios) {
+      copyDir(brandingDir, path.join(distDir, s, 'branding'));
+    }
   }
 }
 

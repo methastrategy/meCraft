@@ -21,6 +21,7 @@ import {
   importAuthSyncCode,
   escapeHtml,
   TRANSLATIONS,
+  SHOWCASE_APPS,
   MeCraftsPortal,
 } from '../src/main';
 
@@ -410,7 +411,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       (portal as any).render();
       expect(doc.querySelector('.ws-view-studios')).not.toBeNull();
       const studioCards = doc.querySelectorAll('.ws-studio-card-full');
-      expect(studioCards.length).toBe(11);
+      expect(studioCards.length).toBe(SHOWCASE_APPS.length);
 
       // 2. Recents View
       portal.desktopView = 'recents';

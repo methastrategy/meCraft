@@ -55,6 +55,9 @@ export interface ShowcaseApp {
   keywords: string[];
   specs?: { en: string[]; th: string[] };
   enginePill?: { en: string; th: string };
+  industryCounterpart?: { en: string; th: string };
+  supportedFormats?: string[];
+  shortcuts?: Array<{ key: string; action: { en: string; th: string } }>;
 }
 
 export interface PortalTranslations {
@@ -459,8 +462,8 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     category: 'document',
     categoryLabel: { en: 'Document', th: 'เอกสาร' },
     tagline: {
-      en: 'Professional Client-Side PDF Engineering & Document Cockpit',
-      th: 'สตูดิโอวิศวกรรมเอกสาร PDF ค็อกพิทจัดการหน้า บีบอัด และฉีด OCR ในเครื่อง',
+      en: 'Professional Client-Side PDF Engineering Studio',
+      th: 'สตูดิโอวิศวกรรม PDF ระดับมืออาชีพบนฝั่ง Client',
     },
     description: {
       en: 'Merge, split, visual page cockpit, lossless & scanned compression, AES-256 encryption, and searchable OCR text injection.',
@@ -472,35 +475,14 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     exeSize: '~30.8 MB',
     downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mepdf.exe',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/pdfcraft',
-    industryCounterpart: { en: 'Adobe Acrobat Pro Alternative', th: 'ทางเลือกแทน Adobe Acrobat Pro' },
-    accentColor: '#d4af37',
-    glowColor: 'rgba(212,175,55,0.3)',
+    accentColor: '#6366f1',
+    glowColor: 'rgba(99,102,241,0.3)',
     icon: 'pdf',
     keywords: ['pdf', 'merge', 'split', 'compress', 'encrypt', 'ocr', 'aes', 'document'],
     enginePill: { en: '100% In-Device RAM · Tauri v2 Native', th: 'ประมวลผลบน RAM 100% · Tauri v2 Native' },
-    supportedFormats: ['PDF', 'TIFF', 'PNG', 'JPG', 'TXT'],
-    shortcuts: [
-      { key: 'Ctrl + O', action: { en: 'Open PDF', th: 'เปิดไฟล์ PDF' } },
-      { key: 'Ctrl + S', action: { en: 'Save Document', th: 'บันทึกเอกสาร' } },
-      { key: 'Ctrl + R', action: { en: 'Rotate Page 90°', th: 'หมุนหน้า 90 องศา' } },
-      { key: 'Ctrl + Shift + C', action: { en: 'Compress PDF', th: 'บีบอัดไฟล์ PDF' } },
-    ],
     specs: {
-      en: [
-        '4-Point Deskew & Local Otsu Binarization',
-        'Lossless Deflate & Scanned PDF Compression',
-        'Client-Side Searchable OCR Text Injection',
-        'AES-256 Bank-Grade Encryption & Sanitization',
-        'Visual Page Cockpit: Drag, Split, Merge',
-      ],
-      th: [
-        'ปรับระนาบ 4-Point Deskew & ลบเงา Otsu ท้องถิ่น',
-        'บีบอัดเอกสาร Lossless Deflate สูงสุด 90%',
-        'ฝังข้อความ OCR ค้นหาคำได้ในเครื่อง 100%',
-        'เข้ารหัสความปลอดภัยระดับธนาคาร AES-256',
-        'จัดระเบียบหน้า ลากสลับ/แยก/รวมไฟล์อิสระ',
-      ],
+      en: ['4-Point Deskew & Local Otsu Binarization', 'Lossless Deflate & Scanned PDF Compression', 'Client-Side Searchable OCR Text Injection', 'AES-256 Bank-Grade Encryption & Sanitization', 'Visual Page Cockpit: Drag, Split, Merge'],
+      th: ['ปรับระนาบ 4-Point Deskew & ลบเงา Otsu ท้องถิ่น', 'บีบอัดเอกสาร Lossless Deflate สูงสุด 90%', 'ฝังข้อความ OCR ค้นหาคำได้ในเครื่อง 100%', 'เข้ารหัสความปลอดภัยระดับธนาคาร AES-256', 'จัดระเบียบหน้า ลากสลับ/แยก/รวมไฟล์อิสระ'],
     },
   },
   {
@@ -509,12 +491,12 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     category: 'photo',
     categoryLabel: { en: 'Photo & Color', th: 'ภาพและสี' },
     tagline: {
-      en: 'CamScanner-Grade Document Restoration & Perspective Photo Lab',
-      th: 'ห้องปฏิบัติการตกแต่งภาพถ่าย กู้คืนเอกสาร และปรับระนาบมุมมอง',
+      en: 'CamScanner-Grade Document Restoration & Photo Lab',
+      th: 'ห้องปฏิบัติการรูปภาพและกู้เอกสารระดับ CamScanner',
     },
     description: {
-      en: '4-point homography perspective deskew, adaptive local Otsu binarization shadow eradication, Magic Color document enhancement, and 16-bit RAW darkroom.',
-      th: 'ปรับมุมมอง 4 จุด Homography, กำจัดเงาด้วย Otsu Binarization ท้องถิ่น, เพิ่มความสวยงามเอกสารด้วย Magic Color และ Darkroom ปรับ RAW 16-bit',
+      en: '4-point homography perspective deskew, adaptive local Otsu binarization shadow eradication, Magic Color document enhancement.',
+      th: 'ปรับมุมมอง 4 จุด Homography, กำจัดเงาด้วย Otsu Binarization ท้องถิ่น, เพิ่มความสวยงามเอกสารด้วย Magic Color',
     },
     status: 'active',
     version: 'v1.0.0',
@@ -522,45 +504,24 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     exeSize: '~22.7 MB',
     downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/mephoto.exe',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/photocraft',
-    industryCounterpart: { en: 'Adobe Photoshop Alternative', th: 'ทางเลือกแทน Adobe Photoshop' },
-    accentColor: '#10b981',
-    glowColor: 'rgba(16,185,129,0.3)',
+    accentColor: '#06b6d4',
+    glowColor: 'rgba(6,182,212,0.3)',
     icon: 'photo',
-    keywords: ['photo', 'image', 'scanner', 'ocr', 'homography', 'perspective', 'color', 'restore', 'raw'],
+    keywords: ['photo', 'image', 'scanner', 'ocr', 'homography', 'perspective', 'color', 'restore'],
     enginePill: { en: 'WebAssembly OpenCV · Hardware GPU', th: 'WebAssembly OpenCV · GPU เร่งความเร็ว' },
-    supportedFormats: ['RAW', 'DNG', 'PSD', 'PNG', 'JPG', 'WEBP'],
-    shortcuts: [
-      { key: 'V', action: { en: 'Move / Selection Tool', th: 'เครื่องมือเลือกและย้าย' } },
-      { key: 'C', action: { en: 'Perspective Crop', th: 'ตัดครอปปรับมุมมอง' } },
-      { key: 'B', action: { en: 'Retouch Brush', th: 'แปรงตกแต่งภาพ' } },
-      { key: 'Ctrl + J', action: { en: 'Duplicate Layer', th: 'คัดลอกเลเยอร์' } },
-    ],
     specs: {
-      en: [
-        '4-Point Homography Perspective Correction',
-        'Adaptive Local Otsu Shadow Eradication',
-        'Magic Color Document Photo Enhancement',
-        '16-Bit RAW / DNG Digital Darkroom',
-        'Batch Multi-Document Scan Restoration',
-      ],
-      th: [
-        'ดึงภาพถ่ายเอียงให้ตรงระนาบ 4-Point Homography',
-        'กำจัดเงาดำบนกระดาษด้วย Adaptive Otsu',
-        'เร่งความสดใสและคมชัดด้วย Magic Color',
-        'ห้องมืดตกแต่งภาพ RAW 16-Bit ไม่สูญเสียคุณภาพ',
-        'แต่งภาพและกู้เอกสารพร้อมกันแบบชุด',
-      ],
+      en: ['4-Point Homography Perspective Correction', 'Adaptive Local Otsu Shadow Eradication', 'Magic Color Document Photo Enhancement', 'Non-Destructive RAW High-Bit Processing', 'Batch Multi-Document Scan Restoration'],
+      th: ['ดึงภาพถ่ายเอียงให้ตรงระนาบ 4-Point Homography', 'กำจัดเงาดำบนกระดาษด้วย Adaptive Otsu', 'เร่งความสดใสและคมชัดด้วย Magic Color', 'โปรเซสเซอร์ภาพ RAW แบบไม่ทำลายคุณภาพ', 'แต่งภาพและกู้เอกสารพร้อมกันแบบชุด'],
     },
   },
   {
     id: 'medrop',
     name: 'meDrop Radial Converter',
     category: 'utility',
-    categoryLabel: { en: 'Utility & REA', th: 'เครื่องมือและ REA' },
+    categoryLabel: { en: 'Utility & Hub', th: 'เครื่องมือและศูนย์กลาง' },
     tagline: {
       en: 'Zero-Window Radial Drag & Drop File Converter HUD',
-      th: 'วงแหวนแปลงไฟล์เรเดียลรอบเคอร์เซอร์เมาส์ ลากวางแปลงทันทีใน RAM',
+      th: 'เครื่องมือแปลงไฟล์ทรงวงแหวน Radial HUD บนเคอร์เซอร์เมาส์ทันที',
     },
     description: {
       en: 'Hold Ctrl and drag any file in Windows Explorer: instant radial donut menu converts images, PDFs, vectors & documents locally in RAM, or transfers to meCraft studios.',
@@ -572,178 +533,41 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     exeSize: '~18.5 MB',
     downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meDrop.exe',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/craft-anything',
-    industryCounterpart: { en: 'Zero-Window Radial Converter HUD', th: 'วงแหวนเรเดียลแปลงไฟล์ใน RAM ทันที' },
-    accentColor: '#06b6d4',
-    glowColor: 'rgba(6,182,212,0.3)',
+    accentColor: '#3b82f6',
+    glowColor: 'rgba(59,130,246,0.3)',
     icon: 'drop',
     keywords: ['drop', 'convert', 'radial', 'donut', 'hud', 'converter', 'drag', 'zero-window', 'local-first'],
     enginePill: { en: 'Zero-Window HUD · Low-Latency Rust Hook', th: 'Zero-Window HUD · Rust Hook ความเร็วสูง' },
-    supportedFormats: ['PDF', 'PNG', 'JPG', 'WEBP', 'SVG', 'MD', 'DOCX'],
-    shortcuts: [
-      { key: 'Ctrl + Drag', action: { en: 'Trigger Radial HUD', th: 'เปิดวงแหวนรอบเคอร์เซอร์' } },
-      { key: 'Esc', action: { en: 'Dismiss HUD', th: 'ปิดวงแหวนทันที' } },
-      { key: '1 - 8', action: { en: 'Quick Slice Select', th: 'เลือกช่องแปลงไฟล์ด่วน' } },
-    ],
     specs: {
-      en: [
-        'Native Windows Low-Level Mouse & Keyboard Hook',
-        'Dynamic SVG Radial Arc HUD with 120fps Spring Physics',
-        'Client-Side RAM In-Place Conversion (No Cloud)',
-        'Context-Aware Smart Format Filtering by Extension',
-        'Cross-App Studio Gateway via ClipBus Memory Pipeline',
-      ],
-      th: [
-        'Native Windows Low-Level Hook ดักจับเมาส์ความเร็วสูง',
-        'วงแหวนเรขาคณิต SVG Donut แอนิเมชัน 120fps ลื่นไหล',
-        'แปลงไฟล์ใน RAM บันทึกข้างไฟล์เดิม ไม่แตะ Cloud',
-        'กรอง Format ปลายทางอัตโนมัติตามนามสกุลไฟล์',
-        'ส่งต่อไฟล์เข้า mePDF / mePhoto ด้วย ClipBus Pipeline',
-      ],
-    },
-  },
-  {
-    id: 'medoc',
-    name: 'meDoc Studio',
-    category: 'document',
-    categoryLabel: { en: 'Document', th: 'เอกสาร' },
-    tagline: {
-      en: 'Distraction-Free Markdown Typewriter & KaTeX Studio',
-      th: 'โปรแกรมพิมพ์งานไร้สิ่งรบกวน Markdown, สมการ KaTeX และผัง Mermaid สด',
-    },
-    description: {
-      en: 'Distraction-free typography, split-view real-time Markdown, live KaTeX LaTeX equations, inline Mermaid diagrams, and instant zero-cloud PDF/DOCX generation.',
-      th: 'ตัวพิมพ์ไร้สิ่งรบกวน, หน้าต่างแยกซ้าย-ขวาพิมพ์ Markdown และสมการ KaTeX สด, ไดอะแกรม Mermaid เวกเตอร์ และสร้างเอกสารสิ่งพิมพ์ PDF/DOCX ในเครื่อง 100%',
-    },
-    status: 'active',
-    version: 'v1.0.0',
-    exeName: 'meDoc.exe',
-    exeSize: '~19.2 MB',
-    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meDoc.exe',
-    suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/wordcraft',
-    industryCounterpart: { en: 'Microsoft Word / Typora Alternative', th: 'ทางเลือกแทน Typora และ Microsoft Word' },
-    accentColor: '#0d9488',
-    glowColor: 'rgba(13,148,136,0.3)',
-    icon: 'doc',
-    keywords: ['markdown', 'word', 'document', 'latex', 'writing', 'typewriter', 'katex', 'mermaid', 'pdf'],
-    enginePill: { en: 'Client-Side Markdown · KaTeX Math · Mermaid', th: 'Markdown ในเครื่อง 100% · สมการ KaTeX · ไดอะแกรม Mermaid' },
-    supportedFormats: ['MD', 'MARKDOWN', 'PDF', 'DOCX', 'TXT'],
-    shortcuts: [
-      { key: 'Ctrl + B', action: { en: 'Bold Text', th: 'ตัวหนา' } },
-      { key: 'Ctrl + I', action: { en: 'Italic Text', th: 'ตัวเอียง' } },
-      { key: 'Ctrl + K', action: { en: 'Insert Link', th: 'แทรกลิงก์' } },
-      { key: 'Ctrl + Shift + M', action: { en: 'Insert Math Block', th: 'แทรกสมการคณิตศาสตร์' } },
-    ],
-    specs: {
-      en: [
-        'Split-View Real-Time Markdown & KaTeX Engine',
-        'Inline Mermaid Vector Diagrams & Syntax Highlighting',
-        'Distraction-Free Zen Fullscreen Focus Mode',
-        'Client-Side Instant PDF Publishing via pdf-lib',
-        'Local-First Vault & Dynamic Outline Heading Jump',
-      ],
-      th: [
-        'หน้าต่างแยกซ้าย-ขวาพิมพ์ Markdown และ KaTeX สด',
-        'เรนเดอร์ Mermaid ไดอะแกรมเวกเตอร์และเน้นสีโค้ด',
-        'โหมด Zen ไร้สิ่งรบกวนเขียนงานสบายตาระดับสมาธิ',
-        'สร้าง PDF สิ่งพิมพ์ในหน่วยความจำเครื่องผ่าน pdf-lib',
-        'ระบบจัดเก็บไฟล์ในเครื่องและกระโดดตามหัวข้อ Outline',
-      ],
+      en: ['Native Windows Low-Level Mouse & Keyboard Hook', 'Dynamic SVG Radial Arc HUD with 120fps Spring Physics', 'Client-Side RAM In-Place Conversion (No Cloud)', 'Context-Aware Smart Format Filtering by Extension', 'Cross-App Studio Gateway via ClipBus Memory Pipeline'],
+      th: ['Native Windows Low-Level Hook ดักจับเมาส์ความเร็วสูง', 'วงแหวนเรขาคณิต SVG Donut แอนิเมชัน 120fps ลื่นไหล', 'แปลงไฟล์ใน RAM บันทึกข้างไฟล์เดิม ไม่แตะ Cloud', 'กรอง Format ปลายทางอัตโนมัติตามนามสกุลไฟล์', 'ส่งต่อไฟล์เข้า mePDF / mePhoto ด้วย ClipBus Pipeline'],
     },
   },
   {
     id: 'mevector',
     name: 'meVector Studio',
     category: 'vector',
-    categoryLabel: { en: 'Vector & CAD', th: 'เวกเตอร์และ CAD' },
+    categoryLabel: { en: 'Vector & Design', th: 'เวกเตอร์และดีไซน์' },
     tagline: {
       en: 'Precision Bézier Vector Illustration & SVG Studio',
-      th: 'สตูดิโอวาดภาพเวกเตอร์ Bézier ความแม่นยำสูง และส่งออก SVG/PDF สะอาด',
+      th: 'สตูดิโอวาดภาพเวกเตอร์ Bézier ความแม่นยำสูงและ SVG',
     },
     description: {
       en: 'Resolution-independent path editing, node manipulation, boolean vector geometry, and SVG/PDF icon workbench.',
       th: 'แก้ไขเส้นพาธอิสระจากความละเอียด, ดัดแปลง Node, ตรรกะเวกเตอร์ Boolean และ Workbench ไอคอน SVG/PDF',
     },
-    status: 'active',
+    status: 'in-dev',
     version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/vectorcraft',
-    industryCounterpart: { en: 'Adobe Illustrator Alternative', th: 'ทางเลือกแทน Adobe Illustrator' },
-    accentColor: '#3b82f6',
-    glowColor: 'rgba(59,130,246,0.3)',
+    artcraftEquivalent: 'VectorCraft / Illustrator',
+    accentColor: '#a855f7',
+    glowColor: 'rgba(168,85,247,0.3)',
     icon: 'vector',
     keywords: ['vector', 'svg', 'bezier', 'illustration', 'path', 'node', 'icon', 'design'],
     enginePill: { en: 'Precision Bézier Engine · SVG 2.0', th: 'เครื่องยนต์ Bézier ความแม่นยำสูง · SVG 2.0' },
-    supportedFormats: ['SVG', 'AI', 'EPS', 'PDF', 'DXF'],
-    shortcuts: [
-      { key: 'V', action: { en: 'Selection Tool', th: 'เครื่องมือเลือกทั่วไป' } },
-      { key: 'A', action: { en: 'Direct Selection Tool', th: 'เครื่องมือเลือกจุด Node' } },
-      { key: 'P', action: { en: 'Bézier Pen Tool', th: 'ปากกาวาดเส้นพาธ' } },
-      { key: 'Shift + M', action: { en: 'Shape Builder', th: 'สร้างรูปทรงตัดรวม' } },
-    ],
     specs: {
-      en: [
-        'Resolution-Independent Bézier Splines',
-        'Sub-Pixel Node & Tangent Manipulation',
-        'Boolean Geometry (Unite, Minus, Intersect)',
-        'Clean SVG 2.0 & Vector PDF Exporter',
-        'Hardware-Accelerated Path Tessellation',
-      ],
-      th: [
-        'วาดเส้น Bézier คมชัดทุกระดับความละเอียด',
-        'ดัดแปลง Node ปรับแขนความโค้งแม่นยำ',
-        'ตรรกะรูปทรง Boolean รวม/ตัด/เจาะรู',
-        'ส่งออก SVG 2.0 และ PDF Vector ไม่แตก',
-        'เรนเดอร์เส้นพาธด้วย GPU ความเร็วสูง',
-      ],
-    },
-  },
-  {
-    id: 'me3d',
-    name: 'me3D Studio',
-    category: 'audio',
-    categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
-    tagline: {
-      en: 'Spatial 3D Modeling, Scene Lighting & Geometry Workbench',
-      th: 'ปั้นโมเดลโพลีกอน 3 มิติ, จัดวางวัสดุ PBR และแสงสตูดิโอ HDRI แบบเรียลไทม์',
-    },
-    description: {
-      en: 'Polygon mesh modeling, PBR material staging, real-time spatial previews, and GLTF/OBJ asset export.',
-      th: 'โมเดลตาข่าย Polygon, จัดวาง PBR Material, Preview เชิงพื้นที่แบบ Real-time และส่งออก GLTF/OBJ',
-    },
-    status: 'active',
-    version: 'v1.0.0',
-    suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/3dcraft',
-    industryCounterpart: { en: 'Blender 3D Alternative', th: 'ทางเลือกแทน Blender 3D' },
-    accentColor: '#6366f1',
-    glowColor: 'rgba(99,102,241,0.3)',
-    icon: '3d',
-    keywords: ['3d', 'blender', 'model', 'mesh', 'pbr', 'gltf', 'obj', 'spatial', 'scene'],
-    enginePill: { en: 'WebGPU Spatial · PBR Material Lab', th: 'มิติพื้นที่ WebGPU · ห้องทดลอง PBR Material' },
-    supportedFormats: ['GLTF', 'GLB', 'OBJ', 'STL', 'FBX', 'USDZ'],
-    shortcuts: [
-      { key: 'Tab', action: { en: 'Toggle Edit Mode', th: 'สลับโหมดปั้นโมเดล' } },
-      { key: 'G', action: { en: 'Translate / Grab', th: 'ย้ายตำแหน่งวัตถุ' } },
-      { key: 'R', action: { en: 'Rotate', th: 'หมุนวัตถุ' } },
-      { key: 'S', action: { en: 'Scale', th: 'ย่อขยายขนาด' } },
-    ],
-    specs: {
-      en: [
-        'Subdivision Polygon Mesh Modeling Workbench',
-        'PBR Metallic/Roughness Material Staging',
-        'Real-Time HDRI Environmental Scene Lighting',
-        'GLTF 2.0, OBJ & STL 3D Print Geometry Export',
-        'Hardware WebGPU Spatial Viewport Gizmo',
-      ],
-      th: [
-        'ปั้นโมเดลโพลีกอน Polygon Mesh ความแม่นยำสูง',
-        'จัดวางพื้นผิววัสดุ PBR เสมือนจริง',
-        'จำลองแสงสตูดิโอและแสง HDRI แบบเรียลไทม์',
-        'ส่งออกไฟล์สำหรับ 3D Print และเกม (GLTF/OBJ/STL)',
-        'Viewport 3 มิติเร่งความเร็วด้วย WebGPU',
-      ],
+      en: ['Resolution-Independent Bézier Splines', 'Sub-Pixel Node & Tangent Manipulation', 'Boolean Geometry (Unite, Minus, Intersect)', 'Clean SVG 2.0 & Vector PDF Exporter', 'Hardware-Accelerated Path Tessellation'],
+      th: ['วาดเส้น Bézier คมชัดทุกระดับความละเอียด', 'ดัดแปลง Node ปรับแขนความโค้งแม่นยำ', 'ตรรกะรูปทรง Boolean รวม/ตัด/เจาะรู', 'ส่งออก SVG 2.0 และ PDF Vector ไม่แตก', 'เรนเดอร์เส้นพาธด้วย GPU ความเร็วสูง'],
     },
   },
   {
@@ -753,44 +577,24 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     categoryLabel: { en: 'Video & Motion', th: 'วิดีโอและโมชัน' },
     tagline: {
       en: 'Multi-Track Timeline Video Editor & Lossless Slicer',
-      th: 'ตัดต่อวิดีโอหลายเลเยอร์ Non-Linear, ใส่ Transition และเรนเดอร์ MP4 ด่วน',
+      th: 'โปรแกรมตัดต่อวิดีโอ Timeline หลายแทร็กและ Slicer ไม่สูญเสียคุณภาพ',
     },
     description: {
       en: 'Non-linear multi-layer video cutting, transitions, hardware-accelerated MP4 rendering, and clip sequencing.',
       th: 'ตัดต่อวิดีโอ Non-linear หลายเลเยอร์, Transition, เรนเดอร์ MP4 เร่งด้วย Hardware และจัดลำดับ Clip',
     },
-    status: 'active',
+    status: 'in-dev',
     version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/filmcraft',
-    industryCounterpart: { en: 'Adobe Premiere Pro Alternative', th: 'ทางเลือกแทน Adobe Premiere Pro' },
-    accentColor: '#ef4444',
-    glowColor: 'rgba(239,68,68,0.3)',
+    artcraftEquivalent: 'FilmCraft / Premiere Pro',
+    accentColor: '#f59e0b',
+    glowColor: 'rgba(245,158,11,0.3)',
     icon: 'film',
     keywords: ['video', 'film', 'timeline', 'edit', 'mp4', 'transition', 'cut', 'render'],
     enginePill: { en: 'Hardware NVENC / QuickSync MP4', th: 'ฮาร์ดแวร์เรนเดอร์ NVENC / QuickSync' },
-    supportedFormats: ['MP4', 'MOV', 'WEBM', 'MKV', 'WAV', 'AAC'],
-    shortcuts: [
-      { key: 'C', action: { en: 'Razor / Cut Tool', th: 'เครื่องมือใบมีดตัดคลิป' } },
-      { key: 'V', action: { en: 'Selection Tool', th: 'เครื่องมือเลือกคลิป' } },
-      { key: 'Space', action: { en: 'Play / Pause Timeline', th: 'เล่น / หยุดไทม์ไลน์' } },
-      { key: 'J / K / L', action: { en: 'Shuttle Playback', th: 'ย้อนหลัง / หยุด / กรอไปข้างหน้า' } },
-    ],
     specs: {
-      en: [
-        'Multi-Track Non-Linear Timeline Slicer',
-        'Lossless Keyframe Trimming Without Re-encode',
-        'GPU Hardware-Accelerated 4K MP4 Export',
-        'Multi-Layer Transitions & Color LUTs',
-        'Multi-Audio Track Mixing & Waveforms',
-      ],
-      th: [
-        'ตัดต่อวิดีโอหลายแทร็กบนไทม์ไลน์อิสระ',
-        'ตัดซอยคลิปตาม Keyframe โดยไม่เสียคุณภาพ',
-        'เรนเดอร์ 4K MP4 ด้วยฮาร์ดแวร์ GPU',
-        'ใส่ทรานซิชันและเกรดสีภาพยนตร์ด้วย LUTs',
-        'ซิงค์แทร็กเสียงหลายช่องสัญญาณ',
-      ],
+      en: ['Multi-Track Non-Linear Timeline Slicer', 'Lossless Keyframe Trimming Without Re-encode', 'GPU Hardware-Accelerated 4K MP4 Export', 'Multi-Layer Transitions & Color LUTs', 'Multi-Audio Track Mixing & Waveforms'],
+      th: ['ตัดต่อวิดีโอหลายแทร็กบนไทม์ไลน์อิสระ', 'ตัดซอยคลิปตาม Keyframe โดยไม่เสียคุณภาพ', 'เรนเดอร์ 4K MP4 ด้วยฮาร์ดแวร์ GPU', 'ใส่ทรานซิชันและเกรดสีภาพยนตร์ด้วย LUTs', 'ซิงค์แทร็กเสียงหลายช่องสัญญาณ'],
     },
   },
   {
@@ -799,45 +603,25 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     category: 'photo',
     categoryLabel: { en: 'Photo & Color', th: 'ภาพและสี' },
     tagline: {
-      en: 'HDR Tone Mapping, Parametric Exposure & RAW Photo Grade Lab',
-      th: 'ปรับแต่งภาพถ่าย RAW, ปรับแสง Parametric Exposure และ Tone Mapping HDR',
+      en: 'RAW Photo Development & Non-Destructive Color Lab',
+      th: 'ห้องปฏิบัติการพัฒนาภาพ RAW และปรับสีแบบไม่ทำลาย',
     },
     description: {
       en: 'High dynamic range tone-mapping, exposure calibration, parametric curves, and batch photography grading.',
       th: 'Tone-mapping HDR, ปรับ Exposure, Curves แบบ Parametric และ Grade ภาพถ่ายแบบ Batch',
     },
-    status: 'active',
+    status: 'in-dev',
     version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/lightcraft',
-    industryCounterpart: { en: 'Adobe Lightroom Alternative', th: 'ทางเลือกแทน Adobe Lightroom' },
-    accentColor: '#eab308',
-    glowColor: 'rgba(234,179,8,0.3)',
+    artcraftEquivalent: 'LightCraft / Lightroom',
+    accentColor: '#10b981',
+    glowColor: 'rgba(16,185,129,0.3)',
     icon: 'light',
     keywords: ['raw', 'lightroom', 'photo', 'color', 'grading', 'hdr', 'exposure', 'darkroom'],
     enginePill: { en: '16-Bit RAW Pipeline · Non-Destructive', th: 'ไพป์ไลน์ RAW 16-Bit · ปรับสีไม่ทำลายภาพ' },
-    supportedFormats: ['RAW', 'CR2', 'NEF', 'ARW', 'DNG', 'TIFF'],
-    shortcuts: [
-      { key: 'D', action: { en: 'Develop Module', th: 'เข้าสู่โหมดแต่งภาพ' } },
-      { key: 'G', action: { en: 'Grid Thumbnail View', th: 'ดูภาพรวมแบบตารางกริด' } },
-      { key: 'Y', action: { en: 'Before / After View', th: 'เปรียบเทียบก่อนและหลัง' } },
-      { key: 'Ctrl + Shift + C', action: { en: 'Copy Settings Recipe', th: 'คัดลอกสูตรการปรับแต่ง' } },
-    ],
     specs: {
-      en: [
-        'High Dynamic Range (HDR) Tone-Mapping',
-        'Parametric RGB Curves & Exposure Calibration',
-        'Zero-Loss Demosaicing & Sensor Profiles',
-        'HSL Selective Color Adjustment Wheels',
-        'Instant Recipe Presets & Batch Grading',
-      ],
-      th: [
-        'เกลี่ยแสงมืด/สว่างด้วย HDR Tone-Mapping',
-        'ปรับ Parametric RGB Curves และแสงละเอียด',
-        'ถอดรหัสเซนเซอร์ภาพ RAW 16-Bit ไร้ Noise',
-        'วงล้อปรับสี HSL แยกรายเฉดสีอย่างแม่นยำ',
-        'บันทึกสูตร Preset และคัดลอกโทนสีแบบชุด',
-      ],
+      en: ['High Dynamic Range (HDR) Tone-Mapping', 'Parametric RGB Curves & Exposure Calibration', 'Zero-Loss Demosaicing & Sensor Profiles', 'HSL Selective Color Adjustment Wheels', 'Instant Recipe Presets & Batch Grading'],
+      th: ['เกลี่ยแสงมืด/สว่างด้วย HDR Tone-Mapping', 'ปรับ Parametric RGB Curves และแสงละเอียด', 'ถอดรหัสเซนเซอร์ภาพ RAW 16-Bit ไร้ Noise', 'วงล้อปรับสี HSL แยกรายเฉดสีอย่างแม่นยำ', 'บันทึกสูตร Preset และคัดลอกโทนสีแบบชุด'],
     },
   },
   {
@@ -846,468 +630,136 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     category: 'video',
     categoryLabel: { en: 'Video & Motion', th: 'วิดีโอและโมชัน' },
     tagline: {
-      en: 'Keyframe Motion Graphics, Kinetic Typography & Particle VFX',
-      th: 'แอนิเมชันกราฟิกเคลื่อนไหว Keyframe, ตัวอักษร Kinetic และเอฟเฟกต์อนุภาค',
+      en: 'Keyframe Motion Graphics & Visual Effects Workbench',
+      th: 'Workbench กราฟิกเคลื่อนไหว Keyframe และเอฟเฟกต์ภาพ',
     },
     description: {
       en: 'Timeline-based layer motion, kinetic typography, particle presets, and vector path animation.',
       th: 'โมชัน Layer บน Timeline, ตัวอักษรเคลื่อนไหว, Preset อนุภาค และแอนิเมชันเส้นพาธเวกเตอร์',
     },
-    status: 'active',
+    status: 'in-dev',
     version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/effectcraft',
-    industryCounterpart: { en: 'Adobe After Effects Alternative', th: 'ทางเลือกแทน Adobe After Effects' },
-    accentColor: '#a855f7',
-    glowColor: 'rgba(168,85,247,0.3)',
+    artcraftEquivalent: 'EffectCraft / After Effects',
+    accentColor: '#ec4899',
+    glowColor: 'rgba(236,72,153,0.3)',
     icon: 'motion',
     keywords: ['motion', 'animation', 'keyframe', 'effects', 'vfx', 'typography', 'particle'],
     enginePill: { en: 'Kinetic Motion · 120fps Easing Graph', th: 'กราฟิกเคลื่อนไหว · กราฟ Easing 120fps' },
-    supportedFormats: ['MP4', 'WEBM', 'LOTTIE', 'JSON', 'GIF', 'APNG'],
-    shortcuts: [
-      { key: 'U', action: { en: 'Show Keyframe Properties', th: 'แสดงคุณสมบัติที่มีคีย์เฟรม' } },
-      { key: 'F9', action: { en: 'Easy Ease Keyframes', th: 'ปรับคีย์เฟรมให้สมูท' } },
-      { key: 'P / S / R', action: { en: 'Position / Scale / Rotation', th: 'เปิดตำแหน่ง / ย่อขยาย / การหมุน' } },
-      { key: 'Ctrl + D', action: { en: 'Duplicate Layer', th: 'คัดลอกเลเยอร์โมชัน' } },
-    ],
     specs: {
-      en: [
-        'Timeline-Based Layer Keyframe Motion',
-        'Kinetic Typography & Text Motion Presets',
-        'Physics-Driven 2D Particle System',
-        'Vector Path Morphing & Easing Graph Editor',
-        'Alpha Channel Transparent Video Export',
-      ],
-      th: [
-        'แอนิเมชันเลเยอร์บนไทม์ไลน์ด้วย Keyframe',
-        'ตัวอักษรเคลื่อนไหว Kinetic Typography สำเร็จรูป',
-        'เอฟเฟกต์อนุภาค Particle จำลองฟิสิกส์',
-        'ดัดรูปทรงเวกเตอร์ Morphing พร้อมกราฟ Easing',
-        'ส่งออกวิดีโอพื้นหลังโปร่งใส Alpha Channel',
-      ],
+      en: ['Timeline-Based Layer Keyframe Motion', 'Kinetic Typography & Text Motion Presets', 'Physics-Driven 2D Particle System', 'Vector Path Morphing & Easing Graph Editor', 'Alpha Channel Transparent Video Export'],
+      th: ['แอนิเมชันเลเยอร์บนไทม์ไลน์ด้วย Keyframe', 'ตัวอักษรเคลื่อนไหว Kinetic Typography สำเร็จรูป', 'เอฟเฟกต์อนุภาค Particle จำลองฟิสิกส์', 'ดัดรูปทรงเวกเตอร์ Morphing พร้อมกราฟ Easing', 'ส่งออกวิดีโอพื้นหลังโปร่งใส Alpha Channel'],
     },
   },
   {
     id: 'medesign',
     name: 'meDesign Studio',
     category: 'vector',
-    categoryLabel: { en: 'Vector & CAD', th: 'เวกเตอร์และ CAD' },
+    categoryLabel: { en: 'Vector & Design', th: 'เวกเตอร์และดีไซน์' },
     tagline: {
       en: 'Desktop Publishing, Editorial Layout & Print Pre-flight',
-      th: 'ออกแบบ UI/UX Prototyping, ระบบ Design System และจัดวางหน้ากระดาษสิ่งพิมพ์',
+      th: 'Desktop Publishing, จัดหน้าบรรณาธิการ และ Print Pre-flight',
     },
     description: {
       en: 'Grid-based page layout for magazines, multi-page posters, brochures, and CMYK print PDF export.',
       th: 'จัดวางหน้าบนกริดสำหรับนิตยสาร, โปสเตอร์หลายหน้า, โบรชัวร์ และส่งออก PDF สี CMYK',
     },
-    status: 'active',
+    status: 'in-dev',
     version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/designcraft',
-    industryCounterpart: { en: 'Adobe InDesign Alternative', th: 'ทางเลือกแทน Adobe InDesign' },
+    artcraftEquivalent: 'DesignCraft / InDesign',
     accentColor: '#f97316',
     glowColor: 'rgba(249,115,22,0.3)',
     icon: 'design',
     keywords: ['layout', 'indesign', 'publish', 'magazine', 'print', 'cmyk', 'brochure', 'grid'],
     enginePill: { en: 'Modular Grid · CMYK Print Pre-Flight', th: 'โมดูลาร์กริด · ตรวจสอบงานพิมพ์ CMYK' },
-    supportedFormats: ['INDD', 'IDML', 'PDF/X', 'EPS', 'SVG'],
-    shortcuts: [
-      { key: 'T', action: { en: 'Type / Text Frame Tool', th: 'เครื่องมือสร้างกรอบข้อความ' } },
-      { key: 'W', action: { en: 'Toggle Print Preview Mode', th: 'สลับโหมดพรีวิวงานพิมพ์' } },
-      { key: 'Ctrl + D', action: { en: 'Place Image / Asset', th: 'วางภาพและกราฟิก' } },
-      { key: 'Ctrl + B', action: { en: 'Text Frame Options', th: 'ตั้งค่าคอลัมน์ข้อความ' } },
-    ],
     specs: {
-      en: [
-        '12-Column Modular Editorial Grid Engine',
-        'CMYK FOGRA39 & Swatch Color Profiles',
-        'Master Pages & Linked Flow Text Frames',
-        'Print Bleed, Margins & Slug Management',
-        'Standards-Compliant PDF/X-1a Publishing',
-      ],
-      th: [
-        'จัดเลย์เอาต์สิ่งพิมพ์บน Modular Grid 12 คอลัมน์',
-        'โปรไฟล์สีมาตรฐานงานพิมพ์ CMYK FOGRA39',
-        'ระบบ Master Pages และเฟรมข้อความเชื่อมต่อกัน',
-        'คุมระยะตัดตก Bleed และขอบกระดาษพิมพ์',
-        'ส่งออกไฟล์งานพิมพ์มาตรฐานสากล PDF/X-1a',
-      ],
+      en: ['12-Column Modular Editorial Grid Engine', 'CMYK FOGRA39 & Swatch Color Profiles', 'Master Pages & Linked Flow Text Frames', 'Print Bleed, Margins & Slug Management', 'Standards-Compliant PDF/X-1a Publishing'],
+      th: ['จัดเลย์เอาต์สิ่งพิมพ์บน Modular Grid 12 คอลัมน์', 'โปรไฟล์สีมาตรฐานงานพิมพ์ CMYK FOGRA39', 'ระบบ Master Pages และเฟรมข้อความเชื่อมต่อกัน', 'คุมระยะตัดตก Bleed และขอบกระดาษพิมพ์', 'ส่งออกไฟล์งานพิมพ์มาตรฐานสากล PDF/X-1a'],
     },
   },
   {
     id: 'meaudio',
     name: 'meAudio Studio',
     category: 'audio',
-    categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
+    categoryLabel: { en: 'Audio & 3D', th: 'เสียงและ 3D' },
     tagline: {
-      en: 'Speech Master, Spectral Denoise & Multi-Track Podcast Audio Studio',
-      th: 'มาสเตอร์เสียงพูด, ตัดเสียงรบกวน Spectral และตัดต่อพอดแคสต์หลายไมค์',
+      en: 'Multi-Track Digital Audio Workstation & Noise Eradicator',
+      th: 'Digital Audio Workstation หลายแทร็กและกำจัดเสียงรบกวน',
     },
     description: {
       en: 'Voice track mastering, spectral noise reduction, podcast multi-mic editing, and lossy/lossless audio export.',
       th: 'Master เสียงพูด, ลด Noise แบบ Spectral, ตัดต่อ Podcast หลายไมค์ และส่งออกเสียงแบบ Lossy/Lossless',
     },
-    status: 'active',
+    status: 'in-dev',
     version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/soundcraft',
-    industryCounterpart: { en: 'Adobe Audition Alternative', th: 'ทางเลือกแทน Adobe Audition' },
-    accentColor: '#ec4899',
-    glowColor: 'rgba(236,72,153,0.3)',
+    artcraftEquivalent: 'SoundCraft / Audition',
+    accentColor: '#84cc16',
+    glowColor: 'rgba(132,204,22,0.3)',
     icon: 'audio',
     keywords: ['audio', 'sound', 'daw', 'podcast', 'noise', 'mastering', 'music', 'wav', 'mp3'],
     enginePill: { en: '32-Bit Float DSP · Spectral Noise AI', th: 'DSP 32-Bit Float · กำจัด Noise แบบสเปกตรัม' },
-    supportedFormats: ['WAV', 'FLAC', 'MP3', 'AAC', 'OGG', 'AIFF'],
-    shortcuts: [
-      { key: 'Space', action: { en: 'Play / Stop Audio', th: 'เล่น / หยุดเสียง' } },
-      { key: 'R', action: { en: 'Record Audio Track', th: 'บันทึกเสียงสด' } },
-      { key: 'S', action: { en: 'Split Clip at Playhead', th: 'ตัดแยกคลิปเสียง' } },
-      { key: 'M / S', action: { en: 'Mute / Solo Track', th: 'ปิดเสียง / ฟังเดี่ยว' } },
-    ],
     specs: {
-      en: [
-        'Multi-Track Digital Audio Workstation Engine',
-        'AI Spectral Noise Reduction & Hum Eradication',
-        'Multi-Band Parametric EQ & Dynamics Comp',
-        'Podcast Multi-Mic Auto-Leveling Cockpit',
-        'Lossless 32-Bit Float WAV & FLAC Mastering',
-      ],
-      th: [
-        'ห้องบันทึกและมิกซ์เสียงดิจิทัลหลายแทร็ก',
-        'ลบเสียงฮัมและเสียงรบกวนด้วย Spectral De-Noise',
-        'ปรับแต่งเสียงด้วย Parametric EQ และ Compressor',
-        'บาลานซ์เสียงไมค์ Podcast หลายตัวอัตโนมัติ',
-        'ส่งออกไฟล์เสียงคุณภาพสูง 32-Bit Float WAV/FLAC',
-      ],
+      en: ['Multi-Track Digital Audio Workstation Engine', 'AI Spectral Noise Reduction & Hum Eradication', 'Multi-Band Parametric EQ & Dynamics Comp', 'Podcast Multi-Mic Auto-Leveling Cockpit', 'Lossless 32-Bit Float WAV & FLAC Mastering'],
+      th: ['ห้องบันทึกและมิกซ์เสียงดิจิทัลหลายแทร็ก', 'ลบเสียงฮัมและเสียงรบกวนด้วย Spectral De-Noise', 'ปรับแต่งเสียงด้วย Parametric EQ และ Compressor', 'บาลานซ์เสียงไมค์ Podcast หลายตัวอัตโนมัติ', 'ส่งออกไฟล์เสียงคุณภาพสูง 32-Bit Float WAV/FLAC'],
     },
   },
   {
-    id: 'medeck',
-    name: 'meDeck Studio',
+    id: 'medoc',
+    name: 'meDoc Studio',
     category: 'document',
     categoryLabel: { en: 'Document', th: 'เอกสาร' },
     tagline: {
-      en: 'High-Impact Interactive Presentation & Keynote Slide Studio',
-      th: 'สร้างสไลด์นำเสนอเชิงโต้ตอบ กราฟิกการนำเสนอ และส่งออก PDF/WebDeck',
+      en: 'Distraction-Free Markdown Typewriter & KaTeX Studio',
+      th: 'เครื่องพิมพ์ Markdown แบบสมาธิ เรนเดอร์สมการ KaTeX และส่งออก PDF ในเครื่อง',
     },
     description: {
-      en: 'Apple Keynote-grade presentation canvas, DrawingML vector shapes, text warps, PPTX clean-room authoring, and web-ready deck exports.',
-      th: 'ผืนผ้าใบนำเสนอระดับ Apple Keynote, รูปทรงเวกเตอร์ DrawingML, บิดข้อความ, สร้างไฟล์ PPTX ปราศจากคลาวด์ และส่งออก WebDeck ทันที',
+      en: 'Distraction-free typography, split-view real-time Markdown, live KaTeX LaTeX equations, inline Mermaid diagrams, and instant zero-cloud PDF generation.',
+      th: 'ตัวพิมพ์ไร้สิ่งรบกวน, หน้าต่างแยกซ้าย-ขวาพิมพ์ Markdown และสมการ KaTeX สด, ไดอะแกรม Mermaid เวกเตอร์ และสร้างเอกสารสิ่งพิมพ์ PDF ในเครื่อง 100%',
     },
     status: 'active',
     version: 'v1.0.0',
+    exeName: 'meDoc.exe',
+    exeSize: '~19.2 MB',
+    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meDoc.exe',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/deckcraft',
-    industryCounterpart: { en: 'Apple Keynote / PowerPoint Alternative', th: 'ทางเลือกแทน Apple Keynote และ PowerPoint' },
-    accentColor: '#fb923c',
-    glowColor: 'rgba(251,146,60,0.3)',
-    icon: 'deck',
-    keywords: ['deck', 'keynote', 'powerpoint', 'slide', 'presentation', 'pitch', 'pptx'],
-    enginePill: { en: 'Keynote Vector Canvas · Standalone WebDeck', th: 'แคนวาสเวกเตอร์ระดับ Keynote · WebDeck ในตัว' },
-    supportedFormats: ['PPTX', 'KEY', 'PDF', 'HTML5', 'PNG'],
-    shortcuts: [
-      { key: 'Ctrl + M', action: { en: 'New Slide', th: 'สร้างสไลด์ใหม่' } },
-      { key: 'F5', action: { en: 'Start Presentation', th: 'เริ่มการนำเสนอเต็มจอ' } },
-      { key: 'Ctrl + D', action: { en: 'Duplicate Shape / Slide', th: 'คัดลอกรูปทรงหรือสไลด์' } },
-      { key: 'Ctrl + G', action: { en: 'Group Elements', th: 'จัดกลุ่มองค์ประกอบ' } },
-    ],
+    artcraftEquivalent: 'WordCraft / Microsoft Word / Typora',
+    accentColor: '#0d9488',
+    glowColor: 'rgba(13,148,136,0.3)',
+    icon: 'doc',
+    keywords: ['markdown', 'word', 'document', 'latex', 'writing', 'typewriter', 'katex', 'mermaid', 'pdf'],
+    enginePill: { en: 'Client-Side Markdown · KaTeX Math · Mermaid', th: 'Markdown ในเครื่อง 100% · สมการ KaTeX · ไดอะแกรม Mermaid' },
     specs: {
-      en: [
-        'Apple Keynote-Grade Cinematic Slide Canvas',
-        'DrawingML Clean-Room Vector Shapes & Text Warps',
-        'Smart Guides & Fluid Physics Transitions',
-        'Zero-Cloud PPTX & Standalone HTML WebDeck Export',
-        'Dual-Monitor Presenter Display Cockpit',
-      ],
-      th: [
-        'แคนวาสสไลด์นำเสนอคมชัดระดับภาพยนตร์',
-        'รูปทรงเวกเตอร์ DrawingML และบิดข้อความอิสระ',
-        'เส้นกะระยะอัจฉริยะและแอนิเมชันทรานซิชันฟิสิกส์',
-        'ส่งออกไฟล์ PPTX และ HTML WebDeck ไร้คลาวด์',
-        'หน้าจอผู้บรรยายสองจอแยกพร้อมบันทึกส่วนตัว',
-      ],
+      en: ['Split-View Real-Time Markdown & KaTeX Engine', 'Inline Mermaid Vector Diagrams & Syntax Highlighting', 'Distraction-Free Zen Fullscreen Focus Mode', 'Client-Side Instant PDF Publishing via pdf-lib', 'Local-First Vault & Dynamic Outline Heading Jump'],
+      th: ['หน้าต่างแยกซ้าย-ขวาพิมพ์ Markdown และ KaTeX สด', 'เรนเดอร์ Mermaid ไดอะแกรมเวกเตอร์และเน้นสีโค้ด', 'โหมด Zen ไร้สิ่งรบกวนเขียนงานสบายตาระดับสมาธิ', 'สร้าง PDF สิ่งพิมพ์ในหน่วยความจำเครื่องผ่าน pdf-lib', 'ระบบจัดเก็บไฟล์ในเครื่องและกระโดดตามหัวข้อ Outline'],
     },
   },
   {
-    id: 'mecad',
-    name: 'meCAD Studio',
-    category: 'vector',
-    categoryLabel: { en: 'Vector & CAD', th: 'เวกเตอร์และ CAD' },
-    tagline: {
-      en: '2D Engineering CAD Drafting & Millimeter Precision Plotter',
-      th: 'เขียนแบบวิศวกรรม 2D CAD ความแม่นยำสูงระดับมิลลิเมตร และจัดการ DXF',
-    },
-    description: {
-      en: 'Clean-room DXF (R12 to 2018 ASCII/Binary), entity blocks, coordinate snapping, geometric constraints, and millimeter-accurate plotting.',
-      th: 'อ่านและเขียนไฟล์ DXF ทุกเวอร์ชัน, บล็อกเอนทิตี, สแน็ปพิกัดแม่นยำ, ข้อกำหนดเรขาคณิต และพล็อตแบบแปลนความแม่นยำระดับมิลลิเมตร',
-    },
-    status: 'active',
-    version: 'v1.0.0',
-    suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/cadcraft',
-    industryCounterpart: { en: 'AutoCAD 2D Alternative', th: 'ทางเลือกแทน AutoCAD 2D' },
-    accentColor: '#0ea5e9',
-    glowColor: 'rgba(14,165,233,0.3)',
-    icon: 'cad',
-    keywords: ['cad', 'autocad', 'dxf', 'dwg', 'drafting', 'engineering', 'blueprint', 'survey'],
-    enginePill: { en: 'Clean-Room DXF · Sub-Millimeter Snapping', th: 'เครื่องยนต์ DXF สะอาด · สแน็ปต่ำกว่ามิลลิเมตร' },
-    supportedFormats: ['DXF', 'DWG', 'SVG', 'PDF', 'HPGL'],
-    shortcuts: [
-      { key: 'L', action: { en: 'Line Command', th: 'คำสั่งวาดเส้นตรง' } },
-      { key: 'C', action: { en: 'Circle Command', th: 'คำสั่งวาดวงกลม' } },
-      { key: 'F8', action: { en: 'Toggle Ortho Lock', th: 'ล็อกแกนฉาก 90 องศา' } },
-      { key: 'Z + E', action: { en: 'Zoom Extents', th: 'ซูมขอบเขตแบบแปลนทั้งหมด' } },
-    ],
-    specs: {
-      en: [
-        'Clean-Room DXF Parsing (R12 to 2018 ASCII/Binary)',
-        'Entity Blocks, Geometric Snapping & Ortho Locks',
-        'Dimensioning, Tolerancing & Millimeter-Accurate Plotting',
-        'Layer Management with TrueColor & Linetype Specs',
-        'SVG and High-Res Vector PDF Plan Blueprints',
-      ],
-      th: [
-        'อ่านและเขียน DXF มาตรฐานสากลทั้ง ASCII และ Binary',
-        'บล็อกชิ้นงาน สแน็ปจุดสัมผัส และล็อกแกนออร์โท',
-        'บอกขนาด กำหนดพิกัด และพล็อตแบบละเอียดระดับมิลลิเมตร',
-        'จัดการเลเยอร์ สี TrueColor และรูปแบบเส้นประหลากหลาย',
-        'แปลงแบบแปลนเป็น SVG และ PDF เวกเตอร์ความละเอียดสูง',
-      ],
-    },
-  },
-  {
-    id: 'mesheet',
-    name: 'meSheet Studio',
-    category: 'document',
-    categoryLabel: { en: 'Document', th: 'เอกสาร' },
-    tagline: {
-      en: 'Reactive Financial Modeling & High-Volume Spreadsheet Grid',
-      th: 'ตารางคำนวณสเปรดชีตสูตรการเงินความเร็วสูง และประมวลผลข้อมูลใน RAM',
-    },
-    description: {
-      en: 'Reactive spreadsheet formula engine, memory-mapped CSV/TSV/XLSX streaming, instant scrolling across 1,000,000+ rows in local device RAM.',
-      th: 'เครื่องยนต์คำนวณสูตรสเปรดชีตแบบ Reactive, สตรีมไฟล์ CSV/TSV/XLSX ในหน่วยความจำ, เลื่อนหน้าจอ 1,000,000+ แถวลื่นไหลโดยไม่กระตุก',
-    },
-    status: 'active',
-    version: 'v1.0.0',
-    suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/gridcraft',
-    industryCounterpart: { en: 'Microsoft Excel Alternative', th: 'ทางเลือกแทน Microsoft Excel' },
-    accentColor: '#14b8a6',
-    glowColor: 'rgba(20,184,166,0.3)',
-    icon: 'sheet',
-    keywords: ['sheet', 'excel', 'spreadsheet', 'csv', 'formula', 'grid', 'table', 'finance'],
-    enginePill: { en: 'Reactive Formula Engine · 1M+ Rows RAM', th: 'สูตร Reactive · รองรับ 1,000,000+ แถวใน RAM' },
-    supportedFormats: ['XLSX', 'CSV', 'TSV', 'PARQUET', 'JSON'],
-    shortcuts: [
-      { key: 'F2', action: { en: 'Edit Active Cell', th: 'แก้ไขสูตรในช่องตาราง' } },
-      { key: 'Ctrl + Arrow', action: { en: 'Jump to Boundary Edge', th: 'กระโดดไปยังขอบข้อมูล' } },
-      { key: 'Alt + =', action: { en: 'AutoSum Formula', th: 'ใส่สูตรหาผลรวมอัตโนมัติ' } },
-      { key: 'Ctrl + Shift + $', action: { en: 'Format Currency', th: 'จัดรูปแบบตัวเลขการเงิน' } },
-    ],
-    specs: {
-      en: [
-        'Reactive Formula Engine (SUM, VLOOKUP, XLOOKUP, IF)',
-        'Virtualized Canvas Grid Scrolling (1,000,000+ Rows)',
-        'Instant Memory-Mapped CSV & TSV Import/Export',
-        'Financial Modeling, Charting & Data Validation',
-        'Clean-Room XLSX Parsing with Zero Cloud Dependencies',
-      ],
-      th: [
-        'สูตรคำนวณ Reactive รองรับ SUM, VLOOKUP, XLOOKUP, IF',
-        'แสดงผลบน Canvas เสมือนจริงเลื่อนล้านแถวไม่หน่วง',
-        'เปิดและส่งออก CSV/TSV ขนาดมหึมาทันทีใน RAM',
-        'แบบจำลองการเงิน กราฟิก และการตรวจสอบความถูกต้อง',
-        'อ่านเขียน XLSX ปราศจากโมดูลภายนอกและไม่ต่อเน็ต',
-      ],
-    },
-  },
-  {
-    id: 'metexture',
-    name: 'meTexture Studio',
+    id: 'me3d',
+    name: 'me3D Studio',
     category: 'audio',
-    categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
+    categoryLabel: { en: 'Audio & 3D', th: 'เสียงและ 3D' },
     tagline: {
-      en: 'Direct 3D Mesh Brush Painter & UV Unwrapping Workbench',
-      th: 'เพนต์ลวดลายบนผิวโมเดล 3D Mesh โดยตรง และกางระนาบ UV เกาะผิวโมเดล',
+      en: 'Spatial 3D Modeling, Scene Lighting & Geometry Workbench',
+      th: 'Workbench โมเดล 3D เชิงพื้นที่, แสงฉาก และเรขาคณิต',
     },
     description: {
-      en: 'Direct 3D mesh brush painting, UV unwrapping, DirectDraw Surface (DDS / BC1–BC5) block compression, and mipmap generators in device memory.',
-      th: 'ระบายสีลงบนผิวโมเดล 3 มิติโดยตรง, คลี่พิกัด UV, บีบอัดพื้นผิว DirectDraw Surface (DDS BC1-BC5) และสร้าง Mipmap ในเครื่อง',
+      en: 'Polygon mesh modeling, PBR material staging, real-time spatial previews, and GLTF/OBJ asset export.',
+      th: 'โมเดลตาข่าย Polygon, จัดวาง PBR Material, Preview เชิงพื้นที่แบบ Real-time และส่งออก GLTF/OBJ',
     },
-    status: 'active',
+    status: 'in-dev',
     version: 'v1.0.0',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/texturecraft',
-    industryCounterpart: { en: 'Substance 3D Painter Alternative', th: 'ทางเลือกแทน Substance 3D Painter' },
-    accentColor: '#f43f5e',
-    glowColor: 'rgba(244,63,94,0.3)',
-    icon: 'texture',
-    keywords: ['texture', 'painter', 'substance', '3d', 'brush', 'uv', 'pbr', 'dds'],
-    enginePill: { en: 'Direct 3D Mesh Painting · DDS BC1-BC5', th: 'เพนต์บน 3D Mesh ตรง · บีบอัด DDS BC1-BC5' },
-    supportedFormats: ['DDS', 'PNG', 'EXR', 'HDR', 'TIFF', 'OBJ'],
-    shortcuts: [
-      { key: '1 - 3', action: { en: 'Toggle 2D/3D View', th: 'สลับมุมมอง 2D / 3D / สองจอ' } },
-      { key: 'B', action: { en: '3D Paint Brush Tool', th: 'แปรงเพนต์ผิวโมเดล' } },
-      { key: 'E', action: { en: 'Texture Eraser', th: 'ยางลบเนื้อสีบนโมเดล' } },
-      { key: 'Ctrl + U', action: { en: 'UV Island Inspector', th: 'เปิดเครื่องมือกางเกาะ UV' } },
-    ],
+    artcraftEquivalent: '3DCraft / Blender',
+    accentColor: '#06b6d4',
+    glowColor: 'rgba(6,182,212,0.25)',
+    icon: '3d',
+    keywords: ['3d', 'blender', 'model', 'mesh', 'pbr', 'gltf', 'obj', 'spatial', 'scene'],
+    enginePill: { en: 'WebGPU Spatial · PBR Material Lab', th: 'มิติพื้นที่ WebGPU · ห้องทดลอง PBR Material' },
     specs: {
-      en: [
-        'Direct 3D Mesh Brush Painting & Decal Stamping',
-        'UV Island Unwrapping & Seam Stitching Workbench',
-        'DirectDraw Surface (DDS / BC1-BC5) Block Compression',
-        'Multi-Resolution Mipmap Synthesis in Device Memory',
-        'PBR Texture Sets (BaseColor, Normal, Roughness, Metalness)',
-      ],
-      th: [
-        'ระบายสีและประทับสติกเกอร์ลงบนผิวโมเดล 3D โดยตรง',
-        'ระบบกางเกาะ UV และเย็บรอยต่อตะเข็บโมเดลอย่างแม่นยำ',
-        'บีบอัดกราฟิก DDS (BC1-BC5) ประสิทธิภาพระดับการ์ดจอ',
-        'สังเคราะห์ Mipmap หลายระดับความละเอียดในแรม',
-        'ชุดเท็กซ์เจอร์ PBR ครบวงจร ทั้งสี ความเงา และความนูน',
-      ],
-    },
-  },
-  {
-    id: 'mematerial',
-    name: 'meMaterial Studio',
-    category: 'audio',
-    categoryLabel: { en: '3D & Sound', th: '3D และเสียง' },
-    tagline: {
-      en: 'Procedural Node-Based PBR Material & Shader Synthesizer',
-      th: 'สังเคราะห์พื้นผิว PBR เสมือนจริงด้วยโหนดเชื่อมต่อ และเขียน WebGPU Shader',
-    },
-    description: {
-      en: 'Node-based shader graph, real-time WGSL compilation, procedural noise synthesis, and metallic/roughness PBR staging.',
-      th: 'กราฟโหนดสร้างพื้นผิวอัตโนมัติ, คอมไพล์ภาษา WGSL สด, สังเคราะห์ Noise ทางคณิตศาสตร์ และจัดวางแสงเงา PBR ในเครื่อง',
-    },
-    status: 'active',
-    version: 'v1.0.0',
-    suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/materialcraft',
-    industryCounterpart: { en: 'Substance Designer Alternative', th: 'ทางเลือกแทน Substance Designer' },
-    accentColor: '#8b5cf6',
-    glowColor: 'rgba(139,92,246,0.3)',
-    icon: 'material',
-    keywords: ['material', 'substance', 'designer', 'shader', 'node', 'procedural', 'wgsl', 'pbr'],
-    enginePill: { en: 'Node-Based WGSL · Real-Time WebGPU Baking', th: 'โหนดกราฟ WGSL · อบพื้นผิว WebGPU สด' },
-    supportedFormats: ['SBSAR', 'WGSL', 'EXR', 'PNG', 'TIFF'],
-    shortcuts: [
-      { key: 'Space', action: { en: 'Add Node Menu', th: 'ค้นหาและเพิ่มโหนด' } },
-      { key: 'C', action: { en: 'Create Node Comment Frame', th: 'สร้างกรอบคอมเมนต์จัดหมวด' } },
-      { key: '1 - 4', action: { en: 'Preview Node in Viewport', th: 'ดูผลลัพธ์ของโหนดในจอพรีวิว' } },
-      { key: 'L', action: { en: 'Auto-Layout Nodes', th: 'จัดเรียงสายโหนดอัตโนมัติ' } },
-    ],
-    specs: {
-      en: [
-        'Node-Based Visual Shader Graph Architecture',
-        'Procedural Noise Synthesis (Perlin, Simplex, Voronoi)',
-        'Real-Time WebGPU WGSL Shader Compilation',
-        'Non-Destructive Multi-Resolution Texture Baking',
-        'Seamless 4K Tiling & Seamless Pattern Export',
-      ],
-      th: [
-        'สถาปัตยกรรมกราฟโหนดเชื่อมต่อที่ยืดหยุ่นไม่ทำลายต้นฉบับ',
-        'สังเคราะห์สัญญาณนอยส์ Perlin, Simplex, Voronoi อิสระ',
-        'คอมไพล์โค้ด WebGPU WGSL แสดงผลแสงจริงในเสี้ยววินาที',
-        'อบเท็กซ์เจอร์หลายระดับความละเอียดบันทึกในเครื่อง',
-        'สร้างลวดลายไร้รอยต่อความละเอียดระดับ 4K พร้อมใช้งาน',
-      ],
-    },
-  },
-  {
-    id: 'meani',
-    name: 'meAni Studio',
-    category: 'video',
-    categoryLabel: { en: 'Video & Motion', th: 'วิดีโอและโมชัน' },
-    tagline: {
-      en: '2D Skeletal Animation, Inverse Kinematics & Sprite Rigging',
-      th: 'แอนิเมชัน 2 มิติติดกระดูกโครงสร้าง สรีระจำลอง IK และทำ Sprite Sheet เกม',
-    },
-    description: {
-      en: 'Frame-by-frame light table, onion skinning, skeletal bone rigging, curve interpolation, and sprite sheet / vector SVG export.',
-      th: 'โต๊ะไฟสเก็ตช์ทีละเฟรม, หัวหอมพรีวิว Onion Skinning, ดัดกระดูกโครงสร้างตัวละคร 2 มิติ และส่งออก Sprite Sheet สู่เอนจินเกม',
-    },
-    status: 'active',
-    version: 'v1.0.0',
-    suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/anicraft',
-    industryCounterpart: { en: 'Spine 2D / Adobe Animate Alternative', th: 'ทางเลือกแทน Spine 2D และ Adobe Animate' },
-    accentColor: '#d946ef',
-    glowColor: 'rgba(217,70,239,0.3)',
-    icon: 'ani',
-    keywords: ['animation', 'spine', 'rigging', 'bones', 'ik', 'sprite', '2d', 'onion-skin'],
-    enginePill: { en: '2D Skeletal Bones · Inverse Kinematics IK', th: 'โครงกระดูก 2D · ระบบสรีระจำลอง IK' },
-    supportedFormats: ['JSON', 'ATLAS', 'PNG', 'SVG', 'GIF', 'WEBM'],
-    shortcuts: [
-      { key: 'B', action: { en: 'Create / Select Bone', th: 'สร้างและเลือกกระดูกโครงสร้าง' } },
-      { key: 'K', action: { en: 'Insert Keyframe', th: 'แทรกคีย์เฟรมแอนิเมชัน' } },
-      { key: 'O', action: { en: 'Toggle Onion Skinning', th: 'เปิดปิดภาพซ้อนเฟรมก่อนหน้า' } },
-      { key: 'Space', action: { en: 'Play / Stop Animation', th: 'เล่น / หยุดแอนิเมชัน' } },
-    ],
-    specs: {
-      en: [
-        '2D Skeletal Bone Rigging & Inverse Kinematics (IK)',
-        'Frame-by-Frame Light Table & Onion Skinning',
-        'Dope Sheet & Bézier Motion Curve Editor',
-        'Packed Texture Atlas & Sprite Sheet Generation',
-        'Clean SVG & Game-Ready JSON Vector Animation Export',
-      ],
-      th: [
-        'ติดกระดูกโครงสร้าง 2 มิติพร้อมจำลองการเคลื่อนไหว IK',
-        'โต๊ะไฟวาดเฟรมต่อเฟรมและภาพซ้อนหัวหอม Onion Skin',
-        'ตาราง Dope Sheet และดัดความเร็วด้วยเส้นโค้ง Bézier',
-        'จัดเรียงภาพลง Atlas และ Sprite Sheet สำหรับเกม',
-        'ส่งออก JSON และ SVG Vector นำไปใช้ใน Web/Unity/Godot',
-      ],
-    },
-  },
-  {
-    id: 'merea',
-    name: 'meREA Studio',
-    category: 'utility',
-    categoryLabel: { en: 'Utility & REA', th: 'เครื่องมือและ REA' },
-    tagline: {
-      en: 'Forensic Binary Reverse Engineering & Clean-Room Code Synthesis',
-      th: 'แกะรอยระบบ ถอดรหัสไบนารี สถาปัตยกรรมย้อนรอย และสร้างโค้ดอัตโนมัติ',
-    },
-    description: {
-      en: 'Universal REA toolkit with 320 CLI/MCP forensic tools, PE/COFF, ELF, Mach-O, WASM and AST disassembly, memory layout inspection, and clean-room code synthesis for autonomous AI agents.',
-      th: 'ชุดเครื่องมือวิศวกรรมย้อนรอยครอบจักรวาล 320 คำสั่ง CLI/MCP, ถอดรหัสไฟล์ PE, ELF, Mach-O, WASM, วิเคราะห์โครงสร้างเมมโมรี่ และสร้างโค้ดสะอาดสำหรับ AI Agent',
-    },
-    status: 'active',
-    version: 'v1.0.0',
-    suiteDownloadUrl: SUITE_DOWNLOAD_URL,
-    artcraftEquivalent: 'storytold/craft-anything',
-    industryCounterpart: { en: 'Universal REA & Code Synthesis', th: 'ระบบแกะรอยและสร้างโค้ดสะอาดอัตโนมัติ' },
-    accentColor: '#00f0ff',
-    glowColor: 'rgba(0,240,255,0.3)',
-    icon: 'rea',
-    keywords: ['rea', 'reverse-engineering', 'binary', 'disassembly', 'decompilation', 'agent', 'mcp'],
-    enginePill: { en: '320 MCP Tools · Cross-Reference Call Graph', th: '320 เครื่องมือ MCP · กราฟเชื่อมโยงสถาปัตยกรรม' },
-    supportedFormats: ['EXE', 'DLL', 'ELF', 'WASM', 'SO', 'DYLIB', 'JSON'],
-    shortcuts: [
-      { key: 'X', action: { en: 'Find Cross References (XRefs)', th: 'ค้นหาจุดเรียกใช้งาน XRefs' } },
-      { key: 'G', action: { en: 'Go to Virtual Address', th: 'กระโดดไปยังตำแหน่งแอดเดรส' } },
-      { key: 'D', action: { en: 'Decompile Function', th: 'ถอดรหัสเป็นโค้ดเทียบเท่า' } },
-      { key: 'F5', action: { en: 'Refresh Call Graph', th: 'รีเฟรชผังเรียกใช้ฟังก์ชัน' } },
-    ],
-    specs: {
-      en: [
-        '320 CLI/MCP Forensic Reverse Engineering Tools',
-        'PE/COFF, ELF, Mach-O, WASM & AST Disassembly',
-        'Cross-Reference (XRef) & Call-Graph Reconstruction',
-        'Memory Layout Inspection & Clean-Room Code Synthesis',
-        'Direct LLM Agent Integration via Model Context Protocol',
-      ],
-      th: [
-        'เครื่องมือตรวจพิสูจน์วิศวกรรมย้อนรอย 320 รายการผ่าน MCP',
-        'ถอดรหัสและวิเคราะห์โครงสร้าง PE, ELF, Mach-O และ WASM',
-        'สร้างผังเชื่อมโยง Cross-Reference และกราฟเรียกฟังก์ชัน',
-        'ตรวจสอบโครงสร้างเมมโมรี่และสังเคราะห์โค้ดสะอาดใหม่',
-        'เชื่อมต่อตรงสู่โมเดลปัญญาประดิษฐ์ผ่าน Model Context Protocol',
-      ],
+      en: ['Subdivision Polygon Mesh Modeling Workbench', 'PBR Metallic/Roughness Material Staging', 'Real-Time HDRI Environmental Scene Lighting', 'GLTF 2.0, OBJ & STL 3D Print Geometry Export', 'Hardware WebGPU Spatial Viewport Gizmo'],
+      th: ['ปั้นโมเดลโพลีกอน Polygon Mesh ความแม่นยำสูง', 'จัดวางพื้นผิววัสดุ PBR เสมือนจริง', 'จำลองแสงสตูดิโอและแสง HDRI แบบเรียลไทม์', 'ส่งออกไฟล์สำหรับ 3D Print และเกม (GLTF/OBJ/STL)', 'Viewport 3 มิติเร่งความเร็วด้วย WebGPU'],
     },
   },
 ];
@@ -1811,7 +1263,7 @@ class MeCraftsPortal {
     const isTh = this.lang === 'th';
     const navItems = [
       { id: 'workbench', icon: '⚡', label: isTh ? 'เวิร์กเบนช์' : 'Workbench', desc: isTh ? 'หน้าทำงานด่วน' : 'Quick Actions' },
-      { id: 'studios', icon: '📦', label: isTh ? 'สตูดิโอ (11)' : 'All Studios (11)', desc: isTh ? 'คลังโปรแกรม' : '11 Studios' },
+      { id: 'studios', icon: '📦', label: isTh ? `สตูดิโอ (${SHOWCASE_APPS.length})` : `All Studios (${SHOWCASE_APPS.length})`, desc: isTh ? 'คลังโปรแกรม' : `${SHOWCASE_APPS.length} Studios` },
       { id: 'recents', icon: '🕒', label: isTh ? 'ประวัติงาน' : 'Recent Work', desc: isTh ? 'ไฟล์ล่าสุด' : 'Recent Files' },
       { id: 'vault', icon: '🛡️', label: isTh ? 'สถานะเครื่อง' : 'Local Engine', desc: isTh ? 'ความปลอดภัย' : 'Zero-Cloud' },
     ];
@@ -2052,7 +1504,7 @@ class MeCraftsPortal {
     return `
     <div class="ws-view ws-view-studios">
       <header class="ws-view-header">
-        <div class="ws-view-eyebrow">ALL 11 STANDALONE CREATIVE STUDIOS</div>
+        <div class="ws-view-eyebrow">ALL ${SHOWCASE_APPS.length} STANDALONE CREATIVE STUDIOS</div>
         <h1 class="ws-view-title">${isTh ? 'คลังโปรแกรมสตูดิโอทั้งหมด' : 'All Studios & Workstations'}</h1>
         <p class="ws-view-subtitle">${isTh ? 'โปรแกรมทั้งหมดทำงานแบบ Standalone ออฟไลน์ 100% ไร้คลาวด์' : 'Every studio runs standalone offline in 100% local device memory.'}</p>
       </header>
@@ -2546,12 +1998,12 @@ class MeCraftsPortal {
     const isIndev = app.status === 'in-dev';
     const docExt = app.id === 'mepdf' ? 'pdf' : (app.id === 'mephoto' ? 'dng' : (app.id === 'medrop' ? 'pdf' : (app.id === 'medoc' ? 'md' : (app.id === 'mevector' ? 'svg' : (app.id === 'mefilm' ? 'proj' : (app.id === 'melight' ? 'raw' : (app.id === 'memotion' ? 'motion' : (app.id === 'medesign' ? 'design' : (app.id === 'meaudio' ? 'wav' : '3d')))))))));
     const sampleDocName = app.id === 'medrop'
-      ? (this.lang === 'th' ? 'รายงานประจำปี_2026.pdf [Ctrl + Drag]' : 'Annual_Report_2026.pdf [Ctrl + Drag]')
+      ? 'Annual_Report_2026.pdf [Ctrl + Drag]'
       : (app.id === 'medoc'
-        ? (this.lang === 'th' ? 'บทความวิจัย_KaTeX_2026.md' : 'Quantum_Research_Notes.md')
+        ? 'Quantum_Research_Notes.md'
         : (isIndev
-          ? (this.lang === 'th' ? `ภาพร่างโครงสร้าง_Draft.${docExt}` : `Architecture_Draft.${docExt}`)
-          : (this.lang === 'th' ? `ชิ้นงานออกแบบ_2026.${docExt}` : `Creative_Project_Master.${docExt}`)));
+          ? `Architecture_Draft.${docExt}`
+          : `Creative_Project_Master.${docExt}`));
 
     return `
     <div class="desktop-preview-window ${isIndev ? 'window-is-wireframe' : 'window-is-production'}" id="desktop-preview-window-${app.id}">
@@ -2559,9 +2011,9 @@ class MeCraftsPortal {
       <div class="desktop-window-titlebar">
         <div class="window-titlebar-left">
           <div class="window-app-icon">${getAppIcon(app.id, app.accentColor)}</div>
-          <span class="window-title-text" id="preview-window-title-${app.id}">${app.name} — [${sampleDocName}] - ${isIndev ? (this.lang === 'th' ? 'ภาพร่างโครงร่างต้นแบบ (WIP)' : 'Architecture Schematic (WIP)') : 'Windows Native Desktop'}</span>
+          <span class="window-title-text" id="preview-window-title-${app.id}">${app.name} — [${sampleDocName}] - ${isIndev ? 'Architecture Schematic (WIP)' : 'Windows Native Desktop'}</span>
           <span class="window-native-pill ${isIndev ? 'pill-indev-wireframe' : ''}">
-            ${isIndev ? (this.lang === 'th' ? 'ภาพร่างต้นแบบ (R&D)' : 'Concept Wireframe (WIP)') : '100% Native Desktop App'}
+            ${isIndev ? 'Concept Wireframe (WIP)' : '100% Native Desktop App'}
           </span>
         </div>
         <div class="window-titlebar-controls" aria-hidden="true">
@@ -2593,16 +2045,14 @@ class MeCraftsPortal {
                 <div class="blueprint-stamp-header">
                   <span class="blueprint-pulse-dot"></span>
                   <span class="blueprint-stamp-badge">
-                    ${this.lang === 'th' ? 'โครงร่างสถาปัตยกรรม (Architecture Wireframe)' : 'Architecture Blueprint & Wireframe'}
+                    Architecture Blueprint &amp; Wireframe
                   </span>
                 </div>
                 <h4 class="blueprint-stamp-title">
-                  ${this.lang === 'th' ? `${app.name} กำลังอยู่ในช่วงวิจัยและพัฒนา` : `${app.name} is in Active Development`}
+                  ${app.name} is in Active Development
                 </h4>
                 <p class="blueprint-stamp-desc">
-                  ${this.lang === 'th'
-                    ? 'ภาพจำลองนี้เป็นเพียงแนวคิดโครงสร้างและอินเทอร์เฟซต้นแบบ ซอฟต์แวร์จริงกำลังได้รับการพัฒนาและคอมไพล์ด้วย Rust/Tauri v2'
-                    : 'This view depicts an early conceptual schematic and UI wireframe. The native desktop engine is actively being engineered.'}
+                  This view depicts an early conceptual schematic and UI wireframe. The native desktop engine is actively being engineered.
                 </p>
                 <div class="blueprint-stamp-tags">
                   <span class="bp-tag">✦ Planned v0.1.0 Alpha</span>
@@ -2620,7 +2070,7 @@ class MeCraftsPortal {
         <div class="statusbar-left">
           <span class="statusbar-dot ${isIndev ? 'dot-amber' : ''}"></span>
           <span>${isIndev
-            ? (this.lang === 'th' ? 'สถานะ: กำลังพัฒนาสถาปัตยกรรม · แผนงานเปิดตัว v0.1.0' : 'Status: Architecture Phase · Target Milestone v0.1.0 Alpha')
+            ? 'Status: Architecture Phase · Target Milestone v0.1.0 Alpha'
             : 'Ready · Hardware Acceleration (DirectX 12 / Vulkan) · 0 KB network'}</span>
         </div>
         <div class="statusbar-right">
@@ -2655,21 +2105,21 @@ class MeCraftsPortal {
           </div>
           <div class="mockup-ribbon-center">
             <span class="mockup-tool-chip">◀</span>
-            <span style="font-weight: 600; color: #f1f5f9;">หน้า 1 / 18</span>
+            <span style="font-weight: 600; color: #f1f5f9;">Page 1 / 18</span>
             <span class="mockup-tool-chip">▶</span>
             <span class="mockup-tool-chip" style="margin-left: 12px;">➖ 100% ➕</span>
-            <span class="mockup-tool-chip">🔲 พอดีหน้า (Fit)</span>
+            <span class="mockup-tool-chip">🔲 Fit Width</span>
           </div>
           <div class="mockup-ribbon-right">
-            <span class="mockup-tool-chip" style="border-color: #3b82f6; color: #60a5fa;">📐 ปรับเอกสารตรง</span>
-            <span class="mockup-tool-chip" style="border-color: #10b981; color: #34d399;">🔍 OCR ค้นหาคำ</span>
-            <span class="mockup-tool-chip" style="background: #2563eb; color: #fff;">⬇ ส่งออก PDF</span>
+            <span class="mockup-tool-chip" style="border-color: #3b82f6; color: #60a5fa;">📐 Deskew</span>
+            <span class="mockup-tool-chip" style="border-color: #10b981; color: #34d399;">🔍 Search OCR</span>
+            <span class="mockup-tool-chip" style="background: #2563eb; color: #fff;">⬇ Export PDF</span>
           </div>
         </div>
         <div class="mockup-cockpit-layout">
           <!-- Left Thumbnails -->
           <div class="mockup-left-pane">
-            <div class="mockup-pane-heading">📑 หน้าตัวอย่าง (Thumbnails)</div>
+            <div class="mockup-pane-heading">📑 Thumbnails</div>
             <div class="mockup-thumbnail-card active">
               <div class="mockup-thumb-page">
                 <div class="mockup-doc-line title"></div>
@@ -2677,7 +2127,7 @@ class MeCraftsPortal {
                 <div class="mockup-doc-line"></div>
                 <div class="mockup-doc-line short"></div>
               </div>
-              <span class="mockup-thumb-label">หน้า 1 (สัญญาหลัก)</span>
+              <span class="mockup-thumb-label">Page 1 (Master Agreement)</span>
             </div>
             <div class="mockup-thumbnail-card">
               <div class="mockup-thumb-page">
@@ -2686,7 +2136,7 @@ class MeCraftsPortal {
                 <div class="mockup-doc-line"></div>
                 <div class="mockup-doc-line"></div>
               </div>
-              <span class="mockup-thumb-label">หน้า 2 (ตารางงวดงาน)</span>
+              <span class="mockup-thumb-label">Page 2 (Milestone Schedule)</span>
             </div>
             <div class="mockup-thumbnail-card">
               <div class="mockup-thumb-page">
@@ -2694,62 +2144,62 @@ class MeCraftsPortal {
                 <div class="mockup-doc-line short"></div>
                 <div class="mockup-doc-line"></div>
               </div>
-              <span class="mockup-thumb-label">หน้า 3 (ลายเซ็นยินยอม)</span>
+              <span class="mockup-thumb-label">Page 3 (Execution Signatures)</span>
             </div>
           </div>
           <!-- Center Canvas -->
           <div class="mockup-center-stage">
             <div class="mockup-pdf-sheet">
               <div class="mockup-sheet-header">
-                <h2 class="mockup-sheet-title">สัญญาว่าจ้างพัฒนาระบบซอฟต์แวร์ (MASTER AGREEMENT)</h2>
-                <div class="mockup-sheet-meta">เลขที่สัญญา: MC-2026-0881 · ฉบับจริงลงนามอิเล็กทรอนิกส์</div>
+                <h2 class="mockup-sheet-title">MASTER SOFTWARE DEVELOPMENT AGREEMENT</h2>
+                <div class="mockup-sheet-meta">Agreement No: MC-2026-0881 · Digitally Executed & Sealed</div>
               </div>
               <div class="mockup-sheet-body">
-                <p>สัญญาฉบับนี้ทำขึ้น ณ กรุงเทพมหานคร เพื่อเป็นข้อตกลงในการส่งมอบชุดโปรแกรม meCraft Creative Suite และระบบรักษาความปลอดภัยความเป็นส่วนตัวระดับ 100% In-Device Memory Execution</p>
+                <p>This Agreement is entered into by and between the parties for the delivery of meCraft Creative Suite and zero-cloud 100% In-Device Memory Execution architecture.</p>
                 <table class="mockup-sheet-table">
                   <thead>
-                    <tr><th>ลำดับ</th><th>รายการโมดูล</th><th>สถานะความปลอดภัย</th><th>กำหนดส่งมอบ</th></tr>
+                    <tr><th>No.</th><th>Module Description</th><th>Security Architecture</th><th>Delivery Status</th></tr>
                   </thead>
                   <tbody>
-                    <tr><td>1</td><td>mePDF Studio Pro (Acrobat-Grade)</td><td>100% Client-Side RAM</td><td>พร้อมใช้งาน ✅</td></tr>
-                    <tr><td>2</td><td>mePhoto Studio (Darkroom + OCR)</td><td>WebAssembly / OpenCV</td><td>พร้อมใช้งาน ✅</td></tr>
-                    <tr><td>3</td><td>In-App Auto-Update System</td><td>Ed25519 Signed</td><td>พร้อมใช้งาน ✅</td></tr>
+                    <tr><td>1</td><td>mePDF Studio Pro (Acrobat-Grade)</td><td>100% Client-Side RAM</td><td>Production Ready ✅</td></tr>
+                    <tr><td>2</td><td>mePhoto Studio (Darkroom + OCR)</td><td>WebAssembly / OpenCV</td><td>Production Ready ✅</td></tr>
+                    <tr><td>3</td><td>In-App Auto-Update System</td><td>Ed25519 Signed</td><td>Production Ready ✅</td></tr>
                   </tbody>
                 </table>
-                <p>คู่สัญญาทั้งสองฝ่ายได้อ่านและเข้าใจข้อความโดยละเอียด จึงลงลายมือชื่อไว้เป็นหลักฐานต่อหน้าพยาน</p>
+                <p>The parties hereto have executed this Agreement as of the date first written above.</p>
               </div>
               <div class="mockup-sheet-sign">
-                <div>( .................................................. )<br>ผู้ว่าจ้าง (Client Authority)</div>
-                <div>( .................................................. )<br>ผู้รับจ้าง (Lead Engineer)</div>
+                <div>( .................................................. )<br>Client Authority</div>
+                <div>( .................................................. )<br>Lead Systems Architect</div>
               </div>
             </div>
           </div>
           <!-- Right Tools Drawer -->
           <div class="mockup-right-pane">
-            <div class="mockup-pane-heading">🛠️ เครื่องมือเอกสาร (Action Tools)</div>
+            <div class="mockup-pane-heading">🛠️ Document Tools</div>
             <div class="mockup-tool-card">
-              <div class="mockup-tool-title">📑 จัดเรียงและรวมหน้า (Organize)</div>
-              <div class="mockup-tool-desc">ลากสลับหน้า หมุน 90° แยกไฟล์ หรือแทรกหน้าเพิ่ม</div>
+              <div class="mockup-tool-title">📑 Organize Pages</div>
+              <div class="mockup-tool-desc">Drag, reorder, rotate 90°, extract, or insert pages</div>
               <span class="mockup-tool-badge">Zero-Lag</span>
             </div>
             <div class="mockup-tool-card">
-              <div class="mockup-tool-title">📐 ปรับระนาบกล้อง (Deskew)</div>
-              <div class="mockup-tool-desc">ดึงรูปถ่ายจากมือถือให้ตรงระนาบด้วย 4-Point Homography</div>
+              <div class="mockup-tool-title">📐 Deskew Angle</div>
+              <div class="mockup-tool-desc">Rectify mobile camera photos with 4-point homography</div>
               <span class="mockup-tool-badge">AI Scanner</span>
             </div>
             <div class="mockup-tool-card">
-              <div class="mockup-tool-title">🔍 สแกนข้อความ (Searchable OCR)</div>
-              <div class="mockup-tool-desc">แปลงภาพสแกนให้กด Ctrl+F ค้นหาคำและคัดลอกได้ทันที</div>
-              <span class="mockup-tool-badge">Thai + Eng</span>
+              <div class="mockup-tool-title">🔍 Searchable OCR</div>
+              <div class="mockup-tool-desc">Full-text OCR indexing with instant Ctrl+F search</div>
+              <span class="mockup-tool-badge">Multi-Language</span>
             </div>
             <div class="mockup-tool-card">
-              <div class="mockup-tool-title">🗜️ บีบอัดไฟล์ (Smart Compress)</div>
-              <div class="mockup-tool-desc">ลดขนาดไฟล์สูงสุด 90% พร้อมพรีวิวขนาดก่อนบันทึก</div>
+              <div class="mockup-tool-title">🗜️ Smart Compress</div>
+              <div class="mockup-tool-desc">Lossless Deflate compression up to 90% reduction</div>
               <span class="mockup-tool-badge">Lossless Deflate</span>
             </div>
             <div class="mockup-tool-card">
-              <div class="mockup-tool-title">🔒 เข้ารหัสปลอดภัย (AES-256)</div>
-              <div class="mockup-tool-desc">ตั้งรหัสผ่านป้องกันการเปิดและลบ Metadata ความลับ</div>
+              <div class="mockup-tool-title">🔒 Bank-Grade AES-256</div>
+              <div class="mockup-tool-desc">Password encryption & confidential metadata purge</div>
               <span class="mockup-tool-badge">Bank-Grade</span>
             </div>
           </div>
@@ -2809,7 +2259,7 @@ class MeCraftsPortal {
           </div>
           <!-- Right Inspector Panel -->
           <div class="mockup-right-pane">
-            <div class="mockup-pane-heading">📊 ฮิสโตแกรมสีสด (Real-time RGB)</div>
+            <div class="mockup-pane-heading">📊 Real-Time RGB Histogram</div>
             <div class="mockup-histogram">
               <div class="mockup-hist-bar" style="height: 25%;"></div>
               <div class="mockup-hist-bar" style="height: 45%;"></div>
@@ -2819,30 +2269,30 @@ class MeCraftsPortal {
               <div class="mockup-hist-bar" style="height: 40%;"></div>
               <div class="mockup-hist-bar" style="height: 20%;"></div>
             </div>
-            <div class="mockup-pane-heading" style="margin-top: 10px;">🎚️ ปรับแต่งแสง (Tone & Exposure)</div>
+            <div class="mockup-pane-heading" style="margin-top: 10px;">🎚️ Tone & Exposure</div>
             <div class="mockup-slider-row">
-              <div class="mockup-slider-head"><span>Exposure (การรับแสง)</span><span>+0.65 EV</span></div>
+              <div class="mockup-slider-head"><span>Exposure</span><span>+0.65 EV</span></div>
               <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 65%;"></div></div>
             </div>
             <div class="mockup-slider-row">
-              <div class="mockup-slider-head"><span>Contrast (ความเปรียบต่าง)</span><span>+14</span></div>
+              <div class="mockup-slider-head"><span>Contrast</span><span>+14</span></div>
               <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 57%;"></div></div>
             </div>
             <div class="mockup-slider-row">
-              <div class="mockup-slider-head"><span>Highlights (ส่วนสว่าง)</span><span>-22</span></div>
+              <div class="mockup-slider-head"><span>Highlights</span><span>-22</span></div>
               <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 38%;"></div></div>
             </div>
             <div class="mockup-slider-row">
-              <div class="mockup-slider-head"><span>Shadows (ส่วนมืด)</span><span>+35</span></div>
+              <div class="mockup-slider-head"><span>Shadows</span><span>+35</span></div>
               <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 70%;"></div></div>
             </div>
-            <div class="mockup-pane-heading" style="margin-top: 10px;">🎨 สีสันและไวท์บาลานซ์ (Color)</div>
+            <div class="mockup-pane-heading" style="margin-top: 10px;">🎨 Color & White Balance</div>
             <div class="mockup-slider-row">
-              <div class="mockup-slider-head"><span>Temperature (อุณหภูมิสี)</span><span>5600 K</span></div>
+              <div class="mockup-slider-head"><span>Temperature</span><span>5600 K</span></div>
               <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 56%;"></div></div>
             </div>
             <div class="mockup-slider-row">
-              <div class="mockup-slider-head"><span>Vibrance (ความสดสี)</span><span>+28</span></div>
+              <div class="mockup-slider-head"><span>Vibrance</span><span>+28</span></div>
               <div class="mockup-slider-track"><div class="mockup-slider-thumb" style="left: 64%;"></div></div>
             </div>
           </div>
@@ -3418,7 +2868,7 @@ class MeCraftsPortal {
           <a href="#apps-grid" class="portal-nav-link active">${this.lang === 'th' ? 'โปรแกรมสตูดิโอ' : 'Studios'}</a>
           <a href="#manifesto" class="portal-nav-link">${this.lang === 'th' ? 'ความเป็นส่วนตัว' : 'Privacy Architecture'}</a>
           <a href="#specs" class="portal-nav-link">${this.lang === 'th' ? 'สเปก' : 'Specs'}</a>
-          <a href="./downloads" target="_blank" rel="noopener noreferrer" class="portal-nav-link">${this.lang === 'th' ? 'ดาวน์โหลด' : 'Downloads'}</a>
+          <a href="./downloads" class="portal-nav-link">${this.lang === 'th' ? 'ดาวน์โหลด' : 'Downloads'}</a>
         </nav>
 
         <div class="portal-header-actions">
@@ -3488,12 +2938,12 @@ class MeCraftsPortal {
         </div>
 
         <div class="hero-official-ctas" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 32px 0 24px;">
-          <a href="./downloads" target="_blank" rel="noopener noreferrer" class="hero-cta-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 700; text-decoration: none; font-size: 15px;">
+          <a href="./downloads" class="hero-cta-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 700; text-decoration: none; font-size: 15px;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             <span>${this.lang === 'th' ? 'ศูนย์ดาวน์โหลดตัวติดตั้งทั้งหมด (.exe)' : 'Downloads Directory (.exe)'}</span>
           </a>
           <a href="#apps-grid" class="hero-cta-secondary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; font-size: 15px;">
-            <span>${this.lang === 'th' ? 'สำรวจโปรแกรมทั้งหมด (11 สตูดิโอ) ↓' : 'Explore All 11 Studios ↓'}</span>
+            <span>${this.lang === 'th' ? `สำรวจโปรแกรมทั้งหมด (${SHOWCASE_APPS.length} สตูดิโอ) ↓` : `Explore All ${SHOWCASE_APPS.length} Studios ↓`}</span>
           </a>
         </div>
 
@@ -3551,7 +3001,7 @@ class MeCraftsPortal {
       <div class="portal-section-inner">
         <div class="showcase-header">
           <div class="showcase-header-left">
-            <div class="section-eyebrow" aria-hidden="true">11 CREATIVE WORKSTATIONS &amp; UTILITIES</div>
+            <div class="section-eyebrow" aria-hidden="true">${SHOWCASE_APPS.length} CREATIVE WORKSTATIONS &amp; UTILITIES</div>
             <h2 class="section-title" id="apps-title">${this.lang === 'th' ? 'คลังโปรแกรมสตูดิโอ &amp; ค็อกพิทพรีวิวสด' : 'Creative Workstation Studios &amp; Live Desktop Cockpit'}</h2>
             <p class="section-subtitle">${this.lang === 'th' ? 'เลือกสตูดิโอด้านล่างเพื่อสำรวจฟีเจอร์เชิงลึก พร้อมพรีวิวหน้าต่างซอฟต์แวร์จริงบน Windows แบบเรียลไทม์' : 'Select a studio below to inspect deep specifications alongside real-time native Windows desktop window previews.'}</p>
           </div>
@@ -3578,12 +3028,12 @@ class MeCraftsPortal {
           `}
         </div>
 
-        <!-- 3. All 11 Programs Ecosystem Overview Grid -->
+        <!-- 3. All Studios Ecosystem Overview Grid -->
         <div class="ecosystem-overview-section" id="ecosystem-overview">
           <div class="ecosystem-overview-header">
             <div class="ecosystem-title-wrap">
               <span class="ecosystem-eyebrow">ECOSYSTEM MATRIX</span>
-              <h3 class="ecosystem-overview-title">${this.lang === 'th' ? 'สำรวจทั้ง 11 โปรแกรมในเครือ meCrafts' : 'Explore All 11 meCrafts Workstations & Utilities'}</h3>
+              <h3 class="ecosystem-overview-title">${this.lang === 'th' ? `สำรวจทั้ง ${SHOWCASE_APPS.length} โปรแกรมในเครือ meCrafts` : `Explore All ${SHOWCASE_APPS.length} meCrafts Workstations & Utilities`}</h3>
             </div>
             <div class="ecosystem-overview-meta">
               <span class="ecosystem-count-pill">${apps.length} / ${SHOWCASE_APPS.length} ${this.lang === 'th' ? 'โปรแกรม' : 'Apps'}</span>
@@ -3671,7 +3121,7 @@ class MeCraftsPortal {
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   <span>${this.lang === 'th' ? `ดาวน์โหลด ${app.exeName || (app.name + '.exe')}` : `Download ${app.exeName || (app.name + '.exe')}`}</span>
                 </a>
-                <a href="./downloads" target="_blank" rel="noopener noreferrer" class="quick-launch-chip" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px;">
+                <a href="./downloads" class="quick-launch-chip" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px;">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                   <span>${this.lang === 'th' ? 'ศูนย์ดาวน์โหลด' : 'Downloads Hub'}</span>
                 </a>
@@ -3699,13 +3149,11 @@ class MeCraftsPortal {
           <div class="spotlight-preview-bar">
             <div class="preview-bar-left">
               <span class="preview-bar-dot ${!isActive ? 'dot-amber' : ''}" aria-hidden="true"></span>
-              <span class="preview-bar-label">${isActive
-                ? (this.lang === 'th' ? 'หน้าต่างจำลองซอฟต์แวร์จริงบน Windows 11 (Desktop Simulator)' : 'Live Native Desktop Simulator (Windows 11 x64)')
-                : (this.lang === 'th' ? 'โครงร่างภาพร่างต้นแบบสถาปัตยกรรม (Conceptual Blueprint Wireframe)' : 'Conceptual Architecture Blueprint & Wireframe (WIP)')}</span>
+              <span class="preview-bar-label">${isActive ? 'Live Native Desktop Simulator (Windows 11 x64)' : 'Conceptual Architecture Blueprint & Wireframe (WIP)'}</span>
             </div>
-            <button type="button" class="btn-inspect-modal" id="btn-inspect-${app.id}" data-inspect-app="${app.id}" title="${this.lang === 'th' ? 'ขยายดูเต็มจอ' : 'Inspect Fullscreen'}">
+            <button type="button" class="btn-inspect-modal" id="btn-inspect-${app.id}" data-inspect-app="${app.id}" title="Inspect Fullscreen">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-              <span>${this.lang === 'th' ? 'เต็มจอ' : 'Inspect'}</span>
+              <span>Inspect</span>
             </button>
           </div>
           <div class="spotlight-window-mount">
@@ -3999,7 +3447,7 @@ class MeCraftsPortal {
             <img src="./branding/suite-installer-box.png" class="specs-box-img" alt="meCraft Suite Windows Package" loading="lazy" />
             <div class="specs-box-desc">
               <h4>${this.lang === 'th' ? 'meCraft Installer สำหรับ Windows 11 / 10' : 'meCraft Installer for Windows 11 / 10'}</h4>
-              <p>${this.lang === 'th' ? 'รวมครบทั้ง 11 โปรแกรมในตัวติดตั้งเดียว ติดตั้งออฟไลน์ 100% ไร้โฆษณา ไร้การติดตาม' : 'All 11 standalone studios bundled in one lightweight offline installer. Zero ads, zero telemetry.'}</p>
+              <p>${this.lang === 'th' ? `รวมครบทั้ง ${SHOWCASE_APPS.length} โปรแกรมในตัวติดตั้งเดียว ติดตั้งออฟไลน์ 100% ไร้โฆษณา ไร้การติดตาม` : `All ${SHOWCASE_APPS.length} standalone studios bundled in one lightweight offline installer. Zero ads, zero telemetry.`}</p>
             </div>
           </div>
           <div class="specs-actions">
@@ -4026,7 +3474,7 @@ class MeCraftsPortal {
         <nav class="footer-links" aria-label="Footer links">
           <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Repository</a>
           <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="footer-link">Releases (v1.0.0)</a>
-          <a href="./downloads" target="_blank" rel="noopener noreferrer" class="footer-link" id="footer-btn-open-downloads">${this.lang === 'th' ? 'ศูนย์ดาวน์โหลด (.exe)' : 'Downloads Directory'}</a>
+          <a href="./downloads" class="footer-link" id="footer-btn-open-downloads">${this.lang === 'th' ? 'ศูนย์ดาวน์โหลด (.exe)' : 'Downloads Directory'}</a>
           <a href="https://github.com/methastrategy/meCraft/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="footer-link">MIT License</a>
           ${!this.currentSession ? `
             <button type="button" class="footer-link btn-trigger-auth" id="footer-btn-open-auth">${this.t.signInBtn}</button>
@@ -4617,7 +4065,158 @@ class MeCraftsPortal {
     this.scrollToStudio(appId);
   }
 
-  private updateGrid() {
+    private updateLanguageInPlace() {
+
+    // 1. Language button text
+    const langBtnSpan = document.querySelector('#btn-lang span');
+    if (langBtnSpan) {
+      langBtnSpan.textContent = this.lang === 'en' ? 'TH' : 'EN';
+    }
+
+    // 2. Header nav links
+    const navLinks = document.querySelectorAll<HTMLAnchorElement>('.portal-nav-link');
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href === '#apps-grid' || href === '#studios') {
+        link.textContent = this.lang === 'th' ? 'โปรแกรมสตูดิโอ' : 'Studios';
+      } else if (href === '#manifesto') {
+        link.textContent = this.lang === 'th' ? 'สถาปัตยกรรมความเป็นส่วนตัว' : 'Privacy Architecture';
+      } else if (href === '#specs') {
+        link.textContent = this.lang === 'th' ? 'สเปก' : 'Specs';
+      } else if (href === './downloads') {
+        link.textContent = this.lang === 'th' ? 'ดาวน์โหลด' : 'Downloads';
+      }
+    });
+
+    // 3. Hero Section
+    const countTag = document.querySelector('.hero-count-tag');
+    if (countTag) countTag.textContent = this.lang === 'th' ? '11 โปรแกรม · WINDOWS' : '11 APPS · WINDOWS';
+
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) heroTitle.textContent = this.t.heroTitle;
+
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+    if (heroSubtitle) heroSubtitle.textContent = this.t.heroSubtitle;
+
+    const badgeSpans = document.querySelectorAll('.hero-badge-pill span');
+    if (badgeSpans.length >= 4) {
+      badgeSpans[0].textContent = this.t.heroBadge1;
+      badgeSpans[1].textContent = this.t.heroBadge2;
+      badgeSpans[2].textContent = this.t.heroBadge3;
+      badgeSpans[3].textContent = this.t.heroBadge4;
+    }
+
+    const heroCta1 = document.querySelector('.hero-cta-primary span');
+    if (heroCta1) heroCta1.textContent = this.lang === 'th' ? 'ศูนย์ดาวน์โหลดตัวติดตั้งทั้งหมด (.exe)' : 'Downloads Directory (.exe)';
+
+    const heroCta2 = document.querySelector('.hero-cta-secondary span') || document.querySelector('.hero-cta-secondary');
+    if (heroCta2) heroCta2.textContent = this.lang === 'th' ? 'สำรวจโปรแกรมทั้งหมด (11 สตูดิโอ) ↓' : 'Explore All 11 Studios ↓';
+
+    // 4. Search and Filter
+    const searchInput = document.getElementById('apps-search') as HTMLInputElement | null;
+    if (searchInput) searchInput.placeholder = this.t.searchPlaceholder;
+
+    const filterBtnMap: Record<string, string> = {
+      all: this.t.filterAll,
+      document: this.t.filterDocument,
+      photo: this.t.filterPhoto,
+      utility: this.t.filterUtility,
+      vector: this.t.filterVector,
+      video: this.t.filterVideo,
+      audio: this.t.filterAudio,
+    };
+    document.querySelectorAll<HTMLButtonElement>('.portal-filter-btn').forEach(btn => {
+      const f = btn.getAttribute('data-filter');
+      if (f && filterBtnMap[f]) {
+        btn.textContent = filterBtnMap[f];
+      }
+    });
+
+    // Section Titles
+    const appsTitle = document.getElementById('apps-title');
+    if (appsTitle) appsTitle.textContent = this.lang === 'th' ? 'คลังโปรแกรมสตูดิโอ & ค็อกพิทพรีวิวสด' : 'Creative Workstation Studios & Live Desktop Cockpit';
+
+    const sectionSub = document.querySelector('.section-subtitle');
+    if (sectionSub) sectionSub.textContent = this.lang === 'th' ? 'เลือกสตูดิโอด้านล่างเพื่อสำรวจฟีเจอร์เชิงลึก พร้อมพรีวิวหน้าต่างซอฟต์แวร์จริงบน Windows แบบเรียลไทม์' : 'Select a studio below to inspect deep specifications alongside real-time native Windows desktop window previews.';
+
+    const ecoTitle = document.querySelector('.ecosystem-overview-title');
+    if (ecoTitle) ecoTitle.textContent = this.lang === 'th' ? 'สำรวจทั้ง 11 โปรแกรมในเครือ meCrafts' : 'Explore All 11 meCrafts Workstations & Utilities';
+
+    const ecoPill = document.querySelector('.ecosystem-count-pill');
+    if (ecoPill) ecoPill.textContent = `${this.filteredApps().length} / ${SHOWCASE_APPS.length} ${this.lang === 'th' ? 'โปรแกรม' : 'Apps'}`;
+
+    // 5. Spotlight Info Cards (ZERO touch to .studio-spotlight-preview to guarantee ZERO flicker!)
+    SHOWCASE_APPS.forEach(app => {
+      const card = document.getElementById(`spotlight-${app.id}`);
+      if (!card) return;
+
+      const catPill = card.querySelector('.spotlight-cat-pill');
+      if (catPill) catPill.textContent = app.categoryLabel[this.lang];
+
+      const statusPill = card.querySelector('.spotlight-status-pill');
+      if (statusPill) {
+        const dot = statusPill.querySelector('.status-dot');
+        const text = app.status === 'active' ? this.t.statusActive : this.t.statusInDev;
+        statusPill.innerHTML = `${dot ? dot.outerHTML : ''}${text}`;
+      }
+
+      const tagline = card.querySelector('.spotlight-tagline');
+      if (tagline) tagline.textContent = app.tagline[this.lang];
+
+      const desc = card.querySelector('.spotlight-desc');
+      if (desc) desc.textContent = app.description[this.lang];
+
+      const engineBadge = card.querySelector('.spotlight-engine-badge span:last-child');
+      if (engineBadge) engineBadge.textContent = app.enginePill ? app.enginePill[this.lang] : '100% In-Device Memory';
+
+      const specsEl = card.querySelector('.spotlight-specs-list');
+      const specsList = app.specs ? (app.specs[this.lang] || app.specs.en) : [];
+      if (specsEl && specsList.length > 0) {
+        specsEl.innerHTML = specsList.map(s => `<span class="spotlight-spec-tag">✦ ${escapeHtml(s)}</span>`).join('');
+      }
+
+      const dlBtnSpan = card.querySelector('.spotlight-cta-btn span');
+      if (dlBtnSpan) {
+        dlBtnSpan.textContent = this.lang === 'th' ? `ดาวน์โหลด ${app.exeName || (app.name + '.exe')}` : `Download ${app.exeName || (app.name + '.exe')}`;
+      }
+
+      const hubBtnSpan = card.querySelector('.quick-launch-chip span');
+      if (hubBtnSpan) {
+        hubBtnSpan.textContent = this.lang === 'th' ? 'ศูนย์ดาวน์โหลด' : 'Downloads Hub';
+      }
+
+      const roadmapSpan = card.querySelector('.spotlight-cta-roadmap span');
+      if (roadmapSpan) {
+        roadmapSpan.textContent = `✦ ${this.lang === 'th' ? 'ติดตามแผนพัฒนาบน GitHub Roadmap' : 'View Development Roadmap on GitHub'} →`;
+      }
+
+      const suiteNote = card.querySelector('.spotlight-suite-note');
+      if (suiteNote) {
+        suiteNote.textContent = this.lang === 'th' ? 'กำลังพัฒนาภายใต้สัญญาอนุญาต MIT Open Source' : 'In active development under MIT Open Source License';
+      }
+    });
+
+    // 6. Manifesto & Specs
+    const col1 = document.querySelector('.manifesto-col-bad h3');
+    if (col1) col1.textContent = this.t.col1Title;
+    const col2 = document.querySelector('.manifesto-col-good h3');
+    if (col2) col2.textContent = this.t.col2Title;
+
+    const specsH2 = document.querySelector('.specs-header h2');
+    if (specsH2) specsH2.textContent = this.t.specsTitle;
+    const specsP = document.querySelector('.specs-header p');
+    if (specsP) specsP.textContent = this.t.specsSubtitle;
+
+    const specsBoxH4 = document.querySelector('.specs-box-desc h4');
+    if (specsBoxH4) specsBoxH4.textContent = this.lang === 'th' ? 'meCraft Installer สำหรับ Windows 11 / 10' : 'meCraft Installer for Windows 11 / 10';
+    const specsBoxP = document.querySelector('.specs-box-desc p');
+    if (specsBoxP) specsBoxP.textContent = this.lang === 'th' ? 'รวมครบทั้ง 11 โปรแกรมในตัวติดตั้งเดียว ติดตั้งออฟไลน์ 100% ไร้โฆษณา ไร้การติดตาม' : 'All 11 standalone studios bundled in one lightweight offline installer. Zero ads, zero telemetry.';
+
+    const footerDl = document.getElementById('footer-btn-open-downloads');
+    if (footerDl) footerDl.textContent = this.lang === 'th' ? 'ศูนย์ดาวน์โหลด (.exe)' : 'Downloads Directory';
+  }
+
+private updateGrid() {
     const apps = this.filteredApps();
     const streamEl = document.getElementById('studios-spotlight-stream');
     if (streamEl) {
