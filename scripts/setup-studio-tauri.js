@@ -229,7 +229,7 @@ fn main() {
         },
       ],
       security: {
-        csp: null,
+        csp: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' data: blob: https://api.github.com https://raw.githubusercontent.com;",
       },
     },
     bundle: {
@@ -250,6 +250,63 @@ fn main() {
     },
   };
   fs.writeFileSync(path.join(tauriDir, 'tauri.conf.json'), JSON.stringify(tauriConf, null, 2), 'utf-8');
+
+  // 9b. src-tauri/capabilities/default.json (Hardened Filesystem ACL)
+  const capDir = path.join(tauriDir, 'capabilities');
+  if (!fs.existsSync(capDir)) {
+    fs.mkdirSync(capDir, { recursive: true });
+  }
+  const capConfig = {
+    $schema: '../gen/schemas/desktop-schema.json',
+    identifier: 'default',
+    description: `Hardened filesystem and window capabilities for ${s.name}`,
+    windows: ['main'],
+    permissions: [
+      'core:default',
+      'core:window:default',
+      'core:window:allow-minimize',
+      'core:window:allow-toggle-maximize',
+      'core:window:allow-close',
+      'core:window:allow-start-dragging',
+      'core:window:allow-set-size',
+      'core:window:allow-center',
+      'dialog:default',
+      'dialog:allow-open',
+      'dialog:allow-save',
+      'fs:default',
+      {
+        identifier: 'fs:allow-read-file',
+        allow: [
+          { path: '$APPLOCALDATA/**' },
+          { path: '$DOCUMENT/**' },
+          { path: '$DOWNLOAD/**' },
+          { path: '$DESKTOP/**' },
+          { path: '$TEMP/**' },
+        ],
+      },
+      {
+        identifier: 'fs:allow-write-file',
+        allow: [
+          { path: '$APPLOCALDATA/**' },
+          { path: '$DOCUMENT/**' },
+          { path: '$DOWNLOAD/**' },
+          { path: '$DESKTOP/**' },
+          { path: '$TEMP/**' },
+        ],
+      },
+      {
+        identifier: 'fs:allow-exists',
+        allow: [
+          { path: '$APPLOCALDATA/**' },
+          { path: '$DOCUMENT/**' },
+          { path: '$DOWNLOAD/**' },
+          { path: '$DESKTOP/**' },
+          { path: '$TEMP/**' },
+        ],
+      },
+    ],
+  };
+  fs.writeFileSync(path.join(capDir, 'default.json'), JSON.stringify(capConfig, null, 2) + '\n', 'utf-8');
 
   // 10. Copy icons from medoc
   if (fs.existsSync(sourceIconsDir)) {

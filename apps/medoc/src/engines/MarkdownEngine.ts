@@ -22,17 +22,36 @@ export interface RenderOptions {
 }
 
 /**
- * Strips dangerous HTML tags, inline event listeners, and javascript: protocols
+ * Strips dangerous HTML tags, inline event listeners, and dangerous URI protocols (XSS Defense)
  */
 export function sanitizeRenderedHtml(html: string): string {
   if (!html) return '';
-  return html
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
-    .replace(/<embed\b[^>]*>/gi, '')
-    .replace(/\son\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-    .replace(/\b(href|src)\s*=\s*['"]?javascript:[^'">\s]*['"]?/gi, '');
+  let clean = html;
+
+  // 1. Remove dangerous executable/embedding tags completely (and their contents)
+  clean = clean.replace(/<script\b[^>]*>[\s\S]*?(?:<\/script>|$)/gi, '');
+  clean = clean.replace(/<script\b[\s\S]*$/gi, '');
+  clean = clean.replace(/<iframe\b[^>]*>[\s\S]*?(?:<\/iframe>|$)/gi, '');
+  clean = clean.replace(/<object\b[^>]*>[\s\S]*?(?:<\/object>|$)/gi, '');
+  clean = clean.replace(/<embed\b[^>]*>(?:[\s\S]*?<\/embed>)?/gi, '');
+  clean = clean.replace(/<applet\b[^>]*>[\s\S]*?(?:<\/applet>|$)/gi, '');
+  clean = clean.replace(/<form\b[^>]*>[\s\S]*?(?:<\/form>|$)/gi, '');
+  clean = clean.replace(/<(?:meta|base|link)\b[^>]*>/gi, '');
+
+  // 2. Remove all inline event handlers (onerror, onload, onclick, etc.), including slash-delimited attributes
+  let prev = '';
+  while (prev !== clean) {
+    prev = clean;
+    clean = clean.replace(/([<\s/])on[a-zA-Z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '$1');
+  }
+
+  // 3. Neutralize dangerous javascript:, vbscript:, and data:text/html URIs in attributes
+  clean = clean.replace(
+    /\b(href|src|action|formaction|xlink:href)\s*=\s*['"]?\s*(?:javascript|vbscript|data\s*:\s*text\/html)[^'">\s]*['"]?/gi,
+    '$1="#"'
+  );
+
+  return clean;
 }
 
 /**

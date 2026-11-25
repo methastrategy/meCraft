@@ -94,6 +94,36 @@ export function getFileIcon(language: string, fileName?: string): string {
   }
 }
 
+export function sanitizeRenderedHtml(html: string): string {
+  if (!html) return '';
+  let clean = html;
+
+  // 1. Remove dangerous executable/embedding tags completely (and their contents)
+  clean = clean.replace(/<script\b[^>]*>[\s\S]*?(?:<\/script>|$)/gi, '');
+  clean = clean.replace(/<script\b[\s\S]*$/gi, '');
+  clean = clean.replace(/<iframe\b[^>]*>[\s\S]*?(?:<\/iframe>|$)/gi, '');
+  clean = clean.replace(/<object\b[^>]*>[\s\S]*?(?:<\/object>|$)/gi, '');
+  clean = clean.replace(/<embed\b[^>]*>(?:[\s\S]*?<\/embed>)?/gi, '');
+  clean = clean.replace(/<applet\b[^>]*>[\s\S]*?(?:<\/applet>|$)/gi, '');
+  clean = clean.replace(/<form\b[^>]*>[\s\S]*?(?:<\/form>|$)/gi, '');
+  clean = clean.replace(/<(?:meta|base|link)\b[^>]*>/gi, '');
+
+  // 2. Remove all inline event handlers (onerror, onload, onclick, etc.), including slash-delimited attributes
+  let prev = '';
+  while (prev !== clean) {
+    prev = clean;
+    clean = clean.replace(/([<\s/])on[a-zA-Z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '$1');
+  }
+
+  // 3. Neutralize dangerous javascript:, vbscript:, and data:text/html URIs in attributes
+  clean = clean.replace(
+    /\b(href|src|action|formaction|xlink:href)\s*=\s*['"]?\s*(?:javascript|vbscript|data\s*:\s*text\/html)[^'">\s]*['"]?/gi,
+    '$1="#"'
+  );
+
+  return clean;
+}
+
 export function renderMarkdownHtml(md: string): string {
   if (!md) return '';
   let html = escapeHtml(md);
@@ -118,6 +148,24 @@ export function renderMarkdownHtml(md: string): string {
   // Bold / Italic
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+  // Images: ![alt](url)
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_m, alt, url) => {
+    const cleanUrl = url.trim();
+    if (/^(https?:|\/|\.\/|data:image\/(?:png|jpeg|jpg|gif|webp);base64,)/i.test(cleanUrl) && !/javascript:/i.test(cleanUrl)) {
+      return `<img src="${cleanUrl}" alt="${alt}" class="ide-md-img" />`;
+    }
+    return '';
+  });
+
+  // Links: [text](url)
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, text, url) => {
+    const cleanUrl = url.trim();
+    if (/^(https?:|mailto:|#|\/|\.\/)/i.test(cleanUrl) && !/javascript:/i.test(cleanUrl)) {
+      return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="ide-md-link">${text}</a>`;
+    }
+    return text;
+  });
 
   // Blockquotes
   html = html.replace(/^> (.*$)/gim, '<blockquote class="ide-md-quote">$1</blockquote>');
@@ -148,7 +196,7 @@ export function renderMarkdownHtml(md: string): string {
     return tableHtml;
   });
 
-  return html;
+  return sanitizeRenderedHtml(html);
 }
 
 const DEFAULT_WELCOME_MD = `# 💻 meIDE — Private-First AI IDE & Code Copilot

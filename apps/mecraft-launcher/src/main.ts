@@ -1967,6 +1967,15 @@ console.log(initializeStudio(pdfStudio));`,
       } else if (typeof window !== 'undefined' && window.location) {
         const params = new URLSearchParams(window.location.search);
         if (params.get('source') === 'desktop' || params.get('auth') === 'true' || window.location.pathname.includes('auth')) {
+          if (params.get('source') === 'desktop') {
+            try {
+              sessionStorage.setItem('mecraft_auth_source', 'desktop');
+              const port = params.get('handshake_port');
+              if (port) {
+                sessionStorage.setItem('mecraft_handshake_port', port);
+              }
+            } catch {}
+          }
           if (!this.currentSession) {
             this.isAuthModalOpen = true;
             this.render();
@@ -2272,8 +2281,17 @@ console.log(initializeStudio(pdfStudio));`,
     // Auto-Handshake with desktop app if launched with source=desktop&handshake_port
     if (typeof window !== 'undefined' && window.location) {
       const searchParams = new URLSearchParams(window.location.search);
-      const isDesktopSource = searchParams.get('source') === 'desktop';
-      const handshakePort = searchParams.get('handshake_port');
+      let isDesktopSource = searchParams.get('source') === 'desktop';
+      let handshakePort = searchParams.get('handshake_port');
+      try {
+        if (!isDesktopSource && sessionStorage.getItem('mecraft_auth_source') === 'desktop') {
+          isDesktopSource = true;
+        }
+        if (!handshakePort && sessionStorage.getItem('mecraft_handshake_port')) {
+          handshakePort = sessionStorage.getItem('mecraft_handshake_port');
+        }
+      } catch {}
+
       if (isDesktopSource) {
         try {
           this.desktopRelayToken = exportAuthSyncCode(session);
@@ -2282,15 +2300,14 @@ console.log(initializeStudio(pdfStudio));`,
         }
         this.isDesktopRelayActive = true;
 
-        if (handshakePort) {
-          const callbackUrl = `http://127.0.0.1:${handshakePort}/callback?token=${encodeURIComponent(this.desktopRelayToken)}`;
-          fetch(callbackUrl, { method: 'GET', mode: 'no-cors' }).catch(() => {});
-          setTimeout(() => {
-            if (typeof window !== 'undefined') {
-              window.location.href = callbackUrl;
-            }
-          }, 350);
-        }
+        const targetPort = handshakePort || '42813';
+        const callbackUrl = `http://127.0.0.1:${targetPort}/callback?token=${encodeURIComponent(this.desktopRelayToken)}`;
+        fetch(callbackUrl, { method: 'GET', mode: 'no-cors' }).catch(() => {});
+        setTimeout(() => {
+          if (typeof window !== 'undefined') {
+            window.location.href = callbackUrl;
+          }
+        }, 350);
       }
     }
 
@@ -2450,10 +2467,11 @@ console.log(initializeStudio(pdfStudio));`,
       if (supabase) {
         const origin = (typeof window !== 'undefined' && window.location?.origin) || 'https://mecrafts.vercel.app';
         const pathname = (typeof window !== 'undefined' && window.location?.pathname) || '/';
+        const search = (typeof window !== 'undefined' && window.location?.search) || '';
         const { error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: origin + pathname,
+            redirectTo: origin + pathname + search,
           },
         });
         if (error) throw error;
@@ -3834,7 +3852,7 @@ console.log(initializeStudio(pdfStudio));`,
         <!-- Redirect to Web Portal for Registration -->
         <div class="desktop-auth-signup-box">
           <span>${isTh ? 'ยังไม่มีบัญชี meCraft หรือต้องการสมัครสมาชิกใหม่?' : "Don't have an account or need to register?"}</span>
-          <a href="https://mecrafts.vercel.app/auth?action=signup&source=desktop" target="_blank" class="btn-desktop-web-link" id="modal-link-web-signup">
+          <a href="https://mecrafts.vercel.app/?action=signup&source=desktop" target="_blank" class="btn-desktop-web-link" id="modal-link-web-signup">
             <span>${isTh ? 'ไปยังหน้าเว็บเพื่อสมัครสมาชิก →' : 'Register on Web Portal →'}</span>
           </a>
         </div>
@@ -5143,7 +5161,7 @@ console.log(initializeStudio(pdfStudio));`,
     return `
     <header class="portal-header" role="banner">
       <div class="portal-header-inner">
-        <a class="portal-brand" href="#" aria-label="meCrafts home">
+        <a class="portal-brand" href="/" aria-label="meCrafts home">
           <div class="portal-brand-emblem" aria-hidden="true">
             <img src="./branding/mecraft-suite.png" class="portal-brand-img" alt="meCrafts" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='inline-flex';}" />
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="portal-brand-fallback" style="display:none;">
@@ -5165,10 +5183,10 @@ console.log(initializeStudio(pdfStudio));`,
         </a>
 
         <nav class="portal-nav" aria-label="Portal navigation">
-          <a href="#apps-grid" class="portal-nav-link active">${this.lang === 'th' ? 'โปรแกรมสตูดิโอ' : 'Studios'}</a>
-          <a href="#manifesto" class="portal-nav-link">${this.lang === 'th' ? 'ความเป็นส่วนตัว' : 'Privacy Architecture'}</a>
-          <a href="#specs" class="portal-nav-link">${this.lang === 'th' ? 'สเปก' : 'Specs'}</a>
-          <a href="./downloads" class="portal-nav-link">${this.lang === 'th' ? 'ดาวน์โหลด' : 'Downloads'}</a>
+          <a href="/#apps-grid" class="portal-nav-link active">${this.lang === 'th' ? 'โปรแกรมสตูดิโอ' : 'Studios'}</a>
+          <a href="/#manifesto" class="portal-nav-link">${this.lang === 'th' ? 'ความเป็นส่วนตัว' : 'Privacy Architecture'}</a>
+          <a href="/#specs" class="portal-nav-link">${this.lang === 'th' ? 'สเปก' : 'Specs'}</a>
+          <a href="/downloads/" class="portal-nav-link">${this.lang === 'th' ? 'ดาวน์โหลด' : 'Downloads'}</a>
         </nav>
 
         <div class="portal-header-actions">

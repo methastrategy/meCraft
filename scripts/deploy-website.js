@@ -109,9 +109,33 @@ function copyDir(src, dest) {
 
 // 5. Synchronize dist -> meCrafts-website
 console.log('🔄 [deploy:website] Syncing clean dist to meCrafts-website...');
+
+// Create static auth relay HTML in dist/auth/index.html as defense-in-depth against 404
+const authDistDir = path.join(distDir, 'auth');
+fs.mkdirSync(authDistDir, { recursive: true });
+const authRelayHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>meCraft Auth Relay</title>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    params.set('auth', 'true');
+    window.location.replace('/?' + params.toString() + window.location.hash);
+  </script>
+</head>
+<body style="background:#0b0d13;color:#e2e8f0;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+  <div style="text-align:center;">
+    <h2>Connecting to meCraft...</h2>
+    <p><a href="/" style="color:#f59e0b;">Click here if not redirected automatically</a></p>
+  </div>
+</body>
+</html>`;
+fs.writeFileSync(path.join(authDistDir, 'index.html'), authRelayHtml, 'utf-8');
+
 copyDir(distDir, websiteDir);
 
-// 6. Synchronize root vercel.json redirect rules to meCrafts-website/vercel.json
+// 6. Synchronize root vercel.json redirect & rewrite rules to meCrafts-website/vercel.json
 const rootVercelJson = path.join(rootDir, 'vercel.json');
 const webVercelJson = path.join(websiteDir, 'vercel.json');
 if (fs.existsSync(rootVercelJson)) {
@@ -121,10 +145,11 @@ if (fs.existsSync(rootVercelJson)) {
       $schema: 'https://openapi.vercel.sh/vercel.json',
       cleanUrls: true,
       redirects: rootConfig.redirects || [],
+      rewrites: rootConfig.rewrites || [],
       headers: rootConfig.headers || [],
     };
     fs.writeFileSync(webVercelJson, JSON.stringify(cleanConfig, null, 2) + '\n', 'utf-8');
-    console.log('✅ [deploy:website] Synchronized 18 studio redirects to meCrafts-website/vercel.json');
+    console.log('✅ [deploy:website] Synchronized 18 studio redirects & rewrites to meCrafts-website/vercel.json');
   } catch (err) {
     console.warn(`⚠️ [deploy:website] Could not sync vercel.json: ${err.message}`);
   }

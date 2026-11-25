@@ -5,6 +5,7 @@ import {
   getFileLanguage,
   getFileIcon,
   renderMarkdownHtml,
+  sanitizeRenderedHtml,
   escapeHtml,
   type IdeFile,
 } from '../src/main';
@@ -220,5 +221,32 @@ describe('meIDE Standalone AI IDE Engine Suite', () => {
     expect(app.currentSession).not.toBeNull();
     expect(app.currentSession?.user.email).toBe('developer@mecraft.dev');
     expect(app.isAuthModalOpen).toBe(false);
+  });
+
+  it('neutralizes Stored XSS vectors and sanitizes preview HTML', () => {
+    // 1. Test raw script and unclosed script
+    const maliciousRaw = '<script>alert(document.cookie)</script><script src="evil.js">';
+    const clean1 = sanitizeRenderedHtml(maliciousRaw);
+    expect(clean1).not.toContain('<script');
+    expect(clean1).not.toContain('evil.js');
+
+    // 2. Test inline event handlers and slash delimiters
+    const maliciousEvent = '<img src="x" onerror="evil()" /><svg/onload="evil()" />';
+    const clean2 = sanitizeRenderedHtml(maliciousEvent);
+    expect(clean2).not.toContain('onerror=');
+    expect(clean2).not.toContain('onload=');
+
+    // 3. Test javascript: protocol in href and src
+    const maliciousUri = '<a href="javascript:alert(1)">Click</a><iframe src="javascript:evil()"></iframe>';
+    const clean3 = sanitizeRenderedHtml(maliciousUri);
+    expect(clean3).not.toContain('javascript:');
+    expect(clean3).not.toContain('<iframe');
+
+    // 4. Test Markdown preview rendering with XSS payloads
+    const mdXss = '# Hello\n[Malicious Link](javascript:alert("XSS"))\n<img src=x onerror=alert(1)>';
+    const rendered = renderMarkdownHtml(mdXss);
+    expect(rendered).toContain('Hello');
+    expect(rendered).not.toContain('javascript:alert');
+    expect(rendered).not.toContain('onerror=alert');
   });
 });

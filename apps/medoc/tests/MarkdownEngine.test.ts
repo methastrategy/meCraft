@@ -130,5 +130,21 @@ describe('meDoc Studio — MarkdownEngine', () => {
       expect(rendered).not.toContain('onerror=');
       expect(rendered).not.toContain('javascript:');
     });
+
+    it('neutralizes unclosed script tags, nested event handlers, and dangerous data:text/html URIs', async () => {
+      const complexXss = `
+<script src="https://evil.example.com/payload.js"
+<iframe src="https://evil.example.com/steal">
+<svg/onload="maliciousFn()">
+<a href="  JAVASCRIPT:alert('bypass')">Bypass</a>
+<object data="data:text/html,<script>alert(1)</script>"></object>
+`;
+      const rendered = await renderMarkdown(complexXss);
+      expect(rendered).not.toContain('payload.js');
+      expect(rendered).not.toContain('<iframe');
+      expect(rendered).not.toContain('onload=');
+      expect(rendered).not.toContain('JAVASCRIPT:');
+      expect(rendered).not.toContain('<object');
+    });
   });
 });
