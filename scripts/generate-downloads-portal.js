@@ -140,6 +140,7 @@ const htmlContent = `<!doctype html>
       height: 60px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 24px;
     }
 
@@ -147,7 +148,8 @@ const htmlContent = `<!doctype html>
       display: flex;
       align-items: center;
       gap: 10px;
-      flex-shrink: 0;
+      flex: 1 1 0%;
+      min-width: 0;
       outline-offset: 4px;
       text-decoration: none;
       color: inherit;
@@ -207,8 +209,10 @@ const htmlContent = `<!doctype html>
     .portal-nav {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 4px;
-      margin-left: auto;
+      flex: 0 0 auto;
+      margin: 0;
       list-style: none;
     }
 
@@ -242,8 +246,10 @@ const htmlContent = `<!doctype html>
     .portal-header-actions {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 8px;
-      flex-shrink: 0;
+      flex: 1 1 0%;
+      min-width: 0;
     }
 
     .portal-lang-btn {
@@ -2702,13 +2708,13 @@ const htmlContent = `<!doctype html>
         if (btnSignout) {
           btnSignout.addEventListener('click', (e) => {
             e.stopPropagation();
-            localStorage.removeItem('mecraft_session');
+            localStorage.removeItem('mecraft_auth_session_v3'); localStorage.removeItem('mecraft_session');
             window.location.reload();
           });
         }
 
         try {
-          const sessionData = localStorage.getItem('mecraft_session');
+          const sessionData = (localStorage.getItem('mecraft_auth_session_v3') || localStorage.getItem('mecraft_session'));
           if (sessionData) {
             const session = JSON.parse(sessionData);
             if (session?.user?.email) {
@@ -2770,14 +2776,14 @@ const htmlContent = `<!doctype html>
         });
 
         document.getElementById('btn-profile-signout')?.addEventListener('click', () => {
-          localStorage.removeItem('mecraft_session');
+          localStorage.removeItem('mecraft_auth_session_v3'); localStorage.removeItem('mecraft_session');
           window.location.reload();
         });
 
         document.getElementById('btn-save-settings-profile')?.addEventListener('click', () => {
           const val = document.getElementById('inp-settings-name')?.value.trim();
           try {
-            const s = localStorage.getItem('mecraft_session');
+            const s = (localStorage.getItem('mecraft_auth_session_v3') || localStorage.getItem('mecraft_session'));
             const parsed = s ? JSON.parse(s) : { user: { email: 'methastrategy@gmail.com' } };
             parsed.user.fullName = val;
             localStorage.setItem('mecraft_session', JSON.stringify(parsed));
@@ -2804,7 +2810,7 @@ const htmlContent = `<!doctype html>
 
         // Hide top header lang button when logged in (moved to settings modal)
         const headerLangBtn = document.getElementById('btn-lang');
-        const sessionCheck = localStorage.getItem('mecraft_session');
+        const sessionCheck = (localStorage.getItem('mecraft_auth_session_v3') || localStorage.getItem('mecraft_session'));
         if (sessionCheck && headerLangBtn) {
           headerLangBtn.style.display = 'none';
         }
