@@ -3633,8 +3633,8 @@ console.log(initializeStudio(pdfStudio));`,
         </div>
 
         <div class="auth-tabs" role="tablist">
-          <button type="button" class="auth-tab ${this.authTab === 'signin' ? 'active' : ''}" id="modal-tab-signin" role="tab">${this.t.signInTab}</button>
-          <button type="button" class="auth-tab ${this.authTab === 'signup' ? 'active' : ''}" id="modal-tab-signup" role="tab">${this.t.signUpTab}</button>
+          <button type="button" class="auth-tab ${this.authTab === 'signin' ? 'active' : ''}" id="modal-tab-signin" role="tab">${isTh ? 'เข้าสู่ระบบ' : 'Sign In'}</button>
+          <button type="button" class="auth-tab ${this.authTab === 'signup' ? 'active' : ''}" id="modal-tab-signup" role="tab">${isTh ? 'สร้างบัญชี' : 'Create Account'}</button>
         </div>
 
         ${this.authError ? `<div class="auth-error-banner" role="alert">${escapeHtml(this.authError)}</div>` : ''}
@@ -3642,17 +3642,17 @@ console.log(initializeStudio(pdfStudio));`,
         <form class="auth-form" id="modal-auth-form">
           ${this.authTab === 'signup' ? `
           <div class="form-group">
-            <label for="modal-auth-fullname">${this.t.fullNameLabel}</label>
+            <label for="modal-auth-fullname">${isTh ? 'ชื่อ-นามสกุล' : 'Full Name'}</label>
             <input type="text" id="modal-auth-fullname" class="auth-input" placeholder="e.g. Somchai Jaidee" required />
           </div>` : ''}
 
           <div class="form-group">
-            <label for="modal-auth-email">${this.t.emailLabel}</label>
+            <label for="modal-auth-email">${isTh ? 'อีเมล' : 'Email Address'}</label>
             <input type="email" id="modal-auth-email" class="auth-input" placeholder="creator@example.com" required />
           </div>
 
           <div class="form-group">
-            <label for="modal-auth-password">${this.t.passwordLabel}</label>
+            <label for="modal-auth-password">${isTh ? 'รหัสผ่าน' : 'Password'}</label>
             <div class="password-input-wrap">
               <input type="password" id="modal-auth-password" class="auth-input" placeholder="••••••••" minlength="6" required />
               <button type="button" class="btn-toggle-pwd" id="modal-btn-toggle-pwd" aria-label="Toggle password visibility">👁️</button>
@@ -3660,7 +3660,7 @@ console.log(initializeStudio(pdfStudio));`,
           </div>
 
           <button type="submit" class="btn-auth-submit" id="modal-btn-auth-submit" ${this.authLoading ? 'disabled' : ''}>
-            ${this.authLoading ? (isTh ? 'กำลังตรวจสอบ...' : 'Authenticating...') : (this.authTab === 'signin' ? this.t.signInBtn : this.t.createAccountBtn)}
+            ${this.authLoading ? (isTh ? 'กำลังตรวจสอบ...' : 'Authenticating...') : (this.authTab === 'signin' ? this.t.signInBtn : (isTh ? 'สร้างบัญชีใหม่' : 'Create Account'))}
           </button>
 
           <div class="auth-divider"><span>OR</span></div>
@@ -5972,7 +5972,7 @@ console.log(initializeStudio(pdfStudio));`,
           this.render();
           this.attachListeners();
         } else if (id) {
-          this.launchTargetStudio(id as any);
+          this.handleLaunchApp(id, 'desktop');
         }
       });
     });
