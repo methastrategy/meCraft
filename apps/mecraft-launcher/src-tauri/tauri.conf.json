@@ -40,7 +40,7 @@
       "nsis": {
         "installerHooks": "hooks.nsh",
         "startMenuFolder": "meCraft",
-        "installMode": "both",
+        "installMode": "currentUser",
         "languages": [
           "English",
           "Thai"
