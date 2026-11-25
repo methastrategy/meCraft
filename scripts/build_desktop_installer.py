@@ -82,8 +82,21 @@ def main():
 
     for dst in destinations:
         os.makedirs(os.path.dirname(dst), exist_ok=True)
-        shutil.copyfile(setup_exe, dst)
-        print(f"[+] Copied installer to {dst} ({os.path.getsize(dst) / (1024*1024):.2f} MB)")
+        for attempt in range(5):
+            try:
+                if os.path.exists(dst):
+                    try:
+                        os.remove(dst)
+                    except Exception:
+                        pass
+                shutil.copyfile(setup_exe, dst)
+                print(f"[+] Copied installer to {dst} ({os.path.getsize(dst) / (1024*1024):.2f} MB)")
+                break
+            except Exception as e:
+                if attempt == 4:
+                    print(f"[!] Warning copying to {dst}: {e}")
+                else:
+                    time.sleep(1)
 
     print(f"\n✨ Desktop installer build & distribution finished in {time.time() - t0:.2f}s!")
 
