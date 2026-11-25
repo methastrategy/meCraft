@@ -461,8 +461,8 @@ export function createLauncherBridge(): LauncherBridge {
     async startAuthHandshake(): Promise<number> {
       if (isTauriEnv) {
         try {
-          const { invoke } = await import('@tauri-apps/api/core');
-          return await invoke<number>('start_auth_handshake');
+          const { invoke }: any = await import('@tauri-apps/api/core');
+          return await invoke('start_auth_handshake');
         } catch (e) {
           console.warn('[LauncherBridge] startAuthHandshake failed:', e);
         }
@@ -473,12 +473,12 @@ export function createLauncherBridge(): LauncherBridge {
     onAuthHandshake(callback: (token: string) => void): () => void {
       if (isTauriEnv) {
         let unlistenFn: (() => void) | null = null;
-        import('@tauri-apps/api/event').then(({ listen }) => {
-          listen<{ token: string }>('auth-handshake-received', (event) => {
+        import('@tauri-apps/api/event').then(({ listen }: any) => {
+          listen('auth-handshake-received', (event: any) => {
             if (event.payload?.token) {
               callback(event.payload.token);
             }
-          }).then((unlisten) => {
+          }).then((unlisten: any) => {
             unlistenFn = unlisten;
           });
         }).catch((e) => {

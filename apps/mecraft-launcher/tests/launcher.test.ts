@@ -924,6 +924,27 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(portal.isAuthModalOpen).toBe(false);
     });
 
+    it('Step 2: 1-Click Desktop Google Auto-Handshake enters main workstation cleanly without user input', async () => {
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      portal.desktopStage = 'auth';
+
+      const mockSession = createMockAuthSession('auto.google@mecraft.dev', 'pro_monthly');
+      const syncCode = exportAuthSyncCode(mockSession);
+
+      // Simulate handshake token received from local loopback
+      const session = importAuthSyncCode(syncCode);
+      expect(session).not.toBeNull();
+      portal.currentSession = session;
+      saveAuthSession(session!);
+      if (portal.desktopStage === 'auth') {
+        await portal.enterMainWorkstation();
+      }
+
+      expect(portal.desktopStage).toBe('main');
+      expect(portal.currentSession?.user.email).toBe('auto.google@mecraft.dev');
+    });
+
     it('Step 3: Web Portal mode renders full email form and transitions to 6-digit OTP on signup', () => {
       const { doc } = setupMockDom();
       doc.body.innerHTML = '<div id="app"></div>';

@@ -1853,7 +1853,7 @@ console.log(initializeStudio(pdfStudio));`,
   public isTerminalOpen: boolean = true;
   public activeTerminalTab: 'terminal' | 'output' | 'problems' = 'terminal';
   public ideTerminalHistory: string[] = [
-    'meCraft Terminal Engine v1.0.1 (Windows x64 Native)',
+    'meCraft Terminal Engine v1.0.2 (Windows x64 Native)',
     '100% Client-Side In-Device RAM. Zero telemetry.',
     'Type "help" to see available commands or "studios" to view creative tools.',
   ];
@@ -1890,7 +1890,7 @@ console.log(initializeStudio(pdfStudio));`,
     this.currentSession = urlSession || getAuthSession();
     this.appEl = document.getElementById('app')!;
     if (typeof document !== 'undefined') {
-      document.title = 'meCraft (v1.0.1)';
+      document.title = 'meCraft (v1.0.2)';
     }
     this.cleanUrlHash();
 
@@ -1970,7 +1970,7 @@ console.log(initializeStudio(pdfStudio));`,
     this.isCheckingUpdate = true;
     try {
       const info = await checkSoftwareUpdate({
-        currentVersion: '1.0.1',
+        currentVersion: '1.0.2',
         appId: 'mecraft-suite',
         force,
       });
@@ -2001,7 +2001,7 @@ console.log(initializeStudio(pdfStudio));`,
     this.steamUpdateSubstatus = 'https://registry.mecrafts.dev (CDN Mirror 1)';
     this.steamUpdateSpeed = '1.8 MB/s';
     this.steamUpdateLogs = [
-      `[${new Date().toLocaleTimeString()}] Initializing meCraft Steam-Class Auto-Updater v1.0.1`,
+      `[${new Date().toLocaleTimeString()}] Initializing meCraft Steam-Class Auto-Updater v1.0.2`,
       `[${new Date().toLocaleTimeString()}] Target runtime: Native Windows x64 In-Device RAM`,
     ];
     this.render();
@@ -2021,7 +2021,7 @@ console.log(initializeStudio(pdfStudio));`,
       let info: SoftwareUpdateInfo | null = null;
       try {
         const checkPromise = checkSoftwareUpdate({
-          currentVersion: '1.0.1',
+          currentVersion: '1.0.2',
           appId: 'mecraft-suite',
           force: options.force ?? true,
         });
@@ -2255,6 +2255,31 @@ console.log(initializeStudio(pdfStudio));`,
       } catch {}
     }
 
+    // Auto-Handshake with desktop app if launched with source=desktop&handshake_port
+    if (typeof window !== 'undefined' && window.location) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const isDesktopSource = searchParams.get('source') === 'desktop';
+      const handshakePort = searchParams.get('handshake_port');
+      if (isDesktopSource) {
+        try {
+          this.desktopRelayToken = exportAuthSyncCode(session);
+        } catch {
+          this.desktopRelayToken = `MC3.TOKEN.${Date.now()}`;
+        }
+        this.isDesktopRelayActive = true;
+
+        if (handshakePort) {
+          const callbackUrl = `http://127.0.0.1:${handshakePort}/callback?token=${encodeURIComponent(this.desktopRelayToken)}`;
+          fetch(callbackUrl, { method: 'GET', mode: 'no-cors' }).catch(() => {});
+          setTimeout(() => {
+            if (typeof window !== 'undefined') {
+              window.location.href = callbackUrl;
+            }
+          }, 350);
+        }
+      }
+    }
+
     if (this.desktopStage === 'auth') {
       await this.enterMainWorkstation();
       return;
@@ -2343,16 +2368,37 @@ console.log(initializeStudio(pdfStudio));`,
       if (this.isDesktopMode()) {
         const isVitest = typeof process !== 'undefined' && Boolean(process.env?.VITEST || process.env?.NODE_ENV === 'test');
         if (this.bridge.isTauri()) {
-          try {
-            await (window as any).__TAURI__?.shell?.open('https://mecrafts.vercel.app/auth?source=desktop');
-          } catch {}
-          this.authLoading = false;
-          this.showSyncImport = true;
-          this.authError = this.lang === 'th'
-            ? '🌐 เปิดหน้าต่างเว็บสำหรับ Google OAuth แล้ว — กรุณาคัดลอกรหัสเชื่อมต่อ (Sync Code) จากเว็บมาวางในช่องด้านล่าง'
-            : '🌐 Web browser opened for Google OAuth — Please copy your Sync Code from web and paste below';
+          this.authLoading = true;
+          this.showSyncImport = false;
+          this.authError = '';
           this.render();
           this.attachListeners();
+
+          try {
+            const port = await this.bridge.startAuthHandshake();
+            const authUrl = port > 0
+              ? `https://mecrafts.vercel.app/auth?source=desktop&handshake_port=${port}`
+              : `https://mecrafts.vercel.app/auth?source=desktop`;
+
+            await this.bridge.openExternal(authUrl);
+
+            this.authLoading = false;
+            this.authError = this.lang === 'th'
+              ? '🌐 เปิดเบราว์เซอร์สำหรับ Google Sign-In แล้ว... (ระบบจะเชื่อมต่อให้เองอัตโนมัติ ไม่ต้องกรอกอะไรเลย)'
+              : '🌐 Browser opened for Google Sign-In... (Syncing automatically, no typing needed)';
+            this.render();
+            this.attachListeners();
+          } catch (err: any) {
+            console.warn('[meCraft:auth] Google OAuth launch error:', err);
+            await this.bridge.openExternal('https://mecrafts.vercel.app/auth?source=desktop');
+            this.authLoading = false;
+            this.showSyncImport = true;
+            this.authError = this.lang === 'th'
+              ? '🌐 เปิดหน้าต่างเว็บสำหรับ Google OAuth แล้ว — กรุณาคัดลอกรหัสเชื่อมต่อ (Sync Code) จากเว็บมาวางในช่องด้านล่าง'
+              : '🌐 Web browser opened for Google OAuth — Please copy your Sync Code from web and paste below';
+            this.render();
+            this.attachListeners();
+          }
           return;
         }
 
@@ -2524,7 +2570,7 @@ console.log(initializeStudio(pdfStudio));`,
     <header class="ws-titlebar" data-tauri-drag-region>
       <div class="ws-titlebar-left" data-tauri-drag-region>
         <img src="./branding/mecraft-suite.png" class="ws-titlebar-icon" alt="" onerror="this.style.display='none'" />
-        <span class="ws-titlebar-text" data-tauri-drag-region>meCraft (v1.0.1)</span>
+        <span class="ws-titlebar-text" data-tauri-drag-region>meCraft (v1.0.2)</span>
       </div>
       <div class="ws-titlebar-controls">
         <button type="button" class="ws-win-btn" id="ws-win-min" aria-label="Minimize" title="Minimize">
@@ -2568,7 +2614,7 @@ console.log(initializeStudio(pdfStudio));`,
           </div>
           <div class="ws-brand-meta">
             <span class="ws-brand-title">meCraft</span>
-            <span class="ws-brand-pill">v1.0.1</span>
+            <span class="ws-brand-pill">v1.0.2</span>
           </div>
         </div>
 
@@ -3154,7 +3200,7 @@ console.log(initializeStudio(pdfStudio));`,
         <div class="ws-vault-card">
           <div class="ws-vault-card-icon">🚀</div>
           <h3>${isTh ? 'เวอร์ชันและการอัปเดต' : 'Software Version & Updates'}</h3>
-          <p>${isTh ? 'เวอร์ชันปัจจุบัน: v1.0.1 (Official Stable Release) ทำงานบนเครื่องยนต์ Tauri v2 Native Windows 64-bit' : 'Current version: v1.0.1 (Official Stable Release). Built with Tauri v2 Native Windows 64-bit engine.'}</p>
+          <p>${isTh ? 'เวอร์ชันปัจจุบัน: v1.0.2 (Official Stable Release) ทำงานบนเครื่องยนต์ Tauri v2 Native Windows 64-bit' : 'Current version: v1.0.2 (Official Stable Release). Built with Tauri v2 Native Windows 64-bit engine.'}</p>
           <div class="ws-vault-status-row">
             <span class="ws-badge-ok">✓ ${isTh ? 'เวอร์ชันล่าสุดเสถียร' : 'Latest Official Stable'}</span>
             <button type="button" class="ws-btn-primary" id="ws-btn-check-update-vault">
@@ -3589,7 +3635,7 @@ console.log(initializeStudio(pdfStudio));`,
       <div class="steam-compact-topbar" data-tauri-drag-region>
         <div class="steam-compact-brand" data-tauri-drag-region>
           <img src="./branding/mecraft-suite.png" alt="meCraft" onerror="this.style.display='none'" />
-          <span data-tauri-drag-region>meCraft (v1.0.1)</span>
+          <span data-tauri-drag-region>meCraft (v1.0.2)</span>
         </div>
         <button type="button" class="steam-compact-close" id="btn-steam-close" aria-label="Close">✕</button>
       </div>
@@ -4172,9 +4218,20 @@ console.log(initializeStudio(pdfStudio));`,
       this.desktopRelayToken = `MC3.TOKEN.${Date.now()}`;
     }
 
-    const isDesktopSource = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('source') === 'desktop';
+    const searchParams = typeof window !== 'undefined' && window.location ? new URLSearchParams(window.location.search) : null;
+    const isDesktopSource = searchParams?.get('source') === 'desktop';
+    const handshakePort = searchParams?.get('handshake_port');
     if (isDesktopSource) {
       this.isDesktopRelayActive = true;
+      if (handshakePort) {
+        const callbackUrl = `http://127.0.0.1:${handshakePort}/callback?token=${encodeURIComponent(this.desktopRelayToken)}`;
+        fetch(callbackUrl, { method: 'GET', mode: 'no-cors' }).catch(() => {});
+        setTimeout(() => {
+          if (typeof window !== 'undefined') {
+            window.location.href = callbackUrl;
+          }
+        }, 350);
+      }
       this.render();
       this.attachListeners();
     } else {
@@ -5600,7 +5657,7 @@ console.log(initializeStudio(pdfStudio));`,
           </div>
           <div class="downloads-meta-badge">
             <span class="dl-pulse-dot" aria-hidden="true"></span>
-            <span>${this.lang === 'th' ? 'สถานะ: เผยแพร่เวอร์ชัน v1.0.1' : 'Channel: Stable v1.0.1'}</span>
+            <span>${this.lang === 'th' ? 'สถานะ: เผยแพร่เวอร์ชัน v1.0.2' : 'Channel: Stable v1.0.2'}</span>
           </div>
         </div>
 
@@ -6792,7 +6849,7 @@ console.log(initializeStudio(pdfStudio));`,
         }
         break;
       case 'version':
-        this.ideTerminalHistory.push('meCraft AI IDE Workstation v1.0.1 (Windows x64 Native)');
+        this.ideTerminalHistory.push('meCraft AI IDE Workstation v1.0.2 (Windows x64 Native)');
         this.ideTerminalHistory.push('Engine: 100% In-Device Memory Execution · Zero Telemetry');
         break;
       case 'stats':
