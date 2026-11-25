@@ -2835,8 +2835,8 @@ const targets = [
   path.join(rootDir, 'public/downloads/index.html'),
   path.join(rootDir, 'dist/downloads.html'),
   path.join(rootDir, 'dist/downloads/index.html'),
-  path.join(rootDir, 'meCrafts-website/downloads.html'),
-  path.join(rootDir, 'meCrafts-website/downloads/index.html'),
+  (fs.existsSync(path.resolve(rootDir, '../meCrafts-website')) ? path.join(rootDir, '../meCrafts-website/downloads.html') : path.join(rootDir, 'meCrafts-website/downloads.html')),
+  (fs.existsSync(path.resolve(rootDir, '../meCrafts-website')) ? path.join(rootDir, '../meCrafts-website/downloads/index.html') : path.join(rootDir, 'meCrafts-website/downloads/index.html')),
 ];
 
 for (const target of targets) {
