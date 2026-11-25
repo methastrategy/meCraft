@@ -93,11 +93,8 @@ copyDir(path.join(rootDir, 'apps/medoc/dist'), path.join(distDir, 'medoc'));
 console.log('[build-web] Assembling meIDE Studio into dist/meide...');
 copyDir(path.join(rootDir, 'apps/meide/dist'), path.join(distDir, 'meide'));
 
-// Subpaths for all specialized standalone creative studios
-// Use lightweight root-pathed index.html shells pointing directly to root /assets/ bundle
-// Eliminates ~2GB of redundant bundle and branding asset duplication across 14 studio folders
-const additionalStudios = [
-  'mevector',
+// Assemble 9 creative & document studios with standalone dist builds
+const studioApps = [
   'me3d',
   'meaudio',
   'medeck',
@@ -106,6 +103,19 @@ const additionalStudios = [
   'melight',
   'memotion',
   'mesheet',
+  'mevector',
+];
+
+for (const studio of studioApps) {
+  const appDist = path.join(rootDir, `apps/${studio}/dist`);
+  if (fs.existsSync(appDist)) {
+    console.log(`[build-web] Assembling standalone ${studio} Studio into dist/${studio}...`);
+    copyDir(appDist, path.join(distDir, studio));
+  }
+}
+
+// Subpaths for remaining future lightweight studio shells
+const additionalStudios = [
   'mecad',
   'metexture',
   'mematerial',

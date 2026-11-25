@@ -397,9 +397,9 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       const ghLinks = doc.querySelectorAll('a[href*="github.com/methastrategy/meCraft"]');
       expect(ghLinks.length).toBe(0);
 
-      // Verify Left Sidebar Nav Items (Workbench, Studios, Recents, Vault)
+      // Verify Left Sidebar Nav Items (Studios, Recents, Vault)
       const navButtons = doc.querySelectorAll('.ws-nav-btn');
-      expect(navButtons.length).toBe(4);
+      expect(navButtons.length).toBe(3);
 
       // Verify Universal Dropzone is present on default workbench view
       const dropzone = doc.getElementById('ws-universal-dropzone');

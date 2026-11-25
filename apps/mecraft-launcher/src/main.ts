@@ -1782,7 +1782,7 @@ Open and edit text files, markdown documents, configurations, and source code wi
 | **Switch to Studios** | Click 📦 Studios in sidebar |
 
 ---
-*Created with ❤️ by Metha Strategy. 100% Private Local.*`,
+*Created with ❤️ by Metha Strategy..*`,
     },
     {
       id: 'scratchpad-txt',
@@ -1888,6 +1888,9 @@ console.log(initializeStudio(pdfStudio));`,
     const urlSession = checkUrlAuthHandoff();
     this.currentSession = urlSession || getAuthSession();
     this.appEl = document.getElementById('app')!;
+    if (typeof document !== 'undefined') {
+      document.title = 'meCraft (v1.0.0)';
+    }
     this.cleanUrlHash();
 
     // Subscribe to cross-tab / cross-app real-time auth sync
@@ -2376,7 +2379,6 @@ console.log(initializeStudio(pdfStudio));`,
     const isTh = this.lang === 'th';
     const navItems = [
       { id: 'studios', icon: '📦', label: isTh ? 'คลังโปรแกรม' : 'All Studios', desc: isTh ? `${SHOWCASE_APPS.length} สตูดิโอ + meIDE` : `${SHOWCASE_APPS.length} Studios + meIDE` },
-      { id: 'workbench', icon: '💻', label: isTh ? 'meIDE สตูดิโอ' : 'meIDE Studio', desc: isTh ? 'AI IDE ในตัว' : 'In-App AI IDE' },
       { id: 'recents', icon: '🕒', label: isTh ? 'ประวัติงาน' : 'Recent Work', desc: isTh ? 'ไฟล์ล่าสุด' : 'Recent Files' },
       { id: 'vault', icon: '🛡️', label: isTh ? 'สถานะเครื่อง' : 'Local Engine', desc: isTh ? 'ความปลอดภัย' : 'Zero-Cloud' },
     ];
@@ -2433,11 +2435,6 @@ console.log(initializeStudio(pdfStudio));`,
           </button>
         ` : ''}
 
-        <div class="ws-telemetry-badge" title="${isTh ? 'ประมวลผลบน RAM ภายในเครื่อง 100% ไร้คลาวด์' : '100% Client-Side In-RAM Sandbox'}">
-          <span class="status-dot-green"></span>
-          <span>100% Private Local</span>
-        </div>
-
         <button type="button" class="ws-lang-btn" id="ws-btn-lang" aria-label="Toggle language">
           <span>${this.lang === 'en' ? '🇹🇭 ภาษาไทย' : '🇬🇧 English'}</span>
         </button>
@@ -2470,15 +2467,15 @@ console.log(initializeStudio(pdfStudio));`,
 
   private renderDesktopView(): string {
     switch (this.desktopView) {
-      case 'studios':
-        return this.renderStudiosCatalogView();
       case 'recents':
         return this.renderRecentsView();
       case 'vault':
         return this.renderVaultView();
       case 'workbench':
-      default:
         return this.renderWorkbenchView();
+      case 'studios':
+      default:
+        return this.renderStudiosCatalogView();
     }
   }
 

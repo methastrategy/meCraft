@@ -389,12 +389,7 @@ function renderStudioHeader(currentStudio: StudioInfo, lang: 'en' | 'th'): strin
         </select>
       </div>
 
-      <div class="studio-nav-right">
-        <div class="studio-privacy-pill" title="100% In-Device RAM Privacy (Zero-Cloud Upload)">
-          <span class="studio-dot-green"></span>
-          <span>100% Private Local</span>
-        </div>
-      </div>
+      <div class="studio-nav-right"></div>
     </header>
   `;
 }
