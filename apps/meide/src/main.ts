@@ -126,7 +126,9 @@ export function sanitizeRenderedHtml(html: string): string {
 
 export function renderMarkdownHtml(md: string): string {
   if (!md) return '';
-  let html = escapeHtml(md);
+  // 1. Sanitize raw HTML tags and dangerous scripts from markdown source
+  const sanitizedMd = sanitizeRenderedHtml(md);
+  let html = escapeHtml(sanitizedMd);
 
   // Fenced Code Blocks
   html = html.replace(/\x60\x60\x60([a-zA-Z0-9_-]*)\n([\s\S]*?)\x60\x60\x60/g, (_m, lang, code) => {
