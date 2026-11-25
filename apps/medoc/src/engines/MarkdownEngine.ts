@@ -22,6 +22,20 @@ export interface RenderOptions {
 }
 
 /**
+ * Strips dangerous HTML tags, inline event listeners, and javascript: protocols
+ */
+export function sanitizeRenderedHtml(html: string): string {
+  if (!html) return '';
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
+    .replace(/<embed\b[^>]*>/gi, '')
+    .replace(/\son\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+    .replace(/\b(href|src)\s*=\s*['"]?javascript:[^'">\s]*['"]?/gi, '');
+}
+
+/**
  * Escapes HTML characters for safe code display
  */
 export function escapeHtml(text: string): string {
@@ -191,7 +205,7 @@ export async function renderMarkdown(markdown: string, options: RenderOptions = 
   });
 
   const parsed = await marked.parse(textToParse, { renderer });
-  return parsed;
+  return sanitizeRenderedHtml(parsed);
 }
 
 /**

@@ -23,7 +23,7 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' data: blob: https://api.github.com https://raw.githubusercontent.com;"
     }
   },
   "bundle": {
@@ -38,7 +38,9 @@
     ],
     "fileAssociations": [
       {
-        "ext": ["pdf"],
+        "ext": [
+          "pdf"
+        ],
         "name": "PDF Document",
         "description": "Portable Document Format",
         "role": "Editor"

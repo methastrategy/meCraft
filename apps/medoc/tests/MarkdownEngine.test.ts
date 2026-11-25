@@ -118,4 +118,17 @@ describe('meDoc Studio — MarkdownEngine', () => {
       expect(stats.readingTimeMinutes).toBe(0);
     });
   });
+
+  describe('XSS Defense & HTML Sanitization', () => {
+    it('strips malicious script tags, iframes, and inline event handlers from rendered markdown', async () => {
+      const maliciousMd = '# Safe Heading\n\n<script>alert("hacked")</script>\n\n<img src="x" onerror="stealCookies()">\n\n[Click me](javascript:evil())';
+      const rendered = await renderMarkdown(maliciousMd);
+
+      expect(rendered).toContain('Safe Heading');
+      expect(rendered).not.toContain('<script>');
+      expect(rendered).not.toContain('alert("hacked")');
+      expect(rendered).not.toContain('onerror=');
+      expect(rendered).not.toContain('javascript:');
+    });
+  });
 });

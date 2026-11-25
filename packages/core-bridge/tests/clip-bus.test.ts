@@ -85,4 +85,39 @@ describe('UniversalClipBus Cross-App Pipeline', () => {
       (globalThis as any).window = originalWindow;
     }
   });
+
+  it('marks large payloads >100KB with storedInIndexedDb flag and saves lightweight metadata in localStorage', () => {
+    const bus = new UniversalClipBus();
+    const mockStorage: Record<string, string> = {};
+    const originalWindow = (globalThis as any).window;
+    (globalThis as any).window = {
+      localStorage: {
+        getItem: (k: string) => mockStorage[k] || null,
+        setItem: (k: string, v: string) => { mockStorage[k] = v; },
+        removeItem: (k: string) => { delete mockStorage[k]; },
+      },
+    };
+
+    try {
+      const hugeDataUrl = 'data:image/jpeg;base64,' + 'A'.repeat(120 * 1024);
+      const sent = bus.send({
+        sourceApp: 'mephoto',
+        targetApp: 'mepdf',
+        type: 'image-page',
+        dataUrl: hugeDataUrl,
+        name: 'HugeScan.jpg',
+      });
+
+      expect(sent.storedInIndexedDb).toBe(true);
+
+      const pending = bus.consumePending('mepdf');
+      expect(pending).toHaveLength(1);
+      expect(pending[0].id).toBe(sent.id);
+      expect(pending[0].storedInIndexedDb).toBe(true);
+      // DataUrl in localStorage was stripped to protect the 5MB quota
+      expect(pending[0].dataUrl).toBeUndefined();
+    } finally {
+      (globalThis as any).window = originalWindow;
+    }
+  });
 });
