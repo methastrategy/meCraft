@@ -1106,6 +1106,23 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       res = await portal.handleVerifyOtp();
       expect(res).toBe(false);
     });
+
+    it('Step 4: desktop sign out restores auth stage and invokes setWindowStage("auth")', async () => {
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      portal.desktopStage = 'main';
+      portal.currentSession = createMockAuthSession('user@mecraft.dev', 'free_member');
+      portal.isAuthModalOpen = false;
+
+      const setStageSpy = vi.spyOn(portal.bridge, 'setWindowStage');
+
+      await portal.handleSignOut();
+
+      expect(portal.currentSession).toBeNull();
+      expect(portal.desktopStage).toBe('auth');
+      expect(portal.isAuthModalOpen).toBe(false);
+      expect(setStageSpy).toHaveBeenCalledWith('auth');
+    });
   });
 
 });

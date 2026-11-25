@@ -2587,7 +2587,7 @@ console.log(initializeStudio(pdfStudio));`,
     }
   }
 
-  private async handleSignOut() {
+  public async handleSignOut() {
     if (supabase) {
       try {
         await supabase.auth.signOut();
@@ -2597,6 +2597,13 @@ console.log(initializeStudio(pdfStudio));`,
     }
     clearAuthSession();
     this.currentSession = null;
+    this.isAuthModalOpen = false;
+
+    if (this.isDesktopMode()) {
+      this.desktopStage = 'auth';
+      await this.bridge.setWindowStage('auth');
+    }
+
     this.render();
     this.attachListeners();
   }
@@ -6105,11 +6112,18 @@ console.log(initializeStudio(pdfStudio));`,
 
     // ── Auth Modal Open / Close Triggers ──
     document.querySelectorAll('.btn-trigger-auth, #header-btn-auth, #btn-open-auth, #hero-btn-open-auth, #footer-btn-open-auth').forEach(btn => {
-      btn.addEventListener('click', () => {
-        this.isAuthModalOpen = true;
-        this.authError = '';
-        this.render();
-        this.attachListeners();
+      btn.addEventListener('click', async () => {
+        if (this.isDesktopMode()) {
+          this.desktopStage = 'auth';
+          await this.bridge.setWindowStage('auth');
+          this.render();
+          this.attachListeners();
+        } else {
+          this.isAuthModalOpen = true;
+          this.authError = '';
+          this.render();
+          this.attachListeners();
+        }
       });
     });
 
@@ -6614,15 +6628,29 @@ console.log(initializeStudio(pdfStudio));`,
       e.stopPropagation();
       await this.handleSignOut();
     });
-    document.getElementById('ws-btn-auth')?.addEventListener('click', () => {
-      this.isAuthModalOpen = true;
-      this.render();
-      this.attachListeners();
+    document.getElementById('ws-btn-auth')?.addEventListener('click', async () => {
+      if (this.isDesktopMode()) {
+        this.desktopStage = 'auth';
+        await this.bridge.setWindowStage('auth');
+        this.render();
+        this.attachListeners();
+      } else {
+        this.isAuthModalOpen = true;
+        this.render();
+        this.attachListeners();
+      }
     });
-    document.getElementById('ws-btn-vault-signin')?.addEventListener('click', () => {
-      this.isAuthModalOpen = true;
-      this.render();
-      this.attachListeners();
+    document.getElementById('ws-btn-vault-signin')?.addEventListener('click', async () => {
+      if (this.isDesktopMode()) {
+        this.desktopStage = 'auth';
+        await this.bridge.setWindowStage('auth');
+        this.render();
+        this.attachListeners();
+      } else {
+        this.isAuthModalOpen = true;
+        this.render();
+        this.attachListeners();
+      }
     });
 
     // 5. IDE Dropzone and File Browse

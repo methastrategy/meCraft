@@ -452,18 +452,21 @@ fn set_window_stage(app_handle: tauri::AppHandle, stage: String) -> Result<(), S
 
     match stage.as_str() {
         "updater" => {
+            let _ = win.unmaximize();
             let _ = win.set_min_size(None::<tauri::LogicalSize<f64>>);
             let _ = win.set_resizable(false);
             let _ = win.set_size(tauri::LogicalSize::new(390.0, 150.0));
             let _ = win.center();
         }
         "loading_user" => {
+            let _ = win.unmaximize();
             let _ = win.set_min_size(None::<tauri::LogicalSize<f64>>);
             let _ = win.set_resizable(false);
             let _ = win.set_size(tauri::LogicalSize::new(420.0, 260.0));
             let _ = win.center();
         }
         "auth" => {
+            let _ = win.unmaximize();
             let _ = win.set_min_size(None::<tauri::LogicalSize<f64>>);
             let _ = win.set_resizable(false);
             let _ = win.set_size(tauri::LogicalSize::new(460.0, 620.0));
