@@ -7,6 +7,8 @@ on:
       - 'mepdf-v*'
       - 'mephoto-v*'
       - 'launcher-v*'
+      - 'meide-v*'
+      - 'medoc-v*'
   workflow_dispatch:
     inputs:
       target_app:
@@ -17,6 +19,8 @@ on:
         options:
           - all
           - mecraft-launcher
+          - meide
+          - medoc
           - mepdf
           - mephoto
 
@@ -43,7 +47,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run Test Suite (226 tests)
+      - name: Run Test Suite (372+ tests)
         run: npm test
 
       - name: Run Typecheck Across Workspaces
@@ -64,6 +68,14 @@ jobs:
             display_name: 'meCraft Launcher'
             dir: apps/mecraft-launcher
             exe_name: mecraft-launcher
+          - app_id: meide
+            display_name: 'meIDE Studio'
+            dir: apps/meide
+            exe_name: meide
+          - app_id: medoc
+            display_name: 'meDoc Studio'
+            dir: apps/medoc
+            exe_name: medoc
           - app_id: mepdf
             display_name: 'mePDF Studio'
             dir: apps/mepdf
@@ -97,6 +109,10 @@ jobs:
           elif [[ "$TAG" == mephoto-v* ]] && [ "$APP" = "mephoto" ]; then
             echo "should_build=true" >> $GITHUB_OUTPUT
           elif [[ "$TAG" == launcher-v* ]] && [ "$APP" = "mecraft-launcher" ]; then
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          elif [[ "$TAG" == meide-v* ]] && [ "$APP" = "meide" ]; then
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          elif [[ "$TAG" == medoc-v* ]] && [ "$APP" = "medoc" ]; then
             echo "should_build=true" >> $GITHUB_OUTPUT
           else
             echo "should_build=false" >> $GITHUB_OUTPUT

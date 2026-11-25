@@ -18,23 +18,35 @@ flowchart TD
         PhotoCore["@mecraft/photo-core\n• 4-Point Homography Perspective Deskew\n• Adaptive Otsu Binarization (Scan Cleanup)\n• Magic Color Tone-Mapping & Unsharp Mask\n• Pure Client Topological OCR Engine"]
     end
 
-    subgraph Application_Workspaces["🚀 Application Suite (Workspaces)"]
+    subgraph Application_Workspaces["🚀 Application Suite (15 Workspaces)"]
         Launcher["apps/mecraft-launcher (@mecraft/launcher v1.0)\n• Dual-Action App Routing (Web Studio + Desktop Launch)\n• MIME-Based File Drop Zone Auto-Router\n• Detached Native Process Spawning (Rust Windows API)"]
+        meIDE["apps/meide (@mecraft/meide v1.0)\n• Standalone AI Web & Desktop IDE\n• Local File System API & Directory Workspace\n• In-Device RAM Copilot"]
         PDF["apps/mepdf (@mecraft/mepdf v1.0)\n• 3-Pane Studio Cockpit (Filmstrip, Canvas, 6-Tab Inspector)\n• Dual-Engine Smart Compression (Lossless & Scanned)\n• Client-Side AES-256 Encryption & Searchable OCR Injection"]
         Photo["apps/mephoto (@mecraft/mephoto v1.0)\n• Interactive 4-Pin Quad Perspective Canvas\n• CamScanner-Grade Image Enhancement Pipeline\n• Instant 1-Click Handoff to mePDF via ClipBus"]
-        Vector["apps/mevector (Roadmap)\n• Bézier Path Operations & SVG/PDF Illustrator"]
-        Doc["apps/medoc (Roadmap)\n• Distraction-Free Typewriter & LaTeX Editor"]
+        Doc["apps/medoc (@mecraft/medoc v1.0)\n• Thai Sarabun 16pt & Official Templates\n• ๑๒๓ Numeral Converter & Intl.Segmenter\n• KaTeX & Markdown Publishing"]
+        Sheet["apps/mesheet (@mecraft/mesheet v1.0)\n• =BAHTTEXT Currency Engine\n• Tabular Grid & Financial Formulas"]
+        Deck["apps/medeck (@mecraft/medeck v1.0)\n• Thai Typography Slide Deck Studio"]
+        Vector["apps/mevector (@mecraft/mevector v1.0)\n• Bézier Path Operations & SVG/PDF Illustrator"]
+        Studios["apps/me* (7 Creative Studios)\n• me3D, meAudio, meDesign, meFilm, meLight, meMotion, meDrop"]
     end
 
     Tokens --> Launcher
+    Tokens --> meIDE
     Tokens --> PDF
     Tokens --> Photo
-    Tokens --> Vector
     Tokens --> Doc
+    Tokens --> Sheet
+    Tokens --> Deck
+    Tokens --> Vector
+    Tokens --> Studios
 
     Bridge --> Launcher
+    Bridge --> meIDE
     Bridge <-->|Universal ClipBus Data| PDF
     Bridge <-->|Universal ClipBus Data| Photo
+    Bridge --> Doc
+    Bridge --> Sheet
+    Bridge --> Deck
 
     PhotoCore --> Photo
     PhotoCore -->|In-App Photo Studio| PDF

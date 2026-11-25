@@ -1704,6 +1704,7 @@ class MeCraftsPortal {
   public showSyncImport = false;
 
   // ── Steam-Style Startup Auto-Updater State ──
+  public desktopStage: 'updater' | 'auth' | 'loading_user' | 'main' = 'main';
   public isSteamUpdating: boolean = false;
   public steamUpdateProgress: number = 0;
   public steamUpdateStatus: string = 'Checking for updates...';
@@ -1934,8 +1935,11 @@ console.log(initializeStudio(pdfStudio));`,
     const isVitest = typeof process !== 'undefined' && (process.env?.VITEST || process.env?.NODE_ENV === 'test');
     const hasSkipParam = typeof window !== 'undefined' && Boolean(window.location && window.location.search && window.location.search.includes('skipSteam'));
     if (isDesktop && !isVitest && !hasSkipParam) {
+      this.desktopStage = 'updater';
+      this.bridge.setWindowStage('updater');
       this.runSteamStartupUpdate();
     } else {
+      this.desktopStage = 'main';
       this.checkForUpdates();
     }
   }
@@ -2071,9 +2075,13 @@ console.log(initializeStudio(pdfStudio));`,
             }
 
             await delay(options.speedMs ? options.speedMs : 450);
-            this.isSteamUpdating = false;
-            this.render();
-            this.attachListeners();
+            if (this.desktopStage === 'updater') {
+              await this.proceedToSteamAccountGate();
+            } else {
+              this.isSteamUpdating = false;
+              this.render();
+              this.attachListeners();
+            }
             return;
           } else {
             this.steamUpdateLogs.push(
@@ -2095,15 +2103,49 @@ console.log(initializeStudio(pdfStudio));`,
       this.attachListeners();
 
       await delay(options.speedMs ? options.speedMs : 450);
-      this.isSteamUpdating = false;
-      this.render();
-      this.attachListeners();
+      if (this.desktopStage === 'updater') {
+        await this.proceedToSteamAccountGate();
+      } else {
+        this.isSteamUpdating = false;
+        this.render();
+        this.attachListeners();
+      }
     } catch (err: any) {
       console.warn('[meCraft:steam] Steam updater error, proceeding to app:', err);
-      this.isSteamUpdating = false;
+      if (this.desktopStage === 'updater') {
+        await this.proceedToSteamAccountGate();
+      } else {
+        this.isSteamUpdating = false;
+        this.render();
+        this.attachListeners();
+      }
+    }
+  }
+
+  public async proceedToSteamAccountGate(): Promise<void> {
+    this.isSteamUpdating = false;
+    if (this.currentSession) {
+      this.desktopStage = 'loading_user';
+      await this.bridge.setWindowStage('loading_user');
+      this.render();
+      this.attachListeners();
+      await new Promise(res => setTimeout(res, 750));
+      await this.enterMainWorkstation();
+    } else {
+      this.desktopStage = 'auth';
+      await this.bridge.setWindowStage('auth');
       this.render();
       this.attachListeners();
     }
+  }
+
+  public async enterMainWorkstation(): Promise<void> {
+    this.desktopStage = 'main';
+    this.isSteamUpdating = false;
+    this.isAuthModalOpen = false;
+    await this.bridge.setWindowStage('main');
+    this.render();
+    this.attachListeners();
   }
 
   private async loadRecentProjects() {
@@ -2190,6 +2232,11 @@ console.log(initializeStudio(pdfStudio));`,
       try {
         history.replaceState(null, '', window.location.pathname + window.location.search);
       } catch {}
+    }
+
+    if (this.desktopStage === 'auth') {
+      await this.enterMainWorkstation();
+      return;
     }
 
     this.render();
@@ -2399,12 +2446,28 @@ console.log(initializeStudio(pdfStudio));`,
     const isDesktop = this.isDesktopMode();
 
     if (isDesktop) {
+      if (this.desktopStage === 'updater') {
+        this.appEl.innerHTML = this.renderSteamWindowUpdater();
+        return;
+      }
+      if (this.desktopStage === 'loading_user') {
+        this.appEl.innerHTML = this.renderSteamLoadingUser();
+        return;
+      }
+      if (this.desktopStage === 'auth') {
+        this.appEl.innerHTML = this.renderSteamAuthGate();
+        return;
+      }
+
       this.appEl.innerHTML = `
-        <div class="workstation-shell" id="workstation-shell">
-          ${this.renderSidebar()}
-          <main class="workstation-canvas" id="workstation-canvas">
-            ${this.renderDesktopView()}
-          </main>
+        <div class="ws-desktop-frame" id="ws-desktop-frame">
+          ${this.renderTitlebar()}
+          <div class="workstation-shell" id="workstation-shell">
+            ${this.renderSidebar()}
+            <main class="workstation-canvas" id="workstation-canvas">
+              ${this.renderDesktopView()}
+            </main>
+          </div>
         </div>
         ${this.renderSteamSplashUpdater()}
         ${this.renderAuthModal()}
@@ -2435,75 +2498,64 @@ console.log(initializeStudio(pdfStudio));`,
     }
   }
 
+  private renderTitlebar(): string {
+    return `
+    <header class="ws-titlebar" data-tauri-drag-region>
+      <div class="ws-titlebar-left" data-tauri-drag-region>
+        <img src="./branding/mecraft-suite.png" class="ws-titlebar-icon" alt="" onerror="this.style.display='none'" />
+        <span class="ws-titlebar-text" data-tauri-drag-region>meCraft (v1.0.0)</span>
+      </div>
+      <div class="ws-titlebar-controls">
+        <button type="button" class="ws-win-btn" id="ws-win-min" aria-label="Minimize" title="Minimize">
+          <svg width="10" height="10" viewBox="0 0 10 10"><line x1="1" y1="5" x2="9" y2="5" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <button type="button" class="ws-win-btn" id="ws-win-max" aria-label="Maximize" title="Maximize">
+          <svg width="10" height="10" viewBox="0 0 10 10"><rect x="1.5" y="1.5" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <button type="button" class="ws-win-btn ws-win-close" id="ws-win-close" aria-label="Close" title="Close">
+          <svg width="10" height="10" viewBox="0 0 10 10"><line x1="1.5" y1="1.5" x2="8.5" y2="8.5" stroke="currentColor" stroke-width="1.2"/><line x1="8.5" y1="1.5" x2="1.5" y2="8.5" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+      </div>
+    </header>`;
+  }
+
   private renderSidebar(): string {
     const isTh = this.lang === 'th';
     const navItems = [
-      { id: 'studios', icon: '📦', label: isTh ? 'คลังโปรแกรม' : 'All Studios', desc: isTh ? `${SHOWCASE_APPS.length} สตูดิโอ + meIDE` : `${SHOWCASE_APPS.length} Studios + meIDE` },
+      { id: 'studios', icon: '📦', label: isTh ? 'คลังโปรแกรม' : 'Library', desc: isTh ? `${SHOWCASE_APPS.length} สตูดิโอ` : `${SHOWCASE_APPS.length} Studios` },
       { id: 'recents', icon: '🕒', label: isTh ? 'ประวัติงาน' : 'Recent Work', desc: isTh ? 'ไฟล์ล่าสุด' : 'Recent Files' },
-      { id: 'vault', icon: '🛡️', label: isTh ? 'สถานะเครื่อง' : 'Local Engine', desc: isTh ? 'ความปลอดภัย' : 'Zero-Cloud' },
+      { id: 'vault', icon: '⚙️', label: isTh ? 'อัปเดต & ตั้งค่า' : 'Updates & Settings', desc: isTh ? 'ระบบและเวอร์ชัน' : 'Engine & Version' },
+    ];
+    const quickLaunch = [
+      { id: 'meide', name: 'meIDE AI', color: '#3b82f6', action: 'workbench' },
+      { id: 'mepdf', name: 'mePDF Studio', color: '#ef4444', action: 'studio' },
+      { id: 'mephoto', name: 'mePhoto Studio', color: '#10b981', action: 'studio' },
+      { id: 'medoc', name: 'meDoc Studio', color: '#14b8a6', action: 'studio' },
     ];
 
     return `
     <aside class="ws-sidebar" aria-label="Workstation Navigation">
-      <div class="ws-sidebar-brand">
-        <div class="ws-brand-emblem" aria-hidden="true">
-          <img src="./branding/mecraft-suite.png" class="ws-brand-img" alt="meCraft" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='inline-flex';}" />
-          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" class="ws-brand-fallback" style="display:none;">
-            <defs>
-              <linearGradient id="ws-emblem-g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#d4af37"/>
-                <stop offset="100%" stop-color="#f7d774"/>
-              </linearGradient>
-            </defs>
-            <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#ws-emblem-g)" opacity="0.15"/>
-            <path d="M8 24 L16 8 L24 24" stroke="url(#ws-emblem-g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            <path d="M11 19 h10" stroke="url(#ws-emblem-g)" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+      <!-- Top Zone: Brand + Account Capsule (Always Visible) -->
+      <div class="ws-sidebar-top">
+        <div class="ws-sidebar-brand">
+          <div class="ws-brand-emblem" aria-hidden="true">
+            <img src="./branding/mecraft-suite.png" class="ws-brand-img" alt="meCraft" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='inline-flex';}" />
+            <svg width="26" height="26" viewBox="0 0 32 32" fill="none" class="ws-brand-fallback" style="display:none;">
+              <rect x="2" y="2" width="28" height="28" rx="8" fill="#d4af37" opacity="0.15"/>
+              <path d="M8 24 L16 8 L24 24" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="ws-brand-meta">
+            <span class="ws-brand-title">meCraft</span>
+            <span class="ws-brand-pill">v1.0.0</span>
+          </div>
         </div>
-        <div class="ws-brand-meta">
-          <span class="ws-brand-title">meCraft</span>
-          <span class="ws-brand-pill">WORKSTATION</span>
-        </div>
-      </div>
-
-      <nav class="ws-sidebar-nav" role="tablist" aria-label="Workstation views">
-        ${navItems.map(item => `
-          <button
-            type="button"
-            class="ws-nav-btn ${this.desktopView === item.id ? 'active' : ''}"
-            data-ws-view="${item.id}"
-            role="tab"
-            aria-selected="${this.desktopView === item.id}"
-            aria-label="${item.label}"
-          >
-            <span class="ws-nav-icon" aria-hidden="true">${item.icon}</span>
-            <div class="ws-nav-labels">
-              <span class="ws-nav-title">${item.label}</span>
-              <span class="ws-nav-desc">${item.desc}</span>
-            </div>
-          </button>
-        `).join('')}
-      </nav>
-
-      <div class="ws-sidebar-spacer"></div>
-
-      <div class="ws-sidebar-footer">
-        ${this.updateInfo?.hasUpdate ? `
-          <button type="button" class="ws-update-banner" id="ws-btn-update" aria-label="Update Available">
-            <span class="ws-pulse-dot"></span>
-            <span>🚀 ${isTh ? `อัปเดต v${escapeHtml(this.updateInfo.latestVersion)}` : `Update v${escapeHtml(this.updateInfo.latestVersion)}`}</span>
-          </button>
-        ` : ''}
-
-        <button type="button" class="ws-lang-btn" id="ws-btn-lang" aria-label="Toggle language">
-          <span>${this.lang === 'en' ? '🇹🇭 ภาษาไทย' : '🇬🇧 English'}</span>
-        </button>
 
         ${this.currentSession ? `
           <div class="ws-profile-capsule" id="ws-profile-capsule" role="button" tabindex="0" title="${escapeHtml(this.currentSession.user.email)}">
             <div class="ws-avatar">${escapeHtml((this.currentSession.user.fullName || this.currentSession.user.email).charAt(0).toUpperCase())}</div>
             <div class="ws-user-info">
-              <span class="ws-user-email">${escapeHtml(this.currentSession.user.email)}</span>
+              <span class="ws-user-email">${escapeHtml(this.currentSession.user.fullName || this.currentSession.user.email)}</span>
               <span class="ws-tier-tag ${getTierBadge(this.currentSession.user.tier).isPro ? 'tier-pro' : 'tier-free'}">
                 ${getTierBadge(this.currentSession.user.tier).label}
               </span>
@@ -2521,6 +2573,52 @@ console.log(initializeStudio(pdfStudio));`,
             <span>${this.t.signInBtn}</span>
           </button>
         `}
+      </div>
+
+      <!-- Middle Zone: Primary Navigation -->
+      <nav class="ws-sidebar-nav" role="tablist" aria-label="Workstation views">
+        <div class="ws-nav-section-label">${isTh ? 'เมนูหลัก' : 'WORKSPACE'}</div>
+        ${navItems.map(item => `
+          <button
+            type="button"
+            class="ws-nav-btn ${this.desktopView === item.id ? 'active' : ''}"
+            data-ws-view="${item.id}"
+            role="tab"
+            aria-selected="${this.desktopView === item.id}"
+            aria-label="${item.label}"
+          >
+            <span class="ws-nav-icon" aria-hidden="true">${item.icon}</span>
+            <div class="ws-nav-labels">
+              <span class="ws-nav-title">${item.label}</span>
+              <span class="ws-nav-desc">${item.desc}</span>
+            </div>
+          </button>
+        `).join('')}
+
+        <div class="ws-nav-section-label" style="margin-top: 14px;">${isTh ? 'เปิดด่วน' : 'QUICK LAUNCH'}</div>
+        <div class="ws-quick-list">
+          ${quickLaunch.map(q => `
+            <button type="button" class="ws-quick-btn" data-quick-launch="${q.id}" data-quick-action="${q.action}">
+              <span class="ws-quick-dot" style="background: ${q.color};"></span>
+              <span class="ws-quick-name">${q.name}</span>
+              <span class="ws-quick-arrow">↗</span>
+            </button>
+          `).join('')}
+        </div>
+      </nav>
+
+      <!-- Bottom Zone: Pinned Language & Updates -->
+      <div class="ws-sidebar-footer">
+        ${this.updateInfo?.hasUpdate ? `
+          <button type="button" class="ws-update-banner" id="ws-btn-update" aria-label="Update Available">
+            <span class="ws-pulse-dot"></span>
+            <span>🚀 ${isTh ? `อัปเดต v${escapeHtml(this.updateInfo.latestVersion)}` : `Update v${escapeHtml(this.updateInfo.latestVersion)}`}</span>
+          </button>
+        ` : ''}
+
+        <button type="button" class="ws-lang-btn" id="ws-btn-lang" aria-label="Toggle language">
+          <span>${this.lang === 'en' ? '🇹🇭 ภาษาไทย' : '🇬🇧 English'}</span>
+        </button>
       </div>
     </aside>`;
   }
@@ -2840,46 +2938,42 @@ console.log(initializeStudio(pdfStudio));`,
         <p class="ws-view-subtitle">${isTh ? 'โปรแกรมทั้งหมดทำงานแบบ Standalone ออฟไลน์ 100% ไร้คลาวด์' : 'Every studio runs standalone offline in 100% local device memory.'}</p>
       </header>
       
-      <!-- Universal Hub Dropzone -->
-      <div class="ws-universal-drop-hub" id="ws-universal-dropzone" style="margin-bottom: 24px; padding: 20px; border: 2px dashed rgba(212, 175, 55, 0.35); border-radius: 12px; background: rgba(212, 175, 55, 0.03); display: flex; align-items: center; justify-content: space-between; gap: 16px;">
-        <div style="display: flex; align-items: center; gap: 14px;">
-          <div style="font-size: 28px;">⚡</div>
-          <div>
-            <h4 style="font-size: 13px; font-weight: 700; color: #f8fafc; margin: 0;">${isTh ? 'ลากไฟล์มาวางเพื่อเปิดในสตูดิโอที่เกี่ยวข้องทันที' : 'Drop any file here to launch its specialized studio'}</h4>
-            <p style="font-size: 11px; color: #94a3b8; margin: 3px 0 0 0;">${isTh ? 'รองรับ PDF (mePDF), รูปภาพ (mePhoto), โค้ด/เอกสาร (meIDE), 3D (me3D), เสียง (meAudio) — 100% In-Device RAM' : 'Supports PDF (mePDF), Images (mePhoto), Code/Markdown (meIDE), 3D (me3D), Audio (meAudio) — 100% In-Device RAM'}</p>
-          </div>
-        </div>
-        <button type="button" class="ws-btn-launch" id="ws-btn-browse" style="font-size: 11px; padding: 6px 14px; background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); color: #f8fafc;">
-          <span>📁 ${isTh ? 'เลือกไฟล์จากเครื่อง...' : 'Browse Local File...'}</span>
-        </button>
-        <input type="file" id="ws-file-input" style="display:none;" multiple />
-      </div>
-
-      <!-- Flagship Spotlight: meIDE Standalone AI IDE -->
-      <div class="ws-spotlight-card" style="background: linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(10,15,26,0.95) 100%); border: 1px solid rgba(59,130,246,0.28); border-radius: 12px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
-        <div style="display: flex; align-items: center; gap: 16px;">
-          <div style="font-size: 38px; line-height: 1;">💻</div>
-          <div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <h2 style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0;">meIDE — Dedicated Standalone AI IDE</h2>
-              <span style="font-size: 10px; background: rgba(59,130,246,0.25); color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Flagship IDE</span>
+      <!-- Compact Dual Action Strip (Dropzone + meIDE Spotlight) -->
+      <div class="ws-action-strip">
+        <div class="ws-universal-drop-hub ws-drop-compact" id="ws-universal-dropzone">
+          <div class="ws-drop-info">
+            <span class="ws-drop-bolt">⚡</span>
+            <div>
+              <h4>${isTh ? 'ลากไฟล์มาวางเพื่อเปิดสตูดิโอทันที' : 'Drop any file to launch its studio'}</h4>
+              <p>${isTh ? 'PDF, รูปภาพ, โค้ด, 3D, เสียง — ประมวลผลในเครื่อง' : 'PDF, Images, Code, 3D, Audio — Local RAM'}</p>
             </div>
-            <p style="font-size: 12px; color: #94a3b8; margin: 4px 0 0 0;">${isTh ? 'โปรแกรมแก้ไขโค้ด AI IDE แยกเดี่ยวระดับ VS Code / Windsurf พร้อม Copilot ใน RAM 100%, Terminal CLI, KaTeX Markdown' : 'VS Code & Windsurf-grade Code & Markdown IDE with In-Device RAM Copilot & Terminal. Zero-Cloud Privacy.'}</p>
           </div>
+          <button type="button" class="ws-btn-subtle" id="ws-btn-browse">
+            <span>📁 ${isTh ? 'เลือกไฟล์...' : 'Browse...'}</span>
+          </button>
+          <input type="file" id="ws-file-input" style="display:none;" multiple />
         </div>
-        <div style="display: flex; gap: 10px; align-items: center;">
-          <a href="./downloads/meIDE-Setup.exe" class="ws-btn-launch" style="background: #3b82f6; border-color: #60a5fa; color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 12px;">
-            <span>⬇ ${isTh ? 'ดาวน์โหลด meIDE (.exe)' : 'Download meIDE (.exe)'}</span>
-          </a>
-          <button type="button" class="ws-btn-launch" id="btn-switch-to-meide" style="background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); color: #f8fafc; font-size: 12px; padding: 8px 14px;">
-            <span>💻 ${isTh ? 'เปิด meIDE Studio' : 'Open meIDE Studio'}</span>
+
+        <div class="ws-ide-compact-card">
+          <div class="ws-ide-compact-info">
+            <span class="ws-ide-icon">💻</span>
+            <div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <h4>meIDE AI Studio</h4>
+                <span class="ws-badge-flagship">IDE</span>
+              </div>
+              <p>${isTh ? 'เขียนโค้ด & เอกสาร Markdown + Terminal' : 'Code & Markdown IDE + Terminal'}</p>
+            </div>
+          </div>
+          <button type="button" class="ws-btn-primary-sm" id="btn-switch-to-meide">
+            <span>${isTh ? 'เปิด meIDE →' : 'Open meIDE →'}</span>
           </button>
         </div>
       </div>
 
       <div class="ws-toolbar">
         <div class="ws-search-box">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input
             type="search"
             id="ws-studios-search-input"
@@ -2916,30 +3010,23 @@ console.log(initializeStudio(pdfStudio));`,
                   </span>
                 </div>
                 ${app.industryCounterpart ? `
-                  <div class="ws-counterpart-badge" style="margin-top: 2px;">
+                  <div class="ws-counterpart-badge">
                     <span>✦ ${app.industryCounterpart[this.lang]}</span>
                   </div>
                 ` : ''}
-                <span class="ws-card-full-tagline">${app.tagline[this.lang]}</span>
               </div>
             </div>
-            <p class="ws-card-full-desc">${app.description[this.lang]}</p>
-            <div class="ws-card-full-specs">
-              ${(app.specs?.[this.lang] || []).map(s => `
-                <span class="ws-spec-bullet">✓ ${escapeHtml(s)}</span>
-              `).join('')}
-            </div>
+            <p class="ws-card-full-desc">${app.tagline[this.lang]}</p>
             <div class="ws-card-full-footer">
-              <span class="ws-engine-tag">${app.enginePill?.[this.lang] || '100% In-Device RAM'}</span>
-              <div style="display: flex; gap: 8px;">
-                <button type="button" class="ws-btn-launch" data-launch-app="${app.id}" style="${!isActive ? 'background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18);' : ''}">
-                  <span>${isActive ? (isTh ? `เปิด ${app.name}` : `Launch ${app.name}`) : (isTh ? `เปิดพรีวิว ${app.name}` : `Preview ${app.name}`)}</span>
-                  <span aria-hidden="true">→</span>
+              <button type="button" class="ws-btn-launch" data-launch-app="${app.id}" style="${!isActive ? 'background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14);' : ''}">
+                <span>${isActive ? (isTh ? 'เปิดใช้งาน' : 'Launch') : (isTh ? 'พรีวิว' : 'Preview')}</span>
+                <span aria-hidden="true">→</span>
+              </button>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" class="ws-btn-web-pill" data-launch-web-studio="${app.id}" title="${isTh ? 'เปิดบนเว็บ' : 'Open in Web'}">
+                  <span>🌐</span>
                 </button>
-                <button type="button" class="ws-btn-web-pill" data-launch-web-studio="${app.id}" title="${isTh ? 'เปิดบนเว็บ' : 'Launch Web Studio'}">
-                  <span>🚀</span>
-                </button>
-                <button type="button" class="ws-btn-detail-pill" data-open-detail-modal="${app.id}" title="${isTh ? 'ดูสเปกและคีย์ลัด' : 'View Specifications & Shortcuts'}">
+                <button type="button" class="ws-btn-detail-pill" data-open-detail-modal="${app.id}" title="${isTh ? 'รายละเอียดและคีย์ลัด' : 'Specs & Shortcuts'}">
                   <span>ℹ️</span>
                 </button>
               </div>
@@ -3472,6 +3559,123 @@ console.log(initializeStudio(pdfStudio));`,
       </div>
     </div>
     `;
+  }
+
+  public renderSteamWindowUpdater(): string {
+    const isTh = this.lang === 'th';
+    return `
+    <div class="steam-compact-window" id="steam-splash-overlay">
+      <div class="steam-compact-topbar" data-tauri-drag-region>
+        <div class="steam-compact-brand" data-tauri-drag-region>
+          <img src="./branding/mecraft-suite.png" alt="meCraft" onerror="this.style.display='none'" />
+          <span data-tauri-drag-region>meCraft (v1.0.0)</span>
+        </div>
+        <button type="button" class="steam-compact-close" id="btn-steam-close" aria-label="Close">✕</button>
+      </div>
+      <div class="steam-compact-body">
+        <div class="steam-compact-title">${isTh ? 'กำลังอัปเดต meCraft...' : 'Updating meCraft...'}</div>
+        <div class="steam-progress-track steam-progress-modern">
+          <div class="steam-progress-bar" id="steam-progress-bar" style="width: ${this.steamUpdateProgress}%;"></div>
+        </div>
+        <div class="steam-compact-status-row">
+          <span id="steam-status-text">${escapeHtml(this.steamUpdateStatus)}</span>
+          <span class="steam-compact-speed" id="steam-speed-num">${this.steamUpdateProgress}% · ${this.steamUpdateSpeed}</span>
+        </div>
+        <div class="steam-log-terminal steam-log-compact" id="steam-log-terminal">
+          ${this.steamUpdateLogs.slice(-3).map(log => `<div class="steam-log-line">${escapeHtml(log)}</div>`).join('')}
+        </div>
+        <div class="steam-compact-actions">
+          <button type="button" class="btn-steam-skip" id="btn-steam-skip">${isTh ? 'ข้าม' : 'Skip'}</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  public renderSteamLoadingUser(): string {
+    const isTh = this.lang === 'th';
+    const user = this.currentSession?.user;
+    const displayName = user?.fullName || user?.email?.split('@')[0] || 'Creator';
+    const initial = displayName.charAt(0).toUpperCase();
+    return `
+    <div class="steam-compact-window steam-loading-user-win" id="steam-loading-user">
+      <div class="steam-compact-topbar" data-tauri-drag-region>
+        <span class="steam-compact-brand-text" data-tauri-drag-region>meCraft</span>
+        <button type="button" class="steam-compact-close" id="btn-steam-close" aria-label="Close">✕</button>
+      </div>
+      <div class="steam-loading-center">
+        <div class="steam-spinner-ring">
+          <img src="./branding/mecraft-suite.png" alt="meCraft" />
+        </div>
+        <div class="steam-loading-label">${isTh ? 'กำลังโหลดข้อมูลบัญชี...' : 'Loading user data...'}</div>
+        <div class="steam-user-chip">
+          <div class="steam-user-avatar">${escapeHtml(initial)}</div>
+          <span>${escapeHtml(displayName)}</span>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  public renderSteamAuthGate(): string {
+    const isTh = this.lang === 'th';
+    return `
+    <div class="steam-compact-window steam-auth-win" id="steam-auth-gate">
+      <div class="steam-compact-topbar" data-tauri-drag-region>
+        <div class="steam-compact-brand" data-tauri-drag-region>
+          <img src="./branding/mecraft-suite.png" alt="meCraft" onerror="this.style.display='none'" />
+          <span data-tauri-drag-region>meCraft Sign In</span>
+        </div>
+        <button type="button" class="steam-compact-close" id="btn-steam-close" aria-label="Close">✕</button>
+      </div>
+      <div class="steam-auth-body">
+        <div class="auth-brand" style="margin-bottom: 14px;">
+          <h2 class="auth-title" style="font-size: 18px;">${isTh ? 'เข้าสู่ระบบบัญชี meCraft' : 'Sign in to meCraft'}</h2>
+          <p class="auth-subtitle" style="font-size: 12px;">${isTh ? 'ซิงค์สิทธิ์สตูดิโอและประวัติงานของคุณอัตโนมัติ' : 'Sync your studios, licenses, and workspace.'}</p>
+        </div>
+
+        <div class="auth-tabs" role="tablist">
+          <button type="button" class="auth-tab ${this.authTab === 'signin' ? 'active' : ''}" id="modal-tab-signin" role="tab">${this.t.signInTab}</button>
+          <button type="button" class="auth-tab ${this.authTab === 'signup' ? 'active' : ''}" id="modal-tab-signup" role="tab">${this.t.signUpTab}</button>
+        </div>
+
+        ${this.authError ? `<div class="auth-error-banner" role="alert">${escapeHtml(this.authError)}</div>` : ''}
+
+        <form class="auth-form" id="modal-auth-form">
+          ${this.authTab === 'signup' ? `
+          <div class="form-group">
+            <label for="modal-auth-fullname">${this.t.fullNameLabel}</label>
+            <input type="text" id="modal-auth-fullname" class="auth-input" placeholder="e.g. Somchai Jaidee" required />
+          </div>` : ''}
+
+          <div class="form-group">
+            <label for="modal-auth-email">${this.t.emailLabel}</label>
+            <input type="email" id="modal-auth-email" class="auth-input" placeholder="creator@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="modal-auth-password">${this.t.passwordLabel}</label>
+            <div class="password-input-wrap">
+              <input type="password" id="modal-auth-password" class="auth-input" placeholder="••••••••" minlength="6" required />
+              <button type="button" class="btn-toggle-pwd" id="modal-btn-toggle-pwd" aria-label="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-auth-submit" id="modal-btn-auth-submit" ${this.authLoading ? 'disabled' : ''}>
+            ${this.authLoading ? (isTh ? 'กำลังตรวจสอบ...' : 'Authenticating...') : (this.authTab === 'signin' ? this.t.signInBtn : this.t.createAccountBtn)}
+          </button>
+
+          <div class="auth-divider"><span>OR</span></div>
+
+          <button type="button" class="btn-auth-google" id="modal-btn-auth-google">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+            <span>Continue with Google</span>
+          </button>
+
+          <button type="button" class="steam-offline-link" id="btn-steam-offline-continue">
+            ${isTh ? 'เข้าใช้งานแบบ Offline ชั่วคราว →' : 'Continue in Offline Mode →'}
+          </button>
+        </form>
+      </div>
+    </div>`;
   }
 
   public renderAuthModal(): string {
@@ -5741,11 +5945,47 @@ console.log(initializeStudio(pdfStudio));`,
       this.handleAuthSubmit(email, pwd, fullName);
     });
 
+    // Custom Frameless Titlebar & Compact Window Controls
+    document.getElementById('ws-win-min')?.addEventListener('click', () => {
+      this.bridge.windowAction('minimize');
+    });
+    document.getElementById('ws-win-max')?.addEventListener('click', () => {
+      this.bridge.windowAction('maximize');
+    });
+    document.getElementById('ws-win-close')?.addEventListener('click', () => {
+      this.bridge.windowAction('close');
+    });
+    document.getElementById('btn-steam-close')?.addEventListener('click', () => {
+      this.bridge.windowAction('close');
+    });
+    document.getElementById('btn-steam-offline-continue')?.addEventListener('click', () => {
+      this.enterMainWorkstation();
+    });
+
+    // Sidebar Quick Launch Studios
+    document.querySelectorAll<HTMLElement>('[data-quick-launch]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.quickLaunch;
+        const action = btn.dataset.quickAction;
+        if (action === 'workbench') {
+          this.desktopView = 'workbench';
+          this.render();
+          this.attachListeners();
+        } else if (id) {
+          this.launchTargetStudio(id as any);
+        }
+      });
+    });
+
     // Steam Splash Skip & Trigger
     document.getElementById('btn-steam-skip')?.addEventListener('click', () => {
-      this.isSteamUpdating = false;
-      this.render();
-      this.attachListeners();
+      if (this.desktopStage === 'updater') {
+        this.proceedToSteamAccountGate();
+      } else {
+        this.isSteamUpdating = false;
+        this.render();
+        this.attachListeners();
+      }
     });
 
     // Desktop & Web Google Login

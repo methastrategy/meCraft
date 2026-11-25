@@ -3,7 +3,7 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::time::Instant;
 use futures_util::StreamExt;
-use tauri::Emitter;
+use tauri::{Emitter, Manager};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct AppStatusResponse {
@@ -425,6 +425,39 @@ async fn apply_launcher_update(
     Ok(true)
 }
 
+#[tauri::command]
+fn set_window_stage(app_handle: tauri::AppHandle, stage: String) -> Result<(), String> {
+    let win = app_handle
+        .get_webview_window("main")
+        .ok_or_else(|| "Main window not found".to_string())?;
+
+    match stage.as_str() {
+        "updater" | "loading_user" => {
+            let _ = win.set_min_size(None::<tauri::LogicalSize<f64>>);
+            let _ = win.set_resizable(false);
+            let _ = win.set_size(tauri::LogicalSize::new(440.0, 290.0));
+            let _ = win.center();
+        }
+        "auth" => {
+            let _ = win.set_min_size(None::<tauri::LogicalSize<f64>>);
+            let _ = win.set_resizable(false);
+            let _ = win.set_size(tauri::LogicalSize::new(460.0, 560.0));
+            let _ = win.center();
+        }
+        "main" => {
+            let _ = win.set_resizable(true);
+            let _ = win.set_min_size(Some(tauri::LogicalSize::new(960.0, 640.0)));
+            let _ = win.set_size(tauri::LogicalSize::new(1280.0, 840.0));
+            let _ = win.center();
+        }
+        _ => {}
+    }
+
+    let _ = win.show();
+    let _ = win.set_focus();
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -437,6 +470,7 @@ pub fn run() {
             get_app_directory,
             uninstall_app,
             apply_launcher_update,
+            set_window_stage,
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {

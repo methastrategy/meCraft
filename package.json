@@ -33,6 +33,7 @@
     "build:all": "npm run build --workspaces --if-present",
     "generate:bitmaps": "node scripts/generate-installer-bitmaps.js",
     "typecheck": "npm run typecheck --workspaces --if-present",
+    "check:docs": "node scripts/verify-docs.js",
     "test": "vitest run",
     "test:all": "vitest run"
   },

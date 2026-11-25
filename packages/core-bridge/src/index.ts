@@ -87,6 +87,8 @@ export interface LauncherBridge {
     downloadUrl: string,
     onProgress?: (progress: DownloadProgress) => void
   ): Promise<{ success: boolean; error?: string }>;
+  setWindowStage(stage: 'updater' | 'auth' | 'loading_user' | 'main'): Promise<void>;
+  windowAction(action: 'minimize' | 'maximize' | 'close'): Promise<void>;
   launchApp(options: LaunchAppOptions): Promise<{ success: boolean; error?: string }>;
   getAppDirectory(appId: AppId): Promise<string>;
   uninstallApp(appId: AppId): Promise<{ success: boolean }>;
@@ -426,6 +428,31 @@ export function createLauncherBridge(): LauncherBridge {
       }
 
       return { success: true };
+    },
+
+    async setWindowStage(stage: 'updater' | 'auth' | 'loading_user' | 'main'): Promise<void> {
+      if (isTauriEnv) {
+        try {
+          const { invoke } = await import('@tauri-apps/api/core');
+          await invoke('set_window_stage', { stage });
+        } catch (e) {
+          console.warn('[LauncherBridge] setWindowStage failed:', e);
+        }
+      }
+    },
+
+    async windowAction(action: 'minimize' | 'maximize' | 'close'): Promise<void> {
+      if (isTauriEnv) {
+        try {
+          const { getCurrentWindow } = await import('@tauri-apps/api/window');
+          const win = getCurrentWindow();
+          if (action === 'minimize') await win.minimize();
+          else if (action === 'maximize') await win.toggleMaximize();
+          else if (action === 'close') await win.close();
+        } catch (e) {
+          console.warn('[LauncherBridge] windowAction failed:', e);
+        }
+      }
     },
 
     async launchApp(options: LaunchAppOptions): Promise<{ success: boolean; error?: string }> {
