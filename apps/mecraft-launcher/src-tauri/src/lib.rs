@@ -121,6 +121,13 @@ async fn download_and_install_app(
     if !release_url.starts_with("https://") && !release_url.starts_with("http://") {
         return Err(format!("Invalid release URL scheme: {}", release_url));
     }
+    let is_trusted = release_url.starts_with("https://github.com/methastrategy/")
+        || release_url.starts_with("https://mecrafts.vercel.app/")
+        || release_url.starts_with("https://raw.githubusercontent.com/methastrategy/")
+        || release_url.starts_with("http://localhost:");
+    if !is_trusted {
+        return Err(format!("Security Violation: Untrusted release URL origin: {}", release_url));
+    }
     let app_dir = get_target_app_dir(&app_id);
     fs::create_dir_all(&app_dir).map_err(|e| format!("Failed to create app dir: {}", e))?;
 
@@ -309,6 +316,13 @@ async fn apply_launcher_update(
 ) -> Result<bool, String> {
     if !download_url.starts_with("https://") && !download_url.starts_with("http://") {
         return Err(format!("Invalid download URL scheme: {}", download_url));
+    }
+    let is_trusted = download_url.starts_with("https://github.com/methastrategy/")
+        || download_url.starts_with("https://mecrafts.vercel.app/")
+        || download_url.starts_with("https://raw.githubusercontent.com/methastrategy/")
+        || download_url.starts_with("http://localhost:");
+    if !is_trusted {
+        return Err(format!("Security Violation: Untrusted update download origin: {}", download_url));
     }
 
     let temp_installer = std::env::temp_dir().join("meCraft-Update-Setup.exe");

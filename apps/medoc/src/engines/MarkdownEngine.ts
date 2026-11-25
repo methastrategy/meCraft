@@ -155,7 +155,7 @@ export async function renderMarkdown(markdown: string, options: RenderOptions = 
     if (enableMermaid && rawLang === 'mermaid') {
       const cleanDiagram = escapeHtml(text);
       return `<div class="mermaid-container" data-raw-diagram="${cleanDiagram}">
-        <div class="mermaid">${text}</div>
+        <div class="mermaid">${cleanDiagram}</div>
       </div>`;
     }
 
