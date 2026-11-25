@@ -2477,9 +2477,11 @@ console.log(initializeStudio(pdfStudio));`,
 
           try {
             const port = await this.bridge.startAuthHandshake();
+            // Use /auth relay path — Supabase Allowed Redirect URLs must include "https://mecrafts.vercel.app/auth*"
+            // The /auth relay page reads handshake_port from the URL and POSTs the token back to the Desktop app.
             let authUrl = port > 0
-              ? `https://mecrafts.vercel.app/?source=desktop&handshake_port=${port}`
-              : `https://mecrafts.vercel.app/?source=desktop`;
+              ? `https://mecrafts.vercel.app/auth?source=desktop&handshake_port=${port}`
+              : `https://mecrafts.vercel.app/auth?source=desktop`;
 
             // If Supabase client is configured, get the direct Google OAuth URL so it opens Google directly!
             if (supabase) {
