@@ -455,7 +455,7 @@ fn set_window_stage(app_handle: tauri::AppHandle, stage: String) -> Result<(), S
         "auth" => {
             let _ = win.set_min_size(None::<tauri::LogicalSize<f64>>);
             let _ = win.set_resizable(false);
-            let _ = win.set_size(tauri::LogicalSize::new(460.0, 560.0));
+            let _ = win.set_size(tauri::LogicalSize::new(460.0, 620.0));
             let _ = win.center();
         }
         "main" => {

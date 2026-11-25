@@ -876,6 +876,12 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(fullNameInput.classList.contains('auth-input')).toBe(true);
       expect(doc.querySelectorAll('.input-wrapper').length).toBe(3);
       expect(doc.getElementById('btn-steam-offline-continue')).toBeNull();
+
+      // 3. Test Sync Code Import Drawer exists in Steam Auth Gate
+      expect(doc.getElementById('btn-toggle-sync-import')).not.toBeNull();
+      expect(doc.getElementById('sync-import-drawer')).not.toBeNull();
+      expect(doc.getElementById('input-sync-code')).not.toBeNull();
+      expect(doc.getElementById('btn-submit-sync-code')).not.toBeNull();
     });
 
     it('Step 2: renders unified authentic sign-in with Email, Password, Google, and Web Sync in Desktop Mode', () => {
