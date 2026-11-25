@@ -1964,6 +1964,15 @@ console.log(initializeStudio(pdfStudio));`,
       // In web showcase mode, do NOT auto-trigger software update check/modal (desktop only)
       if (isDesktop) {
         this.checkForUpdates();
+      } else if (typeof window !== 'undefined' && window.location) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('source') === 'desktop' || params.get('auth') === 'true' || window.location.pathname.includes('auth')) {
+          if (!this.currentSession) {
+            this.isAuthModalOpen = true;
+            this.render();
+            this.attachListeners();
+          }
+        }
       }
     }
   }
@@ -2381,9 +2390,27 @@ console.log(initializeStudio(pdfStudio));`,
 
           try {
             const port = await this.bridge.startAuthHandshake();
-            const authUrl = port > 0
-              ? `https://mecrafts.vercel.app/auth?source=desktop&handshake_port=${port}`
-              : `https://mecrafts.vercel.app/auth?source=desktop`;
+            let authUrl = port > 0
+              ? `https://mecrafts.vercel.app/?source=desktop&handshake_port=${port}`
+              : `https://mecrafts.vercel.app/?source=desktop`;
+
+            // If Supabase client is configured, get the direct Google OAuth URL so it opens Google directly!
+            if (supabase) {
+              try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                  provider: 'google',
+                  options: {
+                    redirectTo: authUrl,
+                    skipBrowserRedirect: true,
+                  },
+                });
+                if (!error && data?.url) {
+                  authUrl = data.url;
+                }
+              } catch (oauthErr) {
+                console.warn('[meCraft:auth] Direct OAuth URL generation skipped:', oauthErr);
+              }
+            }
 
             await this.bridge.openExternal(authUrl);
 
@@ -2395,7 +2422,7 @@ console.log(initializeStudio(pdfStudio));`,
             this.attachListeners();
           } catch (err: any) {
             console.warn('[meCraft:auth] Google OAuth launch error:', err);
-            await this.bridge.openExternal('https://mecrafts.vercel.app/auth?source=desktop');
+            await this.bridge.openExternal('https://mecrafts.vercel.app/?source=desktop');
             this.authLoading = false;
             this.showSyncImport = true;
             this.authError = this.lang === 'th'
