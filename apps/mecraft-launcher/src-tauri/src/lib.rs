@@ -302,6 +302,129 @@ fn uninstall_app(app_id: String) -> Result<bool, String> {
     Ok(true)
 }
 
+#[tauri::command]
+async fn apply_launcher_update(
+    app_handle: tauri::AppHandle,
+    download_url: String,
+) -> Result<bool, String> {
+    if !download_url.starts_with("https://") && !download_url.starts_with("http://") {
+        return Err(format!("Invalid download URL scheme: {}", download_url));
+    }
+
+    let temp_installer = std::env::temp_dir().join("meCraft-Update-Setup.exe");
+
+    let client = reqwest::Client::builder()
+        .user_agent("meCraft-Launcher/1.0.0")
+        .build()
+        .map_err(|e| format!("Failed to initialize HTTP client: {}", e))?;
+
+    let res = client
+        .get(&download_url)
+        .send()
+        .await
+        .map_err(|e| format!("Failed to request installer from {}: {}", download_url, e))?;
+
+    if !res.status().is_success() {
+        return Err(format!("Download failed with status: {}", res.status()));
+    }
+
+    let total_bytes = res.content_length().unwrap_or(90 * 1024 * 1024);
+    let mut downloaded_bytes: u64 = 0;
+    let mut stream = res.bytes_stream();
+
+    let mut temp_file = fs::File::create(&temp_installer)
+        .map_err(|e| format!("Failed to create temporary installer file: {}", e))?;
+
+    let start_time = Instant::now();
+    let mut last_progress_emit = Instant::now();
+
+    while let Some(chunk_result) = stream.next().await {
+        let chunk = chunk_result.map_err(|e| format!("Error downloading chunk: {}", e))?;
+        temp_file
+            .write_all(&chunk)
+            .map_err(|e| format!("Error writing chunk to file: {}", e))?;
+
+        downloaded_bytes += chunk.len() as u64;
+
+        if last_progress_emit.elapsed().as_millis() >= 80 {
+            let elapsed_sec = start_time.elapsed().as_secs_f64().max(0.001);
+            let speed_bps = (downloaded_bytes as f64 / elapsed_sec) as u64;
+            let percent = if total_bytes > 0 {
+                ((downloaded_bytes as f64 / total_bytes as f64) * 100.0).min(99.0) as u32
+            } else {
+                50
+            };
+
+            let _ = app_handle.emit(
+                "download-progress",
+                DownloadProgressPayload {
+                    app_id: "mecraft-suite".to_string(),
+                    downloaded_bytes,
+                    total_bytes,
+                    percent,
+                    speed_bps,
+                },
+            );
+
+            last_progress_emit = Instant::now();
+        }
+    }
+
+    drop(temp_file);
+
+    // Final 100% progress
+    let _ = app_handle.emit(
+        "download-progress",
+        DownloadProgressPayload {
+            app_id: "mecraft-suite".to_string(),
+            downloaded_bytes: total_bytes,
+            total_bytes,
+            percent: 100,
+            speed_bps: 0,
+        },
+    );
+
+    // Execute silent update and self-restart on Windows
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NEW_PROCESS_GROUP: u32 = 0x00000200;
+        const DETACHED_PROCESS: u32 = 0x00000008;
+
+        let current_exe = std::env::current_exe().map_err(|e| e.to_string())?;
+        let pid = std::process::id();
+
+        let script = format!(
+            "Start-Sleep -Milliseconds 600; \
+             try {{ Wait-Process -Id {} -Timeout 15 }} catch {{}}; \
+             Start-Process -FilePath '{}' -ArgumentList '/S' -Wait; \
+             Start-Sleep -Milliseconds 800; \
+             $targetExe = '{}'; \
+             $prog = Join-Path $env:ProgramFiles 'meCraft\\mecraft-launcher.exe'; \
+             $local = Join-Path $env:LOCALAPPDATA 'Programs\\meCraft\\mecraft-launcher.exe'; \
+             if (Test-Path $prog) {{ $targetExe = $prog }} elseif (Test-Path $local) {{ $targetExe = $local }}; \
+             Start-Process -FilePath $targetExe; \
+             Remove-Item -Path '{}' -Force -ErrorAction SilentlyContinue",
+            pid,
+            temp_installer.to_string_lossy().replace('\'', "''"),
+            current_exe.to_string_lossy().replace('\'', "''"),
+            temp_installer.to_string_lossy().replace('\'', "''")
+        );
+
+        let mut cmd = std::process::Command::new("powershell");
+        cmd.args(&["-NoProfile", "-WindowStyle", "Hidden", "-Command", &script]);
+        cmd.creation_flags(CREATE_NEW_PROCESS_GROUP | DETACHED_PROCESS);
+        cmd.spawn().map_err(|e| format!("Failed to spawn silent updater process: {}", e))?;
+
+        std::thread::spawn(|| {
+            std::thread::sleep(std::time::Duration::from_millis(400));
+            std::process::exit(0);
+        });
+    }
+
+    Ok(true)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -313,6 +436,7 @@ pub fn run() {
             launch_app,
             get_app_directory,
             uninstall_app,
+            apply_launcher_update,
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {

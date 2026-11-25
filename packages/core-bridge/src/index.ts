@@ -6,6 +6,7 @@
 export * from './clip-bus';
 export * from './auth';
 export * from './updater';
+export * from './thai-utils';
 import { clipBus } from './clip-bus';
 
 export type AppId = 'mepdf' | 'mephoto' | 'mevector' | 'medoc' | string;
@@ -82,6 +83,10 @@ export interface LauncherBridge {
     releaseUrl: string,
     onProgress?: (progress: DownloadProgress) => void
   ): Promise<{ success: boolean; installedPath: string; error?: string }>;
+  applyLauncherUpdate(
+    downloadUrl: string,
+    onProgress?: (progress: DownloadProgress) => void
+  ): Promise<{ success: boolean; error?: string }>;
   launchApp(options: LaunchAppOptions): Promise<{ success: boolean; error?: string }>;
   getAppDirectory(appId: AppId): Promise<string>;
   uninstallApp(appId: AppId): Promise<{ success: boolean }>;
@@ -366,6 +371,61 @@ export function createLauncherBridge(): LauncherBridge {
         success: true,
         installedPath: `C:\\Users\\User\\AppData\\Local\\meCraft\\apps\\${appId}\\${appId}.exe`,
       };
+    },
+
+    async applyLauncherUpdate(
+      downloadUrl: string,
+      onProgress?: (progress: DownloadProgress) => void
+    ): Promise<{ success: boolean; error?: string }> {
+      if (isTauriEnv) {
+        try {
+          const { invoke } = await import('@tauri-apps/api/core');
+          const { listen } = await import('@tauri-apps/api/event');
+
+          let unlisten: (() => void) | undefined;
+          if (onProgress) {
+            unlisten = await listen<DownloadProgress>('download-progress', (event) => {
+              if (event.payload.appId === 'mecraft-suite') {
+                onProgress(event.payload);
+              }
+            });
+          }
+
+          try {
+            await invoke<boolean>('apply_launcher_update', { downloadUrl });
+            return { success: true };
+          } finally {
+            if (unlisten) unlisten();
+          }
+        } catch (e: any) {
+          return { success: false, error: e?.message || String(e) };
+        }
+      }
+
+      // Simulated Browser Download & Patch Fallback
+      const totalBytes = 90 * 1024 * 1024;
+      let downloaded = 0;
+      const stepBytes = 10 * 1024 * 1024;
+      const speed = 18 * 1024 * 1024;
+
+      while (downloaded < totalBytes) {
+        await new Promise((r) => setTimeout(r, 40));
+        downloaded = Math.min(totalBytes, downloaded + stepBytes);
+        const percent = Math.round((downloaded / totalBytes) * 100);
+        if (onProgress) {
+          onProgress({
+            appId: 'mecraft-suite' as AppId,
+            downloadedBytes: downloaded,
+            totalBytes,
+            percent,
+            speedBps: speed,
+            speedFormatted: formatSpeed(speed),
+            etaSeconds: Math.ceil((totalBytes - downloaded) / speed),
+          });
+        }
+      }
+
+      return { success: true };
     },
 
     async launchApp(options: LaunchAppOptions): Promise<{ success: boolean; error?: string }> {

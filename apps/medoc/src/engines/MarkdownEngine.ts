@@ -6,6 +6,7 @@
 
 import { marked } from 'marked';
 import katex from 'katex';
+import { countWordsThaiMixed } from '@mecraft/core-bridge';
 
 export interface DocumentStats {
   words: number;
@@ -216,9 +217,8 @@ export function computeDocumentStats(text: string): DocumentStats {
     .replace(/[#*>\-_~\[\]\(\)]/g, ' ')
     .trim();
 
-  // Split on whitespace
-  const wordsArray = cleanText.split(/\s+/).filter(w => w.length > 0);
-  const words = wordsArray.length;
+  // Use Thai-Latin mixed word segmentation engine from core-bridge (Intl.Segmenter)
+  const words = countWordsThaiMixed(cleanText);
 
   // Average reading speed: 200 words per minute
   const readingTimeMinutes = Math.max(1, Math.ceil(words / 200));

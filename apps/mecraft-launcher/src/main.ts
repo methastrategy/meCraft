@@ -2023,8 +2023,68 @@ console.log(initializeStudio(pdfStudio));`,
 
       if (info && info.hasUpdate) {
         this.updateInfo = info;
-        this.steamUpdateStatus = this.lang === 'th' ? `พบเวอร์ชันใหม่ v${info.latestVersion}! พร้อมเริ่มการทำงาน` : `Update v${info.latestVersion} available! Initializing suite...`;
-        this.steamUpdateSubstatus = 'meCraft Suite is ready with latest updates.';
+        const isTh = this.lang === 'th';
+        const downloadUrl = info.suiteAsset?.downloadUrl || 'https://raw.githubusercontent.com/methastrategy/meCrafts-web/main/downloads/meCraft-Setup.exe';
+
+        this.steamUpdateStep = 4;
+        this.steamUpdateProgress = 12;
+        this.steamUpdateStatus = isTh
+          ? `พบเวอร์ชันใหม่ v${info.latestVersion}! กำลังดาวน์โหลดอัปเดตอัตโนมัติ...`
+          : `New version v${info.latestVersion} detected! Auto-downloading silent patch...`;
+        this.steamUpdateSubstatus = isTh
+          ? 'กำลังสตรีมแพ็กเกจติดตั้งความเร็วสูงผ่าน CDN...'
+          : 'High-speed package streaming via CDN mirror...';
+        this.steamUpdateLogs.push(
+          `[${new Date().toLocaleTimeString()}] Steam Auto-Updater: Found v${info.latestVersion}. Initiating silent patch...`
+        );
+        this.render();
+        this.attachListeners();
+
+        try {
+          const updateResult = await this.bridge.applyLauncherUpdate(downloadUrl, (progress) => {
+            this.steamUpdateProgress = Math.max(12, Math.min(100, progress.percent));
+            this.steamUpdateSpeed = formatSpeed(progress.speedBps);
+            this.steamUpdateSubstatus = `${formatBytes(progress.downloadedBytes)} / ${formatBytes(progress.totalBytes)} (${progress.percent}%)`;
+            this.render();
+            this.attachListeners();
+          });
+
+          if (updateResult.success) {
+            this.steamUpdateProgress = 100;
+            this.steamUpdateCompleted = true;
+            this.steamUpdateStatus = isTh
+              ? 'ดาวน์โหลดสำเร็จ! กำลังติดตั้งและเริ่มระบบใหม่...'
+              : 'Update downloaded! Applying patch and restarting...';
+            this.steamUpdateSubstatus = isTh
+              ? 'โปรแกรมจะเปิดตัวเองใหม่โดยอัตโนมัติใน 2-3 วินาที...'
+              : 'meCraft will restart automatically in 2-3 seconds...';
+            this.steamUpdateLogs.push(
+              `[${new Date().toLocaleTimeString()}] Silent patch applied. Spawning detached process & restarting meCraft...`
+            );
+            this.render();
+            this.attachListeners();
+
+            // If desktop Tauri native, backend terminates process and relaunches new executable.
+            if (this.bridge.isTauri()) {
+              await delay(options.speedMs ? options.speedMs : 1000);
+              return;
+            }
+
+            await delay(options.speedMs ? options.speedMs : 450);
+            this.isSteamUpdating = false;
+            this.render();
+            this.attachListeners();
+            return;
+          } else {
+            this.steamUpdateLogs.push(
+              `[${new Date().toLocaleTimeString()}] Silent update failed: ${updateResult.error || 'Network error'}, proceeding to app...`
+            );
+          }
+        } catch (err: any) {
+          this.steamUpdateLogs.push(
+            `[${new Date().toLocaleTimeString()}] Silent update exception: ${err?.message || err}, proceeding to app...`
+          );
+        }
       } else {
         this.steamUpdateStatus = this.lang === 'th' ? 'ชุดโปรแกรม meCraft เป็นเวอร์ชันล่าสุดแล้ว! กำลังเข้าสู่โปรแกรม...' : 'meCraft Creative Suite is up to date! Launching...';
         this.steamUpdateSubstatus = '100% In-Device Memory Execution Ready.';

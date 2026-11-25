@@ -778,6 +778,45 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(portal.isSteamUpdating).toBe(false);
     });
 
+    it('Step 1.1: executes Steam silent auto-updater with progress telemetry when new version is detected', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+
+      let applyCalled = false;
+      portal.bridge.applyLauncherUpdate = async (url, onProgress) => {
+        applyCalled = true;
+        if (onProgress) {
+          onProgress({
+            appId: 'mecraft-suite' as any,
+            downloadedBytes: 90 * 1024 * 1024,
+            totalBytes: 90 * 1024 * 1024,
+            percent: 100,
+            speedBps: 15 * 1024 * 1024,
+          });
+        }
+        return { success: true };
+      };
+
+      // Mock updateInfo directly to trigger silent auto-update
+      vi.spyOn(await import('@mecraft/core-bridge'), 'checkSoftwareUpdate').mockResolvedValueOnce({
+        hasUpdate: true,
+        currentVersion: '1.0.0',
+        latestVersion: '1.1.0',
+        releaseDate: '2026-11-25',
+        changelog: ['Steam silent auto-updater patch'],
+        suiteAsset: { name: 'meCraft-Setup.exe', downloadUrl: 'https://example.com/meCraft-Setup.exe', sizeBytes: 90000000 },
+        checkedAt: Date.now(),
+      });
+
+      await portal.runSteamStartupUpdate({ speedMs: 5, force: true });
+      expect(applyCalled).toBe(true);
+      expect(portal.steamUpdateCompleted).toBe(true);
+      expect(portal.steamUpdateProgress).toBe(100);
+      expect(portal.isSteamUpdating).toBe(false);
+    });
+
     it('Step 1: supports skip button dismissing Steam updater overlay immediately', () => {
       const { doc } = setupMockDom();
       doc.body.innerHTML = '<div id="app"></div>';

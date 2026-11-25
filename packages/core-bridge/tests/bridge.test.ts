@@ -130,5 +130,19 @@ describe('@mecraft/core-bridge', () => {
       });
       expect(res.success).toBe(true);
     });
+
+    it('simulates applyLauncherUpdate with progress streaming', async () => {
+      const bridge = createLauncherBridge();
+      const progressList: number[] = [];
+      const res = await bridge.applyLauncherUpdate(
+        'https://example.com/meCraft-Setup.exe',
+        (p) => {
+          progressList.push(p.percent);
+        }
+      );
+      expect(res.success).toBe(true);
+      expect(progressList.length).toBeGreaterThan(0);
+      expect(progressList[progressList.length - 1]).toBe(100);
+    });
   });
 });
