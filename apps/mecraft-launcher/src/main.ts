@@ -1905,6 +1905,49 @@ console.log(initializeStudio(pdfStudio));`,
     if (this.bridge.isTauri()) {
       this.bridge.onAuthHandshake(async (token) => {
         if (!token) return;
+
+        // --- Format A: MC3.base64 (classic sync code from web relay) ---
+        if (token.startsWith('MC3.')) {
+          const session = importAuthSyncCode(token);
+          if (session) {
+            this.currentSession = session;
+            saveAuthSession(session);
+            this.isAuthModalOpen = false;
+            this.authError = '';
+            this.authLoading = false;
+            if (this.desktopStage === 'auth') {
+              await this.enterMainWorkstation();
+              return;
+            }
+            this.render();
+            this.attachListeners();
+          }
+          return;
+        }
+
+        // --- Format B: Supabase hash fragment (access_token=...&refresh_token=...&...) ---
+        // This arrives when auth/index.html relays the Supabase OAuth hash directly.
+        if (token.includes('access_token=') && supabase) {
+          try {
+            const hashParams = new URLSearchParams(token);
+            const accessToken = hashParams.get('access_token');
+            const refreshToken = hashParams.get('refresh_token') || undefined;
+            if (accessToken) {
+              const { data, error } = await supabase.auth.setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken || '',
+              });
+              if (!error && data.session) {
+                await this.syncSupabaseSession(data.session);
+              }
+            }
+          } catch (e) {
+            console.warn('[meCraft:auth] Supabase hash token relay failed:', e);
+          }
+          return;
+        }
+
+        // --- Format C: Fallback — try importAuthSyncCode on any other string ---
         const session = importAuthSyncCode(token);
         if (session) {
           this.currentSession = session;

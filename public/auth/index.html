@@ -2,17 +2,72 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>meCraft Auth Relay</title>
+  <title>meCraft · Connecting...</title>
   <script>
-    const params = new URLSearchParams(window.location.search);
-    params.set('auth', 'true');
-    window.location.replace('/?' + params.toString() + window.location.hash);
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var hash = window.location.hash; // e.g. "#access_token=...&token_type=bearer"
+      var handshakePort = params.get('handshake_port');
+      var source = params.get('source');
+
+      // Always persist handshake_port into sessionStorage so the main page can read it
+      // even if Supabase strips query params during its own redirect cycle.
+      try {
+        if (source === 'desktop') {
+          sessionStorage.setItem('mecraft_auth_source', 'desktop');
+        }
+        if (handshakePort) {
+          sessionStorage.setItem('mecraft_handshake_port', handshakePort);
+        }
+      } catch (_) {}
+
+      // Check if Supabase delivered the OAuth token via hash fragment on THIS page.
+      // This happens when Supabase's redirect_uri points directly to /auth and
+      // it appends #access_token=...&refresh_token=...&type=recovery to the URL.
+      if (hash && hash.indexOf('access_token=') !== -1) {
+        // We have a Supabase token right here on the /auth page.
+        // Extract it and POST to the Desktop handshake listener, then redirect home.
+        var targetPort = handshakePort;
+        try {
+          if (!targetPort) {
+            targetPort = sessionStorage.getItem('mecraft_handshake_port');
+          }
+        } catch (_) {}
+
+        if (targetPort) {
+          // Build the token string — pass the full hash fragment as the token payload
+          // so the main page's syncSupabaseSession can also read it via URL.
+          var callbackUrl = 'http://127.0.0.1:' + targetPort + '/callback?token=' + encodeURIComponent(hash.slice(1));
+          // Fire-and-forget fetch (no-cors so browser doesn't block cross-origin)
+          try {
+            fetch(callbackUrl, { method: 'GET', mode: 'no-cors' }).catch(function () {});
+          } catch (_) {}
+          // Redirect browser to localhost callback so Rust HTTP server can respond with the success page
+          setTimeout(function () {
+            window.location.href = callbackUrl;
+          }, 150);
+          return; // Stop — don't do the normal redirect below
+        }
+
+        // Fallback: no port available — redirect home preserving hash so Supabase JS can handle it
+        window.location.replace('/?' + params.toString() + hash);
+        return;
+      }
+
+      // Normal flow: no hash token yet — redirect to main page preserving all params + hash.
+      // The main page's constructor will save source/handshake_port to sessionStorage
+      // and when Supabase redirects back after Google OAuth with #access_token, 
+      // the syncSupabaseSession method will read sessionStorage to get the port.
+      params.set('auth', 'true');
+      window.location.replace('/?' + params.toString() + hash);
+    })();
   </script>
 </head>
 <body style="background:#0b0d13;color:#e2e8f0;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
   <div style="text-align:center;">
-    <h2>Connecting to meCraft...</h2>
-    <p><a href="/" style="color:#f59e0b;">Click here if not redirected automatically</a></p>
+    <div style="margin-bottom:16px;font-size:28px;">⚡</div>
+    <h2 style="margin:0 0 8px;font-size:18px;font-weight:600;">Connecting to meCraft...</h2>
+    <p style="margin:0;font-size:13px;color:#64748b;"><a href="/" style="color:#f59e0b;">Click here if not redirected automatically</a></p>
   </div>
 </body>
 </html>
