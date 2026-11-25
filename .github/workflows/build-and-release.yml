@@ -45,7 +45,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci || npm install
 
       - name: Run Test Suite (372+ tests)
         run: npm test
@@ -144,7 +144,7 @@ jobs:
 
       - name: Install Dependencies
         if: steps.filter.outputs.should_build == 'true'
-        run: npm ci
+        run: npm ci || npm install
 
       - name: Compile Tauri v2 Windows Binaries (.exe, setup.exe, .msi, .zip)
         if: steps.filter.outputs.should_build == 'true'
