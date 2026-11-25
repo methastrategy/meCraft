@@ -523,60 +523,7 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════
-       3. RIGHT EDGE SCROLL PERCENTAGE & TECHNICAL WATERMARK
-    ═══════════════════════════════════════════════════════════════ */
-    .edge-watermark-wrap {
-      position: fixed;
-      right: 18px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      z-index: 40;
-      pointer-events: none;
-      user-select: none;
-    }
-
-    .edge-percent-pill {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--gold);
-      letter-spacing: 0.08em;
-      background: rgba(0, 0, 0, 0.7);
-      border: 1px solid var(--border-subtle);
-      padding: 4px 8px;
-      border-radius: var(--radius-sm);
-    }
-
-    .edge-vertical-text {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.12);
-      transform: rotate(180deg);
-    }
-
-    .edge-ruler-line {
-      width: 1px;
-      height: 80px;
-      background: linear-gradient(to bottom, transparent, var(--border-mid), transparent);
-    }
-
-    @media (max-width: 1400px) {
-      .edge-watermark-wrap {
-        display: none;
-      }
-    }
-
-    /* ═══════════════════════════════════════════════════════════════
-       4. ARTCRAFT TECHNICAL HUD SUB-HEADERS (01 & 02)
+       3. ARTCRAFT TECHNICAL HUD SUB-HEADERS (01 & 02)
     ═══════════════════════════════════════════════════════════════ */
     .hud-header-container {
       width: 100%;
@@ -1409,18 +1356,7 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════════
-         3. RIGHT EDGE SCROLL PERCENTAGE & WATERMARK
-    ═══════════════════════════════════════════════════════════════ -->
-    <aside class="edge-watermark-wrap" aria-hidden="true">
-      <div class="edge-percent-pill" id="scroll-percent-pill">014%</div>
-      <div class="edge-ruler-line"></div>
-      <div class="edge-vertical-text" data-i18n="watermark_lineup">CRAFTING APPS LINEUP</div>
-      <div class="edge-ruler-line"></div>
-      <div class="edge-vertical-text" data-i18n="watermark_principles">IN-DEVICE PRIVACY</div>
-    </aside>
-
-    <!-- ═══════════════════════════════════════════════════════════════
-         4. ARTCRAFT SUB-HEADER (01 / CRAFTING APPS & 02 / THE LINEUP)
+         3. ARTCRAFT SUB-HEADER (01 / CRAFTING APPS & 02 / THE LINEUP)
     ═══════════════════════════════════════════════════════════════ -->
     <div class="hud-header-container" id="artcraft-lineup">
       <!-- Substrip 01 -->
@@ -3034,7 +2970,7 @@
       var searchQuery = '';
       var toastTimeout = null;
 
-      var i18nData = {"en":{"header_brand":"meCrafts","header_badge":"OFFICIAL SUITE","nav_studios":"Studios","nav_privacy":"Privacy Architecture","nav_specs":"Specs","nav_downloads":"Downloads","lbl_free_member":"FREE MEMBER","sign_in":"Sign In","hero_pill":"18 APPS · WINDOWS","hero_title":"The Private-First AI IDE & 18 Creative Studios Suite for Windows","hero_subtitle":"VS Code & Windsurf-grade Next-Gen AI IDE Workspace with 100% Client-Side Local Execution, Real Folder Opening, In-Device Copilot, and 18 Purpose-Built Creative Studios — All Free, Forever.","b_privacy":"100% In-Device Privacy","b_telemetry":"Zero Telemetry","b_oss":"Open-Source","b_perf":"Native Windows Performance","cta_hero_dl":"Download meCraft Suite (.exe)","cta_hero_explore":"Explore All 18 Studios ↓","hero_meta":"Windows 11 / 10 (64-bit) · 100% In-Device Memory Execution · Zero Cloud Uploads · MIT Open Source","hud_sec1":"01 / CRAFTING APPS","hud_tagline":"EIGHTEEN APPS · IN-DEVICE MEMORY · ZERO TELEMETRY","hud_sec2":"02 / THE LINEUP","hud_explore_pick":"PICK A CRAFT TO EXPLORE","suite_badge":"00 / MASTER SUITE INSTALLER","suite_title":"meCraft Workstation Suite (.exe)","suite_desc":"One installer bundles the complete AI Workstation alongside all 18 purpose-built creative and document studios. 100% in-device memory execution, zero telemetry, and VirusTotal 0/72 clean.","btn_dl_suite":"⬇ Download Suite (.exe)","btn_copy_suite_hash":"Copy Suite Hash","search_placeholder":"Filter studios by name, category, or counterpart...","filter_all":"ALL (18)","filter_doc":"DOCUMENT (4)","filter_photo":"PHOTO (2)","filter_vector":"VECTOR (2)","filter_video":"VIDEO (3)","filter_3d":"3D (4)","filter_audio":"AUDIO (1)","filter_utility":"UTILITY & REA (2)","tag_installers_ready":"INSTALLERS READY","cockpit_title":"03 / BINARY INTEGRITY DIRECTORY","cockpit_desc":"Cryptographic SHA-256 hash directory for the Master Suite and all 18 standalone studio installers.","th_file":"BINARY FILE","th_studio":"STUDIO & PURPOSE","th_size":"SIZE","th_hash":"SHA-256 HASH","th_status":"SECURITY STATUS","toast_copied":"Copied SHA-256 Checksum to Clipboard","watermark_lineup":"CRAFTING APPS LINEUP","watermark_principles":"IN-DEVICE PRIVACY"},"th":{"header_brand":"meCrafts","header_badge":"ชุดโปรแกรมทางการ","nav_studios":"โปรแกรมสตูดิโอ","nav_privacy":"สถาปัตยกรรมความเป็นส่วนตัว","nav_specs":"สเปกเครื่อง","nav_downloads":"ดาวน์โหลด","lbl_free_member":"สมาชิกฟรี","sign_in":"เข้าสู่ระบบ","hero_pill":"18 สตูดิโอ · WINDOWS","hero_title":"The Private-First AI IDE & 18 Creative Studios Suite for Windows","hero_subtitle":"เวิร์กสเปซ AI IDE เน็กซ์เจนเทียบชั้น VS Code และ Windsurf ประมวลผลบนเครื่อง 100% เปิดโฟลเดอร์ไฟล์จริง มี AI โคไพลอตในตัว และคลังโปรแกรมสร้างสรรค์เฉพาะทาง 18 สตูดิโอ — ฟรีทั้งหมด ตลอดชีพ","b_privacy":"ความเป็นส่วนตัว 100%","b_telemetry":"ไม่มีการเก็บข้อมูล","b_oss":"โอเพนซอร์ส","b_perf":"ประสิทธิภาพ Windows แท้","cta_hero_dl":"ดาวน์โหลด meCraft Suite (.exe)","cta_hero_explore":"สำรวจโปรแกรมทั้งหมด (18 สตูดิโอ) ↓","hero_meta":"Windows 11 / 10 (64-bit) · ประมวลผลบนหน่วยความจำ RAM 100% · ไร้คลาวด์ · สัญญาอนุญาต MIT","hud_sec1":"01 / คลังโปรแกรมสร้างสรรค์","hud_tagline":"18 สตูดิโอเฉพาะทาง · ประมวลผลใน RAM 100% · ไร้การเก็บข้อมูล","hud_sec2":"02 / รายชื่อสตูดิโอทั้งหมด","hud_explore_pick":"เลือกโปรแกรมเพื่อเริ่มต้นใช้งาน","suite_badge":"00 / ตัวติดตั้งชุดรวม MASTER SUITE","suite_title":"meCraft ชุดตัวติดตั้งรวม Master Suite (.exe)","suite_desc":"ตัวติดตั้งรวมชุดใหญ่ แพ็กรวม AI Workstation พร้อมโปรแกรมสร้างสรรค์และงานเอกสารครบทั้ง 18 สตูดิโอในไฟล์เดียว ไร้การติดตาม ปลอดภัยระดับ VirusTotal Clean","btn_dl_suite":"⬇ ดาวน์โหลด Suite (.exe)","btn_copy_suite_hash":"คัดลอกแฮช Suite","search_placeholder":"ค้นหาชื่อสตูดิโอ หมวดหมู่ หรือโปรแกรมเทียบเคียง...","filter_all":"ทั้งหมด (18)","filter_doc":"เอกสาร (4)","filter_photo":"ภาพและสี (2)","filter_vector":"เวกเตอร์ (2)","filter_video":"วิดีโอ (3)","filter_3d":"3D (4)","filter_audio":"เสียง (1)","filter_utility":"เครื่องมือและ REA (2)","tag_installers_ready":"พร้อมติดตั้ง","cockpit_title":"03 / ทะเบียนตรวจสอบค่าแฮชทางการ","cockpit_desc":"ตารางค่าแฮช SHA-256 สำหรับตรวจสอบความสมบูรณ์ของไฟล์ติดตั้ง Master Suite และทั้ง 18 สตูดิโอ","th_file":"ชื่อไฟล์ติดตั้ง","th_studio":"สตูดิโอและหน้าที่","th_size":"ขนาด","th_hash":"ค่าแฮช SHA-256","th_status":"สถานะความปลอดภัย","toast_copied":"คัดลอกค่าแฮช SHA-256 เรียบร้อยแล้ว","watermark_lineup":"CRAFTING APPS LINEUP","watermark_principles":"IN-DEVICE PRIVACY"}};
+      var i18nData = {"en":{"header_brand":"meCrafts","header_badge":"OFFICIAL SUITE","nav_studios":"Studios","nav_privacy":"Privacy Architecture","nav_specs":"Specs","nav_downloads":"Downloads","lbl_free_member":"FREE MEMBER","sign_in":"Sign In","hero_pill":"18 APPS · WINDOWS","hero_title":"The Private-First AI IDE & 18 Creative Studios Suite for Windows","hero_subtitle":"VS Code & Windsurf-grade Next-Gen AI IDE Workspace with 100% Client-Side Local Execution, Real Folder Opening, In-Device Copilot, and 18 Purpose-Built Creative Studios — All Free, Forever.","b_privacy":"100% In-Device Privacy","b_telemetry":"Zero Telemetry","b_oss":"Open-Source","b_perf":"Native Windows Performance","cta_hero_dl":"Download meCraft Suite (.exe)","cta_hero_explore":"Explore All 18 Studios ↓","hero_meta":"Windows 11 / 10 (64-bit) · 100% In-Device Memory Execution · Zero Cloud Uploads · MIT Open Source","hud_sec1":"01 / CRAFTING APPS","hud_tagline":"EIGHTEEN APPS · IN-DEVICE MEMORY · ZERO TELEMETRY","hud_sec2":"02 / THE LINEUP","hud_explore_pick":"PICK A CRAFT TO EXPLORE","suite_badge":"00 / MASTER SUITE INSTALLER","suite_title":"meCraft Workstation Suite (.exe)","suite_desc":"One installer bundles the complete AI Workstation alongside all 18 purpose-built creative and document studios. 100% in-device memory execution, zero telemetry, and VirusTotal 0/72 clean.","btn_dl_suite":"⬇ Download Suite (.exe)","btn_copy_suite_hash":"Copy Suite Hash","search_placeholder":"Filter studios by name, category, or counterpart...","filter_all":"ALL (18)","filter_doc":"DOCUMENT (4)","filter_photo":"PHOTO (2)","filter_vector":"VECTOR (2)","filter_video":"VIDEO (3)","filter_3d":"3D (4)","filter_audio":"AUDIO (1)","filter_utility":"UTILITY & REA (2)","tag_installers_ready":"INSTALLERS READY","cockpit_title":"03 / BINARY INTEGRITY DIRECTORY","cockpit_desc":"Cryptographic SHA-256 hash directory for the Master Suite and all 18 standalone studio installers.","th_file":"BINARY FILE","th_studio":"STUDIO & PURPOSE","th_size":"SIZE","th_hash":"SHA-256 HASH","th_status":"SECURITY STATUS","toast_copied":"Copied SHA-256 Checksum to Clipboard"},"th":{"header_brand":"meCrafts","header_badge":"ชุดโปรแกรมทางการ","nav_studios":"โปรแกรมสตูดิโอ","nav_privacy":"สถาปัตยกรรมความเป็นส่วนตัว","nav_specs":"สเปกเครื่อง","nav_downloads":"ดาวน์โหลด","lbl_free_member":"สมาชิกฟรี","sign_in":"เข้าสู่ระบบ","hero_pill":"18 สตูดิโอ · WINDOWS","hero_title":"The Private-First AI IDE & 18 Creative Studios Suite for Windows","hero_subtitle":"เวิร์กสเปซ AI IDE เน็กซ์เจนเทียบชั้น VS Code และ Windsurf ประมวลผลบนเครื่อง 100% เปิดโฟลเดอร์ไฟล์จริง มี AI โคไพลอตในตัว และคลังโปรแกรมสร้างสรรค์เฉพาะทาง 18 สตูดิโอ — ฟรีทั้งหมด ตลอดชีพ","b_privacy":"ความเป็นส่วนตัว 100%","b_telemetry":"ไม่มีการเก็บข้อมูล","b_oss":"โอเพนซอร์ส","b_perf":"ประสิทธิภาพ Windows แท้","cta_hero_dl":"ดาวน์โหลด meCraft Suite (.exe)","cta_hero_explore":"สำรวจโปรแกรมทั้งหมด (18 สตูดิโอ) ↓","hero_meta":"Windows 11 / 10 (64-bit) · ประมวลผลบนหน่วยความจำ RAM 100% · ไร้คลาวด์ · สัญญาอนุญาต MIT","hud_sec1":"01 / คลังโปรแกรมสร้างสรรค์","hud_tagline":"18 สตูดิโอเฉพาะทาง · ประมวลผลใน RAM 100% · ไร้การเก็บข้อมูล","hud_sec2":"02 / รายชื่อสตูดิโอทั้งหมด","hud_explore_pick":"เลือกโปรแกรมเพื่อเริ่มต้นใช้งาน","suite_badge":"00 / ตัวติดตั้งชุดรวม MASTER SUITE","suite_title":"meCraft ชุดตัวติดตั้งรวม Master Suite (.exe)","suite_desc":"ตัวติดตั้งรวมชุดใหญ่ แพ็กรวม AI Workstation พร้อมโปรแกรมสร้างสรรค์และงานเอกสารครบทั้ง 18 สตูดิโอในไฟล์เดียว ไร้การติดตาม ปลอดภัยระดับ VirusTotal Clean","btn_dl_suite":"⬇ ดาวน์โหลด Suite (.exe)","btn_copy_suite_hash":"คัดลอกแฮช Suite","search_placeholder":"ค้นหาชื่อสตูดิโอ หมวดหมู่ หรือโปรแกรมเทียบเคียง...","filter_all":"ทั้งหมด (18)","filter_doc":"เอกสาร (4)","filter_photo":"ภาพและสี (2)","filter_vector":"เวกเตอร์ (2)","filter_video":"วิดีโอ (3)","filter_3d":"3D (4)","filter_audio":"เสียง (1)","filter_utility":"เครื่องมือและ REA (2)","tag_installers_ready":"พร้อมติดตั้ง","cockpit_title":"03 / ทะเบียนตรวจสอบค่าแฮชทางการ","cockpit_desc":"ตารางค่าแฮช SHA-256 สำหรับตรวจสอบความสมบูรณ์ของไฟล์ติดตั้ง Master Suite และทั้ง 18 สตูดิโอ","th_file":"ชื่อไฟล์ติดตั้ง","th_studio":"สตูดิโอและหน้าที่","th_size":"ขนาด","th_hash":"ค่าแฮช SHA-256","th_status":"สถานะความปลอดภัย","toast_copied":"คัดลอกค่าแฮช SHA-256 เรียบร้อยแล้ว"}};
 
       // 1. Language Toggle (Zero-Flicker In-Place Text Mutation)
       var btnLang = document.getElementById('btn-lang');
@@ -3131,17 +3067,7 @@
         });
       }
 
-      // 3. Passive Smooth Scroll Percentage & Watermark Tracking
-      var scrollPercentEl = document.getElementById('scroll-percent-pill');
-      window.addEventListener('scroll', function() {
-        if (!scrollPercentEl) return;
-        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        var percent = Math.min(100, Math.max(0, Math.round((scrollTop / (scrollHeight || 1)) * 100)));
-        scrollPercentEl.textContent = String(percent).padStart(3, '0') + '%';
-      }, { passive: true });
-
-      // 4. Session Persistence (Identical to main.ts auth)
+      // 3. Session Persistence (Identical to main.ts auth)
       var userPill = document.getElementById('user-profile-pill');
       var authBtn = document.getElementById('header-btn-auth');
       var emailEl = document.getElementById('header-user-email');

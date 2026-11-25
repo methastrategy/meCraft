@@ -1930,18 +1930,7 @@ function generateHtml() {
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════════
-         3. RIGHT EDGE SCROLL PERCENTAGE & WATERMARK
-    ═══════════════════════════════════════════════════════════════ -->
-    <aside class="edge-watermark-wrap" aria-hidden="true">
-      <div class="edge-percent-pill" id="scroll-percent-pill">014%</div>
-      <div class="edge-ruler-line"></div>
-      <div class="edge-vertical-text" data-i18n="watermark_lineup">CRAFTING APPS LINEUP</div>
-      <div class="edge-ruler-line"></div>
-      <div class="edge-vertical-text" data-i18n="watermark_principles">IN-DEVICE PRIVACY</div>
-    </aside>
-
-    <!-- ═══════════════════════════════════════════════════════════════
-         4. ARTCRAFT SUB-HEADER (01 / CRAFTING APPS & 02 / THE LINEUP)
+         3. ARTCRAFT SUB-HEADER (01 / CRAFTING APPS & 02 / THE LINEUP)
     ═══════════════════════════════════════════════════════════════ -->
     <div class="hud-header-container" id="artcraft-lineup">
       <!-- Substrip 01 -->
@@ -2147,17 +2136,7 @@ function generateHtml() {
         });
       }
 
-      // 3. Passive Smooth Scroll Percentage & Watermark Tracking
-      var scrollPercentEl = document.getElementById('scroll-percent-pill');
-      window.addEventListener('scroll', function() {
-        if (!scrollPercentEl) return;
-        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        var percent = Math.min(100, Math.max(0, Math.round((scrollTop / (scrollHeight || 1)) * 100)));
-        scrollPercentEl.textContent = String(percent).padStart(3, '0') + '%';
-      }, { passive: true });
-
-      // 4. Session Persistence (Identical to main.ts auth)
+      // 3. Session Persistence (Identical to main.ts auth)
       var userPill = document.getElementById('user-profile-pill');
       var authBtn = document.getElementById('header-btn-auth');
       var emailEl = document.getElementById('header-user-email');
