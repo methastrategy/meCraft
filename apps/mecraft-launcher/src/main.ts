@@ -1961,11 +1961,16 @@ console.log(initializeStudio(pdfStudio));`,
       this.runSteamStartupUpdate();
     } else {
       this.desktopStage = 'main';
-      this.checkForUpdates();
+      // In web showcase mode, do NOT auto-trigger software update check/modal (desktop only)
+      if (isDesktop) {
+        this.checkForUpdates();
+      }
     }
   }
 
   private async checkForUpdates(force = false) {
+    // Only check software updates in desktop mode or if forced explicitly by user in desktop vault
+    if (!this.isDesktopMode() && !force) return;
     if (this.isCheckingUpdate) return;
     this.isCheckingUpdate = true;
     try {
@@ -3234,6 +3239,8 @@ console.log(initializeStudio(pdfStudio));`,
   }
 
   private renderUpdateModal(): string {
+    // Desktop software update modal must never appear in web portal mode
+    if (!this.isDesktopMode()) return '';
     if (!this.isUpdateModalOpen || !this.updateInfo || !this.updateInfo.hasUpdate) return '';
     const { currentVersion, latestVersion, releaseDate, changelog, suiteAsset } = this.updateInfo;
     const downloadUrl = suiteAsset?.downloadUrl || SUITE_DOWNLOAD_URL;
@@ -5138,7 +5145,7 @@ console.log(initializeStudio(pdfStudio));`,
         </nav>
 
         <div class="portal-header-actions">
-          ${this.updateInfo?.hasUpdate ? `
+          ${(this.isDesktopMode() && this.updateInfo?.hasUpdate) ? `
             <button type="button" class="portal-update-pill" id="header-btn-update" aria-label="Software update available" title="${this.lang === 'th' ? `ตรวจพบเวอร์ชันใหม่ v${escapeHtml(this.updateInfo.latestVersion)} คลิกเพื่ออัปเดต` : `New version v${escapeHtml(this.updateInfo.latestVersion)} available. Click to update.`}">
               <span class="update-pulse-dot"></span>
               <span>🚀 ${this.lang === 'th' ? `อัปเดต v${escapeHtml(this.updateInfo.latestVersion)}` : `Update v${escapeHtml(this.updateInfo.latestVersion)}`}</span>
