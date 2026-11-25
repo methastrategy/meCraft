@@ -5,6 +5,7 @@
  */
 
 import { StudioShell } from '@mecraft/studio-shell';
+import { toThaiBahtText, toThaiNumerals } from '@mecraft/core-bridge';
 
 export const APP_METADATA = {
   id: 'mesheet',
@@ -62,6 +63,14 @@ export function createStudioShell(target?: HTMLElement | string): StudioShell {
             {
                 "id": "filter",
                 "label": "Filter"
+            },
+            {
+                "id": "bahttext",
+                "label": "฿ BAHTTEXT"
+            },
+            {
+                "id": "thai-num",
+                "label": "๑๒๓ เลขไทย"
             }
         ]
     }
@@ -79,10 +88,10 @@ export function createStudioShell(target?: HTMLElement | string): StudioShell {
       },
       right: {
         title: 'Cell Formula Inspector',
-        initialWidth: 240,
+        initialWidth: 260,
         minWidth: 180,
         collapsible: true,
-        content: "<div style=\"padding: 10px; font-size: 11px; color: #94a3b8;\">Formula: =SUM(B2:B12) * 1.07</div>"
+        content: "<div style=\"padding: 12px; font-size: 11px; color: #94a3b8; line-height: 1.6;\"><div style=\"color: #f1f5f9; font-weight: 600; margin-bottom: 6px;\">Formula Engine</div><code>=BAHTTEXT(SUM(B2:B12) * 1.07)</code><div style=\"margin-top: 8px; color: #10b981; font-weight: 500;\">หนึ่งหมื่นสองพันห้าร้อยยี่สิบบาทถ้วน</div></div>"
       }
     },
     statusBar: {

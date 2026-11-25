@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { setupMockDom } from '../../../packages/studio-shell/tests/mock-dom';
 import {
   getDefaultCatalog,
@@ -785,7 +785,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       portal.forceDesktopMode = true;
 
       let applyCalled = false;
-      portal.bridge.applyLauncherUpdate = async (url, onProgress) => {
+      (portal as any).bridge.applyLauncherUpdate = async (_url: string, onProgress?: any) => {
         applyCalled = true;
         if (onProgress) {
           onProgress({
@@ -804,9 +804,13 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
         hasUpdate: true,
         currentVersion: '1.0.0',
         latestVersion: '1.1.0',
+        releaseTag: 'v1.1.0',
+        releaseTitle: 'meCraft v1.1.0',
         releaseDate: '2026-11-25',
         changelog: ['Steam silent auto-updater patch'],
-        suiteAsset: { name: 'meCraft-Setup.exe', downloadUrl: 'https://example.com/meCraft-Setup.exe', sizeBytes: 90000000 },
+        htmlUrl: 'https://example.com/releases/v1.1.0',
+        suiteAsset: { name: 'meCraft-Setup.exe', downloadUrl: 'https://example.com/meCraft-Setup.exe', sizeBytes: 90000000, contentType: 'application/octet-stream' },
+        allAssets: [],
         checkedAt: Date.now(),
       });
 

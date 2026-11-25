@@ -62,4 +62,19 @@ describe('meDoc Studio — VaultManager', () => {
     expect(vault.getDocuments().length).toBe(initialCount);
     expect(vault.getActiveDocument().id).not.toBe(docToDelete.id);
   });
+
+  it('creates official Thai documents from templates', () => {
+    const memoDoc = vault.createDocumentFromTemplate('memo');
+    expect(memoDoc.name).toBe('บันทึกข้อความ.md');
+    expect(memoDoc.content).toContain('บันทึกข้อความ');
+    expect(memoDoc.content).toContain('ส่วนราชการ:');
+
+    const letterDoc = vault.createDocumentFromTemplate('letter');
+    expect(letterDoc.name).toBe('หนังสือภายนอก.md');
+    expect(letterDoc.content).toContain('ครุฑ');
+
+    const meetingDoc = vault.createDocumentFromTemplate('meeting');
+    expect(meetingDoc.name).toBe('รายงานการประชุม.md');
+    expect(meetingDoc.content).toContain('รายงานการประชุม');
+  });
 });

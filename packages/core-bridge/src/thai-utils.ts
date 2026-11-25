@@ -5,8 +5,8 @@
  * 100% In-Device Memory Privacy
  */
 
-const THAI_DIGITS = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
-const ARABIC_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+export const THAI_DIGITS = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
+export const ARABIC_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 const THAI_MONTHS_FULL = [
   'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
@@ -100,10 +100,10 @@ export function toThaiBahtText(amount: number): string {
 
   // Round to 2 decimal places
   const parts = absAmount.toFixed(2).split('.');
-  const integerPart = parts[0];
-  const decimalPart = parts[1];
+  const integerPart = parts[0] || '0';
+  const decimalPart = parts[1] || '00';
 
-  function convertGroup(numStr: string, isLeadingGroup: boolean): string {
+  function convertGroup(numStr: string, isLeadingGroup = false): string {
     let output = '';
     const len = numStr.length;
 
@@ -125,7 +125,7 @@ export function toThaiBahtText(amount: number): string {
           output += 'หนึ่ง';
         }
       } else {
-        output += THAI_NUM_WORDS[digit] + THAI_DIGIT_UNITS[pos];
+        output += (THAI_NUM_WORDS[digit] || '') + (THAI_DIGIT_UNITS[pos] || '');
       }
     }
     return output;

@@ -9,6 +9,7 @@ import { renderMarkdown, computeDocumentStats, DocumentStats } from '../engines/
 import { extractHeadings, TocItem } from '../engines/TocEngine.js';
 import { exportMarkdownToPdf, downloadPdf } from '../engines/PdfExporter.js';
 import { SteamStartupSplash, DesktopGoogleAuthModal } from '@mecraft/studio-shell';
+import { toggleThaiNumerals } from '@mecraft/core-bridge';
 
 export class WriterApp {
   private container: HTMLElement;
@@ -16,6 +17,7 @@ export class WriterApp {
   private activeDoc: VaultDocument;
   private viewMode: 'split' | 'editor' | 'preview' = 'split';
   private zenMode: boolean = false;
+  private sarabunMode: boolean = false;
   private sidebarCollapsed: boolean = false;
   private sidebarTab: 'toc' | 'files' = 'toc';
   private renderDebounceTimer: any = null;
@@ -130,6 +132,24 @@ export class WriterApp {
             <button class="medoc-btn" id="btn-zen" title="Zen Mode (Ctrl+Shift+Z)">
               <span>⊞</span> Zen
             </button>
+
+            <!-- Thai Sarabun Mode & Numerals -->
+            <button class="medoc-btn" id="btn-toggle-sarabun" title="สลับโหมดงานสารบรรณ (TH Sarabun New 16pt / จัดกระจายคำ)">
+              <span>🇹🇭</span> สารบรรณ
+            </button>
+            <button class="medoc-btn" id="btn-toggle-numerals" title="แปลงเลขอารบิก ⇄ เลขไทย (๐-๙)">
+              <span>๑๒๓</span>
+            </button>
+            <div class="medoc-dropdown" style="position: relative; display: inline-block;">
+              <button class="medoc-btn" id="btn-thai-templates" title="แม่แบบเอกสารราชการไทย">
+                <span>📋</span> แม่แบบ ▾
+              </button>
+              <div class="medoc-dropdown-menu" id="menu-thai-templates" style="display: none; position: absolute; top: calc(100% + 4px); right: 0; background: var(--medoc-bg-surface); border: 1px solid var(--medoc-border); border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; min-width: 170px; padding: 4px 0;">
+                <div class="medoc-dropdown-item" data-template="memo" style="padding: 8px 12px; font-size: 12px; color: var(--medoc-text-main); cursor: pointer;">บันทึกข้อความ</div>
+                <div class="medoc-dropdown-item" data-template="letter" style="padding: 8px 12px; font-size: 12px; color: var(--medoc-text-main); cursor: pointer;">หนังสือราชการภายนอก</div>
+                <div class="medoc-dropdown-item" data-template="meeting" style="padding: 8px 12px; font-size: 12px; color: var(--medoc-text-main); cursor: pointer;">รายงานการประชุม</div>
+              </div>
+            </div>
 
             <!-- Export Actions -->
             <button class="medoc-btn medoc-btn-primary" id="btn-export-pdf" title="Export Clean PDF (pdf-lib)">
@@ -329,6 +349,59 @@ export class WriterApp {
         onSuccess: () => {},
       }).open();
     });
+
+    // Thai Localization Controls
+    const btnSarabun = document.getElementById('btn-toggle-sarabun');
+    btnSarabun?.addEventListener('click', () => {
+      this.toggleSarabunMode();
+    });
+
+    const btnNumerals = document.getElementById('btn-toggle-numerals');
+    btnNumerals?.addEventListener('click', () => {
+      const converted = toggleThaiNumerals(this.textareaEl.value);
+      this.textareaEl.value = converted;
+      this.vault.updateDocumentContent(this.activeDoc.id, converted);
+      this.statusSaveStateEl.textContent = 'Modified ●';
+      this.triggerRender(true);
+    });
+
+    const btnTemplates = document.getElementById('btn-thai-templates');
+    const menuTemplates = document.getElementById('menu-thai-templates');
+    btnTemplates?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (menuTemplates) {
+        menuTemplates.style.display = menuTemplates.style.display === 'none' ? 'block' : 'none';
+      }
+    });
+
+    document.addEventListener('click', () => {
+      if (menuTemplates) menuTemplates.style.display = 'none';
+    });
+
+    menuTemplates?.querySelectorAll('.medoc-dropdown-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const type = (item as HTMLElement).dataset.template as 'memo' | 'letter' | 'meeting';
+        if (type) {
+          const doc = this.vault.createDocumentFromTemplate(type);
+          this.switchDocument(doc);
+          this.toggleSarabunMode(true);
+        }
+        if (menuTemplates) menuTemplates.style.display = 'none';
+      });
+    });
+  }
+
+  public toggleSarabunMode(forceState?: boolean): void {
+    this.sarabunMode = forceState !== undefined ? forceState : !this.sarabunMode;
+    const btnSarabun = document.getElementById('btn-toggle-sarabun');
+    if (this.sarabunMode) {
+      this.shellEl.classList.add('sarabun-mode');
+      btnSarabun?.classList.add('active-sarabun');
+    } else {
+      this.shellEl.classList.remove('sarabun-mode');
+      btnSarabun?.classList.remove('active-sarabun');
+    }
   }
 
   public setViewMode(mode: 'split' | 'editor' | 'preview'): void {

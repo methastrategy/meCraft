@@ -62,6 +62,14 @@ export function createStudioShell(target?: HTMLElement | string): StudioShell {
             {
                 "id": "play",
                 "label": "Present"
+            },
+            {
+                "id": "thai-font",
+                "label": "🇹🇭 Sarabun"
+            },
+            {
+                "id": "thai-num",
+                "label": "๑๒๓"
             }
         ]
     }

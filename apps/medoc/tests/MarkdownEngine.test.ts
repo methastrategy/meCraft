@@ -104,6 +104,13 @@ describe('meDoc Studio — MarkdownEngine', () => {
       expect(stats.readingTimeMinutes).toBeGreaterThanOrEqual(1);
     });
 
+    it('computes word count accurately for mixed Thai and Latin text using Intl.Segmenter', () => {
+      // "สวัสดีครับชาวไทยทุกคน" contains 6 segmented Thai words
+      const thaiText = 'สวัสดีครับชาวไทยทุกคน Hello World';
+      const stats = computeDocumentStats(thaiText);
+      expect(stats.words).toBe(8); // 6 Thai words + 2 English words
+    });
+
     it('returns 0 for empty or whitespace-only documents', () => {
       const stats = computeDocumentStats('   \n  \t ');
       expect(stats.words).toBe(0);
