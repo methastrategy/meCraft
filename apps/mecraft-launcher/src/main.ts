@@ -5958,9 +5958,6 @@ console.log(initializeStudio(pdfStudio));`,
     document.getElementById('btn-steam-close')?.addEventListener('click', () => {
       this.bridge.windowAction('close');
     });
-    document.getElementById('btn-steam-offline-continue')?.addEventListener('click', () => {
-      this.enterMainWorkstation();
-    });
 
     // Sidebar Quick Launch Studios
     document.querySelectorAll<HTMLElement>('[data-quick-launch]').forEach(btn => {

@@ -1346,42 +1346,77 @@ code, pre, kbd, samp, .font-mono, [class*="version"], [class*="hash"], [class*="
 
 .input-wrapper {
   position: relative;
+  width: 100%;
   display: flex;
   align-items: center;
 }
 
-.input-wrapper input {
+.input-wrapper input,
+.auth-input {
   width: 100%;
-  background: rgba(9, 10, 15, 0.65);
+  height: 42px;
+  box-sizing: border-box;
+  background: rgba(9, 10, 15, 0.7);
   border: 1px solid var(--border-mid);
   border-radius: var(--radius-md);
-  padding: 12px 14px;
+  padding: 0 14px;
   color: var(--text-primary);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13.5px;
   outline: none;
-  transition: all var(--dur-fast);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: all var(--dur-fast) var(--ease-out);
 }
 
-.input-wrapper input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18);
+.input-wrapper input:hover,
+.auth-input:hover {
+  border-color: rgba(255, 255, 255, 0.22);
   background: rgba(9, 10, 15, 0.85);
+}
+
+.input-wrapper input:focus,
+.auth-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  background: rgba(9, 10, 15, 0.95);
+}
+
+.input-wrapper input::placeholder,
+.auth-input::placeholder {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.input-wrapper input[type="password"] {
+  padding-right: 42px;
 }
 
 .btn-toggle-pwd {
   position: absolute;
-  right: 12px;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 14px;
-  opacity: 0.6;
-  transition: opacity var(--dur-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  opacity: 0.75;
+  transition: all var(--dur-fast);
+  user-select: none;
+  -webkit-app-region: no-drag;
 }
 
 .btn-toggle-pwd:hover {
   opacity: 1;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .btn-auth-submit {
@@ -8425,26 +8460,82 @@ code, pre, kbd, samp, .font-mono, [class*="version"], [class*="hash"], [class*="
 }
 
 /* Steam Auth Gate Window */
+.steam-auth-win {
+  user-select: none;
+}
+
 .steam-auth-body {
   flex: 1;
-  padding: 16px 26px 20px;
+  padding: 18px 28px 24px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
 
-.steam-offline-link {
-  margin-top: 8px;
-  background: transparent;
-  border: none;
-  color: #64748b;
-  font-size: 11.5px;
-  cursor: pointer;
+.steam-auth-win .auth-brand {
+  margin-bottom: 14px;
   text-align: center;
-  padding: 6px;
-  transition: color 140ms ease;
 }
 
-.steam-offline-link:hover {
+.steam-auth-win .auth-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.steam-auth-win .auth-subtitle {
+  font-size: 12px;
   color: #94a3b8;
+  margin-top: 3px;
+}
+
+.steam-auth-win .auth-tabs {
+  margin-bottom: 14px;
+}
+
+.steam-auth-win .form-group {
+  margin-bottom: 12px;
+}
+
+.steam-auth-win .form-group label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #cbd5e1;
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+}
+
+.steam-auth-win .btn-auth-submit {
+  margin-top: 6px;
+  height: 42px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+}
+
+.steam-auth-win .auth-divider {
+  margin: 14px 0 12px;
+}
+
+.steam-auth-win .btn-auth-google {
+  height: 42px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+}
+
+.auth-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: var(--radius-md);
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  font-size: 12px;
+  margin-bottom: 12px;
+  line-height: 1.4;
 }

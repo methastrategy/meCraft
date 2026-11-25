@@ -838,6 +838,46 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(portal.isSteamUpdating).toBe(false);
     });
 
+    it('renders Steam Auth Gate with modern input wrappers, auth-input classes, and zero offline bypass', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      portal.desktopStage = 'auth';
+
+      // 1. Test Sign In mode
+      portal.authTab = 'signin';
+      const htmlSignIn = portal.renderSteamAuthGate();
+      doc.body.innerHTML = htmlSignIn;
+
+      const emailInput = doc.getElementById('modal-auth-email') as HTMLInputElement;
+      const pwdInput = doc.getElementById('modal-auth-password') as HTMLInputElement;
+      expect(emailInput).not.toBeNull();
+      expect(pwdInput).not.toBeNull();
+      expect(emailInput.classList.contains('auth-input')).toBe(true);
+      expect(pwdInput.classList.contains('auth-input')).toBe(true);
+      expect(doc.querySelectorAll('.input-wrapper').length).toBe(2);
+
+      const toggleBtn = doc.getElementById('modal-btn-toggle-pwd');
+      expect(toggleBtn).not.toBeNull();
+
+      // Offline bypass MUST be completely removed
+      expect(doc.getElementById('btn-steam-offline-continue')).toBeNull();
+      expect(htmlSignIn).not.toContain('Continue in Offline Mode');
+      expect(htmlSignIn).not.toContain('เข้าใช้งานแบบ Offline');
+
+      // 2. Test Create Account mode
+      portal.authTab = 'signup';
+      const htmlSignUp = portal.renderSteamAuthGate();
+      doc.body.innerHTML = htmlSignUp;
+
+      const fullNameInput = doc.getElementById('modal-auth-fullname') as HTMLInputElement;
+      expect(fullNameInput).not.toBeNull();
+      expect(fullNameInput.classList.contains('auth-input')).toBe(true);
+      expect(doc.querySelectorAll('.input-wrapper').length).toBe(3);
+      expect(doc.getElementById('btn-steam-offline-continue')).toBeNull();
+    });
+
     it('Step 2: renders unified authentic sign-in with Email, Password, Google, and Web Sync in Desktop Mode', () => {
       const { doc } = setupMockDom();
       doc.body.innerHTML = '<div id="app"></div>';
