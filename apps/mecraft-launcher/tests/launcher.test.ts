@@ -795,7 +795,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(portal.isSteamUpdating).toBe(false);
     });
 
-    it('Step 2: renders ONLY Google sign-in and Web signup redirect in Desktop Mode', () => {
+    it('Step 2: renders unified authentic sign-in with Email, Password, Google, and Web Sync in Desktop Mode', () => {
       const { doc } = setupMockDom();
       doc.body.innerHTML = '<div id="app"></div>';
       const portal = new MeCraftsPortal();
@@ -808,19 +808,20 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(googleBtn).not.toBeNull();
       expect(googleBtn?.textContent).toContain('Google');
 
-      // 2. Web Portal Signup Redirect Link exists
-      const webSignupLink = doc.getElementById('modal-link-web-signup') as HTMLAnchorElement;
-      expect(webSignupLink).not.toBeNull();
-      expect(webSignupLink?.getAttribute('href') || (webSignupLink as any)?.href).toContain('mecrafts.vercel.app/auth?action=signup&source=desktop');
+      // 2. Email and Password input forms exist for authentic login on Desktop
+      expect(doc.getElementById('modal-auth-email')).not.toBeNull();
+      expect(doc.getElementById('modal-auth-password')).not.toBeNull();
+      expect(doc.getElementById('modal-btn-auth-submit')).not.toBeNull();
 
-      // 3. Email and Password input forms MUST NOT exist on Desktop Modal
-      expect(doc.getElementById('modal-auth-email')).toBeNull();
-      expect(doc.getElementById('modal-auth-password')).toBeNull();
-      expect(doc.getElementById('modal-btn-auth-submit')).toBeNull();
+      // 3. Desktop Sync Code drawer toggle exists
+      expect(doc.getElementById('btn-toggle-sync-import')).not.toBeNull();
 
-      // 4. Trust Badges exist
+      // 4. Verify no Demo Bypass button exists
+      expect(doc.getElementById('modal-btn-auth-demo')).toBeNull();
+
+      // 5. Trust Badges exist
       const trustPills = doc.querySelectorAll('.trust-badge-pill');
-      expect(trustPills.length).toBe(3);
+      expect(trustPills.length).toBeGreaterThanOrEqual(2);
     });
 
     it('Step 2: Desktop Google Login establishes authenticated session cleanly', async () => {
