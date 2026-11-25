@@ -6,9 +6,23 @@ import { execSync } from 'node:child_process';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = fs.realpathSync(path.resolve(__dirname, '..'));
-const websiteDir = fs.existsSync(path.resolve(rootDir, 'meCrafts-website/.git'))
-  ? fs.realpathSync(path.resolve(rootDir, 'meCrafts-website'))
-  : fs.realpathSync(path.resolve(rootDir, '../meCrafts-website'));
+function resolveWebsiteDir(rootDir) {
+  const candidates = [
+    path.resolve(rootDir, '../mecrafts-website'),
+    path.resolve(rootDir, '../meCrafts-website'),
+    path.resolve(rootDir, 'meCrafts-website'),
+    path.resolve(rootDir, 'mecrafts-website'),
+    path.resolve(rootDir, '../../meCraft-HUB/mecrafts-website'),
+    path.resolve(rootDir, '../meCraft-HUB/mecrafts-website'),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate) && fs.existsSync(path.join(candidate, '.git'))) {
+      return fs.realpathSync(candidate);
+    }
+  }
+  return candidates[0];
+}
+const websiteDir = resolveWebsiteDir(rootDir);
 
 console.log('🚀 [deploy:website] Starting optimized deployment pipeline to meCrafts-website...');
 

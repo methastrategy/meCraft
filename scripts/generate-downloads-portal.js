@@ -3308,14 +3308,32 @@ const htmlContent = `<!doctype html>
 </html>
 `;
 
+function resolveWebsiteDir(rootDir) {
+  const candidates = [
+    path.resolve(rootDir, '../mecrafts-website'),
+    path.resolve(rootDir, '../meCrafts-website'),
+    path.resolve(rootDir, 'meCrafts-website'),
+    path.resolve(rootDir, 'mecrafts-website'),
+    path.resolve(rootDir, '../../meCraft-HUB/mecrafts-website'),
+    path.resolve(rootDir, '../meCraft-HUB/mecrafts-website'),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate) && fs.existsSync(path.join(candidate, '.git'))) {
+      return fs.realpathSync(candidate);
+    }
+  }
+  return candidates[0];
+}
+const websiteDir = resolveWebsiteDir(rootDir);
+
 // Target destination files to synchronize
 const targets = [
   path.join(rootDir, 'public/downloads.html'),
   path.join(rootDir, 'public/downloads/index.html'),
   path.join(rootDir, 'dist/downloads.html'),
   path.join(rootDir, 'dist/downloads/index.html'),
-  (fs.existsSync(path.resolve(rootDir, '../meCrafts-website')) ? path.join(rootDir, '../meCrafts-website/downloads.html') : path.join(rootDir, 'meCrafts-website/downloads.html')),
-  (fs.existsSync(path.resolve(rootDir, '../meCrafts-website')) ? path.join(rootDir, '../meCrafts-website/downloads/index.html') : path.join(rootDir, 'meCrafts-website/downloads/index.html')),
+  path.join(websiteDir, 'downloads.html'),
+  path.join(websiteDir, 'downloads/index.html'),
 ];
 
 for (const target of targets) {
