@@ -412,18 +412,22 @@ async fn apply_launcher_update(
         let script = format!(
             "Start-Sleep -Milliseconds 600; \
              try {{ Wait-Process -Id {} -Timeout 15 }} catch {{}}; \
-             Start-Process -FilePath '{}' -ArgumentList '/S' -Wait; \
-             Start-Sleep -Milliseconds 800; \
+             $installer = '{}'; \
              $targetExe = '{}'; \
              $prog = Join-Path $env:ProgramFiles 'meCraft\\mecraft-launcher.exe'; \
              $local = Join-Path $env:LOCALAPPDATA 'Programs\\meCraft\\mecraft-launcher.exe'; \
              if (Test-Path $prog) {{ $targetExe = $prog }} elseif (Test-Path $local) {{ $targetExe = $local }}; \
+             try {{ \
+                 Start-Process -FilePath $installer -ArgumentList '/S' -Verb RunAs -Wait; \
+             }} catch {{ \
+                 try {{ Start-Process -FilePath $installer -ArgumentList '/S' -Wait }} catch {{ Start-Process -FilePath $installer -Wait }}; \
+             }}; \
+             Start-Sleep -Milliseconds 800; \
              Start-Process -FilePath $targetExe; \
-             Remove-Item -Path '{}' -Force -ErrorAction SilentlyContinue",
+             Remove-Item -Path $installer -Force -ErrorAction SilentlyContinue",
             pid,
             temp_installer.to_string_lossy().replace('\'', "''"),
-            current_exe.to_string_lossy().replace('\'', "''"),
-            temp_installer.to_string_lossy().replace('\'', "''")
+            current_exe.to_string_lossy().replace('\'', "''")
         );
 
         let mut cmd = std::process::Command::new("powershell");
