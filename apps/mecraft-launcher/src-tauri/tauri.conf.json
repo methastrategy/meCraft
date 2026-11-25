@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "meCraft",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "identifier": "com.mecraft.launcher",
   "build": {
     "frontendDist": "../dist",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "meCraft (v1.0.0)",
+        "title": "meCraft (v1.0.1)",
         "width": 440,
         "height": 290,
         "resizable": false,

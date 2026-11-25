@@ -592,7 +592,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
 
       // 2. version command
       (portal as any).executeTerminalCommand('version');
-      expect(portal.ideTerminalHistory.some((l: string) => l.includes('v1.0.0'))).toBe(true);
+      expect(portal.ideTerminalHistory.some((l: string) => l.includes('v1.0.1'))).toBe(true);
 
       // 3. stats command
       (portal as any).executeTerminalCommand('stats');
