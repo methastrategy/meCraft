@@ -29,6 +29,10 @@ export class UpdateBanner {
     return this.element;
   }
 
+  public getVisible(): boolean {
+    return this.isVisible;
+  }
+
   public show(): void {
     this.isVisible = true;
     this.element.style.display = 'flex';

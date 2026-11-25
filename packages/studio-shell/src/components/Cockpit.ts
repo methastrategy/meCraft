@@ -135,7 +135,7 @@ export class Cockpit {
       const tabsEl = document.createElement('div');
       tabsEl.className = 'pane-tabs';
       for (const tab of config.tabs) {
-        const isActive = (config.activeTabId || config.tabs[0].id) === tab.id;
+        const isActive = (config.activeTabId || config.tabs[0]?.id || '') === tab.id;
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = `pane-tab-btn ${isActive ? 'active' : ''}`;
