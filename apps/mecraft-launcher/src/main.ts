@@ -1956,9 +1956,7 @@ console.log(initializeStudio(pdfStudio));`,
     const isVitest = typeof process !== 'undefined' && (process.env?.VITEST || process.env?.NODE_ENV === 'test');
     const hasSkipParam = typeof window !== 'undefined' && Boolean(window.location && window.location.search && window.location.search.includes('skipSteam'));
     if (isDesktop && !isVitest && !hasSkipParam) {
-      this.desktopStage = 'updater';
-      this.bridge.setWindowStage('updater');
-      this.runSteamStartupUpdate();
+      this.initDesktopStartup();
     } else {
       this.desktopStage = 'main';
       // In web showcase mode, do NOT auto-trigger software update check/modal (desktop only)
@@ -1983,6 +1981,78 @@ console.log(initializeStudio(pdfStudio));`,
           }
         }
       }
+    }
+  }
+
+  private async initDesktopStartup(): Promise<void> {
+    // 1. Immediately launch into workstation (if logged in) or auth (if not logged in) without artificial delay
+    if (this.currentSession) {
+      this.desktopStage = 'main';
+      await this.bridge.setWindowStage('main');
+      this.render();
+      this.attachListeners();
+    } else {
+      this.desktopStage = 'auth';
+      await this.bridge.setWindowStage('auth');
+      this.render();
+      this.attachListeners();
+    }
+
+    // 2. Perform silent, non-blocking check for real updates on GitHub Releases
+    try {
+      const info = await checkSoftwareUpdate({
+        currentVersion: '1.0.2',
+        appId: 'mecraft-suite',
+        force: false,
+      });
+
+      // ONLY IF an actual newer version exists, show the Steam update window!
+      if (info && info.hasUpdate) {
+        this.updateInfo = info;
+        this.desktopStage = 'updater';
+        this.isSteamUpdating = true;
+        this.steamUpdateProgress = 5;
+        this.steamUpdateStatus = this.lang === 'th' ? 'กำลังดาวน์โหลดอัปเดต meCraft...' : 'Downloading package...';
+        await this.bridge.setWindowStage('updater');
+        this.render();
+        this.attachListeners();
+
+        const downloadUrl = info.suiteAsset?.downloadUrl || 'https://raw.githubusercontent.com/methastrategy/meCrafts-web/main/downloads/meCraft-Setup.exe';
+        try {
+          const updateResult = await this.bridge.applyLauncherUpdate(downloadUrl, (progress) => {
+            this.steamUpdateProgress = Math.max(5, Math.min(100, progress.percent));
+            this.steamUpdateStatus = `${this.lang === 'th' ? 'กำลังแตกไฟล์แพ็กเกจ...' : 'Extracting package...'} ${progress.percent}%`;
+            this.render();
+            this.attachListeners();
+          });
+
+          if (updateResult.success) {
+            this.steamUpdateProgress = 100;
+            this.steamUpdateCompleted = true;
+            this.steamUpdateStatus = this.lang === 'th' ? 'กำลังเริ่มระบบใหม่...' : 'Restarting meCraft...';
+            this.render();
+            this.attachListeners();
+            if (this.bridge.isTauri()) {
+              return;
+            }
+          }
+        } catch (updateErr) {
+          console.warn('[meCraft:startup] Update installation error:', updateErr);
+        }
+
+        // If update failed or cancelled, restore window
+        this.isSteamUpdating = false;
+        if (this.currentSession) {
+          await this.enterMainWorkstation();
+        } else {
+          this.desktopStage = 'auth';
+          await this.bridge.setWindowStage('auth');
+          this.render();
+          this.attachListeners();
+        }
+      }
+    } catch (e) {
+      console.warn('[meCraft:startup] Silent update check skipped:', e);
     }
   }
 
@@ -3683,28 +3753,28 @@ console.log(initializeStudio(pdfStudio));`,
   public renderSteamWindowUpdater(): string {
     const isTh = this.lang === 'th';
     return `
-    <div class="steam-compact-window" id="steam-splash-overlay">
-      <div class="steam-compact-topbar" data-tauri-drag-region>
-        <div class="steam-compact-brand" data-tauri-drag-region>
-          <img src="./branding/mecraft-suite.png" alt="meCraft" onerror="this.style.display='none'" />
-          <span data-tauri-drag-region>meCraft (v1.0.2)</span>
+    <div class="steam-dialog-window" id="steam-splash-overlay">
+      <div class="steam-dialog-topbar" data-tauri-drag-region>
+        <div class="steam-dialog-brand" data-tauri-drag-region>
+          <img src="./branding/mecraft-suite.png" alt="meCraft" class="steam-dialog-icon" onerror="this.style.display='none'" />
+          <span class="steam-dialog-title-text" data-tauri-drag-region>meCraft</span>
         </div>
-        <button type="button" class="steam-compact-close" id="btn-steam-close" aria-label="Close">✕</button>
+        <div class="steam-dialog-controls">
+          <button type="button" class="steam-dialog-winbtn" id="btn-steam-min" aria-label="Minimize" title="Minimize">−</button>
+          <button type="button" class="steam-dialog-winbtn steam-dialog-close" id="btn-steam-close" aria-label="Close" title="Close">✕</button>
+        </div>
       </div>
-      <div class="steam-compact-body">
-        <div class="steam-compact-title">${isTh ? 'กำลังอัปเดต meCraft...' : 'Updating meCraft...'}</div>
-        <div class="steam-progress-track steam-progress-modern">
-          <div class="steam-progress-bar" id="steam-progress-bar" style="width: ${this.steamUpdateProgress}%;"></div>
+      <div class="steam-dialog-body">
+        <div class="steam-dialog-title">${isTh ? 'กำลังอัปเดต meCraft...' : 'Updating meCraft...'}</div>
+        <div class="steam-dialog-progress-track">
+          <div class="steam-dialog-progress-bar" id="steam-progress-bar" style="width: ${this.steamUpdateProgress}%;"></div>
         </div>
-        <div class="steam-compact-status-row">
-          <span id="steam-status-text">${escapeHtml(this.steamUpdateStatus)}</span>
-          <span class="steam-compact-speed" id="steam-speed-num">${this.steamUpdateProgress}% · ${this.steamUpdateSpeed}</span>
+        <div class="steam-dialog-footer">
+          <span class="steam-dialog-status" id="steam-status-text">${escapeHtml(this.steamUpdateStatus)}</span>
+          <button type="button" class="btn-steam-dialog-cancel" id="btn-steam-skip">${isTh ? 'ยกเลิก' : 'Cancel'}</button>
         </div>
-        <div class="steam-log-terminal steam-log-compact" id="steam-log-terminal">
-          ${this.steamUpdateLogs.slice(-3).map(log => `<div class="steam-log-line">${escapeHtml(log)}</div>`).join('')}
-        </div>
-        <div class="steam-compact-actions">
-          <button type="button" class="btn-steam-skip" id="btn-steam-skip">${isTh ? 'ข้าม' : 'Skip'}</button>
+        <div class="steam-log-terminal" id="steam-log-terminal" style="display: none;">
+          ${this.steamUpdateLogs.map(log => `<div class="steam-log-line">${escapeHtml(log)}</div>`).join('')}
         </div>
       </div>
     </div>`;
@@ -6104,6 +6174,9 @@ console.log(initializeStudio(pdfStudio));`,
     });
     document.getElementById('ws-win-close')?.addEventListener('click', () => {
       this.bridge.windowAction('close');
+    });
+    document.getElementById('btn-steam-min')?.addEventListener('click', () => {
+      this.bridge.windowAction('minimize');
     });
     document.getElementById('btn-steam-close')?.addEventListener('click', () => {
       this.bridge.windowAction('close');

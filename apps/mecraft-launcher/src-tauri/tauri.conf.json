@@ -13,10 +13,10 @@
     "windows": [
       {
         "label": "main",
-        "title": "meCraft (v1.0.2)",
-        "width": 440,
-        "height": 290,
-        "resizable": false,
+        "title": "meCraft",
+        "width": 1280,
+        "height": 840,
+        "resizable": true,
         "decorations": false,
         "center": true,
         "fullscreen": false

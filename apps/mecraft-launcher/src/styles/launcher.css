@@ -8274,6 +8274,155 @@ code, pre, kbd, samp, .font-mono, [class*="version"], [class*="hash"], [class*="
   background: #3b82f6;
 }
 
+/* 5. Steam Native Dialog & Compact Frameless Windows (Exact Match to Steam in Image 2) */
+.steam-dialog-window {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  user-select: none;
+}
+
+.steam-dialog-topbar {
+  height: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 0 12px;
+  background: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+  -webkit-app-region: drag;
+}
+
+.steam-dialog-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.steam-dialog-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.steam-dialog-title-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.steam-dialog-controls {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag;
+}
+
+.steam-dialog-winbtn {
+  width: 32px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 100ms ease, color 100ms ease;
+}
+
+.steam-dialog-winbtn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.steam-dialog-close:hover {
+  background: #e81123 !important;
+  color: #ffffff !important;
+}
+
+.steam-dialog-body {
+  flex: 1;
+  padding: 12px 18px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.steam-dialog-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+.steam-dialog-progress-track {
+  width: 100%;
+  height: 16px;
+  background: #e2e8f0;
+  border: 1px solid #94a3b8;
+  border-radius: 2px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.steam-dialog-progress-bar {
+  height: 100%;
+  background: #28a745;
+  transition: width 200ms ease-out;
+}
+
+.steam-dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.steam-dialog-status {
+  font-size: 12px;
+  color: #475569;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.btn-steam-dialog-cancel {
+  padding: 3px 18px;
+  font-size: 12px;
+  background: #f1f5f9;
+  border: 1px solid #94a3b8;
+  border-radius: 2px;
+  color: #1e293b;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 100ms ease, border-color 100ms ease;
+  -webkit-app-region: no-drag;
+}
+
+.btn-steam-dialog-cancel:hover {
+  background: #e2e8f0;
+  border-color: #64748b;
+}
+
+.btn-steam-dialog-cancel:active {
+  background: #cbd5e1;
+}
+
 /* 5. Steam-Style Compact Frameless Boot & Auth Windows */
 .steam-compact-window {
   width: 100vw;
