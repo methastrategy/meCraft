@@ -1,17 +1,18 @@
-# meDeck
+# meDeck Studio
 
-> **Dynamic Markdown & Visual Presentation Slides**  
-> *Category: DOCUMENT · Status: Draft / In-Development · Suite: meCraft*
+> **Dynamic Markdown & Visual Presentation Slides with Thai Typography**  
+> *Category: DOCUMENT · Status: Stable v1.0.0 · Suite: meCraft*
 
 ---
 
 ## 📌 Overview
-Presenter-focused slide creator with markdown syntax, animation transitions, and PDF slide deck export.
+Presenter-focused slide creator with markdown syntax, Thai Sarabun font styling, ๑๒๓ slide counter, and PDF slide deck export.
 
 - **Inspired By:** Microsoft PowerPoint / DeckCraft (storytold/deckcraft)
+- **Thai Typography Mode:** Ribbon tools for 🇹🇭 Sarabun typography and ๑๒๓ numbering.
 - **Supported File Formats:** `.pptx`, `.ppt`, `.slide`
 - **Privacy Standard:** 100% In-Device RAM Privacy. All compute executes on local client resources with zero telemetry.
-- **Distribution:** Downloaded, installed, and launched exclusively via **meCraft Launcher** (`meCraft.exe`).
+- **Distribution:** Available on Web (`/medeck/`) and standalone Windows installer `meDeck Studio_1.0.0_x64-setup.exe`.
 
 ---
 

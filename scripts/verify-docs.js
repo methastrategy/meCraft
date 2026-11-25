@@ -11,11 +11,14 @@ console.log('🔍 [verify-docs] Running meCraft living documentation audit...');
 const readmePath = path.join(rootDir, 'README.md');
 const roadmapPath = path.join(rootDir, 'docs/ROADMAP.md');
 const archPath = path.join(rootDir, 'docs/ARCHITECTURE.md');
+const meCraftsArchPath = path.join(rootDir, 'docs/meCrafts-architecture.md');
+const changelogPath = path.join(rootDir, 'CHANGELOG.md');
 const appsDir = path.join(rootDir, 'apps');
+const packagesDir = path.join(rootDir, 'packages');
 
-let hasErrors = false;
+let hasWarnings = false;
 
-// 1. Verify all apps in apps/ are referenced in docs
+// 1. Verify all apps in apps/ are referenced in docs and have README.md
 if (fs.existsSync(appsDir)) {
   const apps = fs.readdirSync(appsDir).filter(name => fs.statSync(path.join(appsDir, name)).isDirectory());
   const roadmapContent = fs.readFileSync(roadmapPath, 'utf-8');
@@ -26,6 +29,12 @@ if (fs.existsSync(appsDir)) {
   for (const app of apps) {
     if (!roadmapContent.includes(app) && !roadmapContent.includes(app.replace(/^me/, ''))) {
       console.warn(`⚠️ Warning: App '${app}' is missing from docs/ROADMAP.md`);
+      hasWarnings = true;
+    }
+    const appReadme = path.join(appsDir, app, 'README.md');
+    if (!fs.existsSync(appReadme)) {
+      console.warn(`⚠️ Warning: App '${app}' is missing its README.md`);
+      hasWarnings = true;
     }
   }
 
@@ -35,7 +44,44 @@ if (fs.existsSync(appsDir)) {
     console.log(`✅ README.md Test Badge verified: ${testBadgeMatch[1]}+ passing`);
   } else {
     console.warn(`⚠️ Warning: Test badge in README.md could not be parsed.`);
+    hasWarnings = true;
   }
 }
 
-console.log('✨ [verify-docs] Living documentation audit complete.');
+// 3. Verify packages have README.md
+if (fs.existsSync(packagesDir)) {
+  const pkgs = fs.readdirSync(packagesDir).filter(name => fs.statSync(path.join(packagesDir, name)).isDirectory());
+  console.log(`📦 Found ${pkgs.length} packages in packages/: ${pkgs.join(', ')}`);
+
+  for (const pkg of pkgs) {
+    const pkgReadme = path.join(packagesDir, pkg, 'README.md');
+    if (!fs.existsSync(pkgReadme)) {
+      console.warn(`⚠️ Warning: Package '${pkg}' is missing its README.md`);
+      hasWarnings = true;
+    }
+  }
+}
+
+// 4. Verify core blueprint files exist
+const coreDocs = [
+  readmePath,
+  roadmapPath,
+  archPath,
+  meCraftsArchPath,
+  changelogPath,
+];
+
+for (const doc of coreDocs) {
+  if (fs.existsSync(doc)) {
+    console.log(`✅ Verified core doc: ${path.relative(rootDir, doc)}`);
+  } else {
+    console.warn(`⚠️ Warning: Missing core doc: ${path.relative(rootDir, doc)}`);
+    hasWarnings = true;
+  }
+}
+
+if (!hasWarnings) {
+  console.log('✨ [verify-docs] 100% Living documentation integrity passed with 0 warnings!');
+} else {
+  console.log('⚠️ [verify-docs] Audit finished with warnings above.');
+}

@@ -1,14 +1,15 @@
-# meCrafts Ecosystem — Full Architecture Blueprint v1.0.0
+# meCrafts Ecosystem — Full Architecture Blueprint v1.1.0
 
-> **กลยุทธ์หลัก:** ทุก Download Link บนหน้าเว็บ → ชี้ไปที่ **`meCraft-Setup.exe`** เพียงตัวเดียว  
-> โปรแกรมทั้งหมดดาวน์โหลด/ติดตั้ง/อัปเดต **ภายใน meCraft Launcher (Pure Program Manager)** เท่านั้น  
-> ตัวเว็บ Official Portal (`mecrafts.vercel.app`) ทำหน้าที่เป็น Showcase & Catalog เท่านั้น ไม่มี In-Browser Heavy Editor ฝังบนเว็บหลัก
+> **กลยุทธ์หลัก (Dual-Distribution Model):**  
+> 1. **All-in-One Suite Hub:** ดาวน์โหลด `meCraft-Setup.exe` สำหรับจัดการ/อัปเดต/เปิดโปรแกรมทั้งหมดในตัวเดียว  
+> 2. **Standalone Studio Installers:** ดาวน์โหลดตัวติดตั้งเดี่ยว (`.exe`) แยกตามโปรแกรมได้ทันทีที่หน้า `downloads.html` และ GitHub Releases  
+> 3. **Universal Web Studios:** ตัวเว็บ Official Portal (`mecrafts.vercel.app`) ให้บริการทั้ง Hub Catalog และสตูดิโอบนเว็บพร้อมใช้งานทันที (Zero-Install Web Studios) ทุกตัวรัน 100% In-Device Memory ไม่ส่งข้อมูลขึ้นคลาวด์
 
 > [!CAUTION]
 > **GPL-3.0 License Warning (Browser-Verified จาก GitHub จริง)**  
 > ArtCraft / `storytold` org ใช้ **GPL-3.0** ทุก repo — ไม่ใช่ MIT/Apache  
 > หาก Fork มาแล้วแจกจ่าย → ต้อง Open-Source โค้ดทั้งหมดภายใต้ GPL-3.0 ด้วย  
-> **Strategy:** ใช้เป็น "Reference / Study Only" + เขียน meCraft core เองแยก (Clean-Room Approach 100%)
+> **Strategy:** ใช้เป็น "Reference / Study Only" + เขียน meCraft core เองแยก (Clean-Room Approach 100% ภายใต้สัญญาอนุญาต MIT)
 
 ---
 
@@ -16,36 +17,38 @@
 
 ```mermaid
 flowchart TD
-    WEB["🌐 mecrafts.vercel.app\nOfficial Showcase & Download Portal\n(Zero In-Browser Editor)"]
-    WEB -->|"ทุก CTA → Download Only This"| DL
+    WEB["🌐 mecrafts.vercel.app\nOfficial Showcase & Universal Web Studios\n(15 In-Browser Web Studios + Downloads Hub)"]
+    WEB -->|"ตัวเลือกที่ 1: All-in-One"| DL
+    WEB -->|"ตัวเลือกที่ 2: Standalone .exe"| DLS
 
-    DL["⬇️ meCraft-Setup.exe\n14.8 MB · Windows · v1.0.0"]
+    DL["⬇️ meCraft-Setup.exe\nAll-in-One Suite Manager · v1.0.0"]
+    DLS["⬇️ 15 Standalone .exe Setups\n(meDoc, meSheet, meDeck, meIDE, mePDF, ฯลฯ)"]
+
     DL --> HUB
+    DLS --> APPS
 
-    HUB["🚀 meCraft Launcher (Desktop)\nPure Program Manager & App Hub\n(Install · Update · Launch · Uninstall)\n✅ LIVE v1.0.0"]
+    HUB["🚀 meCraft Launcher (Desktop)\nPure Program Manager & App Hub\n(Install · Update · Launch · Drag & Drop)\n✅ LIVE v1.0.0"]
 
-    HUB --> DOC
-    HUB --> CRE
-    HUB --> MED
-    HUB --> UTL
-    HUB --> ENG
-    HUB --> FIN
-    HUB --> FUN
+    HUB --> APPS
 
-    DOC["📄 DOCUMENT\nmePDF ✅  meDoc 🔨\nmeSheet 📋  meDeck 📋\nmeNote 📋  meForm 📋"]
-    CRE["🎨 CREATIVE\nmePhoto ✅  meLight 🔨\nmeVector 🔨  meCanvas 📋\nmeLayout 📋  mePaint 📋\nmeFont 📋  meColor 📋"]
-    MED["🎬 MEDIA\nmeFilm 📋  meSound 📋\nmeMotion 📋  meClip 📋"]
-    UTL["🔧 UTILITY\nmeConverter 📋  meCompress 📋\nmeSign 📋  meScan 📋"]
-    ENG["🏗️ ENGINEER\nmeSurv 🔨  meCAD 📋"]
-    FIN["💹 FINANCE\nmeBoard 🔨  huayork 🔨"]
-    FUN["🎮 FUN\nmeGameHub 🔨"]
+    subgraph APPS["🚀 15 Standalone Applications"]
+        IDE["💻 meIDE Studio (Standalone AI IDE) ✅"]
+        DOC["📄 DOCUMENT\nmePDF Studio ✅  meDoc Studio ✅\nmeSheet Studio ✅  meDeck Studio ✅\nmeNote 📋  meForm 📋"]
+        CRE["🎨 CREATIVE\nmePhoto Studio ✅  meLight Studio ✅\nmeVector Studio ✅  meDesign Studio ✅\nmeCanvas 📋  meLayout 📋\nmePaint 📋  meFont 📋  meColor 📋"]
+        MED["🎬 MEDIA\nmeFilm Studio ✅  meAudio Studio ✅\nmeMotion Studio ✅  meClip 📋"]
+        UTL["🔧 UTILITY\nmeDrop Transfer ✅  meConverter 📋\nmeCompress 📋  meSign 📋  meScan 📋"]
+        ENG["🏗️ ENGINEER\nme3D Studio ✅  meSurv 🔨  meCAD 📋"]
+        FIN["💹 FINANCE\nmeBoard 🔨  huayork 🔨"]
+        FUN["🎮 FUN\nmeGameHub 🔨"]
+    end
 
     style HUB fill:#d4af37,color:#000,stroke:#b8960c,stroke-width:3px
     style WEB fill:#1e1e2e,color:#cdd6f4,stroke:#6366f1
     style DL fill:#166534,color:#fff,stroke:#15803d
+    style DLS fill:#2563eb,color:#fff,stroke:#1d4ed8
 ```
 
-**Legend:** ✅ Live · 🔨 In-Dev / Sister-Suite · 📋 Planned
+**Legend:** ✅ Live (มีทั้ง Web และ Standalone Windows .exe) · 🔨 In-Dev / Sister-Suite · 📋 Planned
 
 ---
 
@@ -55,10 +58,10 @@ flowchart TD
 
 | App | ชื่อเต็ม | แรงบันดาลใจ / Inspired By | OSS Reference (GitHub · Stars) | License | สถานะ |
 |---|---|---|---|---|---|
-| `mepdf` | **mePDF Studio** | Adobe Acrobat Pro, PdfCraft | [storytold/pdfcraft](https://github.com/storytold/pdfcraft) ⭐22k<br>[Stirling-Tools/Stirling-PDF](https://github.com/Stirling-Tools/Stirling-PDF) ⭐97k | GPL-3.0 | ✅ Live |
-| `medoc` | **meDoc** | Microsoft Word, WordCraft | [storytold/wordcraft](https://github.com/storytold/wordcraft) ⭐18k<br>[ONLYOFFICE/DesktopEditors](https://github.com/ONLYOFFICE/DesktopEditors) ⭐5.8k | GPL-3.0 / AGPL | 🔨 In-Dev |
-| `mesheet` | **meSheet** | Microsoft Excel, GridCraft | [storytold/gridcraft](https://github.com/storytold/gridcraft) ⭐7.8k<br>[genspark-ai/genoffice](https://github.com/genspark-ai/genoffice) ⭐12.8k | GPL-3.0 / Apache | 📋 Planned |
-| `medeck` | **meDeck** | PowerPoint, DeckCraft | [storytold/deckcraft](https://github.com/storytold/deckcraft) ⭐4.9k<br>[slidevjs/slidev](https://github.com/slidevjs/slidev) ⭐33k | GPL-3.0 / MIT | 📋 Planned |
+| `mepdf` | **mePDF Studio Pro** | Adobe Acrobat Pro, PdfCraft | [storytold/pdfcraft](https://github.com/storytold/pdfcraft) ⭐22k<br>[Stirling-Tools/Stirling-PDF](https://github.com/Stirling-Tools/Stirling-PDF) ⭐97k | MIT (Clean-Room) | ✅ Live v1.0 |
+| `medoc` | **meDoc Studio** | Microsoft Word, WordCraft | [storytold/wordcraft](https://github.com/storytold/wordcraft) ⭐18k<br>[ONLYOFFICE/DesktopEditors](https://github.com/ONLYOFFICE/DesktopEditors) ⭐5.8k | MIT (Clean-Room) | ✅ Live v1.0 (Thai Sarabun) |
+| `mesheet` | **meSheet Studio** | Microsoft Excel, GridCraft | [storytold/gridcraft](https://github.com/storytold/gridcraft) ⭐7.8k<br>[genspark-ai/genoffice](https://github.com/genspark-ai/genoffice) ⭐12.8k | MIT (Clean-Room) | ✅ Live v1.0 (=BAHTTEXT) |
+| `medeck` | **meDeck Studio** | PowerPoint, DeckCraft | [storytold/deckcraft](https://github.com/storytold/deckcraft) ⭐4.9k<br>[slidevjs/slidev](https://github.com/slidevjs/slidev) ⭐33k | MIT (Clean-Room) | ✅ Live v1.0 (Sarabun Slides) |
 | `menote` | **meNote** | OneNote, Obsidian, Notion | [laurent22/joplin](https://github.com/laurent22/joplin) ⭐47k<br>[obsidianmd/obsidian-releases](https://github.com/obsidianmd) | MIT | 📋 Planned |
 | `meform` | **meForm** | Google Forms, MS Forms | [formbricks/formbricks](https://github.com/formbricks/formbricks) ⭐12k | AGPL-3.0 | 📋 Planned |
 
@@ -77,9 +80,10 @@ flowchart TD
 
 | App | ชื่อเต็ม | แรงบันดาลใจ / Inspired By | OSS Reference (GitHub · Stars) | License | สถานะ |
 |---|---|---|---|---|---|
-| `mephoto` | **mePhoto Studio** | Photoshop, PhotoCraft | [storytold/photocraft](https://github.com/storytold/photocraft) ⭐81.7k | GPL-3.0 | ✅ Live |
-| `melight` | **meLight Studio** | Lightroom, LightCraft | [storytold/lightcraft](https://github.com/storytold/lightcraft) ⭐16.2k | GPL-3.0 | 🔨 In-Dev |
-| `mevector` | **meVector** | Illustrator, VectorCraft | [storytold/vectorcraft](https://github.com/storytold/vectorcraft) ⭐12k<br>[inkscape/inkscape](https://github.com/inkscape/inkscape) ⭐4.1k | GPL-3.0 | 🔨 In-Dev |
+| `mephoto` | **mePhoto Studio** | Photoshop, PhotoCraft | [storytold/photocraft](https://github.com/storytold/photocraft) ⭐81.7k | MIT (Clean-Room) | ✅ Live v1.0 |
+| `melight` | **meLight Studio** | Lightroom, LightCraft | [storytold/lightcraft](https://github.com/storytold/lightcraft) ⭐16.2k | MIT (Clean-Room) | ✅ Live v1.0 |
+| `mevector` | **meVector** | Illustrator, VectorCraft | [storytold/vectorcraft](https://github.com/storytold/vectorcraft) ⭐12k<br>[inkscape/inkscape](https://github.com/inkscape/inkscape) ⭐4.1k | MIT (Clean-Room) | ✅ Live v1.0 |
+| `medesign` | **meDesign Studio** | Figma, Penpot | [penpot/penpot](https://github.com/penpot/penpot) ⭐62.7k | MIT (Clean-Room) | ✅ Live v1.0 |
 | `mecanvas` | **meCanvas** | Figma, FigCraft, Penpot | [penpot/penpot](https://github.com/penpot/penpot) ⭐62.7k<br>[storytold/figcraft](https://github.com/storytold/figcraft) | MPL-2.0 | 📋 Planned |
 | `mewhiteboard` | **meWhiteboard** | Miro, FigJam, tldraw | [tldraw/tldraw](https://github.com/tldraw/tldraw) ⭐42.4k | Apache-2.0 | 📋 Planned |
 | `melayout` | **meLayout** | InDesign, DesignCraft, Scribus | [storytold/designcraft](https://github.com/storytold/designcraft)<br>[scribusproject/scribus](https://github.com/scribusproject/scribus) | GPL-3.0 | 📋 Planned |
@@ -102,15 +106,15 @@ flowchart TD
 
 | App | ชื่อเต็ม | แรงบันดาลใจ / Inspired By | OSS Reference (GitHub · Stars) | License | สถานะ |
 |---|---|---|---|---|---|
-| `mefilm` | **meFilm** | Premiere Pro, FilmCraft | [storytold/filmcraft](https://github.com/storytold/filmcraft) ⭐19.4k<br>[mltframework/shotcut](https://github.com/mltframework/shotcut) ⭐15.8k<br>[KDE/kdenlive](https://github.com/KDE/kdenlive) ⭐6.2k | GPL-3.0 | 📋 Planned |
-| `mesound` | **meSound / meAudio** | Audition, SoundCraft, Audacity | [storytold/soundcraft](https://github.com/storytold/soundcraft) ⭐4.5k<br>[audacity/audacity](https://github.com/audacity/audacity) ⭐19.1k<br>[LMMS/lmms](https://github.com/LMMS/lmms) ⭐10.7k | GPL-3.0 | 📋 Planned |
-| `memotion` | **meMotion** | After Effects, EffectCraft, Natron | [storytold/effectcraft](https://github.com/storytold/effectcraft)<br>[NatronGitHub/Natron](https://github.com/NatronGitHub/Natron) ⭐3.9k | GPL-3.0 | 📋 Planned |
+| `mefilm` | **meFilm Studio** | Premiere Pro, FilmCraft | [storytold/filmcraft](https://github.com/storytold/filmcraft) ⭐19.4k<br>[mltframework/shotcut](https://github.com/mltframework/shotcut) ⭐15.8k<br>[KDE/kdenlive](https://github.com/KDE/kdenlive) ⭐6.2k | MIT (Clean-Room) | ✅ Live v1.0 |
+| `meaudio` | **meAudio Studio** | Audition, SoundCraft, Audacity | [storytold/soundcraft](https://github.com/storytold/soundcraft) ⭐4.5k<br>[audacity/audacity](https://github.com/audacity/audacity) ⭐19.1k<br>[LMMS/lmms](https://github.com/LMMS/lmms) ⭐10.7k | MIT (Clean-Room) | ✅ Live v1.0 |
+| `memotion` | **meMotion Studio** | After Effects, EffectCraft, Natron | [storytold/effectcraft](https://github.com/storytold/effectcraft)<br>[NatronGitHub/Natron](https://github.com/NatronGitHub/Natron) ⭐3.9k | MIT (Clean-Room) | ✅ Live v1.0 |
 | `meclip` | **meClip** | Clipchamp, Premiere Rush | [OpenShot/openshot-qt](https://github.com/OpenShot/openshot-qt) ⭐6.8k | GPL-3.0 | 📋 Planned |
 
 **Windows Shell File Associations:**
 ```
 .mp4 .mov .avi .mkv .webm  → meFilm
-.mp3 .wav .flac .aac .ogg  → meSound
+.mp3 .wav .flac .aac .ogg  → meAudio
 ```
 
 ---
@@ -119,6 +123,7 @@ flowchart TD
 
 | App | ชื่อเต็ม | แรงบันดาลใจ / Inspired By | OSS Reference (GitHub · Stars) | License | สถานะ |
 |---|---|---|---|---|---|
+| `medrop` | **meDrop Transfer** | AirDrop, DropZone | Radial HUD File Converter & Drop | MIT (Clean-Room) | ✅ Live v1.0 |
 | `meconvert` | **meConverter** | iLovePDF, SmallPDF | [Stirling-Tools/Stirling-PDF](https://github.com/Stirling-Tools/Stirling-PDF) ⭐97k | GPL-3.0 | 📋 Planned |
 | `mecompress` | **meCompress** | WinRAR, 7-Zip | [ip7z/7zip](https://github.com/ip7z/7zip)<br>[libarchive/libarchive](https://github.com/libarchive/libarchive) ⭐3k | LGPL | 📋 Planned |
 | `mesign` | **meSign** | DocuSign, Adobe Sign | [OpenSignLabs/OpenSign](https://github.com/OpenSignLabs/OpenSign) ⭐3.7k | AGPL-3.0 | 📋 Planned |
@@ -130,8 +135,9 @@ flowchart TD
 
 | App | ชื่อเต็ม | แรงบันดาลใจ / Inspired By | OSS Reference (GitHub · Stars) | License | สถานะ |
 |---|---|---|---|---|---|
+| `me3d` | **me3D Studio** | 3D Viewer, Three.js | WebGL / 3D Geometry Studio | MIT (Clean-Room) | ✅ Live v1.0 |
 | `mesurv` | **meSurv** | Survey Pro, Total Station, QGIS | [qgis/QGIS](https://github.com/qgis/QGIS) ⭐11k | GPL-2.0 | 🔨 Sister-Suite |
-| `mecad` | **meCAD / me3D** | AutoCAD LT, LibreCAD, CADCraft | [storytold/cadcraft](https://github.com/storytold/cadcraft)<br>[FreeCAD/FreeCAD](https://github.com/FreeCAD/FreeCAD) ⭐35.7k<br>[LibreCAD/LibreCAD](https://github.com/LibreCAD/LibreCAD) ⭐4.8k | GPL-3.0 | 📋 Planned |
+| `mecad` | **meCAD** | AutoCAD LT, LibreCAD, CADCraft | [storytold/cadcraft](https://github.com/storytold/cadcraft)<br>[FreeCAD/FreeCAD](https://github.com/FreeCAD/FreeCAD) ⭐35.7k<br>[LibreCAD/LibreCAD](https://github.com/LibreCAD/LibreCAD) ⭐4.8k | GPL-3.0 | 📋 Planned |
 
 ---
 
@@ -228,26 +234,29 @@ flowchart LR
 
 ---
 
-## Priority Roadmap
+## Priority Roadmap & Release Fleet
 
 ```
-── Phase 0  NOW ✅ ────────────────────────────────────────────────────
-  meCraft Launcher  │  mePDF Studio  │  mePhoto Studio
+── Phase 1  LIVE & STABLE v1.0.0 / v1.1.0 ✅ ─────────────────────────
+  🚀 meCraft Launcher Hub    │  💻 meIDE Studio (AI IDE)
+  📄 mePDF Studio Pro        │  🪄 mePhoto Studio (Scan/Homography)
+  📝 meDoc Studio (Sarabun)  │  📊 meSheet Studio (=BAHTTEXT)
+  📽️ meDeck Studio (Slides)  │  🍩 meDrop Transfer
+  🧊 me3D Studio             │  🎵 meAudio Studio
+  📐 meDesign Studio         │  🎬 meFilm Studio
+  💡 meLight Studio          │  🎞️ meMotion Studio
+  ✒️ meVector Studio
+  (All 15 Studios available on Web + Standalone Windows .exe Installers)
 
-── Phase 1  Q1 2027 ─────────────────────────────────────────────────
-  meDoc (Word)      │  meSheet (Excel)  │  meDeck (PowerPoint)
-  meLight (Lightroom)│ meVector (Illustrator) │ meConverter
+── Phase 2  EXPANSION FLEET (Q1-Q2 2027) ─────────────────────────────
+  meCanvas (Figma/Vector)   │  meWhiteboard (Miro/tldraw)
+  meNote (Obsidian/Notion)  │  meSign (Digital Signature)
+  meCompress (7-Zip)        │  meConverter (Batch Conversion)
 
-── Phase 2  Q2 2027 ─────────────────────────────────────────────────
-  meCanvas (Figma)  │  meWhiteboard (Miro)  │  meSign  │  meCompress
-
-── Phase 3  Q3 2027 ─────────────────────────────────────────────────
-  meFilm (Premiere) │  meSound (Audition)   │  meScan  │  meNote
-  mePaint (Krita)
-
-── Phase 4  Q4 2027 ─────────────────────────────────────────────────
-  meCAD             │  meMotion (AE)        │  meFont  │  meColor
-  meLayout (InDesign)
+── Phase 3  SPECIALIZED ECOSYSTEM (Q3-Q4 2027) ────────────────────────
+  meCAD (2D/3D CAD)         │  mePaint (Digital Art)
+  meFont (Typography Forge) │  meColor (Color Palette Lab)
+  meLayout (InDesign)       │  meForm (Form Builder)
 ```
 
 ---

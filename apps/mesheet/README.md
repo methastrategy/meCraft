@@ -1,17 +1,18 @@
-# meSheet
+# meSheet Studio
 
-> **High-Performance Grid & Financial Analytics**  
-> *Category: DOCUMENT · Status: Draft / In-Development · Suite: meCraft*
+> **High-Performance Grid, Financial Analytics & =BAHTTEXT() Studio**  
+> *Category: DOCUMENT · Status: Stable v1.0.0 · Suite: meCraft*
 
 ---
 
 ## 📌 Overview
-Blazing-fast calculation grid engine with formula parser, pivot tables, and statistical distribution modeling.
+Blazing-fast calculation grid engine with formula parser, Thai Baht text conversion (`=BAHTTEXT()`), and financial distribution modeling.
 
 - **Inspired By:** Microsoft Excel / GridCraft (storytold/gridcraft)
+- **Thai Financial Functions:** Ribbon tools for `=BAHTTEXT()` and ๑๒๓ Thai numerals.
 - **Supported File Formats:** `.xlsx`, `.xls`, `.csv`
 - **Privacy Standard:** 100% In-Device RAM Privacy. All compute executes on local client resources with zero telemetry.
-- **Distribution:** Downloaded, installed, and launched exclusively via **meCraft Launcher** (`meCraft.exe`).
+- **Distribution:** Available on Web (`/mesheet/`) and standalone Windows installer `meSheet Studio_1.0.0_x64-setup.exe`.
 
 ---
 

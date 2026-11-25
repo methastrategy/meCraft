@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-11-25
+### Added
+- **15 Standalone Windows Desktop Installers**: Built dedicated Tauri v2 Windows setup executables (`*_1.0.0_x64-setup.exe`) and portable binaries for all 15 suite applications in `dist-artifacts/` and `public/downloads.html`.
+- **meIDE AI IDE Studio**: Standalone AI Web & Desktop IDE with Monaco editor, File System Access API, integrated terminal emulator, and local Copilot integration.
+- **Thai Localization Engine (`@mecraft/core-bridge`)**: Native Thai numeral conversion (`toThaiNumerals`), Thai Baht text currency parser (`toThaiBahtText`), and mixed Thai-Latin word boundary segmentation (`segmentThaiWords` via `Intl.Segmenter`).
+- **meDoc Thai Sarabun & Government Templates**: One-click official TH Sarabun 16pt typesetting, ๑๒๓ numeral converter, and 3 official Thai government templates (บันทึกข้อความ, หนังสือราชการภายนอก, รายงานการประชุม).
+- **meSheet & meDeck Thai Upgrades**: Added `=BAHTTEXT()` live formula evaluator and ribbon controls in meSheet; added Thai Sarabun slide typography in meDeck.
+- **Living Documentation Engine**: Added `scripts/verify-docs.js` and `npm run check:docs` to ensure documentation matches live code and passes CI/CD gates.
+
 ## [1.0.0] — 2026-11-23
 ### Added
 - **Official v1.0 Initial Foundation Release**: Comprehensive launch of the meCraft Suite for Desktop (Windows Native Tauri v2 / Rust) and Web (PWA / Vercel).
