@@ -1689,7 +1689,7 @@ export function renderMarkdownHtml(md: string): string {
 
 // ─── Main Portal Class ────────────────────────────────────────────────────────
 class MeCraftsPortal {
-  private bridge = createLauncherBridge();
+  public bridge = createLauncherBridge();
   private lang: 'en' | 'th' = (typeof localStorage !== 'undefined' && (localStorage.getItem('mecrafts_lang') as 'en' | 'th')) || 'en';
   private searchQuery = '';
   private activeFilter: AppCategory | 'all' = 'all';

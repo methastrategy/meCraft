@@ -1114,7 +1114,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       portal.currentSession = createMockAuthSession('user@mecraft.dev', 'free_member');
       portal.isAuthModalOpen = false;
 
-      const setStageSpy = vi.spyOn(portal.bridge, 'setWindowStage');
+      const setStageSpy = vi.spyOn((portal as any).bridge, 'setWindowStage');
 
       await portal.handleSignOut();
 
