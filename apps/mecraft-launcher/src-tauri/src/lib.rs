@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use std::time::Instant;
 use futures_util::StreamExt;
 use tauri::{Emitter, Manager};
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct AppStatusResponse {
@@ -472,6 +473,211 @@ fn set_window_stage(app_handle: tauri::AppHandle, stage: String) -> Result<(), S
     Ok(())
 }
 
+fn decode_url_component(s: &str) -> String {
+    let mut bytes = Vec::new();
+    let mut chars = s.bytes();
+    while let Some(b) = chars.next() {
+        if b == b'%' {
+            let h1 = chars.next();
+            let h2 = chars.next();
+            if let (Some(h1), Some(h2)) = (h1, h2) {
+                let hex_str = format!("{}{}", h1 as char, h2 as char);
+                if let Ok(val) = u8::from_str_radix(&hex_str, 16) {
+                    bytes.push(val);
+                    continue;
+                }
+            }
+        } else if b == b'+' {
+            bytes.push(b' ');
+        } else {
+            bytes.push(b);
+        }
+    }
+    String::from_utf8_lossy(&bytes).to_string()
+}
+
+#[tauri::command]
+async fn start_auth_handshake(app_handle: tauri::AppHandle) -> Result<u16, String> {
+    let listener = match tokio::net::TcpListener::bind("127.0.0.1:42813").await {
+        Ok(l) => l,
+        Err(_) => tokio::net::TcpListener::bind("127.0.0.1:0")
+            .await
+            .map_err(|e| format!("Failed to bind local handshake listener: {}", e))?,
+    };
+
+    let port = listener
+        .local_addr()
+        .map_err(|e| format!("Failed to get local addr: {}", e))?
+        .port();
+
+    let app = app_handle.clone();
+    tokio::spawn(async move {
+        let start_time = std::time::Instant::now();
+        let max_wait = std::time::Duration::from_secs(300);
+
+        while start_time.elapsed() < max_wait {
+            let accept_fut = listener.accept();
+            if let Ok(Ok((mut socket, _addr))) = tokio::time::timeout(std::time::Duration::from_secs(3), accept_fut).await {
+                let mut buf = [0u8; 8192];
+                if let Ok(n) = socket.read(&mut buf).await {
+                    if n == 0 {
+                        continue;
+                    }
+                    let req = String::from_utf8_lossy(&buf[..n]);
+
+                    if req.starts_with("OPTIONS") {
+                        let resp = "HTTP/1.1 204 No Content\r\n\
+Access-Control-Allow-Origin: *\r\n\
+Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n\
+Access-Control-Allow-Headers: *\r\n\
+Connection: close\r\n\r\n";
+                        let _ = socket.write_all(resp.as_bytes()).await;
+                        continue;
+                    }
+
+                    let mut token = String::new();
+                    if let Some(pos) = req.find("token=") {
+                        let sub = &req[pos + 6..];
+                        let end = sub.find('&').or_else(|| sub.find(' ')).unwrap_or(sub.len());
+                        token = decode_url_component(&sub[..end]);
+                    } else if let Some(pos) = req.find("code=") {
+                        let sub = &req[pos + 5..];
+                        let end = sub.find('&').or_else(|| sub.find(' ')).unwrap_or(sub.len());
+                        token = decode_url_component(&sub[..end]);
+                    }
+
+                    let html_body = r#"<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>meCraft · เข้าสู่ระบบสำเร็จ</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background: radial-gradient(circle at 50% 20%, #172138 0%, #0b0f19 100%);
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "IBM Plex Sans Thai", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: rgba(19, 27, 46, 0.85);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 20px;
+      padding: 44px 32px;
+      text-align: center;
+      max-width: 440px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6), 0 0 32px rgba(251, 191, 36, 0.15);
+      backdrop-filter: blur(16px);
+    }
+    .icon {
+      font-size: 54px;
+      margin-bottom: 16px;
+      animation: pulse 2s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 10px 0;
+      color: #fbbf24;
+      letter-spacing: -0.01em;
+    }
+    p {
+      font-size: 14px;
+      color: #94a3b8;
+      margin: 0 0 24px 0;
+      line-height: 1.6;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      border-radius: 9999px;
+      color: #4ade80;
+      font-size: 13px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">✨</div>
+    <h1>เข้าสู่ระบบ meCraft สำเร็จแล้ว</h1>
+    <p>เชื่อมต่อและส่งข้อมูลเข้าสู่โปรแกรมบนเครื่องของคุณเรียบร้อยแล้ว<br /><strong>สามารถปิดหน้าต่างเบราว์เซอร์นี้ได้ทันที</strong></p>
+    <div class="badge">✓ เชื่อมต่อแอปเรียบร้อย</div>
+  </div>
+  <script>
+    setTimeout(() => {
+      try { window.close(); } catch(e) {}
+    }, 2500);
+  </script>
+</body>
+</html>"#;
+
+                    let http_response = format!(
+                        "HTTP/1.1 200 OK\r\n\
+Content-Type: text/html; charset=utf-8\r\n\
+Access-Control-Allow-Origin: *\r\n\
+Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n\
+Content-Length: {}\r\n\
+Connection: close\r\n\r\n{}",
+                        html_body.as_bytes().len(),
+                        html_body
+                    );
+
+                    let _ = socket.write_all(http_response.as_bytes()).await;
+                    let _ = socket.flush().await;
+
+                    if !token.is_empty() {
+                        let _ = app.emit("auth-handshake-received", serde_json::json!({ "token": token }));
+                        if let Some(win) = app.get_webview_window("main") {
+                            let _ = win.set_focus();
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    });
+
+    Ok(port)
+}
+
+#[tauri::command]
+fn open_browser_url(url: String) -> Result<(), String> {
+    #[cfg(target_os = "windows")]
+    {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NO_WINDOW: u32 = 0x08000000;
+        std::process::Command::new("cmd")
+            .args(&["/c", "start", "", &url])
+            .creation_flags(CREATE_NO_WINDOW)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    #[cfg(target_os = "macos")]
+    {
+        std::process::Command::new("open").arg(&url).spawn().map_err(|e| e.to_string())?;
+    }
+    #[cfg(target_os = "linux")]
+    {
+        std::process::Command::new("xdg-open").arg(&url).spawn().map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -485,6 +691,8 @@ pub fn run() {
             uninstall_app,
             apply_launcher_update,
             set_window_stage,
+            start_auth_handshake,
+            open_browser_url,
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {

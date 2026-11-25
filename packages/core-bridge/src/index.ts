@@ -89,6 +89,9 @@ export interface LauncherBridge {
   ): Promise<{ success: boolean; error?: string }>;
   setWindowStage(stage: 'updater' | 'auth' | 'loading_user' | 'main'): Promise<void>;
   windowAction(action: 'minimize' | 'maximize' | 'close'): Promise<void>;
+  startAuthHandshake(): Promise<number>;
+  onAuthHandshake(callback: (token: string) => void): () => void;
+  openExternal(url: string): Promise<void>;
   launchApp(options: LaunchAppOptions): Promise<{ success: boolean; error?: string }>;
   getAppDirectory(appId: AppId): Promise<string>;
   uninstallApp(appId: AppId): Promise<{ success: boolean }>;
@@ -452,6 +455,54 @@ export function createLauncherBridge(): LauncherBridge {
         } catch (e) {
           console.warn('[LauncherBridge] windowAction failed:', e);
         }
+      }
+    },
+
+    async startAuthHandshake(): Promise<number> {
+      if (isTauriEnv) {
+        try {
+          const { invoke } = await import('@tauri-apps/api/core');
+          return await invoke<number>('start_auth_handshake');
+        } catch (e) {
+          console.warn('[LauncherBridge] startAuthHandshake failed:', e);
+        }
+      }
+      return 0;
+    },
+
+    onAuthHandshake(callback: (token: string) => void): () => void {
+      if (isTauriEnv) {
+        let unlistenFn: (() => void) | null = null;
+        import('@tauri-apps/api/event').then(({ listen }) => {
+          listen<{ token: string }>('auth-handshake-received', (event) => {
+            if (event.payload?.token) {
+              callback(event.payload.token);
+            }
+          }).then((unlisten) => {
+            unlistenFn = unlisten;
+          });
+        }).catch((e) => {
+          console.warn('[LauncherBridge] onAuthHandshake listen error:', e);
+        });
+        return () => {
+          if (unlistenFn) unlistenFn();
+        };
+      }
+      return () => {};
+    },
+
+    async openExternal(url: string): Promise<void> {
+      if (isTauriEnv) {
+        try {
+          const { invoke } = await import('@tauri-apps/api/core');
+          await invoke('open_browser_url', { url });
+          return;
+        } catch (e) {
+          console.warn('[LauncherBridge] open_browser_url failed, falling back:', e);
+        }
+      }
+      if (typeof window !== 'undefined') {
+        window.open(url, '_blank');
       }
     },
 

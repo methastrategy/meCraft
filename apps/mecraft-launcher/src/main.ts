@@ -1901,6 +1901,27 @@ console.log(initializeStudio(pdfStudio));`,
       this.attachListeners();
     });
 
+    // Subscribe to automatic 1-click Desktop OAuth Handshake
+    if (this.bridge.isTauri()) {
+      this.bridge.onAuthHandshake(async (token) => {
+        if (!token) return;
+        const session = importAuthSyncCode(token);
+        if (session) {
+          this.currentSession = session;
+          saveAuthSession(session);
+          this.isAuthModalOpen = false;
+          this.authError = '';
+          this.authLoading = false;
+          if (this.desktopStage === 'auth') {
+            await this.enterMainWorkstation();
+            return;
+          }
+          this.render();
+          this.attachListeners();
+        }
+      });
+    }
+
     // Check & subscribe to live Supabase session if client is configured
     if (supabase) {
       supabase.auth.getSession().then(({ data: { session }, error }) => {
