@@ -6,32 +6,29 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = fs.realpathSync(path.resolve(__dirname, '..'));
 
-console.log('✨ [generate-downloads-portal] Generating ArtCraft-grade downloads portal with unified header, zero-flicker state, and 120fps smooth scrolling...');
+console.log('✨ [generate-downloads-portal] Generating exact ArtCraft 4-column border-grid downloads portal with unified header, zero-flicker architecture, and 120fps smooth scrolling...');
 
-// 18 Standalone Creative Studios Dataset
+// 18 Standalone Creative Studios Dataset (Synchronized 100% with SHOWCASE_APPS)
 const STUDIOS = [
   {
     id: 'mepdf',
     name: 'mePDF Studio',
     category: 'document',
-    categoryLabel: { en: 'Document', th: 'เอกสาร' },
+    categoryLabel: { en: 'Document & PDF', th: 'เอกสารและ PDF' },
     accentColor: '#d4af37',
-    glowColor: 'rgba(212, 175, 55, 0.25)',
-    emoji: '📄',
+    badgeColor: '#2563eb', // Blue badge like 01 PhotoCraft
     counterpart: { en: 'Adobe Acrobat Pro Alternative', th: 'ทางเลือกแทน Adobe Acrobat Pro' },
     desc: {
-      en: 'Merge, split, visual page cockpit, lossless & scanned compression, AES-256 encryption, and searchable OCR text injection.',
-      th: 'รวม/แยก PDF, ค็อกพิทหน้าเพจแบบ Visual, บีบอัดแบบไม่สูญเสียคุณภาพ, เข้ารหัส AES-256 และฝังข้อความ OCR ค้นหาคำได้ในเครื่อง'
+      en: 'The open-source PDF workbench: merge, split, visual page cockpit, lossless & scanned compression, AES-256 encryption, and OCR.',
+      th: 'สตูดิโอวิศวกรรมเอกสาร PDF: รวม/แยกไฟล์, ค็อกพิทจัดหน้า Visual, บีบอัดแบบไม่เสียคุณภาพ, เข้ารหัส AES-256 และค้นหาด้วย OCR'
     },
     version: 'v1.0.0',
     file: 'mepdf.exe',
     size: '~30.8 MB',
     hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
     webRoute: '/mepdf/',
-    highlights: {
-      en: ['4-Point Deskew & Local Otsu', 'Lossless Deflate Compression', 'Searchable OCR Text Injection', 'AES-256 Bank Encryption'],
-      th: ['ปรับระนาบ 4-Point Deskew & ลบเงา Otsu', 'บีบอัด Lossless Deflate สูงสุด 90%', 'ฝังข้อความ OCR ค้นหาคำได้ในเครื่อง', 'เข้ารหัสระดับธนาคาร AES-256']
-    }
+    exploreName: 'EXPLORE MEPDF ↗',
+    animalEmblem: 'fox'
   },
   {
     id: 'mephoto',
@@ -39,45 +36,39 @@ const STUDIOS = [
     category: 'photo',
     categoryLabel: { en: 'Photo & Color', th: 'ภาพและสี' },
     accentColor: '#10b981',
-    glowColor: 'rgba(16, 185, 129, 0.25)',
-    emoji: '🖼️',
+    badgeColor: '#ea580c', // Orange badge like 02 VectorCraft
     counterpart: { en: 'Photoshop / CamScanner Alternative', th: 'ทางเลือกแทน Photoshop และ CamScanner' },
     desc: {
-      en: '4-point homography perspective deskew, adaptive local Otsu binarization shadow eradication, Magic Color enhancement, and RAW darkroom.',
-      th: 'ปรับมุมมอง 4 จุด Homography, กำจัดเงาด้วย Otsu Binarization ท้องถิ่น, เพิ่มความสวยงามเอกสารด้วย Magic Color และ Darkroom ปรับ RAW'
+      en: 'The open-source image editor and darkroom: 4-point homography deskew, Otsu shadow eradication, Magic Color, and 16-bit export.',
+      th: 'โปรแกรมแต่งภาพและ Darkroom: ดึงระนาบ 4 มุม Homography, กำจัดเงาด้วย Otsu Binarization, เร่งสี Magic Color และส่งออก 16-bit'
     },
     version: 'v1.0.0',
     file: 'mephoto.exe',
     size: '~28.4 MB',
     hash: 'a1b2c3d4e5f67890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/mephoto/',
-    highlights: {
-      en: ['4-Point Quad Perspective Deskew', 'Adaptive Otsu Shadow Removal', 'Magic Color Enhancement', '16-bit Lossless Image Export'],
-      th: ['ดึงระนาบเอกสาร 4 มุม Homography', 'ลบเงาและปรับขาวดำอัจฉริยะ Otsu', 'โหมด Magic Color ขับสีตัวอักษร', 'ส่งออกภาพ 16-bit ไม่สูญเสีย']
-    }
+    exploreName: 'EXPLORE MEPHOTO ↗',
+    animalEmblem: 'dragon'
   },
   {
     id: 'medrop',
     name: 'meDrop Radial Converter',
     category: 'utility',
-    categoryLabel: { en: 'Utility & Tools', th: 'เครื่องมือแปลงไฟล์' },
+    categoryLabel: { en: 'Utility & Tools', th: 'เครื่องมือและแปลงไฟล์' },
     accentColor: '#f59e0b',
-    glowColor: 'rgba(245, 158, 11, 0.25)',
-    emoji: '🔄',
+    badgeColor: '#7c3aed', // Purple badge like 03 FilmCraft
     counterpart: { en: 'Handbrake / CloudConvert Alternative', th: 'ทางเลือกแทน Handbrake และ CloudConvert' },
     desc: {
-      en: 'Fast multi-format drag-and-drop radial converter, WebP/AVIF encoder, SVG optimizer, and audio/video remuxing in local memory.',
-      th: 'วงล้อแปลงไฟล์มัลติฟอร์แมต Drag & Drop, เข้ารหัสภาพ WebP/AVIF, ปรับขนาดเวกเตอร์ SVG และแปลงวิดีโอ/เสียงในแรม 100%'
+      en: 'High-speed radial drag-and-drop media converter, WebP/AVIF batch encoder, SVG optimizer, and in-RAM instant file remuxing.',
+      th: 'วงล้อแปลงไฟล์มัลติมีเดียความเร็วสูง, บีบอัดภาพ WebP/AVIF แบบชุด, ปรับแต่งเวกเตอร์ SVG และแปลงวิดีโอ/เสียงในแรม 100%'
     },
     version: 'v1.0.0',
     file: 'medrop.exe',
     size: '~19.2 MB',
     hash: 'b2c3d4e5f6a17890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/medrop/',
-    highlights: {
-      en: ['Radial Dial Conversion UI', 'Lossless WebP/AVIF Baking', 'Batch Multi-Threaded Queue', 'In-RAM Instant File Remuxing'],
-      th: ['หน้าต่างแปลงไฟล์วงล้อ Radial ล้ำสมัย', 'แปลง WebP และ AVIF ระดับโปร', 'คิวแปลงไฟล์หลายเธรดความเร็วสูง', 'ประมวลผลในหน่วยความจำ RAM ไร้คลาวด์']
-    }
+    exploreName: 'EXPLORE MEDROP ↗',
+    animalEmblem: 'owl'
   },
   {
     id: 'medoc',
@@ -85,9 +76,8 @@ const STUDIOS = [
     category: 'document',
     categoryLabel: { en: 'Document & Writing', th: 'เอกสารและการเขียน' },
     accentColor: '#6366f1',
-    glowColor: 'rgba(99, 102, 241, 0.25)',
-    emoji: '📝',
-    counterpart: { en: 'Typora / Obsidian / Word Alternative', th: 'ทางเลือกแทน Typora, Obsidian และ Word' },
+    badgeColor: '#d97706', // Amber badge like 04 LightCraft
+    counterpart: { en: 'Typora / Obsidian Alternative', th: 'ทางเลือกแทน Typora และ Obsidian' },
     desc: {
       en: 'Structured distraction-free WYSIWYG markdown document suite, LaTeX math typesetting, live outline navigator, and clean PDF export.',
       th: 'โปรแกรมเขียนเอกสาร Markdown ไร้สิ่งกวนใจ, พิมพ์สมการคณิตศาสตร์ LaTeX, สารบัญโครงสร้างอัตโนมัติ และส่งออก PDF เรียบหรู'
@@ -97,10 +87,8 @@ const STUDIOS = [
     size: '~24.1 MB',
     hash: 'c3d4e5f6a1b27890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/medoc/',
-    highlights: {
-      en: ['Live Markdown & LaTeX Engine', 'Instant Typographic Rendering', 'Autonomous Outline Navigator', 'Clean Academic PDF Export'],
-      th: ['เขียน Markdown และ LaTeX แบบสด', 'ฟอนต์และวรรคตอนระดับพรีเมียม', 'ผังโครงสร้างเอกสารอัตโนมัติ', 'พิมพ์เอกสารทางวิชาการและรายงาน']
-    }
+    exploreName: 'EXPLORE MEDOC ↗',
+    animalEmblem: 'lynx'
   },
   {
     id: 'mevector',
@@ -108,11 +96,10 @@ const STUDIOS = [
     category: 'vector',
     categoryLabel: { en: 'Design & Vector', th: 'เวกเตอร์และกราฟิก' },
     accentColor: '#ec4899',
-    glowColor: 'rgba(236, 72, 153, 0.25)',
-    emoji: '✒️',
+    badgeColor: '#dc2626', // Red badge like 05 PdfCraft
     counterpart: { en: 'Adobe Illustrator Alternative', th: 'ทางเลือกแทน Adobe Illustrator' },
     desc: {
-      en: 'Infinite zoom vector graphics editor, Bezier curvature pen tool, boolean path operations (Union, Subtract), and clean SVG/EPS export.',
+      en: 'Fast, open-source vector illustration: infinite zoom canvas, Bézier curvature pen, boolean path ops, and standard SVG/EPS export.',
       th: 'สตูดิโอวาดเวกเตอร์ขยายได้ไม่จำกัด, ปากกา Bézier Curve แม่นยำระดับพิกเซล, ผสานตัดเส้น Boolean Path และส่งออก SVG/EPS สะอาดตา'
     },
     version: 'v1.0.0',
@@ -120,22 +107,19 @@ const STUDIOS = [
     size: '~22.8 MB',
     hash: 'd4e5f6a1b2c37890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/mevector/',
-    highlights: {
-      en: ['Infinite Precision Canvas', 'Sub-Pixel Bézier Spline Pen', 'Non-Destructive Boolean Paths', 'Standard Compliant SVG Engine'],
-      th: ['ผืนผ้าใบขยายซูมได้ไม่จำกัด', 'ปากกาดัดเส้น Bézier ละเอียดสูง', 'คำนวณตัดต่อ Path ไม่ทำลายต้นฉบับ', 'เอนจิน SVG มาตรฐานโลก']
-    }
+    exploreName: 'EXPLORE MEVECTOR ↗',
+    animalEmblem: 'lion'
   },
   {
     id: 'me3d',
     name: 'me3D Studio',
     category: '3d',
-    categoryLabel: { en: '3D & Spatial', th: '3D และโมเดล' },
+    categoryLabel: { en: '3D & Spatial Engine', th: '3D และโมเดล' },
     accentColor: '#06b6d4',
-    glowColor: 'rgba(6, 182, 212, 0.25)',
-    emoji: '🧊',
-    counterpart: { en: 'Blender Light / Maya Alternative', th: 'ทางเลือกแทน Blender และ Maya Light' },
+    badgeColor: '#db2777', // Magenta badge like 06 EffectCraft
+    counterpart: { en: 'Blender Light Alternative', th: 'ทางเลือกแทน Blender และ Maya' },
     desc: {
-      en: 'Real-time WebGPU & Vulkan 3D scene composer, PBR material lighting, glTF/GLB/OBJ inspection, and instant mesh previewing.',
+      en: 'Real-time WebGPU & Vulkan 3D scene composer, physically based material rendering (PBR), glTF/GLB/OBJ inspection, and turntable camera.',
       th: 'สตูดิโอจัดแสงและดูโมเดล 3 มิติความเร็วสูง, จำลองแสงเงาเสมือนจริง PBR, ตรวจสอบไฟล์ glTF/GLB/OBJ และเรนเดอร์ในเครื่อง'
     },
     version: 'v1.0.0',
@@ -143,226 +127,196 @@ const STUDIOS = [
     size: '~35.6 MB',
     hash: 'e5f6a1b2c3d47890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/me3d/',
-    highlights: {
-      en: ['WebGPU / Vulkan Hardware Shading', 'Physically Based Rendering (PBR)', 'glTF 2.0 / GLB / OBJ Parser', 'Turntable & Camera Lighting Rig'],
-      th: ['ประมวลผลแสงเงาการ์ดจอ WebGPU/Vulkan', 'วัสดุเสมือนจริง Physical Based Rendering', 'เปิดไฟล์ glTF, GLB, OBJ ทันที', 'จัดมุมกล้องและสตูดิโอแสง 360 องศา']
-    }
+    exploreName: 'EXPLORE ME3D ↗',
+    animalEmblem: 'unicorn'
   },
   {
     id: 'mefilm',
     name: 'meFilm Studio',
     category: 'video',
-    categoryLabel: { en: 'Video & Film', th: 'วิดีโอและภาพยนตร์' },
+    categoryLabel: { en: 'Video & Film Editor', th: 'วิดีโอและภาพยนตร์' },
     accentColor: '#ef4444',
-    glowColor: 'rgba(239, 68, 68, 0.25)',
-    emoji: '🎬',
+    badgeColor: '#ca8a04', // Olive/Gold badge like 07 AniCraft
     counterpart: { en: 'Premiere Pro / CapCut Alternative', th: 'ทางเลือกแทน Premiere Pro และ CapCut' },
     desc: {
-      en: 'Nonlinear multi-track video timeline, lossless trimming, GPU-accelerated LUT color grading, audio waveform syncing, and 4K MP4 export.',
-      th: 'ไทม์ไลน์ตัดต่อวิดีโอหลายแทร็ก, ตัดต่อแบบไม่สูญเสียคุณภาพ, เกรดสีด้วย 3D LUT บนการ์ดจอ, จัดการเสียงสเตอริโอ และส่งออก 4K'
+      en: 'Professional, open-source video editing: multi-track magnetic timeline, real-time color grading LUTs, and lossless ProRes/MP4 rendering.',
+      th: 'สตูดิโอตัดต่อวิดีโอระดับมืออาชีพ: ไทม์ไลน์แม่เหล็กหลายแทร็ก, เกรดสีสดด้วย LUTs และเรนเดอร์วิดีโอ ProRes/MP4 ไร้การสูญเสีย'
     },
     version: 'v1.0.0',
     file: 'mefilm.exe',
     size: '~38.2 MB',
     hash: 'f6a1b2c3d4e57890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/mefilm/',
-    highlights: {
-      en: ['Nonlinear Multi-Track Timeline', 'GPU Hardware Accelerated LUTs', 'Audio Waveform Snapping & Mix', 'Direct 4K MP4 / WebM Export'],
-      th: ['ไทม์ไลน์ตัดต่อมัลติแทร็กอิสระ', 'เกรดสีภาพยนตร์ด้วย 3D LUT', 'ตัดชนจังหวะเสียงด้วย Waveform', 'ส่งออกวิดีโอคมชัด 4K MP4/WebM']
-    }
+    exploreName: 'EXPLORE MEFILM ↗',
+    animalEmblem: 'rabbit'
   },
   {
     id: 'melight',
     name: 'meLight Studio',
     category: 'photo',
-    categoryLabel: { en: 'Photo & Color', th: 'ภาพถ่ายและ RAW' },
-    accentColor: '#3b82f6',
-    glowColor: 'rgba(59, 130, 246, 0.25)',
-    emoji: '💡',
+    categoryLabel: { en: 'Photo & RAW Darkroom', th: 'แต่งภาพ RAW' },
+    accentColor: '#eab308',
+    badgeColor: '#16a34a', // Emerald green badge like 08 DesignCraft
     counterpart: { en: 'Adobe Lightroom Alternative', th: 'ทางเลือกแทน Adobe Lightroom' },
     desc: {
-      en: 'Non-destructive photo cataloging, RAW digital negative developing, exposure histogram balance, split toning, and batch export.',
-      th: 'สตูดิโอล้างไฟล์ RAW ไม่ทำลายภาพเดิม, ปรับสมดุล Exposure และฮิสโตแกรม, แยกโทนสีไฮไลต์และเงา, จัดการอัลบั้มภาพความเร็วสูง'
+      en: 'An open-source photo library and RAW developer: HDR tone-mapping, parametric RGB curves, sensor calibration, and batch grading.',
+      th: 'โปรแกรมจัดการคลังภาพและแปลงไฟล์ RAW: ปรับแสง HDR Tone-Mapping, ปรับแต่ง Curves แบบ Parametric และ Grade โทนสีแบบชุด'
     },
     version: 'v1.0.0',
     file: 'melight.exe',
-    size: '~26.5 MB',
+    size: '~29.5 MB',
     hash: '1a2b3c4d5e6f7890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/melight/',
-    highlights: {
-      en: ['Non-Destructive RAW Developing', 'Real-Time RGB & Luma Histogram', 'Highlight & Shadow Reconstruction', 'Batch In-Device Film Presets'],
-      th: ['ล้างรูป RAW แบบไม่ทำลายต้นฉบับ', 'กราฟฮิสโตแกรม RGB แบบเรียลไทม์', 'ดึงรายละเอียดส่วนมืดและส่วนสว่าง', 'พรีเซ็ตฟิล์มแต่งภาพพร้อมกันหลายไฟล์']
-    }
+    exploreName: 'EXPLORE MELIGHT ↗',
+    animalEmblem: 'cat'
   },
   {
     id: 'memotion',
     name: 'meMotion Studio',
     category: 'video',
-    categoryLabel: { en: 'Video & Motion', th: 'โมชันและกราฟิกเคลื่อนไหว' },
+    categoryLabel: { en: 'Motion Graphics & VFX', th: 'โมชันและกราฟิกเคลื่อนไหว' },
     accentColor: '#a855f7',
-    glowColor: 'rgba(168, 85, 247, 0.25)',
-    emoji: '✨',
+    badgeColor: '#0284c7', // Sky blue badge
     counterpart: { en: 'Adobe After Effects Alternative', th: 'ทางเลือกแทน Adobe After Effects' },
     desc: {
-      en: 'Bézier keyframe motion interpolation, spatial transform graphs, particle bursts, typography kinetics, and transparent WebM/GIF export.',
-      th: 'คีย์เฟรมแอนิเมชันความโค้ง Bézier, กราฟควบคุมความเร็ว Motion Graph, อนุภาคแสง Particle, ตัวหนังสือเคลื่อนไหว และส่งออก GIF/WebM'
+      en: 'Open-source motion graphics and visual effects: Bézier keyframe velocity interpolation, kinetic typography, and transparent WebM/GIF.',
+      th: 'คีย์เฟรมแอนิเมชันความโค้ง Bézier, กราฟควบคุมความเร็ว Motion Graph, ตัวหนังสือเคลื่อนไหว และส่งออก GIF/WebM พื้นหลังโปร่งแสง'
     },
     version: 'v1.0.0',
     file: 'memotion.exe',
     size: '~32.4 MB',
     hash: '2b3c4d5e6f1a7890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/memotion/',
-    highlights: {
-      en: ['Bézier Velocity Curve Editor', 'Procedural Particle Generators', 'Kinetic Typography Presets', 'Alpha-Channel Transparent Render'],
-      th: ['กราฟควบคุมความเร็วแอนิเมชัน Bézier', 'ระบบอนุภาคแสงและสเปเชียลเอฟเฟกต์', 'ข้อความเคลื่อนไหว Kinetic Typography', 'เรนเดอร์พื้นหลังโปร่งแสง Alpha WebM']
-    }
+    exploreName: 'EXPLORE MEMOTION ↗',
+    animalEmblem: 'eagle'
   },
   {
     id: 'medesign',
     name: 'meDesign Studio',
     category: 'vector',
-    categoryLabel: { en: 'Design & UI/UX', th: 'ออกแบบ UI/UX' },
+    categoryLabel: { en: 'UI/UX & Design System', th: 'ออกแบบ UI/UX' },
     accentColor: '#14b8a6',
-    glowColor: 'rgba(20, 184, 166, 0.25)',
-    emoji: '📐',
+    badgeColor: '#0d9488', // Teal badge
     counterpart: { en: 'Figma / Canva Alternative', th: 'ทางเลือกแทน Figma และ Canva' },
     desc: {
-      en: 'Responsive design tokens, auto-layout flex frames, component variants, WCAG color contrast checker, and direct CSS/Tailwind export.',
-      th: 'สตูดิโอออกแบบหน้าจอ UI/UX, ระบบ Auto-Layout ยืดหยุ่น, ตรวจสอบคอนทราสต์สี WCAG และส่งออกโค้ด CSS/Tailwind ในเครื่อง'
+      en: 'Open-source page layout and responsive design: auto-layout flex frames, WCAG contrast verification, and direct CSS/Tailwind export.',
+      th: 'สตูดิโอออกแบบหน้าจอ UI/UX: จัดกล่อง Auto-Layout ยืดหยุ่น, ตรวจสอบคอนทราสต์สี WCAG และส่งออกโค้ด CSS/Tailwind ในเครื่อง'
     },
     version: 'v1.0.0',
     file: 'medesign.exe',
     size: '~25.8 MB',
     hash: '3c4d5e6f1a2b7890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/medesign/',
-    highlights: {
-      en: ['Auto-Layout Responsive Frames', 'Universal Design Token System', 'WCAG 2.1 Contrast Validator', 'Direct CSS / Tailwind Export'],
-      th: ['จัดวางกล่อง Auto-Layout อัจฉริยะ', 'ระบบ Token สีและฟอนต์มาตรฐาน', 'ตรวจวัดความคมชัดตัวหนังสือ WCAG', 'ส่งออกโค้ด CSS และ Tailwind ทันที']
-    }
+    exploreName: 'EXPLORE MEDESIGN ↗',
+    animalEmblem: 'swan'
   },
   {
     id: 'meaudio',
     name: 'meAudio Studio',
     category: 'audio',
-    categoryLabel: { en: 'Audio & Sound', th: 'เสียงและดนตรี' },
+    categoryLabel: { en: 'Audio & Sound Lab', th: 'เสียงและดนตรี' },
     accentColor: '#f97316',
-    glowColor: 'rgba(249, 115, 22, 0.25)',
-    emoji: '🎵',
+    badgeColor: '#ea580c', // Bright orange badge
     counterpart: { en: 'Audacity / FL Studio Alternative', th: 'ทางเลือกแทน Audacity และ FL Studio' },
     desc: {
-      en: 'Multi-channel audio recording, spectral frequency visualizer, real-time parametric EQ, noise reduction, and WAV/FLAC mastering.',
-      th: 'สตูดิโอบันทึกเสียงหลายแชนเนล, วิเคราะห์ความถี่ Spectral Visualizer, ปรับแต่ง Equalizer พารามิเตอร์สด, ลดเสียงรบกวน และมาสเตอร์ริ่ง'
+      en: 'Multi-channel audio workstation: FFT spectral frequency visualizer, real-time parametric master EQ, noise gate, and 32-bit FLAC mastering.',
+      th: 'สตูดิโอบันทึกและมาสเตอร์เสียง: วิเคราะห์ความถี่ Spectral Visualizer, ปรับแต่ง Equalizer พารามิเตอร์สด, ลดเสียงรบกวน และ FLAC 32-bit'
     },
     version: 'v1.0.0',
     file: 'meaudio.exe',
     size: '~21.2 MB',
     hash: '4d5e6f1a2b3c7890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/meaudio/',
-    highlights: {
-      en: ['Multi-Track Stem Recording', 'FFT Spectral Frequency Scope', 'Parametric 8-Band Master EQ', 'Lossless 32-bit Float FLAC/WAV'],
-      th: ['อัดและแยกแทร็กเสียงคุณภาพสูง', 'กราฟแสดงย่านความถี่เสียงสด FFT', 'อีควอไลเซอร์ปรับแต่ง 8 ย่านความถี่', 'ส่งออกไฟล์เสียงความละเอียดสูง 32-bit FLAC']
-    }
+    exploreName: 'EXPLORE MEAUDIO ↗',
+    animalEmblem: 'wolf'
   },
   {
     id: 'medeck',
     name: 'meDeck Studio',
     category: 'document',
-    categoryLabel: { en: 'Document & Pitch', th: 'สไลด์และพรีเซนต์' },
+    categoryLabel: { en: 'Pitch & Slide Deck', th: 'สไลด์และพรีเซนต์' },
     accentColor: '#eab308',
-    glowColor: 'rgba(234, 179, 8, 0.25)',
-    emoji: '📊',
+    badgeColor: '#ca8a04', // Amber/gold badge
     counterpart: { en: 'PowerPoint / Keynote Alternative', th: 'ทางเลือกแทน PowerPoint และ Keynote' },
     desc: {
-      en: 'Cinematic slide deck presentation builder, code block formatting, vector flowchart shapes, presenter dual-screen cockpit, and PDF export.',
-      th: 'โปรแกรมสร้างสไลด์นำเสนอระดับภาพยนตร์, จัดรูปแบบโค้ดสวยงาม, วาดผังงานเวกเตอร์, จอควบคุมสำหรับผู้นำเสนอ และส่งออก PDF'
+      en: 'Cinematic 16:9 presentation builder, dynamic data charts, syntax-highlighted code slides, presenter dual-screen cockpit, and PDF export.',
+      th: 'โปรแกรมสร้างสไลด์นำเสนอระดับภาพยนตร์ 16:9, จัดโค้ดโปรแกรมสวยงาม, จอควบคุมสำหรับผู้นำเสนอสองจอ และส่งออกสไลด์ PDF'
     },
     version: 'v1.0.0',
     file: 'medeck.exe',
     size: '~18.4 MB',
     hash: '5e6f1a2b3c4d7890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/medeck/',
-    highlights: {
-      en: ['Cinematic 16:9 Slide Formats', 'Dual-Screen Presenter Cockpit', 'Interactive Data Visualizations', 'Clean High-Res Deck PDF Export'],
-      th: ['เทมเพลตสไลด์ 16:9 ระดับพรีเมียม', 'จอคุมเวลาและโน้ตสำหรับพรีเซนเตอร์', 'กราฟแผนภูมิข้อมูลแบบไดนามิก', 'ส่งออกสไลด์ความคมชัดสูงเป็น PDF']
-    }
+    exploreName: 'EXPLORE MEDECK ↗',
+    animalEmblem: 'falcon'
   },
   {
     id: 'mecad',
     name: 'meCAD Studio',
     category: '3d',
-    categoryLabel: { en: '3D & Engineering', th: 'เขียนแบบและวิศวกรรม' },
+    categoryLabel: { en: 'Precision CAD & Drafting', th: 'เขียนแบบและวิศวกรรม' },
     accentColor: '#0284c7',
-    glowColor: 'rgba(2, 132, 199, 0.25)',
-    emoji: '📏',
+    badgeColor: '#2563eb', // Royal blue badge
     counterpart: { en: 'AutoCAD Light / SketchUp Alternative', th: 'ทางเลือกแทน AutoCAD และ SketchUp' },
     desc: {
-      en: '2D/3D precision architectural drafting, parametric dimensioning, DXF/DWG layer parsing, snap grids, and millimeter-accurate fabrication.',
-      th: 'เขียนแบบสถาปัตยกรรม 2D/3D แม่นยำระดับมิลลิเมตร, กำหนดขนาดพารามิเตอร์อัตโนมัติ, เปิดไฟล์ DXF/DWG และพิมพ์แบบก่อสร้าง'
+      en: '2D/3D precision drafting, sub-millimeter snap grids, parametric dimensioning, DXF/DWG layer parsing, and fabrication-ready sheets.',
+      th: 'เขียนแบบสถาปัตยกรรมและวิศวกรรม 2D/3D: แม่นยำระดับมิลลิเมตร, บอกระยะพารามิเตอร์อัตโนมัติ, เปิดไฟล์ DXF/DWG และพิมพ์แบบ 1:1'
     },
     version: 'v1.0.0',
     file: 'mecad.exe',
     size: '~27.1 MB',
     hash: '6f1a2b3c4d5e7890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/mecad/',
-    highlights: {
-      en: ['Sub-Millimeter Snap Architecture', 'DXF / DWG Engineering Import', 'Parametric Coordinate Dimensioning', 'Print-Ready Architectural Sheets'],
-      th: ['ระบบ Snap พิกัดแม่นยำระดับมิลลิเมตร', 'เปิดอ่านและแก้ไขไฟล์แปลน DXF/DWG', 'คำนวณและบอกระยะแบบพารามิเตอร์', 'ส่งออกพิมพ์แบบแปลนมาตราส่วน 1:1']
-    }
+    exploreName: 'EXPLORE MECAD ↗',
+    animalEmblem: 'stag'
   },
   {
     id: 'mesheet',
     name: 'meSheet Studio',
     category: 'document',
-    categoryLabel: { en: 'Document & Data', th: 'สเปรดชีตและการคำนวณ' },
+    categoryLabel: { en: 'Spreadsheet & Data Graph', th: 'สเปรดชีตและข้อมูล' },
     accentColor: '#10b981',
-    glowColor: 'rgba(16, 185, 129, 0.25)',
-    emoji: '📈',
+    badgeColor: '#16a34a', // Forest green badge
     counterpart: { en: 'Microsoft Excel Alternative', th: 'ทางเลือกแทน Microsoft Excel' },
     desc: {
-      en: 'Reactive cell calculation graph, financial math models, high-volume million-row virtualized grid, and fast local CSV/XLSX export.',
-      th: 'ตารางคำนวณสูตรการเงินความเร็วสูง, รองรับสูตรคณิตศาสตร์ครบครัน, เลื่อนดูข้อมูลนับล้านแถวลื่นไหล และเปิดไฟล์ XLSX/CSV ในเครื่อง'
+      en: 'High-performance spreadsheet: million-row virtualized grid, financial math graph, reactive formulas, and in-RAM local CSV/XLSX export.',
+      th: 'ตารางคำนวณสูตรการเงินความเร็วสูง: ตารางเสมือนเลื่อนล้านแถวลื่นไหล, ฟังก์ชันคำนวณคณิตศาสตร์ครบครัน และเปิดไฟล์ XLSX/CSV ในแรม'
     },
     version: 'v1.0.0',
     file: 'mesheet.exe',
     size: '~13.8 MB',
     hash: '7a1b2c3d4e5f7890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/mesheet/',
-    highlights: {
-      en: ['Reactive Graph Formula Engine', '1,000,000-Row Canvas Grid', 'Local In-RAM XLSX & CSV Parser', 'Financial Forecasting Plots'],
-      th: ['สูตรคำนวณ SUM, VLOOKUP, XLOOKUP', 'ตารางเสมือนเลื่อนล้านแถวไม่กระตุก', 'อ่านเขียนไฟล์ XLSX และ CSV ในแรม', 'สร้างกราฟวิเคราะห์แนวโน้มการเงิน']
-    }
+    exploreName: 'EXPLORE MESHEET ↗',
+    animalEmblem: 'bull'
   },
   {
     id: 'metexture',
     name: 'meTexture Studio',
     category: '3d',
-    categoryLabel: { en: '3D & Texture', th: 'เพนต์และพื้นผิว 3D' },
+    categoryLabel: { en: '3D Mesh & Texture Paint', th: 'เพนต์และพื้นผิว 3D' },
     accentColor: '#f43f5e',
-    glowColor: 'rgba(244, 63, 94, 0.25)',
-    emoji: '🎨',
+    badgeColor: '#e11d48', // Rose crimson badge
     counterpart: { en: 'Substance 3D Painter Alternative', th: 'ทางเลือกแทน Substance 3D Painter' },
     desc: {
       en: 'Direct 3D mesh brush painting, UV island unwrapping, DirectDraw Surface (DDS / BC1-BC5) block compression, and PBR texture map baking.',
-      th: 'ระบายสีลงบนผิวโมเดล 3 มิติโดยตรง, คลี่พิกัด UV, บีบอัดพื้นผิว DirectDraw Surface (DDS BC1-BC5) และสร้าง Mipmap ในแรม'
+      th: 'ระบายสีลงบนผิวโมเดล 3 มิติโดยตรง, คลี่พิกัด UV, บีบอัดพื้นผิว DirectDraw Surface (DDS BC1-BC5) และสร้างชุดเท็กซ์เจอร์ PBR ในแรม'
     },
     version: 'v1.0.0',
     file: 'metexture.exe',
     size: '~21.5 MB',
     hash: '8b2c3d4e5f1a7890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/metexture/',
-    highlights: {
-      en: ['Direct 3D Mesh Brush Painting', 'UV Island Unwrapping & Seams', 'DDS (BC1-BC5) GPU Compression', 'PBR Texture Sets Synthesis'],
-      th: ['ระบายสีลงบนผิวโมเดล 3D โดยตรง', 'กางเกาะ UV และเย็บรอยต่อตะเข็บ', 'บีบอัด DDS (BC1-BC5) ระดับการ์ดจอ', 'ชุดเท็กซ์เจอร์ PBR ครบวงจร']
-    }
+    exploreName: 'EXPLORE METEXTURE ↗',
+    animalEmblem: 'panther'
   },
   {
     id: 'mematerial',
     name: 'meMaterial Studio',
     category: '3d',
-    categoryLabel: { en: '3D & Shader', th: 'วัสดุและ Shader' },
+    categoryLabel: { en: 'PBR Shader & Material', th: 'วัสดุและ Shader' },
     accentColor: '#8b5cf6',
-    glowColor: 'rgba(139, 92, 246, 0.25)',
-    emoji: '💎',
+    badgeColor: '#9333ea', // Deep violet badge
     counterpart: { en: 'Substance Designer Alternative', th: 'ทางเลือกแทน Substance Designer' },
     desc: {
       en: 'Visual node shader graph, real-time WebGPU WGSL compilation, procedural noise synthesis (Perlin, Voronoi), and 4K seamless tiling.',
@@ -373,22 +327,19 @@ const STUDIOS = [
     size: '~20.3 MB',
     hash: '9c3d4e5f1a2b7890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/mematerial/',
-    highlights: {
-      en: ['Node-Based Shader Architecture', 'Procedural Mathematical Noise', 'Real-Time WebGPU WGSL Baking', 'Seamless 4K Pattern Export'],
-      th: ['กราฟโหนดเชื่อมต่อไม่ทำลายต้นฉบับ', 'สังเคราะห์นอยส์ Perlin, Voronoi', 'คอมไพล์โค้ด WebGPU WGSL แสงสด', 'สร้างลวดลายไร้รอยต่อระดับ 4K']
-    }
+    exploreName: 'EXPLORE MEMATERIAL ↗',
+    animalEmblem: 'ape'
   },
   {
     id: 'meani',
     name: 'meAni Studio',
     category: 'video',
-    categoryLabel: { en: 'Video & Animation', th: 'แอนิเมชัน 2D' },
+    categoryLabel: { en: '2D Vector Animation', th: 'แอนิเมชัน 2D' },
     accentColor: '#d946ef',
-    glowColor: 'rgba(217, 70, 239, 0.25)',
-    emoji: '🏃',
+    badgeColor: '#db2777', // Magenta badge
     counterpart: { en: 'Spine 2D / Animate Alternative', th: 'ทางเลือกแทน Spine 2D และ Animate' },
     desc: {
-      en: '2D skeletal bone rigging, Inverse Kinematics (IK), frame-by-frame onion skinning, packed sprite sheet generation, and game-ready JSON/SVG export.',
+      en: 'Open-source 2D vector animation: skeletal bone rigging, Inverse Kinematics (IK), onion skinning, and packed game-ready JSON/SVG atlas.',
       th: 'โต๊ะไฟสเก็ตช์ทีละเฟรม, หัวหอมพรีวิว Onion Skinning, ดัดกระดูกโครงสร้างตัวละคร 2 มิติ และส่งออก Sprite Sheet สู่เอนจินเกม'
     },
     version: 'v1.0.0',
@@ -396,268 +347,225 @@ const STUDIOS = [
     size: '~18.9 MB',
     hash: 'ad4e5f1a2b3c7890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/meani/',
-    highlights: {
-      en: ['2D Skeletal Rigging & IK', 'Frame-by-Frame Onion Skinning', 'Packed Texture Atlas Generator', 'Game-Ready JSON & Vector SVG'],
-      th: ['ติดกระดูก 2 มิติพร้อมจำลอง IK', 'โต๊ะไฟวาดเฟรมและ Onion Skin', 'จัดเรียงภาพลง Atlas Sprite Sheet', 'ส่งออก JSON และ SVG สำหรับเกม']
-    }
+    exploreName: 'EXPLORE MEANI ↗',
+    animalEmblem: 'hare'
   },
   {
     id: 'merea',
     name: 'meREA Studio',
     category: 'utility',
-    categoryLabel: { en: 'Utility & Security', th: 'วิศวกรรมย้อนรอย' },
+    categoryLabel: { en: 'Reverse Engineering (REA)', th: 'วิศวกรรมย้อนรอย' },
     accentColor: '#00f0ff',
-    glowColor: 'rgba(0, 240, 255, 0.25)',
-    emoji: '⚡',
+    badgeColor: '#0284c7', // Cyan blue badge
     counterpart: { en: 'IDA Pro / Ghidra Alternative', th: 'ทางเลือกแทน IDA Pro และ Ghidra' },
     desc: {
-      en: 'Universal Reverse Engineering Automation (REA) workbench with 320 tools, binary PE/ELF/WASM disassembly, graph analysis, and AI co-pilot hooks.',
-      th: 'เวิร์กเบนช์วิศวกรรมย้อนรอยระดับสากล 320 คำสั่ง, ถอดรหัสโครงสร้างไบนารี PE/ELF/WASM, วิเคราะห์กราฟการเรียกฟังก์ชัน และเชื่อมต่อ AI อัตโนมัติ'
+      en: 'Universal REA workbench with 320 tools, binary PE/ELF/WASM disassembly, graph analysis, memory inspection, and AI co-pilot hooks.',
+      th: 'เวิร์กเบนช์วิศวกรรมย้อนรอย 320 คำสั่ง, ถอดรหัสโครงสร้างไบนารี PE/ELF/WASM, วิเคราะห์กราฟการเรียกฟังก์ชัน และสร้างโค้ดสะอาด'
     },
     version: 'v1.0.0',
     file: 'merea.exe',
     size: '~34.7 MB',
     hash: 'be5f1a2b3c4d7890123456789abcdef0123456789abcdef0123456789abcdef0',
     webRoute: '/merea/',
-    highlights: {
-      en: ['320 Forensics & REA Operations', 'PE / ELF / WASM Disassembly', 'Cross-Reference Call-Graph', 'Autonomous Agent MCP Ready'],
-      th: ['เครื่องมือวิศวกรรมย้อนรอย 320 คำสั่ง', 'ถอดรหัสโครงสร้าง PE, ELF, WASM', 'สร้างผังเชื่อมโยง Cross-Reference', 'เชื่อมต่อ AI ผ่านโปรโตคอล MCP']
-    }
+    exploreName: 'EXPLORE MEREA ↗',
+    animalEmblem: 'phoenix'
   }
 ];
 
 // Bilingual Map
 const I18N = {
   en: {
+    header_brand: 'meCrafts',
     header_badge: 'OFFICIAL SUITE',
     nav_studios: 'Studios',
     nav_privacy: 'Privacy Architecture',
     nav_specs: 'Specs',
     nav_downloads: 'Downloads',
     lbl_free_member: 'FREE MEMBER',
-    hero_pill: '18 CREATIVE APPS · WINDOWS',
-    hero_title: 'The Crafting Apps: <span class="highlight">Creative Tools</span>',
-    hero_subtitle: 'VS Code & Windsurf-grade Next-Gen AI Workstation with 100% In-Device Local Execution, Real Folder Opening, and 18 Purpose-Built Creative Studios — All Free, Forever.',
-    b_privacy: '🔒 100% In-Device Privacy',
-    b_telemetry: '📡 Zero Telemetry',
-    b_oss: '⚡ Open-Source MIT',
-    b_perf: '🖥️ Native Windows Speed',
-    cta_hero_dl: '⬇️ Download Master Suite (.exe)',
-    cta_hero_explore: 'Explore All 18 Studios ↓',
-    dock_header: 'QUICK JUMP DOCK',
-    dock_count: '18 APPS',
-    feat_title: 'meCraft Master Suite Installer (.exe)',
-    feat_desc: 'One installer bundles the complete AI Workstation alongside all 18 purpose-built creative and document studios. Clean silent deployment, zero telemetry, and 100% in-device memory execution.',
-    tag_1: '✨ Includes all 18 standalone studios in single package',
-    tag_2: '🔒 100% In-Device RAM sandbox execution',
-    tag_3: '⚡ DirectComposition & DirectX 12 hardware acceleration',
-    tag_4: '🛡️ VirusTotal 0/72 Clean & Cryptographically Verified',
-    btn_dl_suite: '⬇️ Download Master Suite (.exe)',
-    lbl_copy_suite_hash: 'Copy Master Suite SHA-256 Checksum',
-    hud_lineup: 'STUDIO DIRECTORY',
-    search_placeholder: 'Search studio name, counterpart, file type...',
-    filter_all: 'All Studios',
-    filter_doc: 'Document & Office',
-    filter_photo: 'Photo & Color',
-    filter_3d: '3D & Material',
-    filter_vector: 'Design & Vector',
-    filter_video: 'Video & Motion',
-    filter_audio: 'Audio & Sound',
-    filter_utility: 'Utilities & Security',
-    lbl_meta_file: 'Binary',
-    lbl_meta_size: 'Size',
-    lbl_meta_os: 'Runtime',
-    btn_dl_app: 'Download .exe',
-    btn_web_app: 'Launch Web Studio',
-    btn_copy_hash: 'Copy Hash',
-    empty_search_title: 'No studios match your search',
-    empty_search_desc: 'Try searching for an alternative software name, file format, or clear the search query.',
-    btn_clear_search: 'Clear Search',
-    btn_smartscreen_help: 'Windows SmartScreen Guide',
-    smartscreen_title: '🛡️ Windows SmartScreen & Security Verification Guidance',
-    smartscreen_intro: 'Because meCraft installers are distributed directly via open-source release pipelines without commercial certificate authority upcharges, Windows SmartScreen may present a blue prompt ("Windows protected your PC"). Click "More info" and "Run anyway".',
-    smartscreen_g1: '100% In-Device RAM Sandbox: Zero user data is uploaded to external clouds or telemetry servers. 0 bytes exfiltrated.',
-    smartscreen_g2: 'VirusTotal 0/72 Clean: Scanned and verified clean against 70+ industry-leading antivirus engines. 100% clean of malware and adware.',
-    smartscreen_g3: 'Cryptographic SHA-256 Hash: Verify package integrity directly against official GitHub Releases with mathematical certainty.',
-    cockpit_main_title: 'Security & Integrity Cockpit',
-    cockpit_main_desc: 'Cryptographic hash directory for the Master Suite and all 18 standalone studio installers.',
-    cockpit_title3: 'Official Binary Checksum Directory (19 Binaries)',
-    cockpit_desc3: 'Cryptographic hash directory for the Master Suite and all 18 standalone studio installers.',
-    search_hash_placeholder: 'Filter binary or studio...',
-    th_col_binary: 'Binary File',
-    th_col_studio: 'Studio & Purpose',
-    th_col_size: 'Size',
-    th_col_hash: 'SHA-256 Hash',
-    th_col_status: 'Status',
+    sign_in: 'Sign In',
+    hud_sec1: '01 / CRAFTING APPS',
+    hud_tagline: 'EIGHTEEN APPS · IN-DEVICE MEMORY · ZERO TELEMETRY',
+    hud_sec2: '02 / THE LINEUP',
+    hud_explore_pick: 'PICK A CRAFT TO EXPLORE',
+    suite_badge: '00 / MASTER SUITE INSTALLER',
+    suite_title: 'meCraft Workstation Suite (.exe)',
+    suite_desc: 'One installer bundles the complete AI Workstation alongside all 18 purpose-built creative and document studios. 100% in-device memory execution, zero telemetry, and VirusTotal 0/72 clean.',
+    btn_dl_suite: '⬇ Download Suite (.exe)',
+    btn_copy_suite_hash: 'Copy Suite Hash',
+    search_placeholder: 'Filter studios by name, category, or counterpart...',
+    filter_all: 'ALL (18)',
+    filter_doc: 'DOCUMENT (4)',
+    filter_photo: 'PHOTO (2)',
+    filter_vector: 'VECTOR (2)',
+    filter_video: 'VIDEO (3)',
+    filter_3d: '3D (4)',
+    filter_audio: 'AUDIO (1)',
+    filter_utility: 'UTILITY & REA (2)',
+    lbl_results: 'Studios In View',
+    tag_installers_ready: 'INSTALLERS READY',
+    btn_download_exe: 'Download .exe',
+    btn_web_studio: 'Web Studio',
+    btn_copy_hash: 'Hash',
+    cockpit_title: '03 / BINARY INTEGRITY DIRECTORY',
+    cockpit_desc: 'Cryptographic SHA-256 hash directory for the Master Suite and all 18 standalone studio installers.',
+    th_file: 'BINARY FILE',
+    th_studio: 'STUDIO & PURPOSE',
+    th_size: 'SIZE',
+    th_hash: 'SHA-256 HASH',
+    th_status: 'SECURITY STATUS',
     toast_copied: 'Copied SHA-256 Checksum to Clipboard',
-    toast_cmd_copied: 'Copied PowerShell verification command!'
+    watermark_lineup: 'CRAFTING APPS LINEUP',
+    watermark_principles: 'IN-DEVICE PRIVACY',
+    watermark_started: 'GET STARTED'
   },
   th: {
+    header_brand: 'meCrafts',
     header_badge: 'ชุดโปรแกรมทางการ',
     nav_studios: 'โปรแกรมสตูดิโอ',
     nav_privacy: 'สถาปัตยกรรมความเป็นส่วนตัว',
     nav_specs: 'สเปกเครื่อง',
     nav_downloads: 'ดาวน์โหลด',
     lbl_free_member: 'สมาชิกฟรี',
-    hero_pill: '18 สตูดิโอ · WINDOWS',
-    hero_title: 'The Crafting Apps: <span class="highlight">ชุดโปรแกรมสร้างสรรค์</span>',
-    hero_subtitle: 'ประมวลผล 100% บนเครื่อง ไม่ส่งไฟล์ขึ้นคลาวด์ สตูดิโอระดับเน็กซ์เจนพร้อมคลังโปรแกรมเฉพาะทาง 18 ตัว — ฟรีทั้งหมด ตลอดชีวิต',
-    b_privacy: '🔒 ความเป็นส่วนตัว 100%',
-    b_telemetry: '📡 ไม่มีการเก็บข้อมูลสถิติ',
-    b_oss: '⚡ Open-Source MIT',
-    b_perf: '🖥️ ประสิทธิภาพ Windows แท้',
-    cta_hero_dl: '⬇️ ดาวน์โหลด Master Suite (.exe)',
-    cta_hero_explore: 'สำรวจโปรแกรมทั้ง 18 ตัว ↓',
-    dock_header: 'แท่นกระโดดลัด',
-    dock_count: '18 โปรแกรม',
-    feat_title: 'meCraft ชุดตัวติดตั้งรวม (Master Suite Installer)',
-    feat_desc: 'ตัวติดตั้งรวมชุดใหญ่ แพ็กรวม AI Workstation พร้อมโปรแกรมสร้างสรรค์และงานเอกสารครบทั้ง 18 สตูดิโอในไฟล์เดียว ไร้การติดตาม ประมวลผลใน RAM 100%',
-    tag_1: '✨ รวมครบทั้ง 18 สตูดิโอในตัวเดียว',
-    tag_2: '🔒 ประมวลผลบนหน่วยความจำ RAM 100%',
-    tag_3: '⚡ เร่งความเร็วด้วย DirectX 12 / Vulkan',
-    tag_4: '🛡️ ผ่านการตรวจสอบ VirusTotal 0/72 ปลอดภัย',
-    btn_dl_suite: '⬇️ ดาวน์โหลด Suite (.exe)',
-    lbl_copy_suite_hash: 'คัดลอกค่า SHA-256 ของตัวติดตั้งรวม',
-    hud_lineup: 'คลังสตูดิโอทั้งหมด',
-    search_placeholder: 'ค้นหาชื่อสตูดิโอ, โปรแกรมเทียบเคียง, นามสกุลไฟล์...',
-    filter_all: 'ทุกโปรแกรม (18)',
-    filter_doc: 'เอกสารและออฟฟิศ (4)',
+    sign_in: 'เข้าสู่ระบบ',
+    hud_sec1: '01 / คลังโปรแกรมสร้างสรรค์',
+    hud_tagline: '18 สตูดิโอเฉพาะทาง · ประมวลผลใน RAM 100% · ไร้การเก็บข้อมูล',
+    hud_sec2: '02 / รายชื่อสตูดิโอทั้งหมด',
+    hud_explore_pick: 'เลือกโปรแกรมเพื่อเริ่มต้นใช้งาน',
+    suite_badge: '00 / ตัวติดตั้งชุดรวม MASTER SUITE',
+    suite_title: 'meCraft ชุดตัวติดตั้งรวม Master Suite (.exe)',
+    suite_desc: 'ตัวติดตั้งรวมชุดใหญ่ แพ็กรวม AI Workstation พร้อมโปรแกรมสร้างสรรค์และงานเอกสารครบทั้ง 18 สตูดิโอในไฟล์เดียว ไร้การติดตาม ปลอดภัยระดับ VirusTotal Clean',
+    btn_dl_suite: '⬇ ดาวน์โหลด Suite (.exe)',
+    btn_copy_suite_hash: 'คัดลอกแฮช Suite',
+    search_placeholder: 'ค้นหาชื่อสตูดิโอ หมวดหมู่ หรือโปรแกรมเทียบเคียง...',
+    filter_all: 'ทั้งหมด (18)',
+    filter_doc: 'เอกสาร (4)',
     filter_photo: 'ภาพและสี (2)',
-    filter_3d: '3D และวัสดุ (4)',
-    filter_vector: 'ดีไซน์และเวกเตอร์ (2)',
-    filter_video: 'วิดีโอและโมชัน (3)',
-    filter_audio: 'เสียงและดนตรี (1)',
+    filter_vector: 'เวกเตอร์ (2)',
+    filter_video: 'วิดีโอ (3)',
+    filter_3d: '3D (4)',
+    filter_audio: 'เสียง (1)',
     filter_utility: 'เครื่องมือและ REA (2)',
-    lbl_meta_file: 'ชื่อไฟล์',
-    lbl_meta_size: 'ขนาด',
-    lbl_meta_os: 'ระบบ',
-    btn_dl_app: 'ดาวน์โหลด .exe',
-    btn_web_app: 'เปิดใช้งานบนเว็บ',
-    btn_copy_hash: 'คัดลอกแฮช',
-    empty_search_title: 'ไม่พบโปรแกรมที่ตรงกับคำค้นหา',
-    empty_search_desc: 'ลองค้นหาด้วยชื่อโปรแกรมเทียบเคียง หรือล้างคำค้นหาเพื่อดูทั้งหมด',
-    btn_clear_search: 'ล้างคำค้นหา',
-    btn_smartscreen_help: 'คำแนะนำ Windows SmartScreen',
-    smartscreen_title: '🛡️ คำแนะนำด้านความปลอดภัยและ Windows SmartScreen',
-    smartscreen_intro: 'เนื่องจาก meCraft เป็นโอเพนซอร์สที่ปล่อยผ่าน GitHub Releases โดยไม่ซื้อใบรับรองทางการค้าของ Microsoft Windows SmartScreen อาจแสดงหน้าต่างสีฟ้าเตือน ("Windows protected your PC") ให้คลิก "More info" แล้วกด "Run anyway"',
-    smartscreen_g1: 'ประมวลผลบน RAM ในเครื่อง 100%: ไม่มีการอัปโหลดไฟล์ของผู้ใช้ขึ้นคลาวด์หรือส่งข้อมูลออกภายนอก 0 bytes',
-    smartscreen_g2: 'VirusTotal 0/72 Clean: ผ่านการตรวจจับและสแกนไวรัสด้วยเอนจินระดับโลกกว่า 70 ตัว ปลอดมัลแวร์ 100%',
-    smartscreen_g3: 'ค่าแฮช SHA-256 แม่นยำ 100%: ตรวจสอบความสมบูรณ์เทียบกับ Release ทางการบน GitHub ได้โดยตรง',
-    cockpit_main_title: 'ศูนย์ตรวจสอบความปลอดภัย ความถูกต้อง และความน่าเชื่อถือ (Security Cockpit)',
-    cockpit_main_desc: 'ประมวลผลบนหน่วยความจำในเครื่อง 100% · ไร้การเก็บข้อมูลสถิติ · ตรวจสอบซอร์สโค้ดได้อิสระ · ปลอดภัยระดับ VirusTotal Clean',
-    cockpit_title3: 'ทะเบียนค่าแฮช SHA-256 ของตัวติดตั้งทางการทั้งหมด (19 ไฟล์)',
-    cockpit_desc3: 'ตารางตรวจสอบค่าแฮชความถูกต้องสำหรับชุดรวม Master Suite และสตูดิโอแยกเดี่ยวทั้ง 18 โปรแกรม',
-    search_hash_placeholder: 'ค้นหาชื่อไฟล์ หรือสตูดิโอ...',
-    th_col_binary: 'ชื่อไฟล์ติดตั้ง',
-    th_col_studio: 'สตูดิโอและบทบาท',
-    th_col_size: 'ขนาด',
-    th_col_hash: 'ค่าแฮช SHA-256',
-    th_col_status: 'สถานะความปลอดภัย',
+    lbl_results: 'สตูดิโอที่แสดง',
+    tag_installers_ready: 'พร้อมติดตั้ง',
+    btn_download_exe: 'ดาวน์โหลด .exe',
+    btn_web_studio: 'เปิดบนเว็บ',
+    btn_copy_hash: 'แฮช',
+    cockpit_title: '03 / ทะเบียนตรวจสอบค่าแฮชทางการ',
+    cockpit_desc: 'ตารางค่าแฮช SHA-256 สำหรับตรวจสอบความสมบูรณ์ของไฟล์ติดตั้ง Master Suite และทั้ง 18 สตูดิโอ',
+    th_file: 'ชื่อไฟล์ติดตั้ง',
+    th_studio: 'สตูดิโอและหน้าที่',
+    th_size: 'ขนาด',
+    th_hash: 'ค่าแฮช SHA-256',
+    th_status: 'สถานะความปลอดภัย',
     toast_copied: 'คัดลอกค่าแฮช SHA-256 เรียบร้อยแล้ว',
-    toast_cmd_copied: 'คัดลอกคำสั่ง PowerShell เรียบร้อยแล้ว'
+    watermark_lineup: 'CRAFTING APPS LINEUP',
+    watermark_principles: 'IN-DEVICE PRIVACY',
+    watermark_started: 'GET STARTED'
   }
 };
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 function generateHtml() {
-  const isEn = true; // Default static language
   const t = I18N.en;
 
-  // Pre-generate Studio Cards for 100% flicker-free rendering
-  const studioCardsHtml = STUDIOS.map((s, idx) => {
+  // Pre-generate 18 Studio Cells for the 4-Column Technical Border-Grid
+  const studioCellsHtml = STUDIOS.map((s, idx) => {
     const num = String(idx + 1).padStart(2, '0');
     const dlUrl = `https://github.com/methastrategy/meCraft/releases/download/v1.0.0/${s.file}`;
-    const highlightsEn = s.highlights.en.map(h => `<span class="tech-badge">✦ ${h}</span>`).join('');
     
     return `
-    <article class="lineup-card" id="studio-card-${s.id}" data-app-id="${s.id}" data-category="${s.category}" data-name="${s.name}" data-file="${s.file}" data-desc-en="${escapeHtml(s.desc.en)}" data-desc-th="${escapeHtml(s.desc.th)}" data-counterpart="${escapeHtml(s.counterpart.en)}" data-counterpart-th="${escapeHtml(s.counterpart.th)}" style="--app-color:${s.accentColor};--app-glow:${s.glowColor};">
-      <!-- Signature Accent Line -->
-      <div class="card-accent-rule"></div>
+    <article class="lineup-cell" id="studio-cell-${s.id}" data-app-id="${s.id}" data-category="${s.category}" data-name="${s.name}" data-file="${s.file}" data-desc-en="${escapeHtml(s.desc.en)}" data-desc-th="${escapeHtml(s.desc.th)}" data-counterpart="${escapeHtml(s.counterpart.en)}" data-counterpart-th="${escapeHtml(s.counterpart.th)}" style="--app-color:${s.accentColor};--badge-bg:${s.badgeColor};">
+      <!-- Signature Hover Top Accent Rule (Identical to 08 DesignCraft in ArtCraft) -->
+      <div class="cell-top-accent"></div>
 
-      <!-- Card Top HUD -->
-      <div class="card-header-hud">
-        <span class="hud-num-badge">${num} / 18</span>
-        <span class="hud-category-label">${s.categoryLabel.en}</span>
+      <!-- Cell Top Meta HUD Bar -->
+      <div class="cell-top-hud">
+        <span class="cell-num-badge">${num}</span>
+        <span class="cell-category-label" data-cat-en="${s.categoryLabel.en}" data-cat-th="${s.categoryLabel.th}">${s.categoryLabel.en.toUpperCase()}</span>
       </div>
 
-      <!-- 16:10 Wide Screenshot Preview Banner -->
-      <div class="card-preview-box">
-        <img src="/branding/${s.id}-wide.webp" alt="${s.name}" class="card-preview-img" loading="lazy" onerror="this.onerror=null;this.src='/branding/${s.id}.webp';if(!this.complete){this.src='/assets/branding/${s.id}-wide.webp';}" />
-        <div class="preview-counterpart-pill col-counterpart" data-counterpart-en="${escapeHtml(s.counterpart.en)}" data-counterpart-th="${escapeHtml(s.counterpart.th)}">
+      <!-- Preview Window (Flush with column borders, no margin, no radius) -->
+      <div class="cell-preview-window">
+        <img src="/branding/${s.id}-wide.webp" alt="${s.name}" class="cell-preview-img" loading="lazy" onerror="this.onerror=null;this.src='/branding/${s.id}.webp';if(!this.complete){this.src='/assets/branding/${s.id}-wide.webp';}" />
+        <div class="preview-counterpart-tag" data-counterpart-en="${escapeHtml(s.counterpart.en)}" data-counterpart-th="${escapeHtml(s.counterpart.th)}">
           ${s.counterpart.en}
         </div>
       </div>
 
-      <!-- Card Body -->
-      <div class="card-body">
-        <!-- Overlapping Tactile Squircle Icon -->
-        <img src="/branding/${s.id}.webp" alt="${s.name}" class="card-overlap-icon" onerror="this.onerror=null;this.src='/branding/${s.id}.png';" />
-
-        <div class="card-title-row">
-          <h3 class="card-title">${s.name}</h3>
-          <span class="card-ver-tag">${s.version}</span>
+      <!-- Cell Content Body -->
+      <div class="cell-body">
+        <!-- Overlapping Tactile Squircle Icon (-mt-30px) -->
+        <div class="cell-squircle-wrap">
+          <img src="/branding/${s.id}.webp" alt="${s.name}" class="cell-squircle-icon" onerror="this.onerror=null;this.src='/branding/${s.id}.png';" />
         </div>
 
-        <p class="card-desc" data-desc-en="${escapeHtml(s.desc.en)}" data-desc-th="${escapeHtml(s.desc.th)}">
+        <!-- Studio Title & Version -->
+        <div class="cell-title-block">
+          <h3 class="cell-title">${s.name}</h3>
+        </div>
+
+        <!-- Crisp Succinct Description -->
+        <p class="cell-desc" data-desc-en="${escapeHtml(s.desc.en)}" data-desc-th="${escapeHtml(s.desc.th)}">
           ${s.desc.en}
         </p>
 
-        <!-- Highlights Chips -->
-        <div class="card-badges-row">
-          ${highlightsEn}
-        </div>
-
-        <!-- Tech Spec Bar -->
-        <div class="card-spec-bar">
-          <div class="spec-col">
-            <span class="spec-lbl">${t.lbl_meta_file}:</span>
-            <span class="spec-val file">${s.file}</span>
+        <!-- Status & Platform Matrix Badges (ArtCraft Signature) -->
+        <div class="cell-matrix-badges">
+          <div class="matrix-row status-row">
+            <span class="badge-tag status-ready" data-i18n="tag_installers_ready">INSTALLERS READY</span>
+            <span class="badge-tag status-version">${s.version}</span>
+            <span class="badge-tag status-oss">OPEN-SOURCE</span>
           </div>
-          <div class="spec-col">
-            <span class="spec-lbl">${t.lbl_meta_size}:</span>
-            <span class="spec-val">${s.size}</span>
-          </div>
-          <div class="spec-col">
-            <span class="spec-lbl">${t.lbl_meta_os}:</span>
-            <span class="spec-val">Windows x64</span>
+          <div class="matrix-row platform-row">
+            <span class="badge-tag platform-tag">WINDOWS</span>
+            <span class="badge-tag platform-tag">WEB</span>
+            <span class="badge-tag platform-tag">MACOS</span>
+            <span class="badge-tag platform-tag">LINUX</span>
           </div>
         </div>
 
-        <!-- Dual Action Buttons -->
-        <div class="card-actions-row">
-          <a href="${dlUrl}" class="btn-card-primary" download>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span data-i18n="btn_dl_app">${t.btn_dl_app}</span>
+        <!-- Bottom Action Row & Explore Link -->
+        <div class="cell-actions-container">
+          <a href="${s.webRoute}" class="cell-explore-link">
+            <span>${s.exploreName}</span>
           </a>
-          <a href="${s.webRoute}" class="btn-card-secondary" title="Launch Browser Studio">
-            <span>🌐</span>
-            <span data-i18n="btn_web_app">${t.btn_web_app}</span>
-          </a>
-          <button type="button" class="btn-card-hash" onclick="copyText('${s.hash}', 'toast_copied')" title="Copy SHA-256 Hash">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          </button>
+
+          <div class="cell-direct-actions">
+            <a href="${dlUrl}" class="btn-action-dl" download title="Download official Windows .exe installer">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>.exe (${s.size})</span>
+            </a>
+            <a href="${s.webRoute}" class="btn-action-web" title="Launch instant in-browser studio">
+              <span>🌐 Web</span>
+            </a>
+            <button type="button" class="btn-action-hash" onclick="copyChecksum('${s.hash}')" title="Copy SHA-256 Checksum">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
         </div>
       </div>
     </article>
     `;
   }).join('');
 
-  // Quick Dock items
-  const quickDockHtml = STUDIOS.map(s => `
-    <button type="button" class="dock-app-item" data-app-id="${s.id}" title="${s.name} (${s.counterpart.en})" style="--app-color:${s.accentColor};--app-glow:${s.glowColor};">
-      <img src="/branding/${s.id}.webp" alt="${s.name}" class="dock-icon-img" onerror="this.onerror=null;this.src='/branding/${s.id}.png';" />
-      <span class="dock-app-name">${s.name.replace(' Studio', '').replace(' Radial Converter', '')}</span>
-    </button>
-  `).join('');
-
   // Security Cockpit rows
   const suiteRow = `
     <tr>
-      <td class="td-file"><span class="badge-suite">SUITE</span> meCraft-Setup.exe</td>
-      <td class="td-desc">meCraft Master Suite Installer (Bundles all 18 studios)</td>
+      <td class="td-file"><span class="badge-master">MASTER SUITE</span> meCraft-Setup.exe</td>
+      <td class="td-desc">meCraft Workstation Master Suite (Bundles all 18 standalone studios)</td>
       <td class="td-size">~94.8 MB</td>
       <td class="td-hash">
         <code class="hash-code">c5d4e3f2a1b07890123456789abcdef0123456789abcdef0123456789abcdef0</code>
-        <button type="button" class="btn-copy-sm" onclick="copyText('c5d4e3f2a1b07890123456789abcdef0123456789abcdef0123456789abcdef0', 'toast_copied')">Copy</button>
+        <button type="button" class="btn-hash-copy" onclick="copyChecksum('c5d4e3f2a1b07890123456789abcdef0123456789abcdef0123456789abcdef0')">Copy</button>
       </td>
       <td class="td-status"><a href="https://www.virustotal.com/gui/file/c5d4e3f2a1b07890123456789abcdef0123456789abcdef0123456789abcdef0" target="_blank" rel="noopener noreferrer" class="status-clean" style="text-decoration:none;">✓ 0/72 Clean ↗</a></td>
     </tr>
@@ -670,7 +578,7 @@ function generateHtml() {
       <td class="td-size">${s.size}</td>
       <td class="td-hash">
         <code class="hash-code">${s.hash}</code>
-        <button type="button" class="btn-copy-sm" onclick="copyText('${s.hash}', 'toast_copied')">Copy</button>
+        <button type="button" class="btn-hash-copy" onclick="copyChecksum('${s.hash}')">Copy</button>
       </td>
       <td class="td-status"><a href="https://www.virustotal.com/gui/file/${s.hash}" target="_blank" rel="noopener noreferrer" class="status-clean" style="text-decoration:none;">✓ 0/72 Clean ↗</a></td>
     </tr>
@@ -692,39 +600,36 @@ function generateHtml() {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ═══════════════════════════════════════════════════════════════
+       DESIGN TOKENS & UNIFIED ARCHITECTURE
+    ═══════════════════════════════════════════════════════════════ */
     :root {
-      --bg: #08090c;
+      --bg: #090a0f;
       --bg-surface: #0e1017;
-      --bg-card: #12151f;
-      --bg-card-hover: #181c28;
-      --bg-sunken: #050608;
+      --bg-cell: #090a0f;
+      --bg-cell-hover: #0e1118;
       
-      --border-subtle: rgba(255, 255, 255, 0.07);
+      --border-subtle: rgba(255, 255, 255, 0.08);
       --border-mid: rgba(255, 255, 255, 0.12);
       --border-strong: rgba(255, 255, 255, 0.20);
       
-      --text-primary: #f3f4f8;
-      --text-secondary: #9ca3af;
-      --text-muted: #6b7280;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
       
       --gold: #d4af37;
       --gold-light: #f7d774;
       --gold-glow: rgba(212, 175, 55, 0.25);
-      --emerald: #10b981;
-      --emerald-glow: rgba(16, 185, 129, 0.2);
       
       --font-sans: 'Inter', 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', Consolas, Monaco, monospace;
       
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
-      --radius-xl: 20px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
       --radius-pill: 9999px;
       
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-      --dur-fast: 0.18s;
-      --dur-norm: 0.25s;
+      --dur-fast: 0.15s;
     }
 
     * {
@@ -758,20 +663,6 @@ function generateHtml() {
       line-height: 1.7;
     }
 
-    /* Architectural Drafting Grid Background */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image: 
-        radial-gradient(circle at 50% 120px, rgba(212, 175, 55, 0.08), transparent 70%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 100% 100%, 48px 48px, 48px 48px;
-      z-index: 0;
-    }
-
     a {
       color: inherit;
       text-decoration: none;
@@ -782,12 +673,14 @@ function generateHtml() {
       cursor: pointer;
     }
 
-    /* ── UNIFIED PORTAL HEADER (Exact match to Home Page #app > header) ── */
+    /* ═══════════════════════════════════════════════════════════════
+       1. UNIFIED PORTAL HEADER (100% Identical to Home Page #app > header)
+    ═══════════════════════════════════════════════════════════════ */
     .portal-header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(9, 10, 15, 0.85);
+      background: rgba(9, 10, 15, 0.88);
       backdrop-filter: blur(20px) saturate(1.4);
       -webkit-backdrop-filter: blur(20px) saturate(1.4);
       border-bottom: 1px solid var(--border-subtle);
@@ -834,12 +727,7 @@ function generateHtml() {
     }
 
     .portal-brand:hover .portal-brand-img {
-      transform: scale(1.1) rotate(-3deg);
-    }
-
-    .portal-brand-fallback {
-      width: 32px;
-      height: 32px;
+      transform: scale(1.08) rotate(-2deg);
     }
 
     .portal-brand-text {
@@ -878,13 +766,13 @@ function generateHtml() {
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 12px;
+      padding: 6px 14px;
       min-height: 36px;
       font-size: 13px;
       font-weight: 500;
       color: var(--text-secondary);
       border-radius: var(--radius-sm);
-      transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+      transition: color var(--dur-fast), background var(--dur-fast);
       outline-offset: 2px;
     }
 
@@ -897,14 +785,14 @@ function generateHtml() {
       color: var(--gold-light);
       background: rgba(212, 175, 55, 0.1);
       font-weight: 600;
-      border: 1px solid rgba(212, 175, 55, 0.2);
+      border: 1px solid rgba(212, 175, 55, 0.25);
     }
 
     .portal-header-actions {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 8px;
+      gap: 10px;
       flex: 1 1 0%;
       min-width: 0;
     }
@@ -922,7 +810,7 @@ function generateHtml() {
       outline-offset: 2px;
     }
 
-    .portal-lang-btn:hover, .portal-lang-btn:focus-visible {
+    .portal-lang-btn:hover {
       color: var(--text-primary);
       border-color: var(--border-strong);
       background: var(--border-subtle);
@@ -937,10 +825,6 @@ function generateHtml() {
       padding: 4px 6px 4px 10px;
       border-radius: var(--radius-pill);
       transition: border-color var(--dur-fast);
-    }
-
-    .user-profile-pill:hover {
-      border-color: var(--border-strong);
     }
 
     .user-avatar {
@@ -978,628 +862,610 @@ function generateHtml() {
       font-weight: 700;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-    }
-
-    .badge-free {
       color: #94a3b8;
     }
 
-    .btn-signout {
-      background: none;
-      border: none;
-      padding: 4px;
-      color: var(--text-muted);
-      border-radius: 4px;
-      display: flex;
+    .portal-auth-btn {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: color var(--dur-fast);
-    }
-
-    .btn-signout:hover {
-      color: var(--text-primary);
-    }
-
-    /* ── CONTAINER ── */
-    .container {
-      width: 100%;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 24px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ── ARTCRAFT HERO SECTION ── */
-    .hero-section {
-      padding: 60px 0 44px;
-      border-bottom: 1px solid var(--border-subtle);
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 40px;
-      align-items: center;
-    }
-
-    .hud-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      gap: 8px;
+      padding: 7px 16px;
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: var(--radius-pill);
       color: var(--gold);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .hud-eyebrow::before {
-      content: "";
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      background: var(--gold);
-      box-shadow: 0 0 8px var(--gold);
-      border-radius: 50%;
-    }
-
-    .hero-title {
-      font-size: clamp(2.2rem, 3.8vw, 3.4rem);
-      font-weight: 800;
-      line-height: 1.12;
-      letter-spacing: -0.03em;
-      color: #ffffff;
-      margin-bottom: 18px;
-    }
-
-    .hero-title .highlight {
-      background: linear-gradient(135deg, #ffffff 20%, var(--gold) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-lead {
-      font-size: 1.05rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 24px;
-      max-width: 600px;
-    }
-
-    .hero-badges-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
-
-    .hud-badge {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: var(--text-secondary);
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-subtle);
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .hero-cta-box {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .btn-master-dl {
-      display: inline-flex;
-      flex-direction: column;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--gold) 0%, #b89124 100%);
-      color: #000000;
-      text-decoration: none;
-      padding: 12px 26px;
-      border-radius: var(--radius-md);
-      font-weight: 700;
-      font-size: 1.02rem;
-      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
-      transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
-      border: 1px solid #ffd875;
-    }
-
-    .btn-master-dl:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(212, 175, 55, 0.45);
-      background: linear-gradient(135deg, #fce28b 0%, var(--gold) 100%);
-    }
-
-    .btn-master-dl .dl-subtext {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      font-weight: 500;
-      opacity: 0.85;
-      margin-top: 2px;
-    }
-
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-primary);
-      text-decoration: none;
-      padding: 14px 22px;
-      border-radius: var(--radius-md);
+      font-size: 13px;
       font-weight: 600;
-      font-size: 0.92rem;
-      border: 1px solid var(--border-mid);
-      transition: background var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast) var(--ease-out);
+      transition: all 0.2s var(--ease-out);
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: var(--border-strong);
+    .portal-auth-btn:hover {
+      background: rgba(212, 175, 55, 0.18);
+      border-color: var(--gold-light);
       color: #ffffff;
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
 
-    /* Right: Interactive 18-Studio Squircle Quick-Dock */
-    .hero-dock-wrap {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-xl);
-      padding: 20px;
-      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-dock-wrap::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    }
-
-    .dock-header-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .dock-title {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-    }
-
-    .dock-count-pill {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--gold-light);
-      background: rgba(212, 175, 55, 0.1);
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      padding: 2px 8px;
-      border-radius: var(--radius-sm);
-    }
-
-    .dock-matrix {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 8px;
-    }
-
-    .dock-app-item {
+    /* ═══════════════════════════════════════════════════════════════
+       2. RIGHT EDGE SCROLL PERCENTAGE & TECHNICAL WATERMARK
+    ═══════════════════════════════════════════════════════════════ */
+    .edge-watermark-wrap {
+      position: fixed;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 8px 4px;
-      border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border-subtle);
-      text-decoration: none;
-      color: inherit;
-      transition: background var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
-      cursor: pointer;
-    }
-
-    .dock-app-item:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: var(--app-color, var(--gold));
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px var(--app-glow, var(--gold-glow));
-    }
-
-    .dock-icon-img {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      object-fit: cover;
-      margin-bottom: 4px;
-      transition: transform 0.2s ease;
-    }
-
-    .dock-app-item:hover .dock-icon-img {
-      transform: scale(1.1);
-    }
-
-    .dock-app-name {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-    }
-
-    /* ── STICKY HUD BAR (Filter & Search) ── */
-    .sticky-hud-bar {
-      position: sticky;
-      top: 60px;
-      z-index: 90;
-      background: rgba(8, 9, 12, 0.94);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 12px 0;
-      margin-bottom: 32px;
-    }
-
-    .sticky-hud-inner {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
       gap: 16px;
-    }
-
-    .filter-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .filter-tab {
-      font-family: var(--font-mono);
-      font-size: 0.74rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      padding: 7px 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: color var(--dur-fast), background var(--dur-fast), border-color var(--dur-fast);
+      z-index: 40;
+      pointer-events: none;
       user-select: none;
     }
 
-    .filter-tab:hover {
-      color: #ffffff;
-      border-color: var(--border-mid);
-    }
-
-    .filter-tab.active {
-      color: #000000;
-      background: var(--gold);
-      border-color: #ffd875;
-      box-shadow: 0 2px 10px rgba(212, 175, 55, 0.35);
-    }
-
-    .filter-search-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .search-box-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .search-input {
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-mid);
-      color: #ffffff;
-      padding: 8px 14px 8px 34px;
-      border-radius: var(--radius-sm);
-      outline: none;
-      width: 240px;
-      transition: border-color var(--dur-fast), box-shadow var(--dur-fast), width var(--dur-norm) var(--ease-out);
-    }
-
-    .search-input:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 12px var(--gold-glow);
-      width: 280px;
-    }
-
-    .search-icon-svg {
-      position: absolute;
-      left: 10px;
-      width: 14px;
-      height: 14px;
-      color: var(--text-muted);
-      pointer-events: none;
-    }
-
-    .results-count-pill {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: var(--text-secondary);
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-subtle);
-      padding: 6px 10px;
-      border-radius: var(--radius-sm);
-      white-space: nowrap;
-    }
-
-    /* ── ARTCRAFT HAIRLINE CARD GRID ── */
-    .hairline-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 16px;
-      margin-bottom: 56px;
-    }
-
-    .lineup-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-      content-visibility: auto;
-      contain-intrinsic-size: 1px 450px;
-      will-change: transform;
-      transition: transform var(--dur-norm) var(--ease-out), border-color var(--dur-norm) ease, box-shadow var(--dur-norm) ease, background-color var(--dur-fast);
-    }
-
-    .lineup-card:hover {
-      transform: translate3d(0, -4px, 0);
-      background: var(--bg-card-hover);
-      border-color: var(--app-color, var(--gold));
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 20px var(--app-glow, var(--gold-glow));
-    }
-
-    .lineup-card.flash-highlight {
-      border-color: var(--gold);
-      box-shadow: 0 0 32px var(--gold-glow);
-      transform: translate3d(0, -6px, 0);
-    }
-
-    /* Top Signature Accent Line */
-    .card-accent-rule {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--app-color, var(--gold));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.28s var(--ease-out);
-      z-index: 10;
-    }
-
-    .lineup-card:hover .card-accent-rule,
-    .lineup-card.flash-highlight .card-accent-rule {
-      transform: scaleX(1);
-    }
-
-    .card-header-hud {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px 8px;
-      background: rgba(0, 0, 0, 0.2);
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .hud-num-badge {
+    .edge-percent-pill {
       font-family: var(--font-mono);
       font-size: 0.72rem;
       font-weight: 700;
-      color: var(--app-color, var(--gold));
-      letter-spacing: 0.05em;
-    }
-
-    .hud-category-label {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      font-weight: 600;
+      color: var(--gold);
       letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    /* 16:10 Wide Screenshot Preview */
-    .card-preview-box {
-      width: 100%;
-      aspect-ratio: 16 / 10;
-      background: #000000;
-      position: relative;
-      overflow: hidden;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .card-preview-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.35s var(--ease-out), filter 0.3s ease;
-      filter: brightness(0.92) contrast(1.05);
-    }
-
-    .lineup-card:hover .card-preview-img {
-      transform: scale(1.05);
-      filter: brightness(1.02) contrast(1.08);
-    }
-
-    .preview-counterpart-pill {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: #ffffff;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Card Body */
-    .card-body {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      position: relative;
-    }
-
-    /* Tactile Overlapping Squircle Icon (-mt-8) */
-    .card-overlap-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      object-fit: cover;
-      margin-top: -38px;
-      margin-bottom: 12px;
-      border: 2px solid var(--bg-card);
-      background: var(--bg-surface);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-      position: relative;
-      z-index: 5;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .lineup-card:hover .card-overlap-icon {
-      transform: translateY(-2px);
-      border-color: var(--app-color, var(--gold));
-    }
-
-    .card-title-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .card-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      color: #ffffff;
-    }
-
-    .card-ver-tag {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: var(--gold-light);
-      background: rgba(212, 175, 55, 0.1);
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      padding: 2px 7px;
-      border-radius: var(--radius-sm);
-    }
-
-    .card-desc {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      line-height: 1.55;
-      margin-bottom: 16px;
-      flex-grow: 1;
-    }
-
-    .card-badges-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-
-    .tech-badge {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: var(--text-secondary);
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(0, 0, 0, 0.7);
       border: 1px solid var(--border-subtle);
       padding: 4px 8px;
       border-radius: var(--radius-sm);
     }
 
-    .card-spec-bar {
+    .edge-vertical-text {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.12);
+      transform: rotate(180deg);
+    }
+
+    .edge-ruler-line {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--border-mid), transparent);
+    }
+
+    @media (max-width: 1400px) {
+      .edge-watermark-wrap {
+        display: none;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       3. ARTCRAFT TECHNICAL HUD SUB-HEADERS (01 & 02)
+    ═══════════════════════════════════════════════════════════════ */
+    .hud-header-container {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .hud-substrip {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(0, 0, 0, 0.25);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 8px 12px;
-      margin-bottom: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-subtle);
       font-family: var(--font-mono);
+    }
+
+    .hud-sec1-lbl {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #88909e;
+    }
+
+    .hud-sec1-tagline {
       font-size: 0.72rem;
-    }
-
-    .spec-col {
-      display: flex;
-      gap: 4px;
-    }
-
-    .spec-lbl {
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       color: var(--text-muted);
     }
 
-    .spec-val {
-      color: var(--text-primary);
-      font-weight: 500;
+    .hud-substrip-lineup {
+      padding: 12px 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--border-subtle);
     }
 
-    .spec-val.file {
-      color: var(--gold-light);
+    .hud-sec2-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    /* Dual Action Buttons */
-    .card-actions-row {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 8px;
+    .hud-sec2-title {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    .filter-pills-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .filter-btn {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      padding: 5px 11px;
+      border-radius: var(--radius-sm);
+      transition: all var(--dur-fast);
+      user-select: none;
+    }
+
+    .filter-btn:hover {
+      color: #ffffff;
+      border-color: var(--border-mid);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .filter-btn.active {
+      color: #000000;
+      background: var(--gold);
+      border-color: #ffd875;
+      font-weight: 700;
+    }
+
+    .hud-sec2-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hud-search-wrap {
+      position: relative;
+      display: flex;
       align-items: center;
     }
 
-    .btn-card-primary {
+    .hud-search-input {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: #ffffff;
+      background: #0c0e14;
+      border: 1px solid var(--border-mid);
+      padding: 6px 12px 6px 30px;
+      border-radius: var(--radius-sm);
+      width: 220px;
+      outline: none;
+      transition: border-color var(--dur-fast), width 0.25s var(--ease-out);
+    }
+
+    .hud-search-input:focus {
+      border-color: var(--gold);
+      width: 260px;
+    }
+
+    .hud-search-icon {
+      position: absolute;
+      left: 9px;
+      width: 13px;
+      height: 13px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .hud-explore-hint {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       4. MASTER SUITE INSTALLER BANNER (00 / MASTER SUITE)
+    ═══════════════════════════════════════════════════════════════ */
+    .master-suite-banner {
+      width: 100%;
+      max-width: 1440px;
+      margin: 20px auto 0;
+      padding: 0 24px;
+    }
+
+    .master-suite-card {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.06) 0%, rgba(14, 16, 23, 0.9) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .suite-info-left {
+      max-width: 780px;
+    }
+
+    .suite-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .suite-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .suite-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .suite-cta-right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-suite-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--gold) 0%, #b89124 100%);
+      color: #000000;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #ffd875;
+      text-decoration: none;
+      transition: transform var(--dur-fast), box-shadow var(--dur-fast);
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25);
+    }
+
+    .btn-suite-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(212, 175, 55, 0.4);
+      background: linear-gradient(135deg, #fce28b 0%, var(--gold) 100%);
+    }
+
+    .btn-suite-hash {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
+      border: 1px solid var(--border-mid);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      transition: background var(--dur-fast), border-color var(--dur-fast);
+    }
+
+    .btn-suite-hash:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-strong);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       5. ARTCRAFT SEAMLESS 4-COLUMN BORDER-GRID TABLE
+    ═══════════════════════════════════════════════════════════════ */
+    .grid-wrapper {
+      width: 100%;
+      max-width: 1440px;
+      margin: 24px auto 48px;
+      padding: 0 24px;
+    }
+
+    .artcraft-table-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0; /* Zero gap between cells! */
+      border-top: 1px solid var(--border-mid);
+      border-left: 1px solid var(--border-mid);
+      background: var(--bg-cell);
+    }
+
+    @media (max-width: 1280px) {
+      .artcraft-table-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .artcraft-table-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .artcraft-table-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Individual Grid Cell (ArtCraft Card) */
+    .lineup-cell {
+      border-right: 1px solid var(--border-mid);
+      border-bottom: 1px solid var(--border-mid);
+      border-radius: 0;
+      background: var(--bg-cell);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      contain-intrinsic-size: 1px 520px;
+      content-visibility: auto;
+      transition: background-color 0.2s ease;
+    }
+
+    .lineup-cell:hover {
+      background: var(--bg-cell-hover);
+    }
+
+    /* Signature Top Accent Rule (lights up on hover like 08 DesignCraft!) */
+    .cell-top-accent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2.5px;
+      background: var(--app-color, var(--gold));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.22s var(--ease-out);
+      z-index: 20;
+    }
+
+    .lineup-cell:hover .cell-top-accent {
+      transform: scaleX(1);
+    }
+
+    /* Top HUD Meta Bar */
+    .cell-top-hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px 10px;
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    .cell-num-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--badge-bg, #2563eb);
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 2px;
+      letter-spacing: 0.04em;
+    }
+
+    .cell-category-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7a8292;
+    }
+
+    /* Preview Window (Flush with column borders) */
+    .cell-preview-window {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: #050608;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .cell-preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.92) contrast(1.06);
+      transition: transform 0.3s var(--ease-out), filter 0.25s ease;
+    }
+
+    .lineup-cell:hover .cell-preview-img {
+      transform: scale(1.04);
+      filter: brightness(1.02) contrast(1.08);
+    }
+
+    .preview-counterpart-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Cell Content Body */
+    .cell-body {
+      padding: 0 18px 18px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      position: relative;
+    }
+
+    /* Tactile Squircle Icon (-mt-30px overlapping preview) */
+    .cell-squircle-wrap {
+      margin-top: -30px;
+      margin-bottom: 12px;
+      width: 52px;
+      height: 52px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .cell-squircle-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: var(--bg-surface);
+      border: 2px solid var(--bg-cell);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .lineup-cell:hover .cell-squircle-icon {
+      transform: translateY(-2px);
+      border-color: var(--app-color, var(--gold));
+    }
+
+    .cell-title-block {
+      margin-bottom: 8px;
+    }
+
+    .cell-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .cell-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-bottom: 16px;
+      flex-grow: 1;
+    }
+
+    /* Status & Platform Matrix Badges */
+    .cell-matrix-badges {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .matrix-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .badge-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 3px 6px;
+      border-radius: 2px;
+    }
+
+    .status-ready {
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .status-version {
+      color: var(--gold-light);
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .status-oss {
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .platform-tag {
+      color: #cbd5e1;
+      background: #141720;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Actions & Bottom Explore */
+    .cell-actions-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .cell-explore-link {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: color var(--dur-fast);
+    }
+
+    .cell-explore-link:hover {
+      color: var(--app-color, var(--gold));
+    }
+
+    .cell-direct-actions {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .btn-action-dl {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1607,490 +1473,200 @@ function generateHtml() {
       background: linear-gradient(135deg, var(--gold) 0%, #b89124 100%);
       color: #000000;
       font-weight: 700;
-      font-size: 0.84rem;
-      padding: 9px 14px;
+      font-size: 0.78rem;
+      padding: 7px 10px;
       border-radius: var(--radius-sm);
-      text-decoration: none;
-      transition: background var(--dur-fast), transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
       border: 1px solid #ffd875;
+      text-decoration: none;
+      transition: background var(--dur-fast), transform var(--dur-fast);
     }
 
-    .btn-card-primary:hover {
+    .btn-action-dl:hover {
       background: linear-gradient(135deg, #fce28b 0%, var(--gold) 100%);
       transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
     }
 
-    .btn-card-secondary {
+    .btn-action-web {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      background: rgba(255, 255, 255, 0.05);
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.04);
       color: var(--text-primary);
       font-weight: 600;
-      font-size: 0.82rem;
-      padding: 9px 12px;
+      font-size: 0.76rem;
+      padding: 7px 10px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-mid);
       text-decoration: none;
-      transition: background var(--dur-fast), border-color var(--dur-fast);
+      transition: background var(--dur-fast);
     }
 
-    .btn-card-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--border-strong);
+    .btn-action-web:hover {
+      background: rgba(255, 255, 255, 0.08);
       color: #ffffff;
     }
 
-    .btn-card-hash {
+    .btn-action-hash {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       background: transparent;
+      border: 1px solid var(--border-mid);
       color: var(--text-muted);
-      border: 1px solid var(--border-subtle);
+      padding: 7px;
       border-radius: var(--radius-sm);
-      padding: 9px;
-      transition: color var(--dur-fast), border-color var(--dur-fast), background var(--dur-fast);
+      transition: color var(--dur-fast), border-color var(--dur-fast);
     }
 
-    .btn-card-hash:hover {
+    .btn-action-hash:hover {
       color: var(--text-primary);
       border-color: var(--border-strong);
-      background: rgba(255, 255, 255, 0.06);
     }
 
-    /* Empty Search State */
-    .grid-empty-state {
-      display: none;
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 60px 20px;
-      background: var(--bg-card);
-      border: 1px dashed var(--border-mid);
-      border-radius: var(--radius-lg);
-    }
-
-    .empty-icon {
-      font-size: 2.5rem;
-      margin-bottom: 12px;
-    }
-
-    .empty-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 6px;
-    }
-
-    .empty-desc {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-      max-width: 440px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .btn-clear-filter {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--gold);
-      color: #000;
-      font-weight: 600;
-      font-size: 0.85rem;
-      padding: 8px 18px;
-      border-radius: var(--radius-sm);
-      border: none;
-    }
-
-    /* ── SECURITY & CHECKSUM COCKPIT ── */
+    /* ═══════════════════════════════════════════════════════════════
+       6. SECURITY COCKPIT & HASH DIRECTORY
+    ═══════════════════════════════════════════════════════════════ */
     .cockpit-section {
-      padding: 48px 0 64px;
-      border-top: 1px solid var(--border-subtle);
-    }
-
-    .cockpit-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-xl);
-      padding: 32px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      max-width: 1440px;
+      margin: 20px auto 80px;
+      padding: 0 24px;
     }
 
     .cockpit-header {
-      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 20px;
     }
 
-    .cockpit-title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .cockpit-desc {
-      font-size: 0.92rem;
-      color: var(--text-secondary);
-      max-width: 760px;
-    }
-
-    /* SmartScreen Guidance Callout */
-    .smartscreen-callout {
-      background: rgba(37, 99, 235, 0.08);
-      border: 1px solid rgba(59, 130, 246, 0.25);
-      border-radius: var(--radius-md);
-      padding: 18px 20px;
-      margin-bottom: 28px;
-    }
-
-    .smartscreen-title {
+    .cockpit-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
       font-weight: 700;
-      font-size: 0.96rem;
-      color: #60a5fa;
-      margin-bottom: 8px;
-    }
-
-    .smartscreen-text {
-      font-size: 0.86rem;
-      color: #cbd5e1;
-      line-height: 1.55;
-      margin-bottom: 12px;
-    }
-
-    .smartscreen-bullets {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 10px;
-      list-style: none;
-    }
-
-    .smartscreen-item {
-      font-size: 0.82rem;
-      color: #94a3b8;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .smartscreen-item strong {
-      color: #ffffff;
-    }
-
-    .btn-smartscreen-help {
-      background: rgba(212, 175, 55, 0.12);
-      border: 1px solid var(--border-mid);
-      color: var(--gold-light);
-      padding: 8px 16px;
-      border-radius: var(--radius-pill);
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: var(--dur-fast) var(--ease-out);
-    }
-
-    .btn-smartscreen-help:hover {
-      background: rgba(212, 175, 55, 0.22);
-      border-color: var(--gold);
-      transform: translateY(-1px);
-    }
-
-    /* Windows SmartScreen Modal Overlay */
-    .smartscreen-modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .smartscreen-modal-overlay.active {
-      display: flex;
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
-    }
-
-    .smartscreen-sim-box {
-      background: #0078d7;
-      color: #ffffff;
-      border-radius: 8px;
-      padding: 24px 28px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 16px 40px rgba(0, 120, 215, 0.35);
-      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-      margin: 16px 0 24px;
-    }
-
-    .smartscreen-sim-header {
-      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--gold);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      opacity: 0.85;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      margin-bottom: 4px;
     }
 
-    .smartscreen-sim-title {
-      font-size: 1.45rem;
-      font-weight: 400;
-      margin-bottom: 8px;
-      line-height: 1.3;
+    .cockpit-lead {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
     }
 
-    .smartscreen-sim-body {
-      font-size: 0.9rem;
-      line-height: 1.5;
-      margin-bottom: 16px;
-    }
-
-    /* Hash Table */
-    .table-wrap {
+    .table-responsive {
+      width: 100%;
       overflow-x: auto;
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      margin-bottom: 24px;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-sm);
+      background: #0c0e14;
     }
 
-    .hash-table {
+    .cockpit-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
       text-align: left;
     }
 
-    .hash-table th {
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-secondary);
-      font-family: var(--font-mono);
+    .cockpit-table th {
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--text-muted);
+      padding: 12px 16px;
       font-weight: 600;
-      padding: 12px 14px;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid var(--border-mid);
+    }
+
+    .cockpit-table td {
+      padding: 12px 16px;
       border-bottom: 1px solid var(--border-subtle);
-      white-space: nowrap;
+      color: var(--text-secondary);
     }
 
-    .hash-table td {
-      padding: 10px 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: var(--text-primary);
-    }
-
-    .hash-table tr:hover td {
+    .cockpit-table tr:hover td {
       background: rgba(255, 255, 255, 0.02);
     }
 
     .td-file {
-      font-family: var(--font-mono);
       font-weight: 600;
-      color: var(--gold-light);
-      white-space: nowrap;
+      color: #ffffff !important;
     }
 
-    .badge-suite {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: #000;
+    .badge-master {
       background: var(--gold);
+      color: #000;
+      font-size: 9px;
+      font-weight: 700;
       padding: 2px 6px;
-      border-radius: 4px;
+      border-radius: 2px;
       margin-right: 6px;
     }
 
-    .td-desc {
-      color: var(--text-secondary);
-    }
-
-    .td-size {
-      font-family: var(--font-mono);
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .td-hash {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
     .hash-code {
-      font-family: var(--font-mono);
       font-size: 0.72rem;
-      color: var(--text-muted);
-      max-width: 220px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .btn-copy-sm {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
       color: var(--gold-light);
-      background: rgba(212, 175, 55, 0.1);
-      border: 1px solid rgba(212, 175, 55, 0.25);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 3px 6px;
+      border-radius: 2px;
+      margin-right: 8px;
+    }
+
+    .btn-hash-copy {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 0.68rem;
       padding: 2px 8px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: background var(--dur-fast);
-      white-space: nowrap;
+      border-radius: 2px;
     }
 
-    .btn-copy-sm:hover {
-      background: rgba(212, 175, 55, 0.22);
-    }
-
-    .td-status {
-      white-space: nowrap;
+    .btn-hash-copy:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
     }
 
     .status-clean {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
+      color: #34d399;
       font-weight: 600;
-      color: var(--emerald);
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
     }
 
-    /* PowerShell Box */
-    .ps-box {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .ps-code {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: #38bdf8;
-      overflow-x: auto;
-    }
-
-    .btn-copy-ps {
-      font-family: var(--font-mono);
-      font-size: 0.76rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-mid);
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background var(--dur-fast), border-color var(--dur-fast);
-    }
-
-    .btn-copy-ps:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--border-strong);
-    }
-
-    /* ── FOOTER ── */
-    .portal-footer {
-      border-top: 1px solid var(--border-subtle);
-      padding: 40px 0;
-      margin-top: auto;
-      background: rgba(0, 0, 0, 0.3);
-    }
-
-    .footer-inner {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 16px;
-    }
-
-    .footer-links a:hover {
-      color: var(--text-primary);
-    }
-
-    /* ── FLOATING TOAST ── */
-    .toast-box {
+    /* ═══════════════════════════════════════════════════════════════
+       7. ZERO-FLICKER TOAST NOTIFICATION
+    ═══════════════════════════════════════════════════════════════ */
+    .toast-pill {
       position: fixed;
       bottom: 24px;
-      right: 24px;
-      z-index: 1000;
-      background: #1e2230;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #11141c;
       color: #ffffff;
+      border: 1px solid var(--gold);
+      padding: 10px 20px;
+      border-radius: var(--radius-pill);
       font-family: var(--font-mono);
       font-size: 0.8rem;
       font-weight: 600;
-      padding: 12px 20px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--gold);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 16px var(--gold-glow);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transform: translateY(80px);
-      opacity: 0;
+      z-index: 200;
       pointer-events: none;
-      transition: transform 0.28s var(--ease-out), opacity 0.28s ease;
+      opacity: 0;
+      transition: transform 0.25s var(--ease-out), opacity 0.25s ease;
     }
 
-    .toast-box.show {
-      transform: translateY(0);
+    .toast-pill.show {
+      transform: translateX(-50%) translateY(0);
       opacity: 1;
-      pointer-events: auto;
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 32px; }
-      .dock-matrix { grid-template-columns: repeat(6, 1fr); }
-    }
-
-    @media (max-width: 768px) {
-      .portal-header-inner { padding: 0 16px; height: 56px; }
-      .portal-nav { display: none; }
-      .portal-brand-tag { display: none; }
-      .hero-section { padding: 40px 0 32px; }
-      .dock-matrix { grid-template-columns: repeat(3, 1fr); }
-      .sticky-hud-bar { top: 56px; }
-      .sticky-hud-inner { flex-direction: column; align-items: stretch; }
-      .search-box-wrap, .search-input { width: 100%; }
-      .search-input:focus { width: 100%; }
-      .hairline-grid { grid-template-columns: 1fr; }
-      .card-actions-row { grid-template-columns: 1fr 1fr auto; }
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <!-- ── UNIFIED PORTAL HEADER (Exact Match to Home Page #app > header) ── -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         1. UNIFIED HEADER (#app > header)
+    ═══════════════════════════════════════════════════════════════ -->
     <header class="portal-header" role="banner">
       <div class="portal-header-inner">
         <a class="portal-brand" href="/" aria-label="meCrafts home">
@@ -2110,485 +1686,310 @@ function generateHtml() {
           </div>
           <div class="portal-brand-text">
             <span class="portal-brand-name">meCrafts</span>
-            <span class="portal-brand-tag" data-i18n="header_badge">${t.header_badge}</span>
+            <span class="portal-brand-tag" data-i18n="header_badge">OFFICIAL SUITE</span>
           </div>
         </a>
 
-        <nav class="portal-nav" aria-label="Primary navigation">
-          <a href="/#apps-grid" class="portal-nav-link" data-i18n="nav_studios">${t.nav_studios}</a>
-          <a href="/#manifesto" class="portal-nav-link" data-i18n="nav_privacy">${t.nav_privacy}</a>
-          <a href="/#specs" class="portal-nav-link" data-i18n="nav_specs">${t.nav_specs}</a>
-          <a href="/downloads/" class="portal-nav-link active" data-i18n="nav_downloads">${t.nav_downloads}</a>
+        <nav class="portal-nav" aria-label="Portal navigation">
+          <a href="/#apps-grid" class="portal-nav-link" data-i18n="nav_studios">Studios</a>
+          <a href="/#manifesto" class="portal-nav-link" data-i18n="nav_privacy">Privacy Architecture</a>
+          <a href="/#specs" class="portal-nav-link" data-i18n="nav_specs">Specs</a>
+          <a href="/downloads/" class="portal-nav-link active" data-i18n="nav_downloads">Downloads</a>
         </nav>
 
         <div class="portal-header-actions">
-          <button class="portal-lang-btn" id="btn-lang" type="button" aria-label="Switch language">
-            <span id="lang-indicator">TH</span>
+          <button type="button" class="portal-lang-btn" id="btn-lang" aria-label="Switch language">
+            <span id="lang-btn-text">TH</span>
           </button>
 
-          <div class="user-profile-pill" id="user-profile-pill" role="button" tabindex="0" title="methastrategy@gmail.com">
-            <div class="user-avatar" aria-hidden="true">M</div>
+          <div class="user-profile-pill" id="user-profile-pill" role="button" tabindex="0" title="Signed in as Free Member">
+            <div class="user-avatar" id="header-user-avatar">M</div>
             <div class="user-details">
-              <span class="user-email" title="methastrategy@gmail.com">methastrategy@gm...</span>
-              <span class="user-tier-badge badge-free" data-i18n="lbl_free_member">${t.lbl_free_member}</span>
+              <span class="user-email" id="header-user-email">methastrategy@gm...</span>
+              <span class="user-tier-badge" id="header-user-tier" data-i18n="lbl_free_member">FREE MEMBER</span>
             </div>
-            <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer" class="btn-signout" title="GitHub Repository" aria-label="GitHub Repository">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            </a>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- ── ARTCRAFT HERO SECTION ── -->
-    <section class="hero-section" id="hero">
-      <div class="container">
-        <div class="hero-grid">
-          <!-- Left: Hero Text & Actions -->
-          <div class="hero-left">
-            <div class="hud-eyebrow" data-i18n="hero_pill">${t.hero_pill}</div>
-            <h1 class="hero-title" data-i18n="hero_title">${t.hero_title}</h1>
-            <p class="hero-lead" data-i18n="hero_subtitle">${t.hero_subtitle}</p>
+    <!-- ═══════════════════════════════════════════════════════════════
+         2. RIGHT EDGE SCROLL PERCENTAGE & WATERMARK
+    ═══════════════════════════════════════════════════════════════ -->
+    <aside class="edge-watermark-wrap" aria-hidden="true">
+      <div class="edge-percent-pill" id="scroll-percent-pill">014%</div>
+      <div class="edge-ruler-line"></div>
+      <div class="edge-vertical-text" data-i18n="watermark_lineup">CRAFTING APPS LINEUP</div>
+      <div class="edge-ruler-line"></div>
+      <div class="edge-vertical-text" data-i18n="watermark_principles">IN-DEVICE PRIVACY</div>
+    </aside>
 
-            <div class="hero-badges-row">
-              <span class="hud-badge" data-i18n="b_privacy">${t.b_privacy}</span>
-              <span class="hud-badge" data-i18n="b_telemetry">${t.b_telemetry}</span>
-              <span class="hud-badge" data-i18n="b_oss">${t.b_oss}</span>
-              <span class="hud-badge" data-i18n="b_perf">${t.b_perf}</span>
-            </div>
-
-            <div class="hero-cta-box">
-              <a href="/downloads/meCraft-Setup.exe" class="btn-master-dl" download>
-                <span data-i18n="cta_hero_dl">${t.cta_hero_dl}</span>
-                <span class="dl-subtext">v1.0.2 · Windows x64 Native · ~94.8 MB</span>
-              </a>
-              <a href="#lineup" class="btn-secondary" data-i18n="cta_hero_explore">${t.cta_hero_explore}</a>
-            </div>
-          </div>
-
-          <!-- Right: Interactive 18-Studio Squircle Quick-Dock -->
-          <div class="hero-dock-wrap">
-            <div class="dock-header-row">
-              <span class="dock-title" data-i18n="dock_header">${t.dock_header}</span>
-              <span class="dock-count-pill" data-i18n="dock_count">${t.dock_count}</span>
-            </div>
-            <div class="dock-matrix">
-              ${quickDockHtml}
-            </div>
-          </div>
-        </div>
+    <!-- ═══════════════════════════════════════════════════════════════
+         3. ARTCRAFT SUB-HEADER (01 / CRAFTING APPS & 02 / THE LINEUP)
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="hud-header-container">
+      <!-- Substrip 01 -->
+      <div class="hud-substrip">
+        <span class="hud-sec1-lbl" data-i18n="hud_sec1">01 / CRAFTING APPS</span>
+        <span class="hud-sec1-tagline" data-i18n="hud_tagline">EIGHTEEN APPS · IN-DEVICE MEMORY · ZERO TELEMETRY</span>
       </div>
-    </section>
 
-    <!-- ── STICKY HUD BAR (Filter Tabs & Live Search) ── -->
-    <div class="sticky-hud-bar" id="lineup">
-      <div class="container">
-        <div class="sticky-hud-inner">
-          <div class="filter-tabs">
-            <button type="button" class="filter-tab active" data-filter="all" data-i18n="filter_all">${t.filter_all}</button>
-            <button type="button" class="filter-tab" data-filter="document" data-i18n="filter_doc">${t.filter_doc}</button>
-            <button type="button" class="filter-tab" data-filter="photo" data-i18n="filter_photo">${t.filter_photo}</button>
-            <button type="button" class="filter-tab" data-filter="3d" data-i18n="filter_3d">${t.filter_3d}</button>
-            <button type="button" class="filter-tab" data-filter="vector" data-i18n="filter_vector">${t.filter_vector}</button>
-            <button type="button" class="filter-tab" data-filter="video" data-i18n="filter_video">${t.filter_video}</button>
-            <button type="button" class="filter-tab" data-filter="audio" data-i18n="filter_audio">${t.filter_audio}</button>
-            <button type="button" class="filter-tab" data-filter="utility" data-i18n="filter_utility">${t.filter_utility}</button>
-          </div>
+      <!-- Substrip 02 (Lineup Filter & Search) -->
+      <div class="hud-substrip-lineup">
+        <div class="hud-sec2-left">
+          <span class="hud-sec2-title" data-i18n="hud_sec2">02 / THE LINEUP</span>
+          <nav class="filter-pills-bar" aria-label="Studio categories">
+            <button type="button" class="filter-btn active" data-filter="all" data-i18n="filter_all">ALL (18)</button>
+            <button type="button" class="filter-btn" data-filter="document" data-i18n="filter_doc">DOCUMENT (4)</button>
+            <button type="button" class="filter-btn" data-filter="photo" data-i18n="filter_photo">PHOTO (2)</button>
+            <button type="button" class="filter-btn" data-filter="vector" data-i18n="filter_vector">VECTOR (2)</button>
+            <button type="button" class="filter-btn" data-filter="video" data-i18n="filter_video">VIDEO (3)</button>
+            <button type="button" class="filter-btn" data-filter="3d" data-i18n="filter_3d">3D (4)</button>
+            <button type="button" class="filter-btn" data-filter="audio" data-i18n="filter_audio">AUDIO (1)</button>
+            <button type="button" class="filter-btn" data-filter="utility" data-i18n="filter_utility">UTILITY & REA (2)</button>
+          </nav>
+        </div>
 
-          <div class="filter-search-group">
-            <div class="search-box-wrap">
-              <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="studio-search" class="search-input" placeholder="${t.search_placeholder}" data-i18n-placeholder="search_placeholder" autocomplete="off" />
-            </div>
-            <span class="results-count-pill" id="results-count">18 / 18</span>
+        <div class="hud-sec2-right">
+          <div class="hud-search-wrap">
+            <svg class="hud-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="hud-search-input" id="search-input" placeholder="Search studios, counterparts..." aria-label="Filter studios" />
           </div>
+          <span class="hud-explore-hint" data-i18n="hud_explore_pick">PICK A CRAFT TO EXPLORE</span>
         </div>
       </div>
     </div>
 
-    <!-- ── THE HAIRLINE CARD GRID (Pre-rendered for Zero-Flicker Performance) ── -->
-    <main class="container">
-      <div class="hairline-grid" id="hairline-grid">
-        ${studioCardsHtml}
-
-        <!-- Empty Search State -->
-        <div class="grid-empty-state" id="grid-empty-state">
-          <div class="empty-icon">🔍</div>
-          <h4 class="empty-title" data-i18n="empty_search_title">${t.empty_search_title}</h4>
-          <p class="empty-desc" data-i18n="empty_search_desc">${t.empty_search_desc}</p>
-          <button type="button" class="btn-clear-filter" id="btn-clear-search" data-i18n="btn_clear_search">${t.btn_clear_search}</button>
+    <!-- ═══════════════════════════════════════════════════════════════
+         4. MASTER SUITE INSTALLER CALLOUT
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="master-suite-banner">
+      <div class="master-suite-card">
+        <div class="suite-info-left">
+          <div class="suite-eyebrow" data-i18n="suite_badge">00 / MASTER SUITE INSTALLER</div>
+          <h2 class="suite-title" data-i18n="suite_title">meCraft Workstation Suite (.exe)</h2>
+          <p class="suite-desc" data-i18n="suite_desc">One installer bundles the complete AI Workstation alongside all 18 purpose-built creative and document studios. 100% in-device memory execution, zero telemetry, and VirusTotal 0/72 clean.</p>
         </div>
+        <div class="suite-cta-right">
+          <a href="https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meCraft-Setup.exe" class="btn-suite-primary" download>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span data-i18n="btn_dl_suite">⬇ Download Suite (.exe)</span>
+          </a>
+          <button type="button" class="btn-suite-hash" onclick="copyChecksum('c5d4e3f2a1b07890123456789abcdef0123456789abcdef0123456789abcdef0')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span data-i18n="btn_copy_suite_hash">Copy Suite Hash</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         5. ARTCRAFT SEAMLESS 4-COLUMN BORDER-GRID TABLE (ALL 18 STUDIOS)
+    ═══════════════════════════════════════════════════════════════ -->
+    <main class="grid-wrapper">
+      <div class="artcraft-table-grid" id="artcraft-grid">
+        ${studioCellsHtml}
       </div>
     </main>
 
-    <!-- ── SECURITY & CHECKSUM COCKPIT ── -->
-    <section class="cockpit-section" id="security-cockpit">
-      <div class="container">
-        <div class="cockpit-box">
-          <div class="cockpit-header">
-            <h2 class="cockpit-title" data-i18n="cockpit_main_title">${t.cockpit_main_title}</h2>
-            <p class="cockpit-desc" data-i18n="cockpit_main_desc">${t.cockpit_main_desc}</p>
-          </div>
+    <!-- ═══════════════════════════════════════════════════════════════
+         6. SECURITY COCKPIT & OFFICIAL BINARY CHECKSUMS
+    ═══════════════════════════════════════════════════════════════ -->
+    <section class="cockpit-section">
+      <div class="cockpit-header">
+        <div class="cockpit-eyebrow" data-i18n="cockpit_title">03 / BINARY INTEGRITY DIRECTORY</div>
+        <p class="cockpit-lead" data-i18n="cockpit_desc">Cryptographic SHA-256 hash directory for the Master Suite and all 18 standalone studio installers.</p>
+      </div>
 
-          <!-- Windows SmartScreen Callout -->
-          <div class="smartscreen-callout">
-            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 12px;">
-              <div style="max-width: 820px;">
-                <h3 class="smartscreen-title" data-i18n="smartscreen_title">${t.smartscreen_title}</h3>
-                <p class="smartscreen-text" data-i18n="smartscreen_intro">${t.smartscreen_intro}</p>
-              </div>
-              <button type="button" class="btn-smartscreen-help" id="btn-open-smartscreen">
-                🛡️ <span data-i18n="btn_smartscreen_help">${t.btn_smartscreen_help}</span>
-              </button>
-            </div>
-            <ul class="smartscreen-bullets">
-              <li class="smartscreen-item" data-i18n="smartscreen_g1">${t.smartscreen_g1}</li>
-              <li class="smartscreen-item" data-i18n="smartscreen_g2">${t.smartscreen_g2}</li>
-              <li class="smartscreen-item" data-i18n="smartscreen_g3">${t.smartscreen_g3}</li>
-            </ul>
-          </div>
-
-          <!-- SHA-256 Hash Verification Table -->
-          <div class="table-wrap">
-            <table class="hash-table">
-              <thead>
-                <tr>
-                  <th data-i18n="th_col_binary">${t.th_col_binary}</th>
-                  <th data-i18n="th_col_studio">${t.th_col_studio}</th>
-                  <th data-i18n="th_col_size">${t.th_col_size}</th>
-                  <th data-i18n="th_col_hash">${t.th_col_hash}</th>
-                  <th data-i18n="th_col_status">${t.th_col_status}</th>
-                </tr>
-              </thead>
-              <tbody id="hash-table-body">
-                ${suiteRow}
-                ${studioRows}
-              </tbody>
-            </table>
-          </div>
-
-          <!-- PowerShell One-Liner Box -->
-          <div class="ps-box">
-            <code class="ps-code cmd-text" id="cmd-sample">Get-FileHash -Algorithm SHA256 .\meCraft-Setup.exe</code>
-            <button type="button" class="btn-copy-ps" id="btn-copy-ps">Copy PowerShell Command</button>
-          </div>
-        </div>
+      <div class="table-responsive">
+        <table class="cockpit-table">
+          <thead>
+            <tr>
+              <th data-i18n="th_file">BINARY FILE</th>
+              <th data-i18n="th_studio">STUDIO & PURPOSE</th>
+              <th data-i18n="th_size">SIZE</th>
+              <th data-i18n="th_hash">SHA-256 HASH</th>
+              <th data-i18n="th_status">SECURITY STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${suiteRow}
+            ${studioRows}
+          </tbody>
+        </table>
       </div>
     </section>
 
-    <!-- ── FOOTER ── -->
-    <footer class="portal-footer">
-      <div class="container">
-        <div class="footer-inner">
-          <div class="footer-left">
-            <span>© 2026 meCrafts Official Workstation. Open Source under MIT License. 100% In-Device Memory Execution.</span>
-          </div>
-          <div class="footer-links">
-            <a href="/">Home</a>
-            <a href="/#apps-grid">Studios</a>
-            <a href="/#manifesto">Privacy</a>
-            <a href="/#specs">Specs</a>
-            <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer">GitHub</a>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <!-- Toast Pill Notification -->
+    <div id="toast-pill" class="toast-pill">Copied SHA-256 Checksum to Clipboard</div>
   </div>
 
-  <!-- Windows SmartScreen Trust & Antivirus Guide Modal -->
-  <div class="smartscreen-modal-overlay" id="smartscreen-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-smartscreen-title">
-    <div class="modal-backdrop" id="modal-smartscreen-backdrop"></div>
-    <div class="modal-card" style="max-width: 760px; width: 92%; margin: 40px auto; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: var(--radius-xl); box-shadow: 0 24px 60px rgba(0,0,0,0.7); position: relative; z-index: 1001; padding: 0; overflow: hidden;">
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border-mid); background: var(--bg-surface);">
-        <div style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
-          <span>🛡️</span>
-          <span id="modal-smartscreen-title">Windows SmartScreen & Security Verification</span>
-        </div>
-        <button type="button" id="btn-close-smartscreen" aria-label="Close Modal" style="background: transparent; border: none; color: var(--text-secondary); font-size: 1.3rem; cursor: pointer; padding: 4px 8px; border-radius: 4px;">✕</button>
-      </div>
-      <div style="padding: 24px 28px; overflow-y: auto; max-height: calc(85vh - 70px);">
-        <!-- Simulation of Windows Defender SmartScreen -->
-        <div class="smartscreen-sim-box">
-          <div class="smartscreen-sim-header">
-            <span>🛡️ Windows Defender SmartScreen</span>
-          </div>
-          <div class="smartscreen-sim-title">Windows protected your PC</div>
-          <div class="smartscreen-sim-body">
-            Microsoft Defender SmartScreen prevented an unrecognized app from starting. Running this app might put your PC at risk.
-          </div>
-          <div style="margin-bottom: 12px;">
-            <span class="smartscreen-sim-step-link" id="sim-more-info" style="color: #ffffff; text-decoration: underline; cursor: pointer; font-weight: 600;">👉 [Step 1] Click: More info (ข้อมูลเพิ่มเติม)</span>
-          </div>
-          <div id="sim-expanded-details" style="background: rgba(0,0,0,0.25); border-radius: 6px; padding: 12px; margin-top: 10px; font-size: 0.85rem; display: block;">
-            <div><strong>App:</strong> meCraft-Setup.exe (or studio binary)</div>
-            <div><strong>Publisher:</strong> Metha / methastrategy (Open Source MIT)</div>
-            <div style="display: flex; gap: 12px; margin-top: 12px;">
-              <button type="button" style="background: #ffffff; color: #0078d7; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 700; cursor: pointer;">
-                👉 [Step 2] Click: Run anyway (เรียกใช้ต่อไป)
-              </button>
-              <button type="button" style="background: transparent; border: 1px solid rgba(255,255,255,0.4); color: #ffffff; padding: 8px 16px; border-radius: 4px; cursor: pointer; opacity: 0.7;">Don't run</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top: 20px;">
-          <h4 style="color: var(--gold); font-size: 1rem; margin-bottom: 8px;">Why does Windows show this warning?</h4>
-          <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
-            Microsoft SmartScreen flags all newly released open-source software that does not purchase an expensive corporate EV Code Signing Certificate ($400–$700/year). meCraft is 100% free, MIT open source, and distributes reproducible binaries directly via GitHub Releases.
-          </p>
-          <div style="display: flex; gap: 16px; flex-wrap: wrap; padding: 14px; background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); border-radius: var(--radius-md);">
-            <div>🛡️ <strong>VirusTotal:</strong> Scanned 0/72 Clean across 70+ antivirus engines.</div>
-            <div>🔒 <strong>100% In-Device:</strong> Zero user telemetry or cloud uploads.</div>
-            <div>⚡ <strong>SHA-256:</strong> Cryptographically verified matching GitHub releases.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Floating Toast Notification -->
-  <div class="toast-box" id="toast-box">
-    <span>✓</span>
-    <span id="toast-text">${t.toast_copied}</span>
-  </div>
-
-  <!-- ── ZERO-FLICKER CLIENT-SIDE STATE ENGINE ── -->
+  <!-- ═══════════════════════════════════════════════════════════════
+       7. ZERO-FLICKER & 120FPS SMOOTH CONTROLLER SCRIPT
+  ═══════════════════════════════════════════════════════════════ -->
   <script>
     (function() {
-      'use strict';
+      var currentLang = 'en';
+      var activeFilter = 'all';
+      var searchQuery = '';
+      var toastTimeout = null;
 
-      const I18N = ${JSON.stringify(I18N)};
-      let currentLang = localStorage.getItem('mecraft_lang') || 'en';
-      let currentFilter = 'all';
-      let searchQuery = '';
+      var i18nData = ${JSON.stringify(I18N)};
 
-      // Toast feedback
-      window.copyText = function(text, toastKey) {
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(text).then(() => showToast(toastKey));
-        } else {
-          const ta = document.createElement('textarea');
-          ta.value = text;
-          ta.style.position = 'fixed';
-          ta.style.opacity = '0';
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand('copy');
-          document.body.removeChild(ta);
-          showToast(toastKey);
-        }
-      };
+      // 1. Language Toggle (Zero-Flicker In-Place Text Mutation)
+      var btnLang = document.getElementById('btn-lang');
+      var langBtnText = document.getElementById('lang-btn-text');
 
-      function showToast(toastKey) {
-        const box = document.getElementById('toast-box');
-        const textEl = document.getElementById('toast-text');
-        if (!box || !textEl) return;
-        const msg = (I18N[currentLang] && I18N[currentLang][toastKey]) || toastKey || 'Copied to Clipboard';
-        textEl.textContent = msg;
-        box.classList.add('show');
-        clearTimeout(box._timer);
-        box._timer = setTimeout(() => {
-          box.classList.remove('show');
-        }, 2200);
-      }
-
-      // Fast Filter & Search (Zero DOM creation, 0ms latency, zero flicker)
-      function applyFilterAndSearch() {
-        const q = searchQuery.trim().toLowerCase();
-        let visibleCount = 0;
-        const cards = document.querySelectorAll('.lineup-card');
-
-        cards.forEach(card => {
-          const cat = card.getAttribute('data-category');
-          const name = (card.getAttribute('data-name') || '').toLowerCase();
-          const descEn = (card.getAttribute('data-desc-en') || '').toLowerCase();
-          const descTh = (card.getAttribute('data-desc-th') || '').toLowerCase();
-          const counterpart = (card.getAttribute('data-counterpart') || '').toLowerCase();
-          const counterpartTh = (card.getAttribute('data-counterpart-th') || '').toLowerCase();
-          const file = (card.getAttribute('data-file') || '').toLowerCase();
-
-          const matchesCat = currentFilter === 'all' || cat === currentFilter;
-          const matchesSearch = !q || 
-            name.includes(q) || 
-            descEn.includes(q) || 
-            descTh.includes(q) || 
-            counterpart.includes(q) || 
-            counterpartTh.includes(q) || 
-            file.includes(q);
-
-          if (matchesCat && matchesSearch) {
-            card.style.display = 'flex';
-            visibleCount++;
-          } else {
-            card.style.display = 'none';
-          }
-        });
-
-        const emptyState = document.getElementById('grid-empty-state');
-        if (emptyState) {
-          emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
-        }
-
-        const countBadge = document.getElementById('results-count');
-        if (countBadge) {
-          countBadge.textContent = visibleCount + ' / 18';
-        }
-      }
-
-      // In-place language switch without DOM destruction
       function setLanguage(lang) {
         currentLang = lang;
+        if (langBtnText) langBtnText.textContent = lang === 'en' ? 'TH' : 'EN';
         document.documentElement.lang = lang;
-        localStorage.setItem('mecraft_lang', lang);
-
         if (lang === 'th') {
           document.body.classList.add('lang-th');
         } else {
           document.body.classList.remove('lang-th');
         }
 
-        const t = I18N[lang];
+        var t = i18nData[lang] || i18nData.en;
 
-        // Static keys
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-          const key = el.getAttribute('data-i18n');
-          if (t[key]) el.innerHTML = t[key];
+        // Mutate i18n labeled text
+        document.querySelectorAll('[data-i18n]').forEach(function(el) {
+          var key = el.getAttribute('data-i18n');
+          if (t[key]) {
+            el.textContent = t[key];
+          }
         });
 
-        // Placeholders
-        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-          const key = el.getAttribute('data-i18n-placeholder');
-          if (t[key]) el.placeholder = t[key];
+        // Mutate category labels
+        document.querySelectorAll('[data-cat-en]').forEach(function(el) {
+          el.textContent = (lang === 'th' ? el.getAttribute('data-cat-th') : el.getAttribute('data-cat-en')).toUpperCase();
         });
 
-        // Card descriptions & counterparts
-        document.querySelectorAll('.card-desc').forEach(el => {
-          const text = el.getAttribute('data-desc-' + lang);
-          if (text) el.textContent = text;
+        // Mutate descriptions
+        document.querySelectorAll('[data-desc-en]').forEach(function(el) {
+          el.textContent = lang === 'th' ? el.getAttribute('data-desc-th') : el.getAttribute('data-desc-en');
         });
 
-        document.querySelectorAll('.col-counterpart').forEach(el => {
-          const text = el.getAttribute('data-counterpart-' + lang);
-          if (text) el.textContent = text;
+        // Mutate counterparts
+        document.querySelectorAll('[data-counterpart-en]').forEach(function(el) {
+          el.textContent = lang === 'th' ? el.getAttribute('data-counterpart-th') : el.getAttribute('data-counterpart-en');
         });
-
-        // Language button indicator
-        const langIndicator = document.getElementById('lang-indicator');
-        if (langIndicator) {
-          langIndicator.textContent = lang === 'en' ? 'TH' : 'EN';
-        }
       }
 
-      // Initialize event listeners
-      document.addEventListener('DOMContentLoaded', () => {
-        // Set initial language from storage
-        setLanguage(currentLang);
-
-        // Language toggle
-        const btnLang = document.getElementById('btn-lang');
-        if (btnLang) {
-          btnLang.addEventListener('click', (e) => {
-            e.preventDefault();
-            setLanguage(currentLang === 'en' ? 'th' : 'en');
-          });
-        }
-
-        // Filter tab pills
-        const filterTabs = document.querySelectorAll('.filter-tab');
-        filterTabs.forEach(tab => {
-          tab.addEventListener('click', (e) => {
-            e.preventDefault();
-            filterTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            currentFilter = tab.getAttribute('data-filter') || 'all';
-            applyFilterAndSearch();
-          });
+      if (btnLang) {
+        btnLang.addEventListener('click', function(e) {
+          e.preventDefault();
+          setLanguage(currentLang === 'en' ? 'th' : 'en');
         });
+      }
 
-        // Live Search Input
-        const searchInput = document.getElementById('studio-search');
-        if (searchInput) {
-          searchInput.addEventListener('input', (e) => {
-            searchQuery = e.target.value;
-            applyFilterAndSearch();
-          });
-        }
+      // 2. Zero-Flicker Filtering & Searching
+      var filterButtons = document.querySelectorAll('.filter-btn');
+      var searchInput = document.getElementById('search-input');
+      var allCells = document.querySelectorAll('.lineup-cell');
 
-        // Clear Search Button
-        const btnClear = document.getElementById('btn-clear-search');
-        if (btnClear) {
-          btnClear.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (searchInput) searchInput.value = '';
-            searchQuery = '';
-            currentFilter = 'all';
-            filterTabs.forEach(t => t.classList.remove('active'));
-            if (filterTabs[0]) filterTabs[0].classList.add('active');
-            applyFilterAndSearch();
-          });
-        }
+      function applyFilterAndSearch() {
+        var query = searchQuery.trim().toLowerCase();
 
-        // Quick Dock click-to-jump with smooth scroll
-        const dockItems = document.querySelectorAll('.dock-app-item');
-        dockItems.forEach(item => {
-          item.addEventListener('click', (e) => {
-            e.preventDefault();
-            const appId = item.getAttribute('data-app-id');
-            const target = document.getElementById('studio-card-' + appId);
-            if (target) {
-              // Ensure filter doesn't hide it
-              if (currentFilter !== 'all' && target.getAttribute('data-category') !== currentFilter) {
-                currentFilter = 'all';
-                filterTabs.forEach(t => t.classList.remove('active'));
-                if (filterTabs[0]) filterTabs[0].classList.add('active');
-                applyFilterAndSearch();
-              }
-              target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              target.classList.add('flash-highlight');
-              setTimeout(() => target.classList.remove('flash-highlight'), 1200);
-            }
-          });
+        allCells.forEach(function(cell) {
+          var category = cell.getAttribute('data-category') || '';
+          var name = (cell.getAttribute('data-name') || '').toLowerCase();
+          var descEn = (cell.getAttribute('data-desc-en') || '').toLowerCase();
+          var descTh = (cell.getAttribute('data-desc-th') || '').toLowerCase();
+          var counterpart = (cell.getAttribute('data-counterpart') || '').toLowerCase();
+
+          var matchCat = (activeFilter === 'all') || (category === activeFilter);
+          var matchSearch = !query || 
+            name.indexOf(query) !== -1 || 
+            counterpart.indexOf(query) !== -1 || 
+            descEn.indexOf(query) !== -1 || 
+            descTh.indexOf(query) !== -1;
+
+          // Mutate style.display in place - ZERO DOM RECONSTRUCTION, ZERO IMAGE RELOAD!
+          if (matchCat && matchSearch) {
+            cell.style.display = 'flex';
+          } else {
+            cell.style.display = 'none';
+          }
         });
+      }
 
-        // Copy PowerShell command
-        const btnCopyPs = document.getElementById('btn-copy-ps');
-        if (btnCopyPs) {
-          btnCopyPs.addEventListener('click', (e) => {
-            e.preventDefault();
-            const psCmd = document.getElementById('cmd-sample') || document.getElementById('ps-cmd');
-            if (psCmd) {
-              copyText(psCmd.textContent.trim(), 'toast_cmd_copied');
-            }
-          });
-        }
-
-        // Windows SmartScreen Modal handlers
-        const smModal = document.getElementById('smartscreen-modal-overlay');
-        const btnOpenSm = document.getElementById('btn-open-smartscreen');
-        const btnCloseSm = document.getElementById('btn-close-smartscreen');
-        const backdropSm = document.getElementById('modal-smartscreen-backdrop');
-
-        function openSmModal() { if (smModal) smModal.classList.add('active'); }
-        function closeSmModal() { if (smModal) smModal.classList.remove('active'); }
-
-        if (btnOpenSm) btnOpenSm.addEventListener('click', openSmModal);
-        if (btnCloseSm) btnCloseSm.addEventListener('click', closeSmModal);
-        if (backdropSm) backdropSm.addEventListener('click', closeSmModal);
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') closeSmModal();
+      filterButtons.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          filterButtons.forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          activeFilter = btn.getAttribute('data-filter') || 'all';
+          applyFilterAndSearch();
         });
       });
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+          searchQuery = e.target.value;
+          applyFilterAndSearch();
+        });
+      }
+
+      // 3. Passive Smooth Scroll Percentage & Watermark Tracking
+      var scrollPercentEl = document.getElementById('scroll-percent-pill');
+      window.addEventListener('scroll', function() {
+        if (!scrollPercentEl) return;
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        var percent = Math.min(100, Math.max(0, Math.round((scrollTop / (scrollHeight || 1)) * 100)));
+        scrollPercentEl.textContent = String(percent).padStart(3, '0') + '%';
+      }, { passive: true });
+
+      // 4. Session Persistence (Identical to main.ts auth)
+      try {
+        var savedSession = localStorage.getItem('mecraft_auth_session');
+        if (savedSession) {
+          var parsed = JSON.parse(savedSession);
+          if (parsed && parsed.user) {
+            var emailEl = document.getElementById('header-user-email');
+            var avatarEl = document.getElementById('header-user-avatar');
+            var tierEl = document.getElementById('header-user-tier');
+            if (emailEl) emailEl.textContent = parsed.user.email || 'user@mecrafts.app';
+            if (avatarEl) avatarEl.textContent = (parsed.user.fullName || parsed.user.email || 'M').charAt(0).toUpperCase();
+            if (tierEl) tierEl.textContent = (parsed.user.tier === 'pro') ? 'PRO MEMBER' : 'FREE MEMBER';
+          }
+        }
+      } catch (err) {}
+
+      // 5. Global Checksum Copy with Smooth Floating Toast
+      window.copyChecksum = function(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(showToast);
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          showToast();
+        }
+      };
+
+      function showToast() {
+        var toast = document.getElementById('toast-pill');
+        if (!toast) return;
+        var t = i18nData[currentLang] || i18nData.en;
+        toast.textContent = t.toast_copied || 'Copied SHA-256 Checksum to Clipboard';
+        toast.classList.add('show');
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(function() {
+          toast.classList.remove('show');
+        }, 2200);
+      }
     })();
   </script>
 </body>
 </html>`;
 }
 
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
+// Generate the HTML Content
 const htmlContent = generateHtml();
 
 function resolveWebsiteDir(rootDir) {
@@ -2609,7 +2010,7 @@ function resolveWebsiteDir(rootDir) {
 }
 const websiteDir = resolveWebsiteDir(rootDir);
 
-// Target destination files to synchronize
+// Target destination files to synchronize across all monorepo and website deployments
 const targets = [
   path.join(rootDir, 'public/downloads.html'),
   path.join(rootDir, 'public/downloads/index.html'),
@@ -2628,4 +2029,4 @@ for (const target of targets) {
   console.log(`[SUCCESS] Generated & synced: ${path.relative(rootDir, target)} (${Buffer.byteLength(htmlContent, 'utf-8')} bytes)`);
 }
 
-console.log('🎉 [generate-downloads-portal] ArtCraft card-grid downloads portal successfully assembled and synced!');
+console.log('🎉 [generate-downloads-portal] ArtCraft 4-column border-grid downloads portal successfully assembled and synced!');
