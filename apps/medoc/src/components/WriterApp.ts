@@ -8,6 +8,7 @@ import { VaultManager, VaultDocument } from '../engines/VaultManager.js';
 import { renderMarkdown, computeDocumentStats, DocumentStats } from '../engines/MarkdownEngine.js';
 import { extractHeadings, TocItem } from '../engines/TocEngine.js';
 import { exportMarkdownToPdf, downloadPdf } from '../engines/PdfExporter.js';
+import { SteamStartupSplash, DesktopGoogleAuthModal } from '@mecraft/studio-shell';
 
 export class WriterApp {
   private container: HTMLElement;
@@ -77,6 +78,33 @@ export class WriterApp {
         }, 120);
       }
     }
+
+    const isTest = typeof process !== 'undefined' && Boolean(process.env?.VITEST || process.env?.NODE_ENV === 'test');
+    if (!isTest) {
+      this.runSteamStartupIfDesktop();
+    }
+  }
+
+  public runSteamStartupIfDesktop(options?: { speedMs?: number; force?: boolean }): SteamStartupSplash | null {
+    if (typeof window === 'undefined') return null;
+    const isDesktop = Boolean(
+      (window as any).__TAURI__ ||
+      (window as any).__TAURI_INTERNALS__ ||
+      (window.location && new URLSearchParams(window.location.search || '').get('mode') === 'desktop')
+    );
+    const skipSteam = Boolean(window.location && window.location.search && window.location.search.includes('skipSteam'));
+    if (options?.force || (isDesktop && !skipSteam)) {
+      const splash = new SteamStartupSplash({
+        appName: 'meDoc Studio',
+        appId: 'medoc',
+        currentVersion: '1.0.0',
+        speedMs: options?.speedMs,
+        force: options?.force,
+      });
+      splash.run();
+      return splash;
+    }
+    return null;
   }
 
   private mount(): void {
@@ -115,6 +143,12 @@ export class WriterApp {
             </button>
             <button class="medoc-btn medoc-btn-icon" id="btn-toggle-sidebar" title="Toggle Sidebar (Ctrl+B)">
               <span>☰</span>
+            </button>
+            <button class="medoc-btn medoc-btn-icon" id="btn-medoc-update" title="Check for Updates (Steam Mode)">
+              <span>⚡</span>
+            </button>
+            <button class="medoc-btn medoc-btn-icon" id="btn-medoc-auth" title="Google Account / Sync">
+              <span>👤</span>
             </button>
           </div>
         </header>
@@ -283,6 +317,17 @@ export class WriterApp {
       } catch (err) {
         console.error('PDF export failed:', err);
       }
+    });
+
+    document.getElementById('btn-medoc-update')?.addEventListener('click', () => {
+      this.runSteamStartupIfDesktop({ force: true });
+    });
+
+    document.getElementById('btn-medoc-auth')?.addEventListener('click', () => {
+      new DesktopGoogleAuthModal({
+        appName: 'meDoc Studio',
+        onSuccess: () => {},
+      }).open();
     });
   }
 

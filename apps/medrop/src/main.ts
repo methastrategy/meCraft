@@ -8,6 +8,7 @@ import { RadialDonut } from './components/RadialDonut.js';
 import { resolveCategory, resolveExtension, resolveWedges } from './engines/ContextFilter.js';
 import { ConversionEngine } from './engines/ConversionEngine.js';
 import { StudioGateway } from './engines/StudioGateway.js';
+import { SteamStartupSplash, DesktopGoogleAuthModal } from '@mecraft/studio-shell';
 import type { DraggedFileInfo, RadialWedgeAction } from './types/radial-types.js';
 
 export class MeDropApp {
@@ -29,6 +30,33 @@ export class MeDropApp {
 
     this.init();
     this.attachDropListeners();
+
+    const isTest = typeof process !== 'undefined' && Boolean(process.env?.VITEST || process.env?.NODE_ENV === 'test');
+    if (!isTest) {
+      this.runSteamStartupIfDesktop();
+    }
+  }
+
+  public runSteamStartupIfDesktop(options?: { speedMs?: number; force?: boolean }): SteamStartupSplash | null {
+    if (typeof window === 'undefined') return null;
+    const isDesktop = Boolean(
+      (window as any).__TAURI__ ||
+      (window as any).__TAURI_INTERNALS__ ||
+      (window.location && new URLSearchParams(window.location.search || '').get('mode') === 'desktop')
+    );
+    const skipSteam = Boolean(window.location && window.location.search && window.location.search.includes('skipSteam'));
+    if (options?.force || (isDesktop && !skipSteam)) {
+      const splash = new SteamStartupSplash({
+        appName: 'meDrop Transfer',
+        appId: 'medrop',
+        currentVersion: '1.0.0',
+        speedMs: options?.speedMs,
+        force: options?.force,
+      });
+      splash.run();
+      return splash;
+    }
+    return null;
   }
 
   public init(): void {
@@ -36,6 +64,29 @@ export class MeDropApp {
     this.donut = new RadialDonut(this.container, this.activeFileInfo, wedges, {
       onWedgeSelected: (action, fileInfo) => this.handleActionSelected(action, fileInfo),
     });
+
+    // Top action controls for Steam Update & Google Auth
+    const existingTopBar = document.getElementById('medrop-top-actions');
+    if (!existingTopBar) {
+      const topBar = document.createElement('div');
+      topBar.id = 'medrop-top-actions';
+      topBar.style.cssText = 'position:fixed;top:16px;right:16px;display:flex;gap:8px;z-index:9999;';
+      topBar.innerHTML = `
+        <button type="button" id="btn-medrop-update" title="Check for Updates (Steam Mode)" style="background:rgba(20,25,35,0.85);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:999px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,0.3);">⚡</button>
+        <button type="button" id="btn-medrop-auth" title="Google Account / Sync" style="background:rgba(20,25,35,0.85);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:999px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,0.3);">👤</button>
+      `;
+      document.body.appendChild(topBar);
+
+      topBar.querySelector('#btn-medrop-update')?.addEventListener('click', () => {
+        this.runSteamStartupIfDesktop({ force: true });
+      });
+      topBar.querySelector('#btn-medrop-auth')?.addEventListener('click', () => {
+        new DesktopGoogleAuthModal({
+          appName: 'meDrop Transfer',
+          onSuccess: () => {},
+        }).open();
+      });
+    }
   }
 
   public setFile(file: File, filePath?: string): void {
