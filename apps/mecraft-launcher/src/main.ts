@@ -1853,7 +1853,7 @@ console.log(initializeStudio(pdfStudio));`,
   public isTerminalOpen: boolean = true;
   public activeTerminalTab: 'terminal' | 'output' | 'problems' = 'terminal';
   public ideTerminalHistory: string[] = [
-    'meCraft Terminal Engine v1.0.2 (Windows x64 Native)',
+    'meCraft Terminal Engine v1.0.3 (Windows x64 Native)',
     '100% Client-Side In-Device RAM. Zero telemetry.',
     'Type "help" to see available commands or "studios" to view creative tools.',
   ];
@@ -1890,7 +1890,7 @@ console.log(initializeStudio(pdfStudio));`,
     this.currentSession = urlSession || getAuthSession();
     this.appEl = document.getElementById('app')!;
     if (typeof document !== 'undefined') {
-      document.title = 'meCraft (v1.0.2)';
+      document.title = 'meCraft (v1.0.3)';
     }
     this.cleanUrlHash();
 
@@ -2001,7 +2001,7 @@ console.log(initializeStudio(pdfStudio));`,
     // 2. Perform silent, non-blocking check for real updates on GitHub Releases
     try {
       const info = await checkSoftwareUpdate({
-        currentVersion: '1.0.2',
+        currentVersion: '1.0.3',
         appId: 'mecraft-suite',
         force: false,
       });
@@ -2063,7 +2063,7 @@ console.log(initializeStudio(pdfStudio));`,
     this.isCheckingUpdate = true;
     try {
       const info = await checkSoftwareUpdate({
-        currentVersion: '1.0.2',
+        currentVersion: '1.0.3',
         appId: 'mecraft-suite',
         force,
       });
@@ -2094,7 +2094,7 @@ console.log(initializeStudio(pdfStudio));`,
     this.steamUpdateSubstatus = 'https://registry.mecrafts.dev (CDN Mirror 1)';
     this.steamUpdateSpeed = '1.8 MB/s';
     this.steamUpdateLogs = [
-      `[${new Date().toLocaleTimeString()}] Initializing meCraft Steam-Class Auto-Updater v1.0.2`,
+      `[${new Date().toLocaleTimeString()}] Initializing meCraft Steam-Class Auto-Updater v1.0.3`,
       `[${new Date().toLocaleTimeString()}] Target runtime: Native Windows x64 In-Device RAM`,
     ];
     this.render();
@@ -2114,7 +2114,7 @@ console.log(initializeStudio(pdfStudio));`,
       let info: SoftwareUpdateInfo | null = null;
       try {
         const checkPromise = checkSoftwareUpdate({
-          currentVersion: '1.0.2',
+          currentVersion: '1.0.3',
           appId: 'mecraft-suite',
           force: options.force ?? true,
         });
@@ -2690,7 +2690,7 @@ console.log(initializeStudio(pdfStudio));`,
     <header class="ws-titlebar" data-tauri-drag-region>
       <div class="ws-titlebar-left" data-tauri-drag-region>
         <img src="./branding/mecraft-suite.png" class="ws-titlebar-icon" alt="" onerror="this.style.display='none'" />
-        <span class="ws-titlebar-text" data-tauri-drag-region>meCraft (v1.0.2)</span>
+        <span class="ws-titlebar-text" data-tauri-drag-region>meCraft (v1.0.3)</span>
       </div>
       <div class="ws-titlebar-controls">
         <button type="button" class="ws-win-btn" id="ws-win-min" aria-label="Minimize" title="Minimize">
@@ -2734,7 +2734,7 @@ console.log(initializeStudio(pdfStudio));`,
           </div>
           <div class="ws-brand-meta">
             <span class="ws-brand-title">meCraft</span>
-            <span class="ws-brand-pill">v1.0.2</span>
+            <span class="ws-brand-pill">v1.0.3</span>
           </div>
         </div>
 
@@ -3320,7 +3320,7 @@ console.log(initializeStudio(pdfStudio));`,
         <div class="ws-vault-card">
           <div class="ws-vault-card-icon">🚀</div>
           <h3>${isTh ? 'เวอร์ชันและการอัปเดต' : 'Software Version & Updates'}</h3>
-          <p>${isTh ? 'เวอร์ชันปัจจุบัน: v1.0.2 (Official Stable Release) ทำงานบนเครื่องยนต์ Tauri v2 Native Windows 64-bit' : 'Current version: v1.0.2 (Official Stable Release). Built with Tauri v2 Native Windows 64-bit engine.'}</p>
+          <p>${isTh ? 'เวอร์ชันปัจจุบัน: v1.0.3 (Official Stable Release) ทำงานบนเครื่องยนต์ Tauri v2 Native Windows 64-bit' : 'Current version: v1.0.3 (Official Stable Release). Built with Tauri v2 Native Windows 64-bit engine.'}</p>
           <div class="ws-vault-status-row">
             <span class="ws-badge-ok">✓ ${isTh ? 'เวอร์ชันล่าสุดเสถียร' : 'Latest Official Stable'}</span>
             <button type="button" class="ws-btn-primary" id="ws-btn-check-update-vault">
@@ -5779,7 +5779,7 @@ console.log(initializeStudio(pdfStudio));`,
           </div>
           <div class="downloads-meta-badge">
             <span class="dl-pulse-dot" aria-hidden="true"></span>
-            <span>${this.lang === 'th' ? 'สถานะ: เผยแพร่เวอร์ชัน v1.0.2' : 'Channel: Stable v1.0.2'}</span>
+            <span>${this.lang === 'th' ? 'สถานะ: เผยแพร่เวอร์ชัน v1.0.3' : 'Channel: Stable v1.0.3'}</span>
           </div>
         </div>
 
@@ -6974,7 +6974,7 @@ console.log(initializeStudio(pdfStudio));`,
         }
         break;
       case 'version':
-        this.ideTerminalHistory.push('meCraft AI IDE Workstation v1.0.2 (Windows x64 Native)');
+        this.ideTerminalHistory.push('meCraft AI IDE Workstation v1.0.3 (Windows x64 Native)');
         this.ideTerminalHistory.push('Engine: 100% In-Device Memory Execution · Zero Telemetry');
         break;
       case 'stats':

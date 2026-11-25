@@ -847,13 +847,13 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       // Mock update check to report no updates (already latest version)
       vi.spyOn(await import('@mecraft/core-bridge'), 'checkSoftwareUpdate').mockResolvedValueOnce({
         hasUpdate: false,
-        currentVersion: '1.0.2',
-        latestVersion: '1.0.2',
-        releaseTag: 'v1.0.2',
-        releaseTitle: 'meCraft v1.0.2',
+        currentVersion: '1.0.3',
+        latestVersion: '1.0.3',
+        releaseTag: 'v1.0.3',
+        releaseTitle: 'meCraft v1.0.3',
         releaseDate: '2026-11-25',
         changelog: [],
-        htmlUrl: 'https://example.com/releases/v1.0.2',
+        htmlUrl: 'https://example.com/releases/v1.0.3',
         allAssets: [],
         checkedAt: Date.now(),
       });
