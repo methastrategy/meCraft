@@ -94,31 +94,74 @@ export function getFileIcon(language: string, fileName?: string): string {
   }
 }
 
+function decodeHtmlEntities(str: string): string {
+  return str
+    .replace(/&#x([0-9a-fA-F]+);?/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/&#(\d+);?/g, (_, dec) => String.fromCharCode(parseInt(dec, 10)))
+    .replace(/&colon;/gi, ':')
+    .replace(/&tab;/gi, '\t')
+    .replace(/&newline;/gi, '\n');
+}
+
 export function sanitizeRenderedHtml(html: string): string {
   if (!html) return '';
   let clean = html;
 
-  // 1. Remove dangerous executable/embedding tags completely (and their contents)
-  clean = clean.replace(/<script\b[^>]*>[\s\S]*?(?:<\/script>|$)/gi, '');
-  clean = clean.replace(/<script\b[\s\S]*$/gi, '');
-  clean = clean.replace(/<iframe\b[^>]*>[\s\S]*?(?:<\/iframe>|$)/gi, '');
-  clean = clean.replace(/<object\b[^>]*>[\s\S]*?(?:<\/object>|$)/gi, '');
-  clean = clean.replace(/<embed\b[^>]*>(?:[\s\S]*?<\/embed>)?/gi, '');
-  clean = clean.replace(/<applet\b[^>]*>[\s\S]*?(?:<\/applet>|$)/gi, '');
-  clean = clean.replace(/<form\b[^>]*>[\s\S]*?(?:<\/form>|$)/gi, '');
-  clean = clean.replace(/<(?:meta|base|link)\b[^>]*>/gi, '');
+  // 1. Multi-pass removal of dangerous executable/embedding tags (and their contents)
+  // Loop ensures nested tricks like <scr<script></script>ipt> are completely eliminated
+  let prevTags = '';
+  while (prevTags !== clean) {
+    prevTags = clean;
+    clean = clean.replace(/<script\b[^>]*>[\s\S]*?(?:<\/script>|$)/gi, '');
+    clean = clean.replace(/<script\b[\s\S]*$/gi, '');
+    clean = clean.replace(/<iframe\b[^>]*>[\s\S]*?(?:<\/iframe>|$)/gi, '');
+    clean = clean.replace(/<object\b[^>]*>[\s\S]*?(?:<\/object>|$)/gi, '');
+    clean = clean.replace(/<embed\b[^>]*>(?:[\s\S]*?<\/embed>)?/gi, '');
+    clean = clean.replace(/<applet\b[^>]*>[\s\S]*?(?:<\/applet>|$)/gi, '');
+    clean = clean.replace(/<form\b[^>]*>[\s\S]*?(?:<\/form>|$)/gi, '');
+    clean = clean.replace(/<style\b[^>]*>[\s\S]*?(?:<\/style>|$)/gi, '');
+    clean = clean.replace(/<(?:meta|base|link)\b[^>]*>/gi, '');
+  }
 
   // 2. Remove all inline event handlers (onerror, onload, onclick, etc.), including slash-delimited attributes
-  let prev = '';
-  while (prev !== clean) {
-    prev = clean;
+  let prevEvents = '';
+  while (prevEvents !== clean) {
+    prevEvents = clean;
     clean = clean.replace(/([<\s/])on[a-zA-Z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '$1');
   }
 
   // 3. Neutralize dangerous javascript:, vbscript:, and data:text/html URIs in attributes
+  // Handles entity-encoded, whitespace-obfuscated, and case-varied vectors
   clean = clean.replace(
-    /\b(href|src|action|formaction|xlink:href)\s*=\s*['"]?\s*(?:javascript|vbscript|data\s*:\s*text\/html)[^'">\s]*['"]?/gi,
-    '$1="#"'
+    /\b(href|src|action|formaction|xlink:href)\s*=\s*(["'])([\s\S]*?)\2/gi,
+    (match, attr, quote, val) => {
+      const decoded = decodeHtmlEntities(val).replace(/[\s\x00-\x1f\x7f-\x9f]/g, '').toLowerCase();
+      if (
+        decoded.startsWith('javascript:') ||
+        decoded.startsWith('vbscript:') ||
+        decoded.startsWith('data:text/html') ||
+        (attr.toLowerCase() === 'href' && decoded.startsWith('data:'))
+      ) {
+        return `${attr}=${quote}#${quote}`;
+      }
+      return match;
+    }
+  );
+
+  clean = clean.replace(
+    /\b(href|src|action|formaction|xlink:href)\s*=\s*([^\s'">]+)/gi,
+    (match, attr, val) => {
+      const decoded = decodeHtmlEntities(val).replace(/[\s\x00-\x1f\x7f-\x9f]/g, '').toLowerCase();
+      if (
+        decoded.startsWith('javascript:') ||
+        decoded.startsWith('vbscript:') ||
+        decoded.startsWith('data:text/html') ||
+        (attr.toLowerCase() === 'href' && decoded.startsWith('data:'))
+      ) {
+        return `${attr}="#"`;
+      }
+      return match;
+    }
   );
 
   return clean;

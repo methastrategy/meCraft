@@ -22,8 +22,7 @@
     { "source": "/mematerial", "destination": "/mematerial/", "permanent": true },
     { "source": "/meani", "destination": "/meani/", "permanent": true },
     { "source": "/merea", "destination": "/merea/", "permanent": true },
-    { "source": "/downloads", "destination": "/downloads/", "permanent": false },
-    { "source": "/auth", "destination": "/?auth=true", "permanent": false }
+    { "source": "/downloads", "destination": "/downloads/", "permanent": false }
   ],
   "rewrites": [
     { "source": "/auth", "destination": "/index.html" },

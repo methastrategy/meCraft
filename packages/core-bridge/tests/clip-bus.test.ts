@@ -350,5 +350,16 @@ describe('UniversalClipBus Cross-App Pipeline', () => {
         (globalThis as any).indexedDB = originalIndexedDb;
       }
     });
+
+    it('verifies mepdf and mephoto consume pending messages asynchronously to support large payloads', async () => {
+      const fs = await import('fs');
+      const path = await import('path');
+      const mepdfMain = fs.readFileSync(path.resolve(__dirname, '../../../apps/mepdf/src/main.ts'), 'utf8');
+      const mephotoMain = fs.readFileSync(path.resolve(__dirname, '../../../apps/mephoto/src/main.ts'), 'utf8');
+
+      expect(mepdfMain).toContain('clipBus.consumePendingAsync');
+      expect(mephotoMain).toContain('clipBus.consumePendingAsync');
+      expect(mephotoMain).toContain('clipBus.sendAsync');
+    });
   });
 });

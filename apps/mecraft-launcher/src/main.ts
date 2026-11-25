@@ -3773,7 +3773,7 @@ console.log(initializeStudio(pdfStudio));`,
           <span class="steam-dialog-status" id="steam-status-text">${escapeHtml(this.steamUpdateStatus)}</span>
           <button type="button" class="btn-steam-dialog-cancel" id="btn-steam-skip">${isTh ? 'ยกเลิก' : 'Cancel'}</button>
         </div>
-        <div class="steam-log-terminal" id="steam-log-terminal" style="display: none;">
+        <div class="steam-log-terminal" id="steam-log-terminal" style="display: none;" hidden>
           ${this.steamUpdateLogs.map(log => `<div class="steam-log-line">${escapeHtml(log)}</div>`).join('')}
         </div>
       </div>

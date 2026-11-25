@@ -917,7 +917,7 @@ class MePhotoStudio {
     try {
       const dataUrl = this.canvas.toDataURL('image/jpeg', 0.95);
 
-      clipBus.send({
+      await clipBus.sendAsync({
         sourceApp: 'mephoto',
         targetApp: 'mepdf',
         type: 'image-page',
@@ -1110,14 +1110,15 @@ class MePhotoStudio {
       }
     });
 
-    const pending = clipBus.consumePending('mephoto');
-    for (const p of pending) {
-      if (p.dataUrl) {
-        if (p.id && this.processedClipBusIds.has(p.id)) continue;
-        if (p.id) this.processedClipBusIds.add(p.id);
-        void this.importFromDataUrl(p.dataUrl, p.name || 'mePhoto_Import.jpg');
+    void clipBus.consumePendingAsync('mephoto').then((pending) => {
+      for (const p of pending) {
+        if (p.dataUrl) {
+          if (p.id && this.processedClipBusIds.has(p.id)) continue;
+          if (p.id) this.processedClipBusIds.add(p.id);
+          void this.importFromDataUrl(p.dataUrl, p.name || 'mePhoto_Import.jpg');
+        }
       }
-    }
+    });
   }
 
   private updateUserIndicator() {

@@ -97,6 +97,12 @@ describe('🛡️ meCraft Ecosystem Security Hardening Verification Suite', () =
       '<form action="javascript:steal()"><input type="submit"></form>',
       '<base href="http://evil.com/">',
       '<object data="data:text/html,<script>alert(1)</script>"></object>',
+      '<a href="&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;alert(1)">Entity XSS</a>',
+      '<a href="jav&#x09;ascript:alert(1)">Tab Entity</a>',
+      '<a href="javascript&colon;alert(1)">Colon Entity</a>',
+      '<a href="data:text/html,<script>alert(1)</script>">Data Link</a>',
+      '<scr<script></script>ipt>nestedAttack()</script>',
+      '<style>body { background: url("javascript:alert(1)"); }</style>',
     ];
 
     it('neutralizes all XSS attack vectors in meDoc sanitizeRenderedHtml', () => {
@@ -112,6 +118,9 @@ describe('🛡️ meCraft Ecosystem Security Hardening Verification Suite', () =
         expect(clean).not.toContain('vbscript:');
         expect(clean).not.toContain('<base');
         expect(clean).not.toContain('<object');
+        expect(clean).not.toContain('<style');
+        expect(clean).not.toContain('nestedAttack');
+        expect(clean).not.toMatch(/href\s*=\s*["']?&#106;/i);
       }
     });
 
@@ -128,6 +137,9 @@ describe('🛡️ meCraft Ecosystem Security Hardening Verification Suite', () =
         expect(clean).not.toContain('vbscript:');
         expect(clean).not.toContain('<base');
         expect(clean).not.toContain('<object');
+        expect(clean).not.toContain('<style');
+        expect(clean).not.toContain('nestedAttack');
+        expect(clean).not.toMatch(/href\s*=\s*["']?&#106;/i);
       }
     });
 

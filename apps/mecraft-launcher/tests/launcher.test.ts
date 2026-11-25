@@ -838,6 +838,64 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(portal.isSteamUpdating).toBe(false);
     });
 
+    it('Step 1.2: launches directly to workstation or auth without showing update dialog when already up-to-date', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+
+      // Mock update check to report no updates (already latest version)
+      vi.spyOn(await import('@mecraft/core-bridge'), 'checkSoftwareUpdate').mockResolvedValueOnce({
+        hasUpdate: false,
+        currentVersion: '1.0.2',
+        latestVersion: '1.0.2',
+        releaseTag: 'v1.0.2',
+        releaseTitle: 'meCraft v1.0.2',
+        releaseDate: '2026-11-25',
+        changelog: [],
+        htmlUrl: 'https://example.com/releases/v1.0.2',
+        allAssets: [],
+        checkedAt: Date.now(),
+      });
+
+      // Call startup
+      await (portal as any).initDesktopStartup();
+
+      // Must NOT be updating
+      expect(portal.isSteamUpdating).toBe(false);
+      // If no session, desktopStage is auth; if session exists, desktopStage is main
+      expect(['auth', 'main']).toContain(portal.desktopStage);
+      expect(doc.getElementById('steam-dialog-window') || doc.querySelector('.steam-dialog-window')).toBeNull();
+    });
+
+    it('Step 1.3: renders authentic clean Steam dialog without terminal console clutter', () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      portal.desktopStage = 'updater';
+      portal.isSteamUpdating = true;
+      portal.steamUpdateProgress = 65;
+      portal.steamUpdateStatus = 'Extracting package...';
+
+      (portal as any).render();
+      (portal as any).attachListeners();
+
+      const overlay = doc.getElementById('steam-splash-overlay');
+      expect(overlay).not.toBeNull();
+      expect(overlay?.classList.contains('steam-dialog-window')).toBe(true);
+      const titleEl = doc.querySelector('.steam-dialog-title');
+      expect(titleEl).not.toBeNull();
+      expect(titleEl?.textContent).toContain('Updating meCraft...');
+      expect(doc.getElementById('steam-status-text')?.textContent).toBe('Extracting package...');
+      expect(doc.getElementById('btn-steam-skip')?.textContent).toBe('Cancel');
+
+      // The log terminal must be hidden so user sees only the clean Steam UI
+      const logTerminal = doc.getElementById('steam-log-terminal');
+      expect(logTerminal).not.toBeNull();
+      expect(logTerminal?.hasAttribute('hidden') || logTerminal?.getAttribute('style')?.includes('display: none')).toBe(true);
+    });
+
     it('renders Steam Auth Gate with modern input wrappers, auth-input classes, and zero offline bypass', () => {
       const { doc } = setupMockDom();
       doc.body.innerHTML = '<div id="app"></div>';

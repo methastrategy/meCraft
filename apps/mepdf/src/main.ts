@@ -1376,10 +1376,11 @@ class MeCraftApp {
       }
     });
 
-    const pending = clipBus.consumePending('mepdf');
-    for (const p of pending) {
-      void handleMessage(p);
-    }
+    void clipBus.consumePendingAsync('mepdf').then((pending) => {
+      for (const p of pending) {
+        void handleMessage(p);
+      }
+    });
   }
 
   public async importImageAsPage(dataUrl: string, filename = 'mePhoto_Scan.jpg'): Promise<void> {

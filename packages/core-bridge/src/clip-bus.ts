@@ -134,6 +134,9 @@ export class UniversalClipBus {
   private listeners = new Set<ClipBusListener>();
 
   constructor() {
+    // Automatically prune any stale/orphaned blobs in background
+    cleanStaleBlobsFromIdb().catch(() => {});
+
     if (typeof BroadcastChannel !== 'undefined') {
       try {
         this.channel = new BroadcastChannel('mecraft-clipbus');
