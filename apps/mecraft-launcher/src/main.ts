@@ -1890,7 +1890,7 @@ console.log(initializeStudio(pdfStudio));`,
     this.currentSession = urlSession || getAuthSession();
     this.appEl = document.getElementById('app')!;
     if (typeof document !== 'undefined') {
-      document.title = 'meCraft (v1.0.3)';
+      document.title = 'meCrafts';
     }
     this.cleanUrlHash();
 
@@ -2697,7 +2697,7 @@ console.log(initializeStudio(pdfStudio));`,
     <header class="ws-titlebar" data-tauri-drag-region>
       <div class="ws-titlebar-left" data-tauri-drag-region>
         <img src="./branding/mecraft-suite.png" class="ws-titlebar-icon" alt="" onerror="this.style.display='none'" />
-        <span class="ws-titlebar-text" data-tauri-drag-region>meCraft (v1.0.3)</span>
+        <span class="ws-titlebar-text" data-tauri-drag-region>meCrafts</span>
       </div>
       <div class="ws-titlebar-controls">
         <button type="button" class="ws-win-btn" id="ws-win-min" aria-label="Minimize" title="Minimize">
