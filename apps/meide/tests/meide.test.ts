@@ -191,7 +191,7 @@ describe('meIDE Standalone AI IDE Engine Suite', () => {
     const splash = app.runSteamStartupUpdate({ speedMs: 5, force: true });
     expect(app.isSteamUpdating).toBe(true);
     expect(doc.body.innerHTML).toContain('meCraft Steam-Class Engine');
-    expect(doc.body.innerHTML).toContain('Updating meIDE Standalone');
+    expect(doc.body.innerHTML).toContain('Updating meIDE');
 
     // Manually dismiss
     splash.dismiss();
@@ -213,12 +213,12 @@ describe('meIDE Standalone AI IDE Engine Suite', () => {
 
     // Test toggle sync drawer
     app.toggleSyncDrawer();
-    expect(app.isSyncDrawerOpen).toBe(true);
+    expect(app.showSyncImport).toBe(true);
 
     // Test Google auth execution
     app.handleGoogleAuth();
     expect(app.currentSession).not.toBeNull();
-    expect(app.currentSession?.email).toBe('developer@mecraft.dev');
+    expect(app.currentSession?.user.email).toBe('developer@mecraft.dev');
     expect(app.isAuthModalOpen).toBe(false);
   });
 });

@@ -37,6 +37,18 @@ export class ToastManager {
     }, duration);
   }
 
+  success(message: string, duration?: number): void {
+    this.show(message, 'success', duration);
+  }
+
+  error(message: string, duration?: number): void {
+    this.show(message, 'error', duration);
+  }
+
+  info(message: string, duration?: number): void {
+    this.show(message, 'info', duration);
+  }
+
   showAction(
     message: string,
     actionLabel: string,
