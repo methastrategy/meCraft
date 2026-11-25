@@ -15,7 +15,7 @@ Before contributing, please review our core engineering invariants:
    meCraft is maintained as a unified monorepo. Shared packages reside in `packages/*` and applications reside in `apps/*`. Cross-package dependencies are resolved through npm workspaces (`npm install`).
 
 3. **Strict Quality Gates:**
-   - **Unit & Integration Tests:** 100% test pass rate required (`npm test`, all 226+ tests must pass). Never relax, skip, or weaken existing test assertions.
+   - **Unit & Integration Tests:** 100% test pass rate required (`npm test`, all 372+ tests across 31 suites must pass). Never relax, skip, or weaken existing test assertions.
    - **TypeScript Typecheck:** 0 errors across all workspaces (`npm run typecheck`).
    - **Clean Builds:** `npm run build` must succeed without warnings or errors.
 
@@ -47,8 +47,8 @@ cd meCraft
 npm install
 
 # Verify your environment
-npm test            # 226 tests must pass
-npm run typecheck   # 0 errors required
+npm test            # 372+ tests must pass (31 test files)
+npm run typecheck   # 0 errors required across all 19 workspaces
 ```
 
 ### Running Applications Locally
@@ -56,11 +56,23 @@ npm run typecheck   # 0 errors required
 # meCraft Launcher Hub (Web mode)
 npm run dev:launcher
 
+# meIDE Studio (Web mode)
+npm run dev:ide
+
 # mePDF Studio (Web mode)
 npm run dev:pdf
 
 # mePhoto Studio (Web mode)
 npm run dev:photo
+
+# meDoc Studio (Web mode)
+npm run dev --workspace=@mecraft/medoc
+
+# meSheet Studio (Web mode)
+npm run dev --workspace=@mecraft/mesheet
+
+# meDeck Studio (Web mode)
+npm run dev --workspace=@mecraft/medeck
 ```
 
 ---
@@ -88,13 +100,16 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
 Before opening a Pull Request, run the full verification gate locally:
 
 ```bash
-# 1. Run automated test suites (226 tests across 19 suites)
+# 1. Run automated test suites (372+ tests across 31 suites)
 npm test
 
-# 2. Typecheck across all 6 workspaces
+# 2. Typecheck across all 19 workspaces (15 apps + 4 packages)
 npm run typecheck
 
-# 3. Build multi-app web bundle
+# 3. Verify living documentation integrity (0 warnings)
+npm run check:docs
+
+# 4. Build multi-app web bundle
 npm run build
 ```
 

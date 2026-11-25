@@ -1,7 +1,7 @@
-# meVector
+# meVector Studio
 
 > **Precision Vector Graphics & Illustration**  
-> *Category: CREATIVE · Status: Draft / In-Development · Suite: meCraft*
+> *Category: CREATIVE · Status: Stable v1.0.0 · Suite: meCraft*
 
 ---
 
@@ -11,7 +11,7 @@ Infinite-canvas vector graphics editor with bezier path boolean operations, typo
 - **Inspired By:** Adobe Illustrator / VectorCraft (storytold/vectorcraft)
 - **Supported File Formats:** `.svg`, `.ai`, `.eps`
 - **Privacy Standard:** 100% In-Device RAM Privacy. All compute executes on local client resources with zero telemetry.
-- **Distribution:** Downloaded, installed, and launched exclusively via **meCraft Launcher** (`meCraft.exe`).
+- **Distribution:** Available on Web (`/mevector/`) and standalone Windows installer `meVector_1.0.0_x64-setup.exe`.
 
 ---
 

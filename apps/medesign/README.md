@@ -1,7 +1,7 @@
-# meDesign
+# meDesign Studio
 
 > **Desktop Publishing, Grid Layouts & Typography**  
-> *Category: CREATIVE · Status: Draft / In-Development · Suite: meCraft*
+> *Category: CREATIVE · Status: Stable v1.0.0 · Suite: meCraft*
 
 ---
 
@@ -11,7 +11,7 @@ Multi-page editorial layout engine with master pages, linked text frames, grid g
 - **Inspired By:** Adobe InDesign / DesignCraft (storytold/designcraft)
 - **Supported File Formats:** `.indd`, `.idml`, `.sla`
 - **Privacy Standard:** 100% In-Device RAM Privacy. All compute executes on local client resources with zero telemetry.
-- **Distribution:** Downloaded, installed, and launched exclusively via **meCraft Launcher** (`meCraft.exe`).
+- **Distribution:** Available on Web (`/medesign/`) and standalone Windows installer `meDesign_1.0.0_x64-setup.exe`.
 
 ---
 

@@ -1,7 +1,7 @@
-# meAudio
+# meAudio Studio
 
 > **Multi-Track Digital Audio Workstation & Mastering**  
-> *Category: MEDIA · Status: Draft / In-Development · Suite: meCraft*
+> *Category: MEDIA · Status: Stable v1.0.0 · Suite: meCraft*
 
 ---
 
@@ -11,7 +11,7 @@ Digital audio editor with spectral waveform view, parametric EQ, dynamic compres
 - **Inspired By:** Adobe Audition / SoundCraft (storytold/soundcraft)
 - **Supported File Formats:** `.mp3`, `.wav`, `.flac`, `.aac`, `.ogg`
 - **Privacy Standard:** 100% In-Device RAM Privacy. All compute executes on local client resources with zero telemetry.
-- **Distribution:** Downloaded, installed, and launched exclusively via **meCraft Launcher** (`meCraft.exe`).
+- **Distribution:** Available on Web (`/meaudio/`) and standalone Windows installer `meAudio_1.0.0_x64-setup.exe`.
 
 ---
 

@@ -1,7 +1,7 @@
 # meLight Studio
 
 > **Professional RAW Photo Development & Color Grading**  
-> *Category: CREATIVE · Status: Draft / In-Development · Suite: meCraft*
+> *Category: CREATIVE · Status: Stable v1.0.0 · Suite: meCraft*
 
 ---
 
@@ -11,7 +11,7 @@ Non-destructive RAW photo development, color grading curves, and batch catalogin
 - **Inspired By:** Adobe Lightroom / LightCraft (storytold/lightcraft)
 - **Supported File Formats:** `.raw`, `.cr2`, `.nef`, `.arw`, `.dng`
 - **Privacy Standard:** 100% In-Device RAM Privacy. All compute executes on local client resources with zero telemetry.
-- **Distribution:** Downloaded, installed, and launched exclusively via **meCraft Launcher** (`meCraft.exe`).
+- **Distribution:** Available on Web (`/melight/`) and standalone Windows installer `meLight_1.0.0_x64-setup.exe`.
 
 ---
 

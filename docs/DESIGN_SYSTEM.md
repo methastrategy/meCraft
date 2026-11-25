@@ -32,5 +32,11 @@
 ## 3. Component Architecture Across Apps
 
 - **meCraft Launcher:** Hub and Command Palette, Drag-and-drop auto-routing zone, Dual-Action App Cards.
+- **meIDE Studio:** Luxury OLED Dark code editor, gutter linenumbers, real-time math split preview, integrated CLI terminal.
 - **mePDF Studio:** 3-pane Studio Cockpit (Left Filmstrip, Center Canvas with high-DPI Pan/Zoom, Right 6-Tab Inspector).
 - **mePhoto Studio:** Fullscreen CamScanner-grade canvas with 4-point draggable quad homography pins and live recipe adjustments.
+- **meDoc Studio:** Distraction-free typewriter, 1-click Thai Sarabun 16pt typesetting, official government templates, and KaTeX math.
+- **meSheet Studio:** Tabular computation grid with ribbon bar, `=BAHTTEXT()` formula inspector, and Thai numeral formatting.
+- **meDeck Studio:** High-contrast presentation slide editor with Thai typography and slide numbering.
+- **meDrop Transfer:** Zero-window radial HUD converter ring with instant MIME drag-and-drop auto-routing.
+- **Creative Studios (me3D, meAudio, meDesign, meFilm, meLight, meMotion, meVector):** Specialized single-purpose workstations sharing `@mecraft/studio-shell` window chrome and `@mecraft/ui-tokens`.

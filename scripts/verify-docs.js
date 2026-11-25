@@ -6,13 +6,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = fs.realpathSync(path.resolve(__dirname, '..'));
 
-console.log('🔍 [verify-docs] Running meCraft living documentation audit...');
+console.log('🔍 [verify-docs] Running meCraft living documentation audit & deep content inspection...');
 
 const readmePath = path.join(rootDir, 'README.md');
 const roadmapPath = path.join(rootDir, 'docs/ROADMAP.md');
 const archPath = path.join(rootDir, 'docs/ARCHITECTURE.md');
 const meCraftsArchPath = path.join(rootDir, 'docs/meCrafts-architecture.md');
 const changelogPath = path.join(rootDir, 'CHANGELOG.md');
+const contributingPath = path.join(rootDir, 'CONTRIBUTING.md');
 const appsDir = path.join(rootDir, 'apps');
 const packagesDir = path.join(rootDir, 'packages');
 
@@ -35,6 +36,17 @@ if (fs.existsSync(appsDir)) {
     if (!fs.existsSync(appReadme)) {
       console.warn(`⚠️ Warning: App '${app}' is missing its README.md`);
       hasWarnings = true;
+    } else {
+      // Content-level inspection of each app's README
+      const content = fs.readFileSync(appReadme, 'utf-8');
+      if (content.includes('Draft / In-Development')) {
+        console.warn(`⚠️ Warning: App '${app}' README contains stale 'Draft / In-Development' status.`);
+        hasWarnings = true;
+      }
+      if (content.includes('launched exclusively via meCraft Launcher')) {
+        console.warn(`⚠️ Warning: App '${app}' README contains stale single-distribution restriction.`);
+        hasWarnings = true;
+      }
     }
   }
 
@@ -62,18 +74,25 @@ if (fs.existsSync(packagesDir)) {
   }
 }
 
-// 4. Verify core blueprint files exist
+// 4. Verify core blueprint files exist and inspect their contents
 const coreDocs = [
   readmePath,
   roadmapPath,
   archPath,
   meCraftsArchPath,
   changelogPath,
+  contributingPath
 ];
 
 for (const doc of coreDocs) {
   if (fs.existsSync(doc)) {
-    console.log(`✅ Verified core doc: ${path.relative(rootDir, doc)}`);
+    const content = fs.readFileSync(doc, 'utf-8');
+    // Check for stale test numbers like 226 tests
+    if (content.includes('226 tests') || content.includes('347+ tests')) {
+      console.warn(`⚠️ Warning: Stale test count found in ${path.relative(rootDir, doc)}`);
+      hasWarnings = true;
+    }
+    console.log(`✅ Verified core doc content: ${path.relative(rootDir, doc)}`);
   } else {
     console.warn(`⚠️ Warning: Missing core doc: ${path.relative(rootDir, doc)}`);
     hasWarnings = true;
@@ -81,7 +100,7 @@ for (const doc of coreDocs) {
 }
 
 if (!hasWarnings) {
-  console.log('✨ [verify-docs] 100% Living documentation integrity passed with 0 warnings!');
+  console.log('✨ [verify-docs] 100% Deep living documentation integrity passed with 0 warnings!');
 } else {
   console.log('⚠️ [verify-docs] Audit finished with warnings above.');
 }
