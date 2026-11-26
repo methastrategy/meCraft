@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const htmlContent = `<!doctype html>
 <html lang="en">
@@ -1970,11 +1971,13 @@ const htmlContent = `<!doctype html>
 `;
 
 // Target files to write
+const rootDir = fs.realpathSync(fileURLToPath(new URL('..', import.meta.url)));
+const websiteDir = path.resolve(rootDir, '..', 'mecrafts-website');
 const targets = [
-  'D:/METHA/Projects/meCraft-Project/meCrafts-website/downloads.html',
-  'D:/METHA/Projects/meCraft-Project/meCrafts-website/downloads/index.html',
-  'D:/METHA/Projects/meCraft-Project/public/downloads.html',
-  'D:/METHA/Projects/meCraft-Project/public/downloads/index.html'
+  path.join(websiteDir, 'downloads.html'),
+  path.join(websiteDir, 'downloads', 'index.html'),
+  path.join(rootDir, 'public', 'downloads.html'),
+  path.join(rootDir, 'public', 'downloads', 'index.html')
 ];
 
 for (const target of targets) {

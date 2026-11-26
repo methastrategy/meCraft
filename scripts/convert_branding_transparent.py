@@ -24,11 +24,12 @@ IMAGE_MAPPING = [
 ]
 
 SOURCE_DIR = r'D:\Users\hotme\Downloads'
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 TARGET_DIRS = [
-    r'd:\METHA\Projects\meCraft-Project\public\branding',
-    r'd:\METHA\Projects\meCraft-Project\assets\icons',
-    r'd:\METHA\Projects\meCraft-Project\apps\mecraft-launcher\public\branding',
+    os.path.join(ROOT_DIR, 'public', 'branding'),
+    os.path.join(ROOT_DIR, 'assets', 'icons'),
+    os.path.join(ROOT_DIR, 'apps', 'mecraft-launcher', 'public', 'branding'),
 ]
 
 def main():

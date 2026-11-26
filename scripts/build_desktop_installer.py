@@ -16,7 +16,8 @@ import time
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-ROOT_DIR = r'd:\METHA\Projects\meCraft-Project'
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+WEBSITE_DIR = os.path.join(os.path.dirname(ROOT_DIR), 'mecrafts-website')
 CARGO_BIN = os.path.expanduser('~/.cargo/bin')
 
 def main():
@@ -77,7 +78,7 @@ def main():
     destinations = [
         os.path.join(ROOT_DIR, 'dist-artifacts', 'meCraft-Setup.exe'),
         os.path.join(ROOT_DIR, 'dist', 'downloads', 'meCraft-Setup.exe'),
-        os.path.join(ROOT_DIR, 'meCrafts-website', 'downloads', 'meCraft-Setup.exe')
+        os.path.join(WEBSITE_DIR, 'downloads', 'meCraft-Setup.exe')
     ]
 
     for dst in destinations:

@@ -1,15 +1,8 @@
 # meCrafts Ecosystem — Full Architecture Blueprint v1.1.0
 
-> **กลยุทธ์หลัก (Dual-Distribution Model):**  
-> 1. **All-in-One Suite Hub:** ดาวน์โหลด `meCraft-Setup.exe` สำหรับจัดการ/อัปเดต/เปิดโปรแกรมทั้งหมดในตัวเดียว  
-> 2. **Standalone Studio Installers:** ดาวน์โหลดตัวติดตั้งเดี่ยว (`.exe`) แยกตามโปรแกรมได้ทันทีที่หน้า `downloads.html` และ GitHub Releases  
-> 3. **Universal Web Studios:** ตัวเว็บ Official Portal (`mecrafts.vercel.app`) ให้บริการทั้ง Hub Catalog และสตูดิโอบนเว็บพร้อมใช้งานทันที (Zero-Install Web Studios) ทุกตัวรัน 100% In-Device Memory ไม่ส่งข้อมูลขึ้นคลาวด์
-
-> [!CAUTION]
-> **GPL-3.0 License Warning (Browser-Verified จาก GitHub จริง)**  
-> ArtCraft / `storytold` org ใช้ **GPL-3.0** ทุก repo — ไม่ใช่ MIT/Apache  
-> หาก Fork มาแล้วแจกจ่าย → ต้อง Open-Source โค้ดทั้งหมดภายใต้ GPL-3.0 ด้วย  
-> **Strategy:** ใช้เป็น "Reference / Study Only" + เขียน meCraft core เองแยก (Clean-Room Approach 100% ภายใต้สัญญาอนุญาต MIT)
+> **เป้าหมายรุ่นสาธารณะแรก (meCraft-First)** เว็บแจก `meCraft-Setup.exe` และ Launcher จัดการดาวน์โหลด ติดตั้ง เปิด อัปเดต และถอน meDoc เป็นแอปแรก เพิ่มแอปถัดไปเมื่อผ่านการทดสอบด้วยไฟล์และตัวติดตั้งจริง
+>
+> **การใช้โอเพนซอร์ส** พิจารณาฟอร์ก ใช้เอนจิน หรือเชื่อมแอปแยกตามงานและสัญญาอนุญาตของโปรเจกต์กับเวอร์ชันที่จะใช้จริง
 
 ---
 
@@ -17,42 +10,18 @@
 
 ```mermaid
 flowchart TD
-    WEB["🌐 mecrafts.vercel.app\nOfficial Showcase & Universal Web Studios\n(15 In-Browser Web Studios + Downloads Hub)"]
-    WEB -->|"ตัวเลือกที่ 1: All-in-One"| DL
-    WEB -->|"ตัวเลือกที่ 2: Standalone .exe"| DLS
-
-    DL["⬇️ meCraft-Setup.exe\nAll-in-One Suite Manager · v1.0.0"]
-    DLS["⬇️ 15 Standalone .exe Setups\n(meDoc, meSheet, meDeck, meIDE, mePDF, ฯลฯ)"]
-
-    DL --> HUB
-    DLS --> APPS
-
-    HUB["🚀 meCraft Launcher (Desktop)\nPure Program Manager & App Hub\n(Install · Update · Launch · Drag & Drop)\n✅ LIVE v1.0.0"]
-
-    HUB --> APPS
-
-    subgraph APPS["🚀 15 Standalone Applications"]
-        IDE["💻 meIDE Studio (Standalone AI IDE) ✅"]
-        DOC["📄 DOCUMENT\nmePDF Studio ✅  meDoc Studio ✅\nmeSheet Studio ✅  meDeck Studio ✅\nmeNote 📋  meForm 📋"]
-        CRE["🎨 CREATIVE\nmePhoto Studio ✅  meLight Studio ✅\nmeVector Studio ✅  meDesign Studio ✅\nmeCanvas 📋  meLayout 📋\nmePaint 📋  meFont 📋  meColor 📋"]
-        MED["🎬 MEDIA\nmeFilm Studio ✅  meAudio Studio ✅\nmeMotion Studio ✅  meClip 📋"]
-        UTL["🔧 UTILITY\nmeDrop Transfer ✅  meConverter 📋\nmeCompress 📋  meSign 📋  meScan 📋"]
-        ENG["🏗️ ENGINEER\nme3D Studio ✅  meSurv 🔨  meCAD 📋"]
-        FIN["💹 FINANCE\nmeBoard 🔨  huayork 🔨"]
-        FUN["🎮 FUN\nmeGameHub 🔨"]
-    end
-
-    style HUB fill:#d4af37,color:#000,stroke:#b8960c,stroke-width:3px
-    style WEB fill:#1e1e2e,color:#cdd6f4,stroke:#6366f1
-    style DL fill:#166534,color:#fff,stroke:#15803d
-    style DLS fill:#2563eb,color:#fff,stroke:#1d4ed8
+    WEB["เว็บไซต์และแค็ตตาล็อก"] --> DL["meCraft-Setup.exe"]
+    DL --> HUB["meCraft Launcher"]
+    RELEASE["GitHub Releases"] --> HUB
+    HUB --> DOC["meDoc (แอปแรก)"]
+    HUB -.-> APPS["แอปถัดไปเมื่อผ่านการทดสอบ"]
 ```
 
-**Legend:** ✅ Live (มีทั้ง Web และ Standalone Windows .exe) · 🔨 In-Dev / Sister-Suite · 📋 Planned
+แผนผังแสดงเป้าหมายรุ่นแรก ตารางสถานะและช่วงเวลาด้านล่างเป็นข้อมูลจากแผนเดิม ใช้อ้างอิงขอบเขตและแรงบันดาลใจ การขึ้นสถานะพร้อมใช้ต้องยืนยันด้วยตัวติดตั้งและการใช้งานจริง
 
 ---
 
-## Registry โปรแกรมทั้งหมด พร้อมแหล่งอ้างอิง OSS (Browser-Verified)
+## Registry จากแผนเดิมและแหล่งอ้างอิงโอเพนซอร์ส
 
 ### 📄 Category 1 — DOCUMENT
 
@@ -201,7 +170,7 @@ flowchart LR
         M5[Whiteboard] --> meWhiteboard
     end
 
-    subgraph ARTCRAFT["storytold / ArtCraft (GPL-3.0) ⭐"]
+    subgraph ARTCRAFT["storytold / ArtCraft"]
         AC1[pdfcraft ⭐22k] --> mePDF
         AC2[photocraft ⭐81.7k] --> mePhoto
         AC3[lightcraft ⭐16.2k] --> meLight
@@ -261,22 +230,11 @@ flowchart LR
 
 ---
 
-## Legal Strategy: GPL-3.0 Handling
+## การเลือกและแจกจ่ายซอฟต์แวร์โอเพนซอร์ส
 
-> [!IMPORTANT]
-> **ArtCraft/storytold ใช้ GPL-3.0 ทุก repo — ต้องวางแผนอย่างระมัดระวัง**
-
-| Approach | ผลลัพธ์ | แนะนำ? |
-|---|---|---|
-| **Fork โดยตรง + แจกจ่าย** | ต้อง Open-Source meCraft ทั้งหมดด้วย GPL-3.0 | ⚠️ ถ้ายอมรับได้ |
-| **Clean-Room Reference** | ศึกษา UX/Feature เท่านั้น เขียน Core ใหม่เองทั้งหมด | ✅ **แนะนำ (แนวทางปัจจุบัน)** |
-| **Dual-Track: Web = MIT, Desktop = Proprietary/Clean** | แยก Web (Browser) ไม่กระทบ / Desktop app ตัดสินใจแยก | ✅ Flexible |
-| **ติดต่อขอ Commercial License** | ถ้า storytold เปิดทาง | 📋 Option |
-
-> [!TIP]
-> **mePDF และ mePhoto ที่ Live แล้ว** เขียนใหม่ทั้งหมดด้วย TypeScript/Vite/Rust (100% Client-Side Privacy)  
-> → ไม่ได้ Fork ArtCraft → ไม่มีปัญหา GPL ✅  
-> ใช้ ArtCraft เป็น **"Feature Reference"** เท่านั้น = Clean Strategy
+- WordCraft, GridCraft, DeckCraft, PdfCraft และ FilmCraft ระบุทางเลือก MIT หรือ Apache-2.0 ในต้นทาง ใช้ LICENSE และ NOTICE ของ release ที่เลือกจริงเพื่อยืนยันสิทธิ์และเงื่อนไขการแจก [WordCraft](https://github.com/storytold/wordcraft#license-and-credits) · [GridCraft](https://github.com/storytold/gridcraft#license-and-credits) · [DeckCraft](https://github.com/storytold/deckcraft#license-and-credits) · [PdfCraft](https://github.com/storytold/pdfcraft#license-and-credits) · [FilmCraft](https://github.com/storytold/filmcraft#license-and-credits)
+- ประเมินการฟอร์กทั้งแอปจากผลทดสอบงานจริงและภาระตามแพตช์ ใช้เอนจินเมื่อขาดเฉพาะบางความสามารถ เชื่อมแอปแยกเมื่อเส้นทางติดตั้งและเปิดรองรับงานอยู่แล้ว
+- บันทึกเวอร์ชันต้นทาง แพตช์ และข้อกำหนดของโค้ด ฟอนต์ โมเดล สื่อ และเครื่องหมายการค้าก่อนแจก หากมีเงื่อนไข copyleft ให้ตรวจการปฏิบัติตามสำหรับแพ็กเกจจริง
 
 ---
 
@@ -287,7 +245,7 @@ flowchart LR
 | **บทบาทหลัก** | Pure Program Manager (App Store & Runner) | Showcase & Information Catalog |
 | **หน้าที่** | ดาวน์โหลด, ติดตั้ง, ตรวจสอบอัปเดต, เปิดโปรแกรมย่อย | ค้นหาข้อมูลฟีเจอร์, ดูเอกสาร, กดปุ่มดาวน์โหลดตัวติดตั้ง |
 | **การประมวลผลไฟล์** | เปิดไฟล์ผ่านโปรแกรมย่อยที่ติดตั้งแล้วในเครื่อง | **ไม่มี (Zero in-browser heavy editor)** |
-| **Download Target** | ดึง Asset จาก GitHub Releases เข้า `%LOCALAPPDATA%\meCraft\apps` | มีลิงก์เดียว: `meCraft-Setup.exe` (14.8MB) |
+| **Download Target** | ดึง Asset จาก GitHub Releases เข้า `%LOCALAPPDATA%\meCraft\apps` | ปุ่มดาวน์โหลด `meCraft-Setup.exe` สำหรับรุ่นสาธารณะแรก |
 
 ---
 

@@ -5,9 +5,17 @@
 
 ---
 
-## 1. Application Ecosystem Milestones
+## เป้าหมายรุ่นสาธารณะแรก
 
-| Application | Workspace | Status | Focus Areas | Target Release |
+1. ผู้ใช้ดาวน์โหลดและติดตั้ง meCraft บน Windows แล้วจัดการติดตั้ง เปิด อัปเดต และถอน meDoc จากแค็ตตาล็อกได้
+2. meDoc ผ่านการเปิด บันทึก เปิดซ้ำ และส่งออกเอกสารไทยจริง ประเมิน WordCraft และเอนจินภายนอกด้วยไฟล์ชุดเดียวกับ meDoc เดิมก่อนเลือกฐาน
+3. เพิ่มแอปถัดไปเมื่อผ่านงานหลักของแอปและการทดสอบตัวติดตั้งบนเครื่องสะอาด ประเมินทั้งการฟอร์ก ใช้เอนจิน และเชื่อมแอปแยก
+
+## 1. Application Ecosystem Milestones จากแผนเดิม
+
+สถานะในตารางนี้เป็นบันทึกของแผนเดิม สถานะพร้อมใช้สำหรับรุ่นสาธารณะแรกต้องอ้างผลทดสอบตัวโปรแกรมและตัวติดตั้งจริง
+
+| Application | Workspace | Recorded Status | Focus Areas | Recorded Release |
 |:---|:---|:---:|:---|:---:|
 | **🚀 meCraft Launcher Hub** | `apps/mecraft-launcher` | **Stable** (`v1.0.0`) | Universal Hub drop zone, native detached process spawning, dual-action routing, and bilingual Thai/EN cockpit. | Released ✅ |
 | **💻 meIDE Studio** | `apps/meide` | **Stable** (`v1.0.0`) | Standalone AI Web/Desktop IDE, Monaco editor, File System API, and local Copilot integration. | Released ✅ |

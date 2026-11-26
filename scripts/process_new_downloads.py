@@ -23,7 +23,8 @@ from PIL import Image
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-ROOT_DIR = r'd:\METHA\Projects\meCraft-Project'
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+WEBSITE_DIR = os.path.join(os.path.dirname(ROOT_DIR), 'mecrafts-website')
 SOURCE_DIR = r'D:\Users\hotme\Downloads'
 
 # Output directory groups
@@ -31,14 +32,14 @@ BRANDING_DIRS = [
     os.path.join(ROOT_DIR, 'public', 'branding'),
     os.path.join(ROOT_DIR, 'assets', 'icons'),
     os.path.join(ROOT_DIR, 'apps', 'mecraft-launcher', 'public', 'branding'),
-    os.path.join(ROOT_DIR, 'meCrafts-website', 'assets', 'branding'),
+    os.path.join(WEBSITE_DIR, 'assets', 'branding'),
 ]
 
 BANNER_DIRS = [
     os.path.join(ROOT_DIR, 'public', 'assets', 'branding'),
     os.path.join(ROOT_DIR, 'assets', 'branding'),
     os.path.join(ROOT_DIR, 'apps', 'mecraft-launcher', 'public', 'assets', 'branding'),
-    os.path.join(ROOT_DIR, 'meCrafts-website', 'assets', 'branding'),
+    os.path.join(WEBSITE_DIR, 'assets', 'branding'),
 ]
 
 def make_transparent_and_square(src_path, dst_base_name, make_square=True, padding_ratio=1.12):
