@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { meDocPrimaryAction, resolveMeDocPackage, selectMeDocPackage } from '../src/medoc-package';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { fetchMeDocPackage, meDocPrimaryAction, parseMeDocCatalog, resolveMeDocPackage, selectMeDocPackage } from '../src/medoc-package';
 
 const digest = 'a'.repeat(64);
 const asset = {
@@ -11,8 +11,30 @@ const asset = {
 const release = {
   tag_name: 'v1.0.4', prerelease: false, draft: false, assets: [asset],
 };
+const catalog = { schemaVersion: 1, packages: [{
+  appId: 'medoc', platform: 'windows-x64', version: '1.0.4', releaseTag: 'v1.0.4',
+  url: asset.browser_download_url, sha256: digest, sizeBytes: 100,
+}] };
+
+afterEach(() => vi.unstubAllGlobals());
 
 describe('meDoc Library package', () => {
+  it('rejects the wrong platform and a release tag that does not match the version', () => {
+    for (const change of [{ platform: 'other' }, { version: '1.0.5' }]) {
+      expect(parseMeDocCatalog({ ...catalog, packages: [{ ...catalog.packages[0], ...change }] })).toBeNull();
+    }
+  });
+
+  it('uses the last verified catalog if the website becomes unavailable', async () => {
+    const items = new Map<string, string>();
+    vi.stubGlobal('localStorage', { setItem: (key: string, value: string) => items.set(key, value), getItem: (key: string) => items.get(key) });
+    const fetchCatalog = vi.fn().mockResolvedValueOnce(new Response(JSON.stringify(catalog))).mockRejectedValue(new Error('offline'));
+    vi.stubGlobal('fetch', fetchCatalog);
+    const online = await fetchMeDocPackage();
+    expect(fetchCatalog.mock.calls[0][0]).toBe('https://mecrafts.vercel.app/catalog/v1.json');
+    expect(online?.version).toBe('1.0.4');
+    expect(await fetchMeDocPackage()).toEqual(online);
+  });
   it('uses the verified meDoc executable for the matching release', () => {
     expect(resolveMeDocPackage(release)).toEqual({ version: '1.0.4', releaseTag: 'v1.0.4', sha256: digest, sizeBytes: 100 });
   });

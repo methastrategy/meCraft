@@ -149,29 +149,6 @@ if (fs.existsSync(publicDir)) {
   copyDir(publicDir, distDir);
 }
 
-// Generate static auth relay HTML in dist/auth/index.html to ensure 404-free desktop handshakes
-const authDir = path.join(distDir, 'auth');
-fs.mkdirSync(authDir, { recursive: true });
-const authRelayHtml = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>meCraft Auth Relay</title>
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    params.set('auth', 'true');
-    window.location.replace('/?' + params.toString() + window.location.hash);
-  </script>
-</head>
-<body style="background:#0b0d13;color:#e2e8f0;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
-  <div style="text-align:center;">
-    <h2>Connecting to meCraft...</h2>
-    <p><a href="/" style="color:#f59e0b;">Click here if not redirected automatically</a></p>
-  </div>
-</body>
-</html>`;
-fs.writeFileSync(path.join(authDir, 'index.html'), authRelayHtml, 'utf-8');
-
 console.log('[build-web] Multi-app dist assembled:');
 console.log(`  - /           -> Launcher Web Hub (${fs.existsSync(path.join(distDir, 'index.html')) ? 'OK' : 'MISSING'})`);
 console.log(`  - /auth/      -> Auth Relay (${fs.existsSync(path.join(distDir, 'auth/index.html')) ? 'OK' : 'MISSING'})`);

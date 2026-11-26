@@ -14,6 +14,7 @@ export const supabase: SupabaseClient | null = isLiveSupabaseConfigured()
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: true,
+        flowType: typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window ? 'pkce' : 'implicit',
       },
     })
   : null;

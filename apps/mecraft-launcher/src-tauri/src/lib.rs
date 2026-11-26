@@ -7,6 +7,7 @@ use tauri::{Emitter, Manager};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 mod medoc;
+mod desktop_oauth;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct AppStatusResponse {
@@ -682,15 +683,23 @@ Connection: close\r\n\r\n{}",
 
 #[tauri::command]
 fn open_browser_url(url: String) -> Result<(), String> {
+    let parsed = reqwest::Url::parse(&url).map_err(|_| "Invalid browser URL")?;
+    if !matches!(parsed.scheme(), "http" | "https") || parsed.host_str().is_none() {
+        return Err("Unsupported browser URL".into());
+    }
     #[cfg(target_os = "windows")]
     {
-        use std::os::windows::process::CommandExt;
-        const CREATE_NO_WINDOW: u32 = 0x08000000;
-        std::process::Command::new("cmd")
-            .args(&["/c", "start", "", &url])
-            .creation_flags(CREATE_NO_WINDOW)
-            .spawn()
-            .map_err(|e| e.to_string())?;
+        #[link(name = "shell32")]
+        unsafe extern "system" {
+            fn ShellExecuteW(window: usize, operation: *const u16, file: *const u16,
+                parameters: *const u16, directory: *const u16, show: i32) -> isize;
+        }
+        let operation: Vec<u16> = "open".encode_utf16().chain([0]).collect();
+        let address: Vec<u16> = parsed.as_str().encode_utf16().chain([0]).collect();
+        // The shell accepts an HTTPS URL as data without running a command interpreter.
+        let result = unsafe { ShellExecuteW(0, operation.as_ptr(), address.as_ptr(),
+            std::ptr::null(), std::ptr::null(), 1) };
+        if result <= 32 { return Err("Could not open the default browser".into()); }
     }
     #[cfg(target_os = "macos")]
     {
@@ -712,6 +721,8 @@ pub fn run() {
             check_app_status,
             download_and_install_app,
             medoc::install_verified_medoc,
+            desktop_oauth::start_desktop_oauth,
+            desktop_oauth::finish_desktop_oauth,
             launch_app,
             get_app_directory,
             uninstall_app,

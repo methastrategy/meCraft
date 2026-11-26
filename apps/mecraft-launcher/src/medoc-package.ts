@@ -39,14 +39,39 @@ export function selectMeDocPackage(releases: GitHubRelease[]): MeDocPackage | nu
   }, null);
 }
 
+const CATALOG_CACHE = 'mecraft.catalog.v1';
+
+export function parseMeDocCatalog(input: unknown): MeDocPackage | null {
+  if (!input || typeof input !== 'object' || !('schemaVersion' in input) || input.schemaVersion !== 1 ||
+      !('packages' in input) || !Array.isArray(input.packages)) return null;
+  const releases: GitHubRelease[] = [];
+  for (const item of input.packages) {
+    if (item?.appId !== 'medoc' || item.platform !== 'windows-x64' ||
+        typeof item.version !== 'string' ||
+        (item.releaseTag !== `v${item.version}` && item.releaseTag !== `medoc-v${item.version}`)) continue;
+    releases.push({
+      tag_name: item.releaseTag, prerelease: false, draft: false,
+      assets: [{ name: 'medoc.exe', browser_download_url: item.url, digest: `sha256:${item.sha256}`, size: item.sizeBytes }],
+    });
+  }
+  return selectMeDocPackage(releases);
+}
+
 export async function fetchMeDocPackage(): Promise<MeDocPackage | null> {
-  const response = await fetch('https://api.github.com/repos/methastrategy/meCraft/releases?per_page=100', {
-    headers: { Accept: 'application/vnd.github+json' },
-    signal: AbortSignal.timeout(6000),
-  });
-  if (!response.ok) throw new Error(`GitHub releases responded with ${response.status}`);
-  const releases: unknown = await response.json();
-  return Array.isArray(releases) ? selectMeDocPackage(releases) : null;
+  try {
+    const response = await fetch('https://mecrafts.vercel.app/catalog/v1.json', {
+      signal: AbortSignal.timeout(6000),
+    });
+    if (!response.ok) throw new Error('Package catalog unavailable');
+    const catalog: unknown = await response.json();
+    const candidate = parseMeDocCatalog(catalog);
+    if (!candidate) throw new Error('Package catalog failed validation');
+    try { localStorage.setItem(CATALOG_CACHE, JSON.stringify(catalog)); } catch { /* Storage is optional. */ }
+    return candidate;
+  } catch {
+    try { return parseMeDocCatalog(JSON.parse(localStorage.getItem(CATALOG_CACHE) ?? 'null')); }
+    catch { return null; }
+  }
 }
 
 export function meDocPrimaryAction(

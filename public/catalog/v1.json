@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "packages": [
+    {
+      "appId": "medoc",
+      "platform": "windows-x64",
+      "version": "1.0.4",
+      "releaseTag": "v1.0.4",
+      "url": "https://github.com/methastrategy/meCraft/releases/download/v1.0.4/medoc.exe",
+      "sizeBytes": 103988736,
+      "sha256": "744e3a9ae5b61c63171c77aa9cfeee878a7420b7dd4fbb1355c6e486c6d06ef7"
+    }
+  ]
+}

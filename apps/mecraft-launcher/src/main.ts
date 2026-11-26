@@ -1743,6 +1743,7 @@ class MeCraftsPortal {
   private isUpdateModalOpen = false;
   private isCheckingUpdate = false;
   private meDocStatus: AppStatusResult | null = null;
+  private desktopOAuthState: string | null = null;
   private meDocPackage: MeDocPackage | null = null;
   private meDocBusy = false;
   private meDocProgress: number | null = null;
@@ -2446,6 +2447,7 @@ console.log(initializeStudio(pdfStudio));`,
   }
 
   public async handleGoogleAuth() {
+    if (this.bridge.isTauri() && this.desktopOAuthState) return;
     this.authLoading = true;
     this.authError = '';
     this.render();
@@ -2461,50 +2463,49 @@ console.log(initializeStudio(pdfStudio));`,
           this.render();
           this.attachListeners();
 
-          try {
-            const port = await this.bridge.startAuthHandshake();
-            // Use /auth relay path — Supabase Allowed Redirect URLs must include "https://mecrafts.vercel.app/auth*"
-            // The /auth relay page reads handshake_port from the URL and POSTs the token back to the Desktop app.
-            let authUrl = port > 0
-              ? `https://mecrafts.vercel.app/auth?source=desktop&handshake_port=${port}`
-              : `https://mecrafts.vercel.app/auth?source=desktop`;
-
-            // If Supabase client is configured, get the direct Google OAuth URL so it opens Google directly!
-            if (supabase) {
-              try {
-                const { data, error } = await supabase.auth.signInWithOAuth({
-                  provider: 'google',
-                  options: {
-                    redirectTo: authUrl,
-                    skipBrowserRedirect: true,
-                  },
-                });
-                if (!error && data?.url) {
-                  authUrl = data.url;
-                }
-              } catch (oauthErr) {
-                console.warn('[meCraft:auth] Direct OAuth URL generation skipped:', oauthErr);
-              }
+          const client = supabase;
+          if (!client) throw new Error('Authentication is not configured.');
+          const { Channel, invoke } = await import('@tauri-apps/api/core');
+          const state = Array.from(crypto.getRandomValues(new Uint8Array(32)), byte => byte.toString(16).padStart(2, '0')).join('');
+          const channel = new Channel<{ status: 'code'; code: string } | { status: 'expired' }>();
+          const fail = () => {
+            if (this.desktopOAuthState !== state) return;
+            this.desktopOAuthState = null;
+            this.authLoading = false;
+            this.authError = this.lang === 'th' ? 'เข้าสู่ระบบไม่สำเร็จ ลองใหม่จาก meCraft' : 'Sign-in could not be completed. Try again from meCraft.';
+            this.render();
+            this.attachListeners();
+          };
+          this.desktopOAuthState = state;
+          channel.onmessage = async event => {
+            if (this.desktopOAuthState !== state) return;
+            if (event.status === 'expired') return fail();
+            let success = false;
+            try {
+              const { data, error } = await client.auth.exchangeCodeForSession(event.code);
+              if (error || !data.session) return;
+              await this.syncSupabaseSession(data.session);
+              await this.enterMainWorkstation();
+              this.desktopOAuthState = null;
+              success = true;
+            } catch {
+              success = false;
+            } finally {
+              await invoke('finish_desktop_oauth', { state, success }).catch(() => {});
+              if (!success) fail();
             }
-
-            await this.bridge.openExternal(authUrl);
-
-            this.authLoading = false;
-            this.authError = this.lang === 'th'
-              ? '🌐 เปิดเบราว์เซอร์สำหรับ Google Sign-In แล้ว... (ระบบจะเชื่อมต่อให้เองอัตโนมัติ ไม่ต้องกรอกอะไรเลย)'
-              : '🌐 Browser opened for Google Sign-In... (Syncing automatically, no typing needed)';
-            this.render();
-            this.attachListeners();
-          } catch (err: any) {
-            console.warn('[meCraft:auth] Google OAuth launch error:', err);
-            await this.bridge.openExternal('https://mecrafts.vercel.app/?source=desktop');
-            this.authLoading = false;
-            this.showSyncImport = true;
-            this.authError = this.lang === 'th'
-              ? '🌐 เปิดหน้าต่างเว็บสำหรับ Google OAuth แล้ว — กรุณาคัดลอกรหัสเชื่อมต่อ (Sync Code) จากเว็บมาวางในช่องด้านล่าง'
-              : '🌐 Web browser opened for Google OAuth — Please copy your Sync Code from web and paste below';
-            this.render();
-            this.attachListeners();
+          };
+          try {
+            const port = await invoke<number>('start_desktop_oauth', { state, onEvent: channel });
+            const redirect = new URL('https://mecrafts.vercel.app/desktop-auth/');
+            redirect.search = new URLSearchParams({ port: String(port), desktop_state: state }).toString();
+            const { data, error } = await client.auth.signInWithOAuth({
+              provider: 'google', options: { redirectTo: redirect.href, skipBrowserRedirect: true },
+            });
+            if (error || !data.url) throw new Error('Could not start Google sign-in.');
+            await invoke('open_browser_url', { url: data.url });
+          } catch {
+            fail();
           }
           return;
         }
@@ -6212,6 +6213,8 @@ console.log(initializeStudio(pdfStudio));`,
 
   private attachListeners() {
     document.getElementById('ws-auth-back')?.addEventListener('click', () => {
+      this.desktopOAuthState = null;
+      this.authLoading = false;
       void this.enterMainWorkstation();
     });
     document.getElementById('ws-other-studios')?.addEventListener('toggle', event => {

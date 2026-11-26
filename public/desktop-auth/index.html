@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="referrer" content="no-referrer">
+<title>meCraft Desktop Sign-In</title>
+<h1>Connecting to meCraft</h1>
+<p id="status" role="status">Sending the sign-in result to the Windows app…</p>
+<script>
+  const params = new URLSearchParams(location.search);
+  const port = params.get('port');
+  const state = params.get('desktop_state');
+  const code = params.get('code');
+  const cancelled = params.has('error');
+  history.replaceState(null, '', location.pathname);
+  if (/^[0-9]{1,5}$/.test(port ?? '') && +port > 0 && +port <= 65535 &&
+      /^[a-f0-9]{64}$/.test(state ?? '') && (cancelled || (code && code.length <= 1024))) {
+    const callback = new URL('http://127.0.0.1:' + port + '/callback');
+    callback.search = new URLSearchParams(cancelled ? { state, cancelled: '1' } : { state, code });
+    location.replace(callback.href);
+  } else {
+    document.querySelector('#status').textContent = 'Sign-in was cancelled or its result is missing. Return to meCraft and try again.';
+  }
+</script>
