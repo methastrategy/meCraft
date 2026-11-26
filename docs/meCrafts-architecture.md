@@ -23,6 +23,8 @@ flowchart TD
 
 ## Registry จากแผนเดิมและแหล่งอ้างอิงโอเพนซอร์ส
 
+แผนสำหรับระบบกลางและเกณฑ์ก่อนเพิ่มสตูดิโออยู่ใน [สเปก Launcher และสตูดิโอ](suite-integration.md)
+
 ### 📄 Category 1 — DOCUMENT
 
 | App | ชื่อเต็ม | แรงบันดาลใจ / Inspired By | OSS Reference (GitHub · Stars) | License | สถานะ |
