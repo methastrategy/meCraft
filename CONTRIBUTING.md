@@ -24,9 +24,8 @@ Before contributing, please review our core engineering invariants:
    - Design tokens must be imported from `@mecraft/ui-tokens` as the single source of truth.
 
 5. **Architectural References:**
-   - Review [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) before altering cross-package interfaces.
+   - Review the [meCraft Blueprint](docs/meCrafts-architecture.md) before altering cross-package interfaces or planning milestones.
    - Review [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) before styling new UI surfaces.
-   - Review [docs/ROADMAP.md](docs/ROADMAP.md) for planned capabilities and milestones.
 
 ---
 

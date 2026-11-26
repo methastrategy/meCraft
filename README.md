@@ -49,9 +49,8 @@
 ---
 
 ## 📚 Documentation Index
-- 🏗️ **[System Architecture](docs/ARCHITECTURE.md)** — Monorepo Seams, Universal ClipBus, 4-Point Homography, and Worker Pipelines
+- 🏗️ **[meCraft Blueprint](docs/meCrafts-architecture.md)** — Architecture, website structure, release plan, and studio register
 - 🎨 **[Design System Specification](docs/DESIGN_SYSTEM.md)** — Neue Klasse Luxury Dark Studio, OKLCH Tokens, Thai-Latin Typography
-- 🗺️ **[Ecosystem Master Roadmap](docs/ROADMAP.md)** — Work Breakdown Structure, Feature Gates, and Upcoming Apps (`meVector`, `meDoc`)
 - 🤝 **[Contributing Guidelines](CONTRIBUTING.md)** — Local Setup, Quality Gates, and Branch Conventions
 - 📝 **[Changelog](CHANGELOG.md)** — Semantic Versioning Release Notes
 - 🔒 **[Security & Privacy Policy](SECURITY.md)** — 100% In-Browser Privacy Guarantee & Vulnerability Disclosure

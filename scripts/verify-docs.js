@@ -9,9 +9,7 @@ const rootDir = fs.realpathSync(path.resolve(__dirname, '..'));
 console.log('🔍 [verify-docs] Running meCraft living documentation audit & deep content inspection...');
 
 const readmePath = path.join(rootDir, 'README.md');
-const roadmapPath = path.join(rootDir, 'docs/ROADMAP.md');
-const archPath = path.join(rootDir, 'docs/ARCHITECTURE.md');
-const meCraftsArchPath = path.join(rootDir, 'docs/meCrafts-architecture.md');
+const blueprintPath = path.join(rootDir, 'docs/meCrafts-architecture.md');
 const changelogPath = path.join(rootDir, 'CHANGELOG.md');
 const contributingPath = path.join(rootDir, 'CONTRIBUTING.md');
 const appsDir = path.join(rootDir, 'apps');
@@ -22,14 +20,14 @@ let hasWarnings = false;
 // 1. Verify all apps in apps/ are referenced in docs and have README.md
 if (fs.existsSync(appsDir)) {
   const apps = fs.readdirSync(appsDir).filter(name => fs.statSync(path.join(appsDir, name)).isDirectory());
-  const roadmapContent = fs.readFileSync(roadmapPath, 'utf-8');
+  const blueprintContent = fs.readFileSync(blueprintPath, 'utf-8').toLowerCase();
   const readmeContent = fs.readFileSync(readmePath, 'utf-8');
 
   console.log(`📦 Found ${apps.length} applications in apps/: ${apps.join(', ')}`);
 
   for (const app of apps) {
-    if (!roadmapContent.includes(app) && !roadmapContent.includes(app.replace(/^me/, ''))) {
-      console.warn(`⚠️ Warning: App '${app}' is missing from docs/ROADMAP.md`);
+    if (!blueprintContent.includes(app)) {
+      console.warn(`⚠️ Warning: App '${app}' is missing from docs/meCrafts-architecture.md`);
       hasWarnings = true;
     }
     const appReadme = path.join(appsDir, app, 'README.md');
@@ -77,9 +75,7 @@ if (fs.existsSync(packagesDir)) {
 // 4. Verify core blueprint files exist and inspect their contents
 const coreDocs = [
   readmePath,
-  roadmapPath,
-  archPath,
-  meCraftsArchPath,
+  blueprintPath,
   changelogPath,
   contributingPath
 ];
