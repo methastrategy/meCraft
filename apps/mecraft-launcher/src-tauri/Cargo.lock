@@ -1953,13 +1953,14 @@ dependencies = [
 
 [[package]]
 name = "mecraft-launcher"
-version = "1.0.0"
+version = "1.0.5"
 dependencies = [
  "futures-util",
  "log",
  "reqwest 0.12.28",
  "serde",
  "serde_json",
+ "sha2 0.10.9",
  "tauri",
  "tauri-build",
  "tauri-plugin-dialog",

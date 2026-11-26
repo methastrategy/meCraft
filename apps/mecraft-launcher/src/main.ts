@@ -18,6 +18,7 @@ import {
   checkSoftwareUpdate,
   type SoftwareUpdateInfo,
   type AppCatalogItem,
+  type AppStatusResult,
   type RecentProject,
   type DownloadProgress,
   type AuthSession,
@@ -25,6 +26,8 @@ import {
 } from '@mecraft/core-bridge';
 import { supabase } from './supabase';
 import { detectStudioRoute, mountStudio } from './studio-runner';
+import { fetchMeDocPackage, meDocPrimaryAction, type MeDocPackage } from './medoc-package';
+import { version as launcherVersion } from '../package.json';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PORTAL INVARIANT: This file is the OFFICIAL SHOWCASE & DISCOVERY WEB PORTAL.
@@ -1739,6 +1742,13 @@ class MeCraftsPortal {
   private updateInfo: SoftwareUpdateInfo | null = null;
   private isUpdateModalOpen = false;
   private isCheckingUpdate = false;
+  private meDocStatus: AppStatusResult | null = null;
+  private meDocPackage: MeDocPackage | null = null;
+  private meDocBusy = false;
+  private meDocProgress: number | null = null;
+  private meDocMessage = '';
+  private meDocError = false;
+  private showOtherStudios = false;
   public forceDesktopMode: boolean | null = null;
   private selectedDetailApp: ShowcaseApp | null = null;
   private isDetailModalOpen = false;
@@ -2028,75 +2038,8 @@ console.log(initializeStudio(pdfStudio));`,
   }
 
   private async initDesktopStartup(): Promise<void> {
-    // 1. Immediately launch into workstation (if logged in) or auth (if not logged in) without artificial delay
-    if (this.currentSession) {
-      this.desktopStage = 'main';
-      await this.bridge.setWindowStage('main');
-      this.render();
-      this.attachListeners();
-    } else {
-      this.desktopStage = 'auth';
-      await this.bridge.setWindowStage('auth');
-      this.render();
-      this.attachListeners();
-    }
-
-    // 2. Perform silent, non-blocking check for real updates on GitHub Releases
-    try {
-      const info = await checkSoftwareUpdate({
-        currentVersion: '1.0.3',
-        appId: 'mecraft-suite',
-        force: false,
-      });
-
-      // ONLY IF an actual newer version exists, show the Steam update window!
-      if (info && info.hasUpdate) {
-        this.updateInfo = info;
-        this.desktopStage = 'updater';
-        this.isSteamUpdating = true;
-        this.steamUpdateProgress = 5;
-        this.steamUpdateStatus = this.lang === 'th' ? 'กำลังดาวน์โหลดอัปเดต meCraft...' : 'Downloading package...';
-        await this.bridge.setWindowStage('updater');
-        this.render();
-        this.attachListeners();
-
-        const downloadUrl = info.suiteAsset?.downloadUrl || 'https://raw.githubusercontent.com/methastrategy/meCrafts-web/main/downloads/meCraft-Setup.exe';
-        try {
-          const updateResult = await this.bridge.applyLauncherUpdate(downloadUrl, (progress) => {
-            this.steamUpdateProgress = Math.max(5, Math.min(100, progress.percent));
-            this.steamUpdateStatus = `${this.lang === 'th' ? 'กำลังแตกไฟล์แพ็กเกจ...' : 'Extracting package...'} ${progress.percent}%`;
-            this.render();
-            this.attachListeners();
-          });
-
-          if (updateResult.success) {
-            this.steamUpdateProgress = 100;
-            this.steamUpdateCompleted = true;
-            this.steamUpdateStatus = this.lang === 'th' ? 'กำลังเริ่มระบบใหม่...' : 'Restarting meCraft...';
-            this.render();
-            this.attachListeners();
-            if (this.bridge.isTauri()) {
-              return;
-            }
-          }
-        } catch (updateErr) {
-          console.warn('[meCraft:startup] Update installation error:', updateErr);
-        }
-
-        // If update failed or cancelled, restore window
-        this.isSteamUpdating = false;
-        if (this.currentSession) {
-          await this.enterMainWorkstation();
-        } else {
-          this.desktopStage = 'auth';
-          await this.bridge.setWindowStage('auth');
-          this.render();
-          this.attachListeners();
-        }
-      }
-    } catch (e) {
-      console.warn('[meCraft:startup] Silent update check skipped:', e);
-    }
+    await this.enterMainWorkstation();
+    await this.loadMeDocLibrary();
   }
 
   private async checkForUpdates(force = false) {
@@ -2106,7 +2049,7 @@ console.log(initializeStudio(pdfStudio));`,
     this.isCheckingUpdate = true;
     try {
       const info = await checkSoftwareUpdate({
-        currentVersion: '1.0.3',
+        currentVersion: launcherVersion,
         appId: 'mecraft-suite',
         force,
       });
@@ -2157,7 +2100,7 @@ console.log(initializeStudio(pdfStudio));`,
       let info: SoftwareUpdateInfo | null = null;
       try {
         const checkPromise = checkSoftwareUpdate({
-          currentVersion: '1.0.3',
+          currentVersion: launcherVersion,
           appId: 'mecraft-suite',
           force: options.force ?? true,
         });
@@ -2645,8 +2588,8 @@ console.log(initializeStudio(pdfStudio));`,
     this.isAuthModalOpen = false;
 
     if (this.isDesktopMode()) {
-      this.desktopStage = 'auth';
-      await this.bridge.setWindowStage('auth');
+      await this.enterMainWorkstation();
+      return;
     }
 
     this.render();
@@ -2742,7 +2685,7 @@ console.log(initializeStudio(pdfStudio));`,
     <header class="ws-titlebar" data-tauri-drag-region>
       <div class="ws-titlebar-left" data-tauri-drag-region>
         <img src="./branding/mecraft-suite.png" class="ws-titlebar-icon" alt="" onerror="this.style.display='none'" />
-        <span class="ws-titlebar-text" data-tauri-drag-region>meCrafts</span>
+        <span class="ws-titlebar-text" data-tauri-drag-region>meCraft</span>
       </div>
       <div class="ws-titlebar-controls">
         <button type="button" class="ws-win-btn" id="ws-win-min" aria-label="Minimize" title="Minimize">
@@ -2761,7 +2704,7 @@ console.log(initializeStudio(pdfStudio));`,
   private renderSidebar(): string {
     const isTh = this.lang === 'th';
     const navItems = [
-      { id: 'studios', icon: '📦', label: isTh ? 'คลังโปรแกรม' : 'Library', desc: isTh ? `${SHOWCASE_APPS.length} สตูดิโอ` : `${SHOWCASE_APPS.length} Studios` },
+      { id: 'studios', icon: '📦', label: isTh ? 'คลังโปรแกรม' : 'Library', desc: isTh ? 'ติดตั้งและอัปเดต' : 'Install and update' },
       { id: 'recents', icon: '🕒', label: isTh ? 'ประวัติงาน' : 'Recent Work', desc: isTh ? 'ไฟล์ล่าสุด' : 'Recent Files' },
       { id: 'vault', icon: '⚙️', label: isTh ? 'อัปเดต & ตั้งค่า' : 'Updates & Settings', desc: isTh ? 'ระบบและเวอร์ชัน' : 'Engine & Version' },
     ];
@@ -2786,7 +2729,7 @@ console.log(initializeStudio(pdfStudio));`,
           </div>
           <div class="ws-brand-meta">
             <span class="ws-brand-title">meCraft</span>
-            <span class="ws-brand-pill">v1.0.3</span>
+            <span class="ws-brand-pill">v${launcherVersion}</span>
           </div>
         </div>
 
@@ -3158,7 +3101,7 @@ console.log(initializeStudio(pdfStudio));`,
 
   private renderStudiosCatalogView(): string {
     const isTh = this.lang === 'th';
-    const apps = this.filteredApps();
+    const apps = this.filteredApps().filter(app => !this.bridge.isTauri() || app.id !== 'medoc');
     const categories: Array<{ key: AppCategory | 'all'; label: string }> = [
       { key: 'all', label: this.t.filterAll },
       { key: 'document', label: this.t.filterDocument },
@@ -3172,10 +3115,12 @@ console.log(initializeStudio(pdfStudio));`,
     return `
     <div class="ws-view ws-view-studios">
       <header class="ws-view-header">
-        <div class="ws-view-eyebrow">ALL ${SHOWCASE_APPS.length} STANDALONE CREATIVE STUDIOS</div>
-        <h1 class="ws-view-title">${isTh ? 'คลังโปรแกรมสตูดิโอทั้งหมด' : 'All Studios & Workstations'}</h1>
-        <p class="ws-view-subtitle">${isTh ? 'โปรแกรมทั้งหมดทำงานแบบ Standalone ออฟไลน์ 100% ไร้คลาวด์' : 'Every studio runs standalone offline in 100% local device memory.'}</p>
+        <h1 class="ws-view-title">${isTh ? 'คลังโปรแกรม' : 'Library'}</h1>
+        <p class="ws-view-subtitle">${isTh ? 'ติดตั้ง เปิด และอัปเดตโปรแกรมบนเครื่องนี้' : 'Install, open, and update apps on this PC.'}</p>
       </header>
+      ${this.bridge.isTauri() ? this.renderMeDocLibraryCard() : ''}
+      <details class="ws-other-studios" id="ws-other-studios" ${this.showOtherStudios || !this.bridge.isTauri() ? 'open' : ''}>
+      <summary>${isTh ? 'สตูดิโอและเครื่องมืออื่น' : 'Other studios and tools'}</summary>
       
       <!-- Compact Dual Action Strip (Dropzone + meIDE Spotlight) -->
       <div class="ws-action-strip">
@@ -3244,9 +3189,6 @@ console.log(initializeStudio(pdfStudio));`,
               <div class="ws-card-full-titlegroup">
                 <div class="ws-title-row">
                   <h3 class="ws-card-full-name">${app.name}</h3>
-                  <span class="ws-status-badge ${isActive ? 'badge-active' : 'badge-indev'}">
-                    ${isActive ? (isTh ? 'พร้อมใช้งาน' : 'Ready') : (isTh ? 'กำลังพัฒนา' : 'In Dev')}
-                  </span>
                 </div>
                 ${app.industryCounterpart ? `
                   <div class="ws-counterpart-badge">
@@ -3257,8 +3199,8 @@ console.log(initializeStudio(pdfStudio));`,
             </div>
             <p class="ws-card-full-desc">${app.tagline[this.lang]}</p>
             <div class="ws-card-full-footer">
-              <button type="button" class="ws-btn-launch" data-launch-app="${app.id}" style="${!isActive ? 'background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14);' : ''}">
-                <span>${isActive ? (isTh ? 'เปิดใช้งาน' : 'Launch') : (isTh ? 'พรีวิว' : 'Preview')}</span>
+              <button type="button" class="ws-btn-launch" ${isActive ? 'data-launch-app' : 'data-launch-web-studio'}="${app.id}">
+                <span>${isActive ? (isTh ? 'เปิดแอปที่ติดตั้งแล้ว' : 'Open installed app') : (isTh ? 'ดูบนเว็บ' : 'View on web')}</span>
                 <span aria-hidden="true">→</span>
               </button>
               <div style="display: flex; gap: 6px;">
@@ -3272,7 +3214,123 @@ console.log(initializeStudio(pdfStudio));`,
             </div>
           </div>`;
         }).join('')}</div>
+      </details>
     </div>`;
+  }
+
+  private renderMeDocLibraryCard(): string {
+    const th = this.lang === 'th';
+    const status = this.meDocStatus;
+    const installed = status?.installed === true;
+    const action = status ? meDocPrimaryAction(installed, status.version, this.meDocPackage) : 'retry';
+    const labels = th
+      ? { install: 'ติดตั้ง', open: 'เปิด meDoc', update: 'อัปเดต', retry: 'ตรวจอีกครั้ง' }
+      : { install: 'Install', open: 'Open meDoc', update: 'Update', retry: 'Check again' };
+    const state = installed
+      ? (th ? 'ติดตั้งแล้ว' : 'Installed') + (status.version ? ` · v${escapeHtml(status.version)}` : '')
+      : status ? (th ? 'ยังไม่ได้ติดตั้ง' : 'Not installed') : (th ? 'ตรวจสถานะในเครื่อง' : 'Local status');
+    const available = this.meDocPackage;
+    return `
+      <section class="ws-managed-card" aria-labelledby="ws-medoc-title">
+        <div class="ws-managed-art"><img src="./branding/medoc-wide.webp" alt="" /></div>
+        <div class="ws-managed-content">
+          <div class="ws-managed-state">${state}</div>
+          <h2 id="ws-medoc-title">meDoc</h2>
+          <p>${th ? 'เขียน Markdown และสร้างเอกสารจากแม่แบบภาษาไทย' : 'Write in Markdown and start from Thai document templates.'}</p>
+          <p class="ws-managed-version">${available ? `v${escapeHtml(available.version)} · ${formatBytes(available.sizeBytes)}` : ''}</p>
+          <div class="ws-managed-actions">
+            <button type="button" class="ws-btn-launch" data-medoc-action="${action}" ${this.meDocBusy ? 'disabled' : ''}>${labels[action]}</button>
+            ${installed && action === 'update' ? `<button type="button" class="ws-btn-subtle" data-medoc-action="open" ${this.meDocBusy ? 'disabled' : ''}>${labels.open}</button>` : ''}
+            ${installed ? `<button type="button" class="ws-btn-subtle" data-medoc-action="uninstall" ${this.meDocBusy ? 'disabled' : ''}>${th ? 'ถอนการติดตั้ง' : 'Uninstall'}</button>` : ''}
+            ${action !== 'retry' ? `<button type="button" class="ws-btn-subtle" data-medoc-action="retry" ${this.meDocBusy ? 'disabled' : ''}>${th ? 'ตรวจเวอร์ชัน' : 'Check version'}</button>` : ''}
+          </div>
+          ${this.meDocProgress !== null ? `<progress id="ws-medoc-progress" max="100" value="${this.meDocProgress}" aria-label="${th ? 'ความคืบหน้าการดาวน์โหลด' : 'Download progress'}"></progress>` : ''}
+          <div class="ws-managed-message ${this.meDocError ? 'is-error' : ''}" role="status">${escapeHtml(this.meDocMessage)}</div>
+        </div>
+      </section>`;
+  }
+
+  private async loadMeDocLibrary(): Promise<void> {
+    if (!this.bridge.isTauri() || this.meDocBusy) return;
+    this.meDocBusy = true;
+    this.meDocError = false;
+    const th = this.lang === 'th';
+    this.meDocMessage = th ? 'กำลังตรวจสอบ meDoc…' : 'Checking meDoc…';
+    this.render();
+    this.attachListeners();
+    try {
+      this.meDocStatus = await this.bridge.checkAppStatus('medoc');
+      this.meDocPackage = await fetchMeDocPackage().catch(error => {
+        console.warn('[meCraft:meDoc] Cannot check packages', error);
+        return null;
+      });
+      this.meDocMessage = this.meDocPackage ? '' : (th
+        ? 'ตรวจแพ็กเกจออนไลน์ไม่ได้ ลองตรวจอีกครั้งเมื่อเชื่อมต่ออินเทอร์เน็ต'
+        : 'Could not verify an online package. Try again when connected.');
+    } catch (error) {
+      this.meDocError = true;
+      this.meDocMessage = th ? 'ตรวจสถานะ meDoc ในเครื่องไม่ได้' : 'Could not read the local meDoc status.';
+      console.warn('[meCraft:meDoc]', error);
+    } finally {
+      this.meDocBusy = false;
+      this.render();
+      this.attachListeners();
+    }
+  }
+
+  private async manageMeDoc(action: string): Promise<void> {
+    if (!this.bridge.isTauri() || this.meDocBusy) return;
+    if (action === 'retry') return this.loadMeDocLibrary();
+    const th = this.lang === 'th';
+    const candidate = this.meDocPackage;
+    if (action === 'uninstall' && !window.confirm(th ? 'ถอนการติดตั้ง meDoc? เอกสารของคุณจะยังอยู่' : 'Uninstall meDoc? Your documents will be kept.')) return;
+    this.meDocBusy = true;
+    this.meDocError = false;
+    this.meDocMessage = th ? 'กำลังดำเนินการ…' : 'Working…';
+    if ((action === 'install' || action === 'update') && candidate) this.meDocProgress = 0;
+    this.render();
+    this.attachListeners();
+    try {
+      if (action === 'open') {
+        if (!(await this.bridge.launchApp({ appId: 'medoc', target: 'desktop' })).success) throw new Error('Launch failed');
+        this.meDocMessage = th ? 'เปิด meDoc แล้ว' : 'Opened meDoc.';
+      } else if (action === 'uninstall') {
+        if (!(await this.bridge.uninstallApp('medoc')).success) throw new Error('Uninstall failed');
+        this.meDocMessage = th ? 'ถอนการติดตั้ง meDoc แล้ว' : 'meDoc uninstalled.';
+      } else if (candidate && (action === 'install' || action === 'update')) {
+        const { invoke } = await import('@tauri-apps/api/core');
+        const { listen } = await import('@tauri-apps/api/event');
+        const unlisten = await listen<DownloadProgress>('download-progress', ({ payload }) => {
+          if (payload.appId !== 'medoc') return;
+          this.meDocProgress = payload.percent;
+          const progress = document.getElementById('ws-medoc-progress') as HTMLProgressElement | null;
+          if (progress) progress.value = payload.percent;
+        });
+        try {
+          await invoke('install_verified_medoc', { ...candidate });
+        } finally {
+          unlisten();
+        }
+        this.meDocMessage = th ? 'ติดตั้ง meDoc เรียบร้อย' : 'meDoc is ready to open.';
+      }
+    } catch (error) {
+      this.meDocError = true;
+      this.meDocMessage = th
+        ? 'ทำรายการไม่สำเร็จ ปิด meDoc หากเปิดอยู่ แล้วลองอีกครั้ง'
+        : 'Could not complete the action. Close meDoc if it is running, then try again.';
+      console.warn('[meCraft:meDoc]', error);
+    } finally {
+      try {
+        this.meDocStatus = await this.bridge.checkAppStatus('medoc');
+      } catch (error) {
+        console.warn('[meCraft:meDoc] Cannot refresh status', error);
+      }
+      this.meDocBusy = false;
+      this.meDocProgress = null;
+      this.render();
+      this.attachListeners();
+      if (this.desktopView === 'studios') document.querySelector<HTMLButtonElement>('[data-medoc-action]')?.focus();
+    }
   }
 
   private renderRecentsView(): string {
@@ -3372,7 +3430,7 @@ console.log(initializeStudio(pdfStudio));`,
         <div class="ws-vault-card">
           <div class="ws-vault-card-icon">🚀</div>
           <h3>${isTh ? 'เวอร์ชันและการอัปเดต' : 'Software Version & Updates'}</h3>
-          <p>${isTh ? 'เวอร์ชันปัจจุบัน: v1.0.3 (Official Stable Release) ทำงานบนเครื่องยนต์ Tauri v2 Native Windows 64-bit' : 'Current version: v1.0.3 (Official Stable Release). Built with Tauri v2 Native Windows 64-bit engine.'}</p>
+          <p>${isTh ? 'เวอร์ชันปัจจุบัน' : 'Current version'} · v${launcherVersion}</p>
           <div class="ws-vault-status-row">
             <span class="ws-badge-ok">✓ ${isTh ? 'เวอร์ชันล่าสุดเสถียร' : 'Latest Official Stable'}</span>
             <button type="button" class="ws-btn-primary" id="ws-btn-check-update-vault">
@@ -3868,6 +3926,7 @@ console.log(initializeStudio(pdfStudio));`,
         <button type="button" class="steam-compact-close" id="btn-steam-close" aria-label="Close">✕</button>
       </div>
       <div class="steam-auth-body">
+        <button type="button" class="ws-btn-subtle" id="ws-auth-back">${isTh ? 'กลับไปที่คลังโปรแกรม' : 'Back to Library'}</button>
         <div class="auth-brand">
           <h2 class="auth-title">${isTh ? 'เข้าสู่ระบบบัญชี meCraft' : 'Sign in to meCraft'}</h2>
           <p class="auth-subtitle">${isTh ? 'ซิงค์สิทธิ์สตูดิโอและพื้นที่ทำงานของคุณ' : 'Sync your studios, licenses, and workspace.'}</p>
@@ -6121,17 +6180,46 @@ console.log(initializeStudio(pdfStudio));`,
     }
 
     try {
-      await this.bridge.launchApp({
+      if (target === 'web') {
+        if (/^[a-z0-9-]+$/.test(appId)) {
+          await this.bridge.openExternal(`https://mecrafts.vercel.app/${appId}/`);
+        }
+        return;
+      }
+      const result = await this.bridge.launchApp({
         appId,
         target,
         filePath,
       });
+      if (!result.success) {
+        if (appId === 'medoc' && target === 'desktop') {
+          this.desktopView = 'studios';
+          await this.loadMeDocLibrary();
+          if (this.meDocStatus?.installed) {
+            this.meDocError = true;
+            this.meDocMessage = this.lang === 'th' ? 'เปิด meDoc ไม่สำเร็จ ลองอีกครั้งจากคลังโปรแกรม' : 'Could not open meDoc. Try again from Library.';
+            this.render();
+            this.attachListeners();
+          }
+        } else {
+          window.alert(this.lang === 'th' ? 'เปิดโปรแกรมไม่สำเร็จ ตรวจสอบว่าติดตั้งโปรแกรมบนเครื่องนี้แล้ว' : 'Could not open the app. Check that it is installed on this PC.');
+        }
+      }
     } catch (err) {
       console.warn(`[meCraft:launch] Error launching ${appId}:`, err);
     }
   }
 
   private attachListeners() {
+    document.getElementById('ws-auth-back')?.addEventListener('click', () => {
+      void this.enterMainWorkstation();
+    });
+    document.getElementById('ws-other-studios')?.addEventListener('toggle', event => {
+      this.showOtherStudios = (event.currentTarget as HTMLDetailsElement).open;
+    });
+    document.querySelectorAll<HTMLButtonElement>('[data-medoc-action]').forEach(button => {
+      button.addEventListener('click', () => void this.manageMeDoc(button.dataset.medocAction ?? 'retry'));
+    });
     // ── User Profile Capsule & Modal Handlers ──
     document.getElementById('user-profile-pill')?.addEventListener('click', () => {
       this.isUserProfileModalOpen = true;

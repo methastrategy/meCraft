@@ -1107,7 +1107,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(res).toBe(false);
     });
 
-    it('Step 4: desktop sign out restores auth stage and invokes setWindowStage("auth")', async () => {
+    it('Step 4: desktop sign out clears the session and leaves the Library usable', async () => {
       const portal = new MeCraftsPortal();
       portal.forceDesktopMode = true;
       portal.desktopStage = 'main';
@@ -1119,9 +1119,9 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       await portal.handleSignOut();
 
       expect(portal.currentSession).toBeNull();
-      expect(portal.desktopStage).toBe('auth');
+      expect(portal.desktopStage).toBe('main');
       expect(portal.isAuthModalOpen).toBe(false);
-      expect(setStageSpy).toHaveBeenCalledWith('auth');
+      expect(setStageSpy).toHaveBeenCalledWith('main');
     });
   });
 
