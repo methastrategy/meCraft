@@ -52,16 +52,18 @@ fn event_from_request(request: &str, state: &str) -> Option<OAuthEvent> {
 }
 
 async fn respond(stream: &mut TcpStream, ok: bool) {
-    let (status, message) = if ok {
-        ("200 OK", "Signed in to meCraft. Return to the app.")
+    let (status, heading, detail) = if ok {
+        ("200 OK", "Signed in to meCraft", "You can close this tab and continue in the app.")
     } else {
         (
             "400 Bad Request",
-            "Sign-in could not be completed. Return to meCraft and try again.",
+            "Sign-in could not be completed",
+            "Return to meCraft and try again.",
         )
     };
+    const STYLE: &str = "html{color-scheme:light dark}body{margin:0;padding:24px;min-height:100vh;box-sizing:border-box;display:grid;place-items:center;background:Canvas;color:CanvasText;font:16px/1.5 'Segoe UI',system-ui,sans-serif}main{width:min(100%,420px);box-sizing:border-box;padding:28px;border:1px solid GrayText;border-radius:10px}h1{margin:0 0 8px;font-size:1.5rem}p{margin:0}";
     let page = format!(
-        "<!doctype html><html lang=en><meta charset=utf-8><title>meCraft</title><h1>{message}</h1></html>"
+        "<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>meCraft</title><style>{STYLE}</style><main><h1>{heading}</h1><p>{detail}</p></main><script>history.replaceState(null,'','/complete')</script></html>"
     );
     let response = format!(
         "HTTP/1.1 {status}\r\nContent-Type: text/html; charset=utf-8\r\nCache-Control: no-store\r\nReferrer-Policy: no-referrer\r\nConnection: close\r\nContent-Length: {}\r\n\r\n{page}",

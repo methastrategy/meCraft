@@ -1,0 +1,95 @@
+name: Build signed Launcher preview
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify launcher
+        shell: pwsh
+        run: |
+          npm test
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          npm run typecheck --workspace=@mecraft/launcher
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $env:PSModulePath = Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/Modules'
+          & (Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe') -NoProfile -NonInteractive -File 'apps/mecraft-launcher/src-tauri/tests/update-worker.test.ps1'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Import code-signing certificate
+        shell: pwsh
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.MECRAFT_WINDOWS_CERTIFICATE_BASE64 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.MECRAFT_WINDOWS_CERTIFICATE_PASSWORD }}
+          EXPECTED_THUMBPRINT: ${{ vars.MECRAFT_SIGNING_THUMBPRINT }}
+        run: |
+          if (-not $env:CERTIFICATE_BASE64 -or -not $env:CERTIFICATE_PASSWORD -or $env:EXPECTED_THUMBPRINT -notmatch '^[0-9A-Fa-f]{40}$') {
+            throw 'Windows code-signing certificate configuration is missing.'
+          }
+          $pfxPath = Join-Path $env:RUNNER_TEMP 'mecraft-signing.pfx'
+          try {
+            [IO.File]::WriteAllBytes($pfxPath, [Convert]::FromBase64String($env:CERTIFICATE_BASE64))
+            $password = ConvertTo-SecureString $env:CERTIFICATE_PASSWORD -AsPlainText -Force
+            $certificate = Import-PfxCertificate -FilePath $pfxPath -CertStoreLocation 'Cert:/CurrentUser/My' -Password $password
+            if ($certificate.Thumbprint -ne $env:EXPECTED_THUMBPRINT -or -not $certificate.HasPrivateKey) {
+              throw 'Imported certificate does not match the configured publisher.'
+            }
+          } finally {
+            Remove-Item -LiteralPath $pfxPath -Force -ErrorAction SilentlyContinue
+          }
+
+      - name: Build and verify signed artifacts
+        shell: pwsh
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.MECRAFT_UPDATER_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.MECRAFT_UPDATER_PRIVATE_KEY_PASSWORD }}
+          MECRAFT_SIGNING_THUMBPRINT: ${{ vars.MECRAFT_SIGNING_THUMBPRINT }}
+          MECRAFT_SIGNING_TIMESTAMP_URL: ${{ vars.MECRAFT_SIGNING_TIMESTAMP_URL }}
+        run: |
+          if (-not $env:TAURI_SIGNING_PRIVATE_KEY) { throw 'Updater signing key is missing.' }
+          $version = (Get-Content -Raw 'apps/mecraft-launcher/package.json' | ConvertFrom-Json).version
+          if ($version -notmatch '^\d+\.\d+\.\d+$') { throw 'Invalid Launcher version.' }
+          $sourceAsset = "meCraft_$($version)_x64_en-US.msi"
+          $asset = 'mecraft-hub.msi'
+          $url = "https://github.com/$env:GITHUB_REPOSITORY/releases/download/preview-launcher-$version/$asset"
+          New-Item -ItemType Directory -Path 'launcher-preview-artifacts' | Out-Null
+          & ./scripts/build-signed-launcher.ps1 -InstallerUrl $url -ManifestOutput 'launcher-preview-artifacts/stable.json' -Channel stable
+          $source = "apps/mecraft-launcher/src-tauri/target/release/bundle/msi/$sourceAsset"
+          Copy-Item -LiteralPath $source -Destination "launcher-preview-artifacts/$asset"
+          Copy-Item -LiteralPath "$source.sig" -Destination "launcher-preview-artifacts/$asset.sig"
+
+      - name: Upload signed preview artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mecraft-launcher-signed-preview
+          path: launcher-preview-artifacts/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Remove imported certificate
+        if: always()
+        shell: pwsh
+        env:
+          EXPECTED_THUMBPRINT: ${{ vars.MECRAFT_SIGNING_THUMBPRINT }}
+        run: |
+          if ($env:EXPECTED_THUMBPRINT -match '^[0-9A-Fa-f]{40}$') {
+            Remove-Item -LiteralPath "Cert:/CurrentUser/My/$env:EXPECTED_THUMBPRINT" -ErrorAction SilentlyContinue
+          }

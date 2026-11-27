@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+vi.mock('../src/launcher-updater', () => ({ runLauncherUpdate: vi.fn(), takeLauncherUpdateResult: vi.fn().mockResolvedValue(null), clearLauncherUpdateResult: vi.fn().mockResolvedValue(undefined) }));
 import { setupMockDom } from '../../../packages/studio-shell/tests/mock-dom';
 import {
   getDefaultCatalog,
@@ -416,8 +417,11 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       portal.desktopView = 'studios';
       (portal as any).render();
       expect(doc.querySelector('.ws-view-studios')).not.toBeNull();
-      const studioCards = doc.querySelectorAll('.ws-studio-card-full');
-      expect(studioCards.length).toBe(SHOWCASE_APPS.length);
+      const studioCards = doc.querySelectorAll('.ws-library-card');
+      expect(studioCards.length).toBe(SHOWCASE_APPS.length - 1);
+      expect(doc.querySelectorAll('.ws-managed-card').length).toBe(1);
+      expect(doc.querySelector('#ws-other-studios')).toBeNull();
+      expect(doc.querySelectorAll('.ws-library-card button, .ws-library-card a').length).toBe(0);
 
       // 2. Recents View
       portal.desktopView = 'recents';
@@ -868,6 +872,122 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(doc.getElementById('steam-dialog-window') || doc.querySelector('.steam-dialog-window')).toBeNull();
     });
 
+    it('checks for an available MSI without starting the native installer', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      vi.spyOn((portal as any).bridge, 'isTauri').mockReturnValue(true);
+      const updater = await import('../src/launcher-updater');
+      const run = vi.mocked(updater.runLauncherUpdate);
+      const check = vi.spyOn(portal as any, 'checkForUpdates').mockResolvedValue(undefined);
+
+      await (portal as any).checkLauncherUpdate();
+
+      expect(check).toHaveBeenCalledWith(true);
+      expect(run).not.toHaveBeenCalled();
+      run.mockReset();
+    });
+
+    it('keeps Launcher usable when the manual update check fails', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      vi.spyOn((portal as any).bridge, 'isTauri').mockReturnValue(true);
+      const updater = await import('../src/launcher-updater');
+      const run = vi.mocked(updater.runLauncherUpdate);
+      vi.spyOn(portal as any, 'checkForUpdates').mockImplementationOnce(async () => {
+        (portal as any).updateLauncherStatus('error');
+      });
+
+      await (portal as any).checkLauncherUpdate();
+
+      expect((portal as any).launcherUpdateState).toBe('error');
+      expect(run).not.toHaveBeenCalled();
+      run.mockReset();
+    });
+
+    it('opens the workstation and checks for a manual update on startup', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      vi.spyOn((portal as any).bridge, 'isTauri').mockReturnValue(true);
+      const enter = vi.spyOn(portal, 'enterMainWorkstation').mockResolvedValue(undefined);
+      const library = vi.spyOn(portal as any, 'loadMeDocLibrary').mockResolvedValue(undefined);
+      const updater = await import('../src/launcher-updater');
+      vi.mocked(updater.takeLauncherUpdateResult).mockResolvedValueOnce(null);
+      const check = vi.spyOn(portal as any, 'checkForUpdates').mockResolvedValue(undefined);
+
+      await (portal as any).initDesktopStartup();
+
+      expect(enter).toHaveBeenCalledOnce();
+      expect(library).toHaveBeenCalledOnce();
+      expect(check).toHaveBeenCalledOnce();
+      expect(vi.mocked(updater.runLauncherUpdate)).not.toHaveBeenCalled();
+      check.mockReset();
+    });
+
+    it('does not start a second manual check while one is pending', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      vi.spyOn((portal as any).bridge, 'isTauri').mockReturnValue(true);
+      vi.spyOn(portal, 'enterMainWorkstation').mockResolvedValue(undefined);
+      vi.spyOn(portal as any, 'loadMeDocLibrary').mockResolvedValue(undefined);
+      const updater = await import('../src/launcher-updater');
+      let finish: () => void = () => {};
+      const check = vi.spyOn(portal as any, 'checkForUpdates').mockImplementationOnce(() => new Promise<void>(resolve => {
+        finish = resolve;
+      }));
+
+      const startup = (portal as any).initDesktopStartup();
+      await vi.waitFor(() => expect(check).toHaveBeenCalledOnce());
+      await (portal as any).checkLauncherUpdate();
+      expect(check).toHaveBeenCalledTimes(2);
+      finish();
+      await startup;
+      expect(vi.mocked(updater.runLauncherUpdate)).not.toHaveBeenCalled();
+    });
+
+    it('reports rollback and does not retry automatically after a failed installation', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      vi.spyOn((portal as any).bridge, 'isTauri').mockReturnValue(true);
+      vi.spyOn(portal, 'enterMainWorkstation').mockResolvedValue(undefined);
+      vi.spyOn(portal as any, 'loadMeDocLibrary').mockResolvedValue(undefined);
+      const updater = await import('../src/launcher-updater');
+      vi.mocked(updater.takeLauncherUpdateResult).mockResolvedValueOnce('restored');
+      const run = vi.mocked(updater.runLauncherUpdate);
+
+      await (portal as any).initDesktopStartup();
+
+      expect((portal as any).launcherUpdateState).toBe('restored');
+      expect(run).not.toHaveBeenCalled();
+    });
+
+    it('does not start another update while recovery is required', async () => {
+      const { doc } = setupMockDom();
+      doc.body.innerHTML = '<div id="app"></div>';
+      const portal = new MeCraftsPortal();
+      portal.forceDesktopMode = true;
+      vi.spyOn((portal as any).bridge, 'isTauri').mockReturnValue(true);
+      vi.spyOn(portal, 'enterMainWorkstation').mockResolvedValue(undefined);
+      vi.spyOn(portal as any, 'loadMeDocLibrary').mockResolvedValue(undefined);
+      const updater = await import('../src/launcher-updater');
+      vi.mocked(updater.takeLauncherUpdateResult).mockResolvedValueOnce('recovery_required\nC:/recovery/previous.exe');
+
+      await (portal as any).initDesktopStartup();
+      await (portal as any).checkLauncherUpdate();
+      expect((portal as any).launcherUpdateState).toBe('recovery_required');
+      expect((portal as any).launcherRecoveryPath).toBe('C:/recovery/previous.exe');
+      expect(updater.runLauncherUpdate).not.toHaveBeenCalled();
+    });
+
     it('Step 1.3: renders authentic clean Steam dialog without terminal console clutter', () => {
       const { doc } = setupMockDom();
       doc.body.innerHTML = '<div id="app"></div>';
@@ -907,6 +1027,8 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       portal.authTab = 'signin';
       const htmlSignIn = portal.renderSteamAuthGate();
       doc.body.innerHTML = htmlSignIn;
+      expect(htmlSignIn).toMatch(/<dialog\b[^>]*id="steam-auth-gate"[^>]*aria-labelledby="ws-auth-title"/);
+      expect(doc.getElementById('ws-auth-back')).not.toBeNull();
 
       const emailInput = doc.getElementById('modal-auth-email') as HTMLInputElement;
       const pwdInput = doc.getElementById('modal-auth-password') as HTMLInputElement;

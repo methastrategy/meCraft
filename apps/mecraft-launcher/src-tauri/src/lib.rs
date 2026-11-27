@@ -8,6 +8,7 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 mod medoc;
 mod desktop_oauth;
+mod launcher_update;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct AppStatusResponse {
@@ -324,140 +325,6 @@ fn uninstall_app(app_id: String) -> Result<bool, String> {
 }
 
 #[tauri::command]
-async fn apply_launcher_update(
-    app_handle: tauri::AppHandle,
-    download_url: String,
-) -> Result<bool, String> {
-    if !download_url.starts_with("https://") && !download_url.starts_with("http://") {
-        return Err(format!("Invalid download URL scheme: {}", download_url));
-    }
-    let is_trusted = download_url.starts_with("https://github.com/methastrategy/")
-        || download_url.starts_with("https://mecrafts.vercel.app/")
-        || download_url.starts_with("https://raw.githubusercontent.com/methastrategy/")
-        || download_url.starts_with("http://localhost:");
-    if !is_trusted {
-        return Err(format!("Security Violation: Untrusted update download origin: {}", download_url));
-    }
-
-    let temp_installer = std::env::temp_dir().join("meCraft-Update-Setup.exe");
-
-    let client = reqwest::Client::builder()
-        .user_agent("meCraft-Launcher/1.0.0")
-        .build()
-        .map_err(|e| format!("Failed to initialize HTTP client: {}", e))?;
-
-    let res = client
-        .get(&download_url)
-        .send()
-        .await
-        .map_err(|e| format!("Failed to request installer from {}: {}", download_url, e))?;
-
-    if !res.status().is_success() {
-        return Err(format!("Download failed with status: {}", res.status()));
-    }
-
-    let total_bytes = res.content_length().unwrap_or(90 * 1024 * 1024);
-    let mut downloaded_bytes: u64 = 0;
-    let mut stream = res.bytes_stream();
-
-    let mut temp_file = fs::File::create(&temp_installer)
-        .map_err(|e| format!("Failed to create temporary installer file: {}", e))?;
-
-    let start_time = Instant::now();
-    let mut last_progress_emit = Instant::now();
-
-    while let Some(chunk_result) = stream.next().await {
-        let chunk = chunk_result.map_err(|e| format!("Error downloading chunk: {}", e))?;
-        temp_file
-            .write_all(&chunk)
-            .map_err(|e| format!("Error writing chunk to file: {}", e))?;
-
-        downloaded_bytes += chunk.len() as u64;
-
-        if last_progress_emit.elapsed().as_millis() >= 80 {
-            let elapsed_sec = start_time.elapsed().as_secs_f64().max(0.001);
-            let speed_bps = (downloaded_bytes as f64 / elapsed_sec) as u64;
-            let percent = if total_bytes > 0 {
-                ((downloaded_bytes as f64 / total_bytes as f64) * 100.0).min(99.0) as u32
-            } else {
-                50
-            };
-
-            let _ = app_handle.emit(
-                "download-progress",
-                DownloadProgressPayload {
-                    app_id: "mecraft-suite".to_string(),
-                    downloaded_bytes,
-                    total_bytes,
-                    percent,
-                    speed_bps,
-                },
-            );
-
-            last_progress_emit = Instant::now();
-        }
-    }
-
-    drop(temp_file);
-
-    // Final 100% progress
-    let _ = app_handle.emit(
-        "download-progress",
-        DownloadProgressPayload {
-            app_id: "mecraft-suite".to_string(),
-            downloaded_bytes: total_bytes,
-            total_bytes,
-            percent: 100,
-            speed_bps: 0,
-        },
-    );
-
-    // Execute silent update and self-restart on Windows
-    #[cfg(windows)]
-    {
-        use std::os::windows::process::CommandExt;
-        const CREATE_NEW_PROCESS_GROUP: u32 = 0x00000200;
-        const DETACHED_PROCESS: u32 = 0x00000008;
-
-        let current_exe = std::env::current_exe().map_err(|e| e.to_string())?;
-        let pid = std::process::id();
-
-        let script = format!(
-            "Start-Sleep -Milliseconds 600; \
-             try {{ Wait-Process -Id {} -Timeout 15 }} catch {{}}; \
-             $installer = '{}'; \
-             $targetExe = '{}'; \
-             $prog = Join-Path $env:ProgramFiles 'meCraft\\mecraft-launcher.exe'; \
-             $local = Join-Path $env:LOCALAPPDATA 'Programs\\meCraft\\mecraft-launcher.exe'; \
-             if (Test-Path $prog) {{ $targetExe = $prog }} elseif (Test-Path $local) {{ $targetExe = $local }}; \
-             try {{ \
-                 Start-Process -FilePath $installer -ArgumentList '/S' -Verb RunAs -Wait; \
-             }} catch {{ \
-                 try {{ Start-Process -FilePath $installer -ArgumentList '/S' -Wait }} catch {{ Start-Process -FilePath $installer -Wait }}; \
-             }}; \
-             Start-Sleep -Milliseconds 800; \
-             Start-Process -FilePath $targetExe; \
-             Remove-Item -Path $installer -Force -ErrorAction SilentlyContinue",
-            pid,
-            temp_installer.to_string_lossy().replace('\'', "''"),
-            current_exe.to_string_lossy().replace('\'', "''")
-        );
-
-        let mut cmd = std::process::Command::new("powershell");
-        cmd.args(&["-NoProfile", "-WindowStyle", "Hidden", "-Command", &script]);
-        cmd.creation_flags(CREATE_NEW_PROCESS_GROUP | DETACHED_PROCESS);
-        cmd.spawn().map_err(|e| format!("Failed to spawn silent updater process: {}", e))?;
-
-        std::thread::spawn(|| {
-            std::thread::sleep(std::time::Duration::from_millis(400));
-            std::process::exit(0);
-        });
-    }
-
-    Ok(true)
-}
-
-#[tauri::command]
 fn set_window_stage(app_handle: tauri::AppHandle, stage: String) -> Result<(), String> {
     let win = app_handle
         .get_webview_window("main")
@@ -479,17 +346,19 @@ fn set_window_stage(app_handle: tauri::AppHandle, stage: String) -> Result<(), S
             let _ = win.center();
         }
         "auth" => {
-            let _ = win.unmaximize();
-            let _ = win.set_min_size(None::<tauri::LogicalSize<f64>>);
-            let _ = win.set_resizable(false);
-            let _ = win.set_size(tauri::LogicalSize::new(460.0, 620.0));
-            let _ = win.center();
+            if matches!(win.is_resizable(), Ok(false)) {
+                let _ = win.set_resizable(true);
+                let _ = win.set_size(tauri::LogicalSize::new(1280.0, 840.0));
+                let _ = win.center();
+            }
         }
         "main" => {
-            let _ = win.set_resizable(true);
+            if matches!(win.is_resizable(), Ok(false)) {
+                let _ = win.set_resizable(true);
+                let _ = win.set_size(tauri::LogicalSize::new(1280.0, 840.0));
+                let _ = win.center();
+            }
             let _ = win.set_min_size(Some(tauri::LogicalSize::new(960.0, 640.0)));
-            let _ = win.set_size(tauri::LogicalSize::new(1280.0, 840.0));
-            let _ = win.center();
         }
         _ => {}
     }
@@ -717,16 +586,19 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
             check_app_status,
             download_and_install_app,
             medoc::install_verified_medoc,
+            launcher_update::update_launcher,
+            launcher_update::take_launcher_update_result,
+            launcher_update::clear_launcher_update_result,
             desktop_oauth::start_desktop_oauth,
             desktop_oauth::finish_desktop_oauth,
             launch_app,
             get_app_directory,
             uninstall_app,
-            apply_launcher_update,
             set_window_stage,
             start_auth_handshake,
             open_browser_url,

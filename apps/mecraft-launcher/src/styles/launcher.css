@@ -5665,49 +5665,6 @@ code, pre, kbd, samp, .font-mono, [class*="version"], [class*="hash"], [class*="
   to { opacity: 1; transform: translateY(0); }
 }
 
-.ws-managed-card {
-  display: grid;
-  grid-template-columns: minmax(160px, .65fr) minmax(0, 1fr);
-  overflow: hidden;
-  border: 1px solid #30494a;
-  background: #112123;
-  border-radius: 16px;
-  margin-bottom: 24px;
-}
-
-.ws-managed-art {
-  min-height: 220px;
-  overflow: hidden;
-  background: #0d191a;
-}
-
-.ws-managed-art img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.ws-managed-content { padding: clamp(18px, 3vw, 36px); }
-.ws-managed-content h2 { margin: 4px 0 8px; font-size: clamp(30px, 4vw, 48px); line-height: 1.15; color: #f3fbfa; }
-.ws-managed-content p { margin: 6px 0; color: #b8d4d2; }
-.ws-managed-state { font-size: .875rem; color: #8ee2ce; }
-.ws-managed-version { font-variant-numeric: tabular-nums; }
-.ws-managed-version:empty, .ws-managed-message:empty { display: none; }
-.ws-managed-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
-.ws-managed-actions button { min-height: 42px; flex: 0 0 auto; }
-.ws-managed-actions button:disabled { opacity: .55; cursor: wait; }
-.ws-managed-actions button:focus-visible, .ws-other-studios summary:focus-visible { outline: 2px solid #8ee2ce; outline-offset: 3px; }
-.ws-managed-message { margin-top: 12px; font-size: .875rem; color: #b8d4d2; }
-.ws-managed-message.is-error { color: #ffb7ae; }
-.ws-managed-content progress { margin-top: 12px; width: 100%; accent-color: #64d9b9; }
-.ws-other-studios summary { width: fit-content; margin-bottom: 16px; padding: 8px 0; cursor: pointer; color: #cbd5e1; }
-
-@media (max-width: 760px) {
-  .ws-managed-card { grid-template-columns: 1fr; }
-  .ws-managed-art { min-height: 0; height: 150px; }
-}
-
 .ws-view-header {
   margin-bottom: 28px;
 }

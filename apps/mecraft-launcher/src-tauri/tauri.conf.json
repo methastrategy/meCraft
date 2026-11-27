@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "meCraft",
-  "version": "1.0.6",
+  "version": "1.0.11",
   "identifier": "com.mecraft.launcher",
   "build": {
     "frontendDist": "../dist",
@@ -26,9 +26,17 @@
       "csp": "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' data: blob: https://api.github.com https://raw.githubusercontent.com https://mecrafts.vercel.app https://xljpiwxamqzsqlvdwbvy.supabase.co;"
     }
   },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEY2Qzc2QzU5NTYxMUIyQzgKUldUSXNoRldXV3pIOXNOeXhOamtvdVRDUGxNR3JzTTJZUTZ4VUllWlVub01nL2Y1VDRDWXRlUHIK",
+      "requireSignedVersion": true,
+      "endpoints": ["https://mecrafts.vercel.app/updates/launcher/stable.json"],
+      "windows": { "installMode": "passive" }
+    }
+  },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["msi"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -37,6 +45,13 @@
       "icons/icon.ico"
     ],
     "windows": {
+      "allowDowngrades": false,
+      "wix": {
+        "upgradeCode": "46b03e80-aa56-5262-81df-4b718dba8cd6",
+        "language": "en-US",
+        "fragmentPaths": ["wix/install-registry.wxs"],
+        "componentRefs": ["LauncherInstallRegistry"]
+      },
       "nsis": {
         "installerHooks": "hooks.nsh",
         "startMenuFolder": "meCraft",

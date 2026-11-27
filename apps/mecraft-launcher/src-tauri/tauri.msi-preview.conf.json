@@ -1,0 +1,18 @@
+{
+  "productName": "meCraft MSI Preview",
+  "identifier": "com.mecraft.launcher.msi.preview",
+  "app": {
+    "windows": [{ "label": "main", "title": "meCraft MSI Preview", "width": 1280, "height": 840, "decorations": false, "center": true }]
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": ["http://127.0.0.1:18978/preview.json"],
+      "dangerousInsecureTransportProtocol": true
+    }
+  },
+  "bundle": {
+    "windows": {
+      "wix": { "upgradeCode": "574cd39e-3ca0-438f-a42a-04979d3a3c5a" }
+    }
+  }
+}

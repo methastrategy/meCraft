@@ -146,34 +146,84 @@ jobs:
         if: steps.filter.outputs.should_build == 'true'
         run: npm ci || npm install
 
-      - name: Compile Tauri v2 Windows Binaries (.exe, setup.exe, .msi, .zip)
+      - name: Import Launcher signing certificate
+        if: steps.filter.outputs.should_build == 'true' && matrix.app_id == 'mecraft-launcher' && github.ref_type == 'tag'
+        shell: pwsh
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.MECRAFT_WINDOWS_CERTIFICATE_BASE64 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.MECRAFT_WINDOWS_CERTIFICATE_PASSWORD }}
+          EXPECTED_THUMBPRINT: ${{ vars.MECRAFT_SIGNING_THUMBPRINT }}
+        run: |
+          if (-not $env:CERTIFICATE_BASE64 -or -not $env:CERTIFICATE_PASSWORD -or $env:EXPECTED_THUMBPRINT -notmatch '^[0-9A-Fa-f]{40}$') {
+            throw 'Configure the Windows publisher certificate before releasing meCraft.'
+          }
+          $pfxPath = Join-Path $env:RUNNER_TEMP 'mecraft-signing.pfx'
+          try {
+            [IO.File]::WriteAllBytes($pfxPath, [Convert]::FromBase64String($env:CERTIFICATE_BASE64))
+            $password = ConvertTo-SecureString $env:CERTIFICATE_PASSWORD -AsPlainText -Force
+            $certificate = Import-PfxCertificate -FilePath $pfxPath -CertStoreLocation 'Cert:/CurrentUser/My' -Password $password
+            if ($certificate.Thumbprint -ne $env:EXPECTED_THUMBPRINT -or -not $certificate.HasPrivateKey) {
+              throw 'Imported publisher certificate does not match the configured thumbprint.'
+            }
+          } finally {
+            Remove-Item -LiteralPath $pfxPath -Force -ErrorAction SilentlyContinue
+          }
+
+      - name: Compile Tauri v2 Windows binaries
         if: steps.filter.outputs.should_build == 'true'
         shell: pwsh
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.MECRAFT_UPDATER_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.MECRAFT_UPDATER_PRIVATE_KEY_PASSWORD }}
+          MECRAFT_SIGNING_THUMBPRINT: ${{ vars.MECRAFT_SIGNING_THUMBPRINT }}
+          MECRAFT_SIGNING_TIMESTAMP_URL: ${{ vars.MECRAFT_SIGNING_TIMESTAMP_URL }}
         run: |
-          cd ${{ matrix.dir }}
-          npm run desktop:build
+          if ("${{ matrix.app_id }}" -eq 'mecraft-launcher' -and '${{ github.ref_type }}' -eq 'tag') {
+            $version = (Get-Content 'apps/mecraft-launcher/package.json' -Raw | ConvertFrom-Json).version
+            $url = "https://github.com/$env:GITHUB_REPOSITORY/releases/download/$env:GITHUB_REF_NAME/mecraft-hub.msi"
+            & ./scripts/build-signed-launcher.ps1 -InstallerUrl $url -ManifestOutput (Join-Path $env:RUNNER_TEMP 'stable.json') -Channel stable
+            if ($LASTEXITCODE -ne 0) { throw 'Signed Launcher build failed.' }
+          } else {
+            Push-Location '${{ matrix.dir }}'
+            try {
+              npm run desktop:build
+              if ($LASTEXITCODE -ne 0) { throw 'Desktop build failed.' }
+            } finally {
+              Pop-Location
+            }
+          }
 
-          $outDir = "../../dist-artifacts/${{ matrix.app_id }}"
+          $outDir = "dist-artifacts/${{ matrix.app_id }}"
           New-Item -ItemType Directory -Force -Path $outDir
 
           if ("${{ matrix.app_id }}" -eq "mecraft-launcher") {
-            # Single Unified Windows Installer for meCraft Suite
-            $nsis = Get-ChildItem -Path src-tauri/target/release/bundle/nsis -Filter *setup.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
-            if ($nsis) {
-              Copy-Item $nsis.FullName -Destination "$outDir/meCraft-Setup.exe" -Force
-            }
-            # Standalone Portable single-file executable
-            $exe = "src-tauri/target/release/${{ matrix.exe_name }}.exe"
-            if (Test-Path $exe) {
-              Copy-Item $exe -Destination "$outDir/meCraft-Portable.exe" -Force
-            }
+            # Public meCraft download has one stable MSI asset name.
+            $version = (Get-Content 'apps/mecraft-launcher/package.json' -Raw | ConvertFrom-Json).version
+            $msi = "apps/mecraft-launcher/src-tauri/target/release/bundle/msi/meCraft_$($version)_x64_en-US.msi"
+            if (-not (Test-Path -LiteralPath $msi)) { throw 'Launcher MSI artifact is missing.' }
+            Copy-Item -LiteralPath $msi -Destination "$outDir/mecraft-hub.msi" -Force
           } else {
             # Ecosystem Sub-Apps (mePDF, mePhoto) - Distributed for in-app 1-click install via meCraft Hub
-            $exe = "src-tauri/target/release/${{ matrix.exe_name }}.exe"
+            $exe = "${{ matrix.dir }}/src-tauri/target/release/${{ matrix.exe_name }}.exe"
             if (Test-Path $exe) {
               Copy-Item $exe -Destination "$outDir/${{ matrix.exe_name }}.exe" -Force
               Compress-Archive -Path $exe -DestinationPath "$outDir/${{ matrix.exe_name }}-windows-x64.zip" -Force
             }
+          }
+
+      - name: Verify Launcher publisher before tagged release
+        if: steps.filter.outputs.should_build == 'true' && matrix.app_id == 'mecraft-launcher' && github.ref_type == 'tag'
+        shell: pwsh
+        env:
+          EXPECTED_THUMBPRINT: ${{ vars.MECRAFT_SIGNING_THUMBPRINT }}
+        run: |
+          if ($env:EXPECTED_THUMBPRINT -notmatch '^[0-9A-Fa-f]{40}$') {
+            throw 'Configure the expected Windows publisher before releasing Launcher.'
+          }
+          $installer = 'dist-artifacts/mecraft-launcher/mecraft-hub.msi'
+          $signature = Get-AuthenticodeSignature -LiteralPath $installer
+          if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Thumbprint -ne $env:EXPECTED_THUMBPRINT) {
+            throw 'Launcher installer must be signed by the configured publisher.'
           }
 
       - name: Stash Binaries for Release
@@ -183,6 +233,16 @@ jobs:
           name: binaries-${{ matrix.app_id }}
           path: dist-artifacts/${{ matrix.app_id }}/*
           if-no-files-found: ignore
+
+      - name: Stash Stable update feed for website deployment
+        if: steps.filter.outputs.should_build == 'true' && matrix.app_id == 'mecraft-launcher' && github.ref_type == 'tag'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mecraft-stable-update-feed
+          path: |
+            ${{ runner.temp }}/stable.json
+            ${{ runner.temp }}/stable.json.sig
+          if-no-files-found: error
 
   # ============================================================
   # Stage 3: Atomic Release Publisher
@@ -198,6 +258,7 @@ jobs:
       - name: Download All Application Artifacts
         uses: actions/download-artifact@v4
         with:
+          pattern: binaries-*
           path: release-assets
           merge-multiple: true
 
