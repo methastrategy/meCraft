@@ -1,6 +1,6 @@
 [package]
 name = "mecraft-launcher"
-version = "1.0.11"
+version = "1.0.12"
 description = "meCraft Central Creative Hub & Dynamic Downloader Launcher"
 authors = ["Metha Triparpanchit"]
 license = "MIT"
