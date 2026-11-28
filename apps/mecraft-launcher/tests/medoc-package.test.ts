@@ -63,6 +63,33 @@ describe('meDoc Library package', () => {
     expect(selectMeDocPackage([release, medoc])?.releaseTag).toBe('medoc-v1.0.5');
   });
 
+  it('also resolves meDocs release tag and medocs.exe from methastrategy/medocs', () => {
+    const medocsRelease = {
+      tag_name: 'medocs-v1.0.5',
+      prerelease: false,
+      draft: false,
+      assets: [{
+        name: 'medocs.exe',
+        size: 120,
+        digest: `sha256:${digest}`,
+        browser_download_url: 'https://github.com/methastrategy/medocs/releases/download/medocs-v1.0.5/medocs.exe',
+      }],
+    };
+    expect(resolveMeDocPackage(medocsRelease)).toEqual({ version: '1.0.5', releaseTag: 'medocs-v1.0.5', sha256: digest, sizeBytes: 120 });
+    expect(parseMeDocCatalog({
+      schemaVersion: 1,
+      packages: [{
+        appId: 'medocs',
+        platform: 'windows-x64',
+        version: '1.0.5',
+        releaseTag: 'medocs-v1.0.5',
+        url: 'https://github.com/methastrategy/medocs/releases/download/medocs-v1.0.5/medocs.exe',
+        sha256: digest,
+        sizeBytes: 120,
+      }],
+    })?.version).toBe('1.0.5');
+  });
+
   it('offers installation, upgrade, or offline launch without downgrading', () => {
     const available = resolveMeDocPackage(release);
     expect(meDocPrimaryAction(false, null, available)).toBe('install');

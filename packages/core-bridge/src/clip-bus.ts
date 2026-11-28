@@ -287,19 +287,28 @@ export class UniversalClipBus {
   }
 
   public consumePending(targetApp: AppId): ClipBusMessage[] {
+    const keys = [`mecraft:clipbus:${targetApp}`];
+    if (targetApp === 'medocs') {
+      keys.push('mecraft:clipbus:medoc');
+    } else if (targetApp === 'medoc') {
+      keys.push('mecraft:clipbus:medocs');
+    }
+    const collected: ClipBusMessage[] = [];
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
-        const key = `mecraft:clipbus:${targetApp}`;
-        const existing = window.localStorage.getItem(key);
-        if (existing) {
-          window.localStorage.removeItem(key);
-          return JSON.parse(existing);
+        for (const key of keys) {
+          const existing = window.localStorage.getItem(key);
+          if (existing) {
+            window.localStorage.removeItem(key);
+            const parsed = JSON.parse(existing);
+            if (Array.isArray(parsed)) collected.push(...parsed);
+          }
         }
       }
     } catch (e) {
       console.warn('[UniversalClipBus] consumePending error:', e);
     }
-    return [];
+    return collected;
   }
 
   public async consumePendingAsync(targetApp: AppId): Promise<ClipBusMessage[]> {

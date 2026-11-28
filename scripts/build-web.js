@@ -89,9 +89,16 @@ copyDir(path.join(rootDir, 'apps/mephoto/dist'), path.join(distDir, 'mephoto'));
 console.log('[build-web] Assembling meDrop Radial Converter into dist/medrop...');
 copyDir(path.join(rootDir, 'apps/medrop/dist'), path.join(distDir, 'medrop'));
 
-// Subpath (/medoc) -> meDoc Studio
-console.log('[build-web] Assembling meDoc Studio into dist/medoc...');
-copyDir(path.join(rootDir, 'apps/medoc/dist'), path.join(distDir, 'medoc'));
+// Subpath (/medocs) -> meDocs Studio (+ /medoc backward-compatible redirect)
+console.log('[build-web] Assembling meDocs Studio into dist/medocs...');
+copyDir(path.join(rootDir, 'apps/medocs/dist'), path.join(distDir, 'medocs'));
+const legacyMedocDir = path.join(distDir, 'medoc');
+fs.mkdirSync(legacyMedocDir, { recursive: true });
+fs.writeFileSync(
+  path.join(legacyMedocDir, 'index.html'),
+  '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/medocs/"><title>meDocs — Redirecting</title><script>location.replace("/medocs/" + location.search + location.hash);</script>',
+  'utf-8',
+);
 
 // Subpath (/meide) -> meIDE Studio
 console.log('[build-web] Assembling meIDE Studio into dist/meide...');
@@ -157,6 +164,13 @@ if (fs.existsSync(catalogV2Path)) {
     fs.writeFileSync(path.join(appRouteDir, 'index.html'), appHtml, 'utf-8');
   }
   console.log(`[build-web] Generated ${(catalogV2.products || []).length} static /apps/<id>/ routes.`);
+  const legacyAppMedocDir = path.join(distDir, 'apps', 'medoc');
+  fs.mkdirSync(legacyAppMedocDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(legacyAppMedocDir, 'index.html'),
+    '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/apps/medocs/"><title>meDocs — Redirecting</title><script>location.replace("/apps/medocs/" + location.search + location.hash);</script>',
+    'utf-8',
+  );
 }
 
 // Generate unified 18-studio downloads portal with Home Page sanctuary aesthetic + ArtCraft card-table architecture
@@ -177,5 +191,5 @@ console.log(`  - /downloads/ -> Downloads Hub (${fs.existsSync(path.join(distDir
 console.log(`  - /mepdf/     -> mePDF Studio (${fs.existsSync(path.join(distDir, 'mepdf/index.html')) ? 'OK' : 'MISSING'})`);
 console.log(`  - /mephoto/ -> mePhoto Studio (${fs.existsSync(path.join(distDir, 'mephoto/index.html')) ? 'OK' : 'MISSING'})`);
 console.log(`  - /medrop/  -> meDrop Radial Converter (${fs.existsSync(path.join(distDir, 'medrop/index.html')) ? 'OK' : 'MISSING'})`);
-console.log(`  - /medoc/   -> meDoc Studio (${fs.existsSync(path.join(distDir, 'medoc/index.html')) ? 'OK' : 'MISSING'})`);
+console.log(`  - /medocs/  -> meDocs Studio (${fs.existsSync(path.join(distDir, 'medocs/index.html')) ? 'OK' : 'MISSING'})`);
 console.log('[build-web] Done! Ready for Vercel deployment.');

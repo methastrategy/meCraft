@@ -33,7 +33,7 @@
       "@mecraft/melight": ["../../apps/melight/src/index.ts"],
       "@mecraft/memotion": ["../../apps/memotion/src/index.ts"],
       "@mecraft/mesheet": ["../../apps/mesheet/src/index.ts"],
-      "@mecraft/medoc": ["../../apps/medoc/src/index.ts"]
+      "@mecraft/medocs": ["../../apps/medocs/src/index.ts"]
     }
   },
   "include": ["src", "tests"]

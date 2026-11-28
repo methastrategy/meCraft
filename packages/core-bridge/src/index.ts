@@ -9,7 +9,7 @@ export * from './updater';
 export * from './thai-utils';
 import { clipBus } from './clip-bus';
 
-export type AppId = 'mepdf' | 'mephoto' | 'mevector' | 'medoc' | string;
+export type AppId = 'mepdf' | 'mephoto' | 'mevector' | 'medocs' | 'medoc' | string;
 
 export type AppInstallStatus =
   | 'not-installed'
@@ -179,8 +179,8 @@ export function getDefaultCatalog(): AppCatalogItem[] {
       comingSoon: true,
     },
     {
-      id: 'medoc',
-      name: 'meDoc',
+      id: 'medocs',
+      name: 'meDocs',
       tagline: 'Distraction-Free Typewriter & Markdown Document Suite',
       description:
         'Zen focus typography, live LaTeX math equations, offline bilingual grammar assistance, and instant publication export.',
@@ -190,8 +190,8 @@ export function getDefaultCatalog(): AppCatalogItem[] {
       icon: 'BookOpen',
       color: '#10b981',
       accentGlow: 'rgba(16, 185, 129, 0.35)',
-      exeName: 'medoc.exe',
-      releaseAssetPattern: 'medoc.exe',
+      exeName: 'medocs.exe',
+      releaseAssetPattern: 'medocs.exe',
       status: 'not-installed',
       sizeFormatted: '~30 MB',
       inDevelopment: true,

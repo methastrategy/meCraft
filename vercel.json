@@ -6,7 +6,11 @@
   "redirects": [
     { "source": "/mepdf", "destination": "/mepdf/", "permanent": true },
     { "source": "/mephoto", "destination": "/mephoto/", "permanent": true },
-    { "source": "/medoc", "destination": "/medoc/", "permanent": true },
+    { "source": "/medocs", "destination": "/medocs/", "permanent": true },
+    { "source": "/medoc", "destination": "/medocs/", "permanent": true },
+    { "source": "/medoc/(.*)", "destination": "/medocs/", "permanent": true },
+    { "source": "/apps/medoc", "destination": "/apps/medocs/", "permanent": true },
+    { "source": "/apps/medoc/(.*)", "destination": "/apps/medocs/", "permanent": true },
     { "source": "/medrop", "destination": "/medrop/", "permanent": true },
     { "source": "/mevector", "destination": "/mevector/", "permanent": true },
     { "source": "/me3d", "destination": "/me3d/", "permanent": true },

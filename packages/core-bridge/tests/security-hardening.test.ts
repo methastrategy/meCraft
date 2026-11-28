@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { sanitizeRenderedHtml as sanitizeMedoc } from '../../../apps/medoc/src/engines/MarkdownEngine';
+import { sanitizeRenderedHtml as sanitizeMedoc } from '../../../apps/medocs/src/engines/MarkdownEngine';
 import { sanitizeRenderedHtml as sanitizeMeide, renderMarkdownHtml } from '../../../apps/meide/src/main';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -16,7 +16,7 @@ const APPS_15 = [
   'mecraft-launcher',
   'medeck',
   'medesign',
-  'medoc',
+  'medocs',
   'medrop',
   'mefilm',
   'meide',

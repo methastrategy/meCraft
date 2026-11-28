@@ -108,17 +108,19 @@ pub(crate) async fn install_verified_medoc(
     size_bytes: u64,
 ) -> Result<(), String> {
     if !valid_version(&version)
-        || (release_tag != format!("v{version}") && release_tag != format!("medoc-v{version}"))
+        || (release_tag != format!("v{version}")
+            && release_tag != format!("medocs-v{version}")
+            && release_tag != format!("medoc-v{version}"))
         || sha256.len() != 64
         || !sha256.bytes().all(|byte| byte.is_ascii_hexdigit())
         || !(1..=MAX_PACKAGE_BYTES).contains(&size_bytes)
     {
-        return Err("Invalid meDoc package metadata".into());
+        return Err("Invalid meDocs package metadata".into());
     }
     let _operation = PACKAGE_OPERATION
         .try_lock()
-        .map_err(|_| "meDoc is busy".to_string())?;
-    let dir = get_target_app_dir("medoc");
+        .map_err(|_| "meDocs is busy".to_string())?;
+    let dir = get_target_app_dir("medocs");
     fs::create_dir_all(&dir).map_err(|error| error.to_string())?;
     let staged = dir.join("medoc.download");
     let version_file = dir.join("medoc.next");

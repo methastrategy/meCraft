@@ -23,7 +23,7 @@ const studios = [
   { id: 'mevector', name: 'meVector', title: 'meVector Studio — Precision Bézier Vector Illustration & SVG Studio', port: 5189 },
 ];
 
-const sourceIconsDir = path.join(rootDir, 'apps', 'medoc', 'src-tauri', 'icons');
+const sourceIconsDir = path.join(rootDir, 'apps', 'medocs', 'src-tauri', 'icons');
 
 for (const s of studios) {
   const appDir = path.join(rootDir, 'apps', s.id);
@@ -308,7 +308,7 @@ fn main() {
   };
   fs.writeFileSync(path.join(capDir, 'default.json'), JSON.stringify(capConfig, null, 2) + '\n', 'utf-8');
 
-  // 10. Copy icons from medoc
+  // 10. Copy icons from medocs
   if (fs.existsSync(sourceIconsDir)) {
     const iconFiles = fs.readdirSync(sourceIconsDir);
     for (const file of iconFiles) {

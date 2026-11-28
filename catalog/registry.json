@@ -369,8 +369,8 @@
       ]
     },
     {
-      "id": "medoc",
-      "name": "meDoc",
+      "id": "medocs",
+      "name": "meDocs",
       "category": "document",
       "categoryLabel": {
         "en": "Document",
@@ -391,6 +391,8 @@
       "accentColor": "#0d9488",
       "glowColor": "rgba(13,148,136,0.3)",
       "keywords": [
+        "medoc",
+        "medocs",
         "markdown",
         "word",
         "document",
@@ -430,7 +432,7 @@
           "type": "web-app",
           "stability": "stable",
           "version": "1.0.4",
-          "url": "https://mecrafts.vercel.app/medoc/"
+          "url": "https://mecrafts.vercel.app/medocs/"
         },
         {
           "platform": "windows",

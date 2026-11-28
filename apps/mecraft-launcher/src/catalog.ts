@@ -251,15 +251,19 @@ export function getRecommendedChannel(
 
 export function getMeDocPackageFromCatalogV2(catalog: CatalogV2 | null): MeDocPackage | null {
   if (!catalog) return null;
-  const medoc = catalog.products.find(p => p.id === 'medoc');
-  if (!medoc) return null;
-  const win = medoc.channels.find(
+  const medocs = catalog.products.find(p => p.id === 'medocs' || p.id === 'medoc');
+  if (!medocs) return null;
+  const win = medocs.channels.find(
     ch => ch.platform === 'windows' && ch.type === 'windows-exe' && ch.launcherManaged && ch.stability === 'stable',
   );
   if (!win || !win.sha256 || !win.sizeBytes) return null;
   const releaseTag = win.releaseTag || `v${win.version}`;
-  const expectedUrl = `https://github.com/methastrategy/meCraft/releases/download/${releaseTag}/medoc.exe`;
-  if (win.url !== expectedUrl) return null;
+  const allowedUrls = [
+    `https://github.com/methastrategy/meCraft/releases/download/${releaseTag}/medocs.exe`,
+    `https://github.com/methastrategy/meCraft/releases/download/${releaseTag}/medoc.exe`,
+    `https://github.com/methastrategy/medocs/releases/download/${releaseTag}/medocs.exe`,
+  ];
+  if (!allowedUrls.includes(win.url)) return null;
   return {
     version: win.version,
     releaseTag,
@@ -271,5 +275,7 @@ export function getMeDocPackageFromCatalogV2(catalog: CatalogV2 | null): MeDocPa
 export function parseProductRoute(pathname: string): string | null {
   if (typeof pathname !== 'string') return null;
   const match = /^\/apps\/([a-z0-9][a-z0-9-]{1,31})\/?$/i.exec(pathname.trim());
-  return match ? match[1].toLowerCase() : null;
+  if (!match) return null;
+  const id = match[1].toLowerCase();
+  return id === 'medoc' ? 'medocs' : id;
 }

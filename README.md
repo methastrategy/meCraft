@@ -14,7 +14,7 @@
 [![GitHub Forks](https://img.shields.io/github/forks/methastrategy/meCraft?style=for-the-badge&logo=github)](https://github.com/methastrategy/meCraft/network)
 [![Tauri v2](https://img.shields.io/badge/Desktop-Tauri%20v2%20(Rust)-ea580c?style=for-the-badge&logo=tauri)](https://tauri.app/)
 [![Client-Side Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-blue?style=for-the-badge&logo=shield)](SECURITY.md)
-[![Tests Passing](https://img.shields.io/badge/Tests-415%2B%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
+[![Tests Passing](https://img.shields.io/badge/Tests-486%2B%20Passing-brightgreen?style=for-the-badge&logo=vitest)](https://vitest.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 ---
@@ -26,7 +26,7 @@
 - 📄 **mePDF Web Studio:** [https://mecrafts.vercel.app/mepdf/](https://mecrafts.vercel.app/mepdf/)
 - 🪄 **mePhoto Web Studio:** [https://mecrafts.vercel.app/mephoto/](https://mecrafts.vercel.app/mephoto/)
 - 🍩 **meDrop Radial Converter (Zero-Window HUD):** [https://mecrafts.vercel.app/medrop/](https://mecrafts.vercel.app/medrop/)
-- 📝 **meDoc Office Studio (Sarabun & Thai Gov Templates):** [https://mecrafts.vercel.app/medoc/](https://mecrafts.vercel.app/medoc/)
+- 📝 **[meDocs Office Studio](https://mecrafts.vercel.app/medocs/)** (Standalone Repo: [`methastrategy/medocs`](https://github.com/methastrategy/medocs)) — Sarabun & Thai Gov Templates
 - 📊 **meSheet Studio (=BAHTTEXT & Formulas):** [https://mecrafts.vercel.app/mesheet/](https://mecrafts.vercel.app/mesheet/)
 - 📽️ **meDeck Studio (Thai Typography Slides):** [https://mecrafts.vercel.app/medeck/](https://mecrafts.vercel.app/medeck/)
 - 💾 **meCraft สำหรับ Windows:** [หน้า Downloads](https://mecrafts.vercel.app/downloads/) แสดงปุ่ม `mecraft.exe` สำหรับตัวโปรแกรม Windows ไฟล์เดียว เมื่อมีรุ่นที่เผยแพร่จริง โปรแกรมย่อยที่พร้อมใช้งานจัดการผ่าน Library ใน meCraft
@@ -78,7 +78,7 @@ flowchart TD
         PDF["📄 mePDF Studio\n(Lossless Compression, AES-256, OCR, Merge/Split)"]
         Photo["🪄 mePhoto Studio\n(CamScanner-Grade Magic Color, Non-Destructive Deskew)"]
         Drop["🍩 meDrop Radial Converter\n(Zero-Window Radial Drag & Drop File Converter HUD)"]
-        Doc["📝 meDoc Studio\n(Distraction-Free Typewriter, KaTeX & Mermaid Studio)"]
+        Doc["📝 meDocs Studio\n(Distraction-Free Typewriter, KaTeX & Mermaid Studio)"]
         Vector["📐 meVector (Roadmap)\n(Bézier SVG/PDF Graphic Workbench)"]
     end
 
@@ -114,7 +114,28 @@ flowchart TD
 5. **👆 Decoupled 44px Hit-Target Invariant:**
    Touch interactive targets on mobile and tablets must provide a minimum bounding hit-box of $\ge 44 \times 44\text{ px}$.
 6. **📦 Zero-Defect Monorepo Quality Gate:**
-   Every milestone requires 100% test pass rate (`npm test`, 326/326 tests across 29 test files) and zero TypeScript errors (`npm run typecheck`).
+   Every milestone requires 100% test pass rate (`npm test`, 486/486 tests across 40 test files) and zero TypeScript errors (`npm run typecheck`).
+
+## 🗂️ GitHub Repository Topology (Hybrid + Mirror Sync)
+
+| Local Folder (`meCraft-HUB/`) | Monorepo Source | Dedicated GitHub Repo | Sync Mode |
+|:---|:---|:---|:---|
+| `mecraft` (`mecraft-monorepo`) | `apps/mecraft-launcher` + `packages/*` | [`methastrategy/meCraft`](https://github.com/methastrategy/meCraft) | Primary Monorepo |
+| `mecrafts-website` | Built via `npm run deploy:website` | [`methastrategy/meCrafts-web`](https://github.com/methastrategy/meCrafts-web) | Web Deploy Repo |
+| `medocs` | `apps/medocs` | [`methastrategy/medocs`](https://github.com/methastrategy/medocs) | Subtree Mirror |
+| `meide` | `apps/meide` | [`methastrategy/meide`](https://github.com/methastrategy/meide) | Subtree Mirror |
+| `mepdf` | `apps/mepdf` | [`methastrategy/mepdf`](https://github.com/methastrategy/mepdf) | Subtree Mirror |
+| `mephoto` | `apps/mephoto` | [`methastrategy/mephoto`](https://github.com/methastrategy/mephoto) | Subtree Mirror |
+| `medrop` | `apps/medrop` | [`methastrategy/medrop`](https://github.com/methastrategy/medrop) | Subtree Mirror |
+| `mesheet` | `apps/mesheet` | [`methastrategy/mesheet`](https://github.com/methastrategy/mesheet) | Subtree Mirror |
+| `medeck` | `apps/medeck` | [`methastrategy/medeck`](https://github.com/methastrategy/medeck) | Subtree Mirror |
+| `mevector` | `apps/mevector` | [`methastrategy/mevector`](https://github.com/methastrategy/mevector) | Subtree Mirror |
+| `me3d` | `apps/me3d` | [`methastrategy/me3d`](https://github.com/methastrategy/me3d) | Subtree Mirror |
+| `meaudio` | `apps/meaudio` | [`methastrategy/meaudio`](https://github.com/methastrategy/meaudio) | Subtree Mirror |
+| `mefilm` | `apps/mefilm` | [`methastrategy/mefilm`](https://github.com/methastrategy/mefilm) | Subtree Mirror |
+| `melight` | `apps/melight` | [`methastrategy/melight`](https://github.com/methastrategy/melight) | Subtree Mirror |
+| `memotion` | `apps/memotion` | [`methastrategy/memotion`](https://github.com/methastrategy/memotion) | Subtree Mirror |
+| `medesign-studio` | `apps/medesign` | [`methastrategy/medesign-studio`](https://github.com/methastrategy/medesign-studio) | Subtree Mirror |
 
 ---
 
@@ -126,7 +147,7 @@ flowchart TD
 | <img src="public/branding/mepdf.png" width="36" /> | **📄 mePDF Studio** | **ท้าวเวสสุวรรณ (Thao Vessuwan)**<br>Guardian of Treasures & Diamond Mace | Complete client-side PDF engineering: Merge, Split, Lossless/Scanned Compression, AES-256, OCR. | PDF.js, pdf-lib, Web Workers | **Stable** (`v1.0.0`) |
 | <img src="public/branding/mephoto.png" width="36" /> | **🪄 mePhoto Studio** | **พญานาค (Phraya Naga)**<br>Emerald Serpent with Radiant Gem | CamScanner-grade document lab: 4-point homography deskew, Otsu binarization, Magic Color. | Canvas API, `@mecraft/photo-core` | **Stable** (`v1.0.0`) |
 | <img src="public/branding/medrop.png" width="36" /> | **🍩 meDrop Radial HUD** | **ม้านิลมังกร (Ma Nil Mangkon)**<br>Swift Dragon-Horse & Radial Wheel | Zero-Window Radial Drag & Drop File Converter HUD. Instant local RAM conversion on Ctrl+Drag. | Tauri v2, Rust Hook, SVG Donut | **Stable** (`v1.0.0`) |
-| <img src="public/branding/medoc.png" width="36" /> | **📝 meDoc Studio** | **พระสุนทรีวาณี (Sunthari Vani)**<br>Goddess of Eloquence & Crystal Lotus | Distraction-free typewriter, live KaTeX LaTeX formula rendering, inline Mermaid diagrams, clean PDF export. | marked, KaTeX, Mermaid, pdf-lib | **Stable** (`v1.0.0`) |
+| <img src="public/branding/medoc.png" width="36" /> | **📝 meDocs Studio** | **พระสุนทรีวาณี (Sunthari Vani)**<br>Goddess of Eloquence & Crystal Lotus | Distraction-free typewriter, live KaTeX LaTeX formula rendering, inline Mermaid diagrams, clean PDF/DOCX export. | marked, KaTeX, Mermaid, pdf-lib | **Stable** (`v1.0.4`) |
 | <img src="public/branding/mevector.png" width="36" /> | **📐 meVector Studio** | **พญาครุฑ (Phraya Garuda)**<br>King of Birds with Feather Splines | Precision Bézier vector illustration, sub-pixel node editor, Boolean geometry, SVG/PDF. | Vector Canvas, `@mecraft/studio-shell` | **Ready** (`v1.0.0`) |
 | <img src="public/branding/me3d.png" width="36" /> | **🧊 me3D Studio** | **พระวิศวกรรม (Vishvakarman)**<br>Celestial Architect & Builder of Worlds | Spatial polyhedral mesh modeling, real-time physically-based rendering (PBR), HDRI lighting. | Three.js / WebGPU PBR | **Ready** (`v1.0.0`) |
 | <img src="public/branding/mefilm.png" width="36" /> | **🎬 meFilm Studio** | **นางกินรี (Kinnari Maiden)**<br>Celestial Creature with Golden Wings | Non-linear video timeline, multi-track sequencing, WebCodecs hardware decode, zero-transcode preview. | WebCodecs, WebGL, Canvas | **Ready** (`v1.0.0`) |
@@ -169,11 +190,14 @@ cd meCraft
 # Install all workspace dependencies
 npm install
 
-# Run automated test suites (332+ passing tests across 29 test suites)
+# Run automated test suites (486+ passing tests across 40 test files)
 npm test
 
-# Typecheck across all 6 workspaces (0 errors)
+# Typecheck across all 19 workspaces (0 errors)
 npm run typecheck
+
+# Sync standalone studio mirror repositories
+npm run sync:repos
 ```
 
 ### Local Development

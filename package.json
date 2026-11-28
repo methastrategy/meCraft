@@ -16,7 +16,8 @@
     "desktop:pdf": "npm run desktop:dev --workspace=@mecraft/mepdf",
     "desktop:photo": "npm run desktop:dev --workspace=@mecraft/mephoto",
     "desktop:ide": "npm run desktop:dev --workspace=@mecraft/meide",
-    "desktop:medoc": "npm run desktop:dev --workspace=@mecraft/medoc",
+    "desktop:medocs": "npm run desktop:dev --workspace=@mecraft/medocs",
+    "desktop:medoc": "npm run desktop:dev --workspace=@mecraft/medocs",
     "desktop:medrop": "npm run desktop:dev --workspace=@mecraft/medrop",
     "desktop:3d": "npm run desktop:dev --workspace=@mecraft/me3d",
     "desktop:audio": "npm run desktop:dev --workspace=@mecraft/meaudio",
@@ -35,6 +36,8 @@
     "generate:bitmaps": "node scripts/generate-installer-bitmaps.js",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "check:docs": "node scripts/verify-docs.js",
+    "sync:repos": "node scripts/sync-app-repos.mjs",
+    "sync:repos:dry": "node scripts/sync-app-repos.mjs --dry-run",
     "test": "vitest run",
     "test:all": "vitest run"
   },

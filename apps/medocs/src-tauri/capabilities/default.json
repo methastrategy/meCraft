@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Hardened filesystem and window capabilities for meDoc",
+  "description": "Hardened filesystem and window capabilities for meDocs",
   "windows": [
     "main"
   ],

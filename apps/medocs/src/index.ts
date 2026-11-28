@@ -1,6 +1,6 @@
 /**
- * @file meDoc (medoc)
- * meDoc Studio — Distraction-Free Pro Writing & KaTeX Typography Studio
+ * @file meDocs (medocs)
+ * meDocs Studio — Distraction-Free Pro Writing & KaTeX Typography Studio
  * Part of meCraft Creative & Document Suite
  */
 
@@ -15,9 +15,9 @@ export * from './engines/VaultManager.js';
 export * from './components/WriterApp.js';
 
 export const APP_METADATA = {
-  id: 'medoc',
-  name: 'meDoc',
-  title: 'meDoc Studio — Distraction-Free Pro Writing & KaTeX Typography Studio',
+  id: 'medocs',
+  name: 'meDocs',
+  title: 'meDocs Studio — Distraction-Free Pro Writing & KaTeX Typography Studio',
   tagline: 'Distraction-Free Pro Writing & KaTeX Typography Studio',
   category: 'DOCUMENT',
   version: '1.0.0',
@@ -34,11 +34,11 @@ export function getAppInfo() {
 
 export function createStudioShell(target?: HTMLElement | string): StudioShell {
   const shell = new StudioShell({
-    appId: 'medoc',
-    appName: 'meDoc',
+    appId: 'medocs',
+    appName: 'meDocs',
     appTag: 'Word / Markdown Pro',
     version: '1.0.0',
-    documentTitle: 'meDoc Studio — Distraction-Free Pro Writing & KaTeX Typography Studio',
+    documentTitle: 'meDocs Studio — Distraction-Free Pro Writing & KaTeX Typography Studio',
     theme: 'navy-black',
     menu: [
       {
@@ -97,7 +97,7 @@ export function createStudioShell(target?: HTMLElement | string): StudioShell {
         content: `
       <div style="display: flex; justify-content: center; width: 100%; height: 100%; background: #070b0e; overflow-y: auto; padding: 40px 20px;">
         <div style="width: 700px; min-height: 800px; background: #0e161c; border: 1px solid rgba(20,184,166,0.18); border-radius: 6px; padding: 48px; color: #f1f5f9; font-family: 'Inter', sans-serif; line-height: 1.8;">
-          <h1 style="font-size: 26px; font-weight: 700; color: #14b8a6; margin-bottom: 12px;">meDoc Creative Documentation</h1>
+          <h1 style="font-size: 26px; font-weight: 700; color: #14b8a6; margin-bottom: 12px;">meDocs Creative Documentation</h1>
           <p style="color: #94a3b8; font-size: 14px;">A distraction-free typographic studio engineered for high-density technical authoring and client-side KaTeX rendering.</p>
           <div style="margin: 24px 0; padding: 16px; background: rgba(13,148,136,0.12); border-left: 3px solid #0d9488; border-radius: 4px; font-family: monospace; font-size: 13px;">
             $$\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}$$
@@ -127,7 +127,7 @@ export function createStudioShell(target?: HTMLElement | string): StudioShell {
         {
           id: 'status-msg',
           align: 'left',
-          content: 'meDoc Ready · Typographic Zen Mode',
+          content: 'meDocs Ready · Typographic Zen Mode',
         },
         {
           id: 'status-dims',
@@ -141,7 +141,7 @@ export function createStudioShell(target?: HTMLElement | string): StudioShell {
       latestVersion: '1.0.0',
       releaseDate: '2026-11-24',
       changelog: [
-        'meDoc Studio v1.0.0 Official Release',
+        'meDocs Studio v1.0.0 Official Release',
         'Distraction-free Markdown typewriter with unique writer-focused layout',
         '100% In-Device KaTeX math, Mermaid diagrams, and PDF export',
       ],

@@ -1,6 +1,6 @@
 /**
  * @file DocxEngine.ts
- * Native OpenXML (.docx) Parser & Generator for meDoc Studio
+ * Native OpenXML (.docx) Parser & Generator for meDocs Studio
  * 100% In-Device Client-Side Processing using JSZip
  */
 

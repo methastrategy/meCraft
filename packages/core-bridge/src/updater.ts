@@ -31,7 +31,7 @@ export interface SoftwareUpdateInfo {
 
 export interface CheckUpdateOptions {
   currentVersion?: string;
-  appId?: string; // 'mecraft-suite' | 'mepdf' | 'mephoto' | 'medrop' | 'medoc'
+  appId?: string; // 'mecraft-suite' | 'mepdf' | 'mephoto' | 'medrop' | 'medocs'
   repoOwner?: string; // default: 'methastrategy'
   repoName?: string;  // default: 'meCraft'
   force?: boolean;

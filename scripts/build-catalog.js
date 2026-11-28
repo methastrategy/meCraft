@@ -132,13 +132,13 @@ export function buildCatalogFiles({
     products: registry.products,
   };
 
-  // Preserve v1.json compatibility for legacy Launchers (medoc Windows package)
+  // Preserve v1.json compatibility for both meDocs and legacy Launchers (medoc Windows package)
   const v1Packages = [];
   for (const product of registry.products) {
-    if (product.id !== 'medoc') continue;
+    if (product.id !== 'medocs' && product.id !== 'medoc') continue;
     for (const ch of product.channels) {
       if (ch.platform === 'windows' && ch.type === 'windows-exe' && ch.launcherManaged) {
-        v1Packages.push({
+        const entry = {
           appId: product.id,
           platform: `windows-${ch.arch || 'x64'}`,
           version: ch.version,
@@ -146,7 +146,11 @@ export function buildCatalogFiles({
           url: ch.url,
           sizeBytes: ch.sizeBytes,
           sha256: ch.sha256,
-        });
+        };
+        v1Packages.push(entry);
+        if (product.id === 'medocs') {
+          v1Packages.push({ ...entry, appId: 'medoc' });
+        }
       }
     }
   }

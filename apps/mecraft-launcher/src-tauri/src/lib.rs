@@ -76,10 +76,28 @@ fn validate_app_id(app_id: &str) -> Result<(), String> {
     Ok(())
 }
 
+fn is_medocs_id(app_id: &str) -> bool {
+    app_id == "medocs" || app_id == "medoc"
+}
+
+fn find_installed_medocs_executable(app_id: &str) -> Option<(String, PathBuf)> {
+    let primary_dir = get_target_app_dir("medocs");
+    if let Some(found) = medoc::installed(&primary_dir) {
+        return Some(found);
+    }
+    let legacy_dir = get_target_app_dir("medoc");
+    if app_id != "medocs" || legacy_dir.exists() {
+        if let Some(found) = medoc::installed(&legacy_dir) {
+            return Some(found);
+        }
+    }
+    None
+}
+
 fn get_target_exe_path(app_id: &str) -> PathBuf {
     let app_dir = get_target_app_dir(app_id);
-    if app_id == "medoc" {
-        if let Some((_, executable)) = medoc::installed(&app_dir) {
+    if is_medocs_id(app_id) {
+        if let Some((_, executable)) = find_installed_medocs_executable(app_id) {
             return executable;
         }
     }
@@ -99,8 +117,12 @@ fn check_app_status(app_id: String) -> Result<AppStatusResponse, String> {
     if exe_path.exists() {
         let size = fs::metadata(&exe_path).map(|m| m.len()).unwrap_or(0);
         // Read version from version.txt alongside the exe; fall back to None
-        let version = if app_id == "medoc" && let Some((version, _)) = medoc::installed(&get_target_app_dir(&app_id)) {
-            Some(version)
+        let version = if is_medocs_id(&app_id) {
+            if let Some((version, _)) = find_installed_medocs_executable(&app_id) {
+                Some(version)
+            } else {
+                None
+            }
         } else {
             let ver_file = get_target_app_dir(&app_id).join("version.txt");
             fs::read_to_string(&ver_file).ok().map(|s| s.trim().to_string())
@@ -315,8 +337,10 @@ fn get_app_directory(app_id: String) -> Result<String, String> {
 fn uninstall_app(app_id: String) -> Result<bool, String> {
     validate_app_id(&app_id)?;
     let app_dir = get_target_app_dir(&app_id);
-    if app_id == "medoc" {
-        return medoc::uninstall(&app_dir).map(|()| true);
+    if is_medocs_id(&app_id) {
+        medoc::uninstall(&get_target_app_dir("medocs"))?;
+        medoc::uninstall(&get_target_app_dir("medoc"))?;
+        return Ok(true);
     }
     if app_dir.exists() {
         fs::remove_dir_all(&app_dir).map_err(|e| format!("Failed to remove app directory: {}", e))?;
@@ -626,6 +650,7 @@ mod tests {
         assert!(validate_app_id("mepdf").is_ok());
         assert!(validate_app_id("mephoto").is_ok());
         assert!(validate_app_id("mevector").is_ok());
+        assert!(validate_app_id("medocs").is_ok());
         assert!(validate_app_id("medoc").is_ok());
         assert!(validate_app_id("mecraft-pdf").is_ok());
         assert!(validate_app_id("app123").is_ok());

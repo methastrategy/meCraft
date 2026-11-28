@@ -215,15 +215,15 @@ export function resolveWedges(info: DraggedFileInfo): RadialWedgeAction[] {
           tooltipDesc: 'Export document as single standalone styled HTML document',
         },
         {
-          id: 'gateway-medoc',
-          label: 'meDoc',
+          id: 'gateway-medocs',
+          label: 'meDocs',
           sublabel: 'KaTeX Studio',
           icon: '📝',
           targetFormat: 'studio',
           accentColor: '#2563eb',
           isStudioGateway: true,
-          studioAppId: 'medoc',
-          tooltipDesc: 'Open document inside meDoc typographic studio',
+          studioAppId: 'medocs',
+          tooltipDesc: 'Open document inside meDocs typographic studio',
         },
       ];
 

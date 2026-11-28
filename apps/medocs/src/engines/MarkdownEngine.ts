@@ -1,6 +1,6 @@
 /**
  * @file MarkdownEngine.ts
- * meDoc Studio — Markdown, KaTeX Math & Mermaid Processing Engine
+ * meDocs Studio — Markdown, KaTeX Math & Mermaid Processing Engine
  * 100% In-Device Client-Side Execution
  */
 

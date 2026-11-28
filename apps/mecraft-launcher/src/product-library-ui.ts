@@ -167,7 +167,7 @@ export function renderCatalogProductCard(
   const platforms = Array.from(new Set(product.channels.map(c => c.platform)));
   const winChannel = product.channels.find(c => c.platform === 'windows');
   const installed = opts.localStatus?.installed === true;
-  const isCoreApp = product.id === 'medoc' || product.id === 'mecraft';
+  const isCoreApp = product.id === 'medocs' || product.id === 'medoc' || product.id === 'mecraft';
   const isReady = product.status === 'active';
   const shouldBlur = !isReady;
   const imgSrc = product.image || '/branding/mecraft-suite-wide.webp';
@@ -213,11 +213,11 @@ export function renderCatalogProductCard(
           <button type="button" class="shared-btn-secondary" data-open-product-detail="${esc(product.id)}">
             ${th ? 'รายละเอียด' : 'Details'}
           </button>
-          ${installed && product.id === 'medoc' ? `
+          ${installed && (product.id === 'medocs' || product.id === 'medoc') ? `
             <button type="button" class="shared-btn-primary" data-medoc-action="open">
-              ${th ? 'เปิด meDoc' : 'Open meDoc'}
+              ${th ? 'เปิด meDocs' : 'Open meDocs'}
             </button>
-          ` : product.id === 'medoc' && winChannel ? `
+          ` : (product.id === 'medocs' || product.id === 'medoc') && winChannel ? `
             <button type="button" class="shared-btn-primary" data-medoc-action="install">
               ${th ? 'ติดตั้ง' : 'Install'}
             </button>
@@ -293,19 +293,19 @@ export function renderProductDetailView(
             ` : `
               <button type="button" class="shared-btn-secondary" data-open-homescreen-guide="true">${th ? 'เพิ่มไปยังหน้าจอโฮม' : 'Add to Home Screen'}</button>
             `}
-          ` : opts.isDesktop && product.id === 'medoc' && ch.launcherManaged ? `
+          ` : opts.isDesktop && (product.id === 'medocs' || product.id === 'medoc') && ch.launcherManaged ? `
             <button type="button" class="shared-btn-primary" data-medoc-action="${opts.meDocAction ?? 'install'}" ${opts.meDocBusy ? 'disabled' : ''}>
               ${opts.meDocAction === 'open'
-                ? (th ? 'เปิด meDoc' : 'Open meDoc')
+                ? (th ? 'เปิด meDocs' : 'Open meDocs')
                 : opts.meDocAction === 'update'
-                  ? (th ? 'อัปเดต meDoc' : 'Update meDoc')
+                  ? (th ? 'อัปเดต meDocs' : 'Update meDocs')
                   : opts.meDocAction === 'retry'
                     ? (th ? 'ลองใหม่' : 'Retry')
-                    : (th ? 'ติดตั้ง meDoc' : 'Install meDoc')}
+                    : (th ? 'ติดตั้ง meDocs' : 'Install meDocs')}
             </button>
             ${opts.localStatus?.installed && opts.meDocAction === 'update' ? `
               <button type="button" class="shared-btn-secondary" data-medoc-action="open" ${opts.meDocBusy ? 'disabled' : ''}>
-                ${th ? 'เปิด meDoc' : 'Open meDoc'}
+                ${th ? 'เปิด meDocs' : 'Open meDocs'}
               </button>
             ` : ''}
             ${opts.localStatus?.installed ? `

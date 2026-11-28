@@ -13,7 +13,7 @@ const apps = [
   { id: 'mecraft-launcher', name: 'meCraft Launcher' },
   { id: 'medeck', name: 'meDeck' },
   { id: 'medesign', name: 'meDesign' },
-  { id: 'medoc', name: 'meDoc' },
+  { id: 'medocs', name: 'meDocs' },
   { id: 'medrop', name: 'meDrop' },
   { id: 'mefilm', name: 'meFilm' },
   { id: 'meide', name: 'meIDE' },

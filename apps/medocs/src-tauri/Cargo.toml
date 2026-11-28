@@ -1,14 +1,14 @@
 [package]
-name = "medoc"
+name = "medocs"
 version = "1.0.0"
-description = "meDoc Studio — Distraction-Free Pro Writing & KaTeX Typography Studio"
+description = "meDocs Studio — Distraction-Free Pro Writing & KaTeX Typography Studio"
 authors = ["Metha Triparpanchit"]
 license = "MIT"
 edition = "2024"
 rust-version = "1.90"
 
 [lib]
-name = "medoc_lib"
+name = "medocs_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

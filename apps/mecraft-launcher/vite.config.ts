@@ -19,7 +19,7 @@ export default defineConfig({
       '@mecraft/melight': fileURLToPath(new URL('../../apps/melight/src/index.ts', import.meta.url)),
       '@mecraft/memotion': fileURLToPath(new URL('../../apps/memotion/src/index.ts', import.meta.url)),
       '@mecraft/mesheet': fileURLToPath(new URL('../../apps/mesheet/src/index.ts', import.meta.url)),
-      '@mecraft/medoc': fileURLToPath(new URL('../../apps/medoc/src/index.ts', import.meta.url)),
+      '@mecraft/medocs': fileURLToPath(new URL('../../apps/medocs/src/index.ts', import.meta.url)),
       '@mecraft/ui-tokens/theme-oled.css': fileURLToPath(new URL('../../packages/ui-tokens/theme-oled.css', import.meta.url)),
       '@mecraft/ui-tokens/tokens.css': fileURLToPath(new URL('../../packages/ui-tokens/tokens.css', import.meta.url)),
       '@mecraft/ui-tokens': fileURLToPath(new URL('../../packages/ui-tokens/src/index.ts', import.meta.url)),

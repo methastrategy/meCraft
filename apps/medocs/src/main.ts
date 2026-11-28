@@ -1,6 +1,6 @@
 /**
  * @file main.ts
- * meDoc Studio — Application Entrypoint
+ * meDocs Studio — Application Entrypoint
  */
 
 import 'katex/dist/katex.min.css';

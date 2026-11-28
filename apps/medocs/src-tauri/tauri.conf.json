@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "meDoc Preview",
-  "version": "1.0.1-preview",
-  "identifier": "com.mecraft.medoc.preview",
+  "productName": "meDocs Studio",
+  "version": "1.0.0",
+  "identifier": "com.mecraft.medocs",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:5177",
@@ -12,11 +12,11 @@
   "app": {
     "windows": [
       {
-        "title": "meDoc Preview — WYSIWYG A4 & OpenXML DOCX",
-        "width": 1360,
-        "height": 860,
-        "minWidth": 880,
-        "minHeight": 640,
+        "title": "meDocs",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600,
         "resizable": true,
         "fullscreen": false,
         "transparent": false,
@@ -39,7 +39,7 @@
     ],
     "windows": {
       "nsis": {
-        "startMenuFolder": "meDoc Preview",
+        "startMenuFolder": "meDocs Studio",
         "installMode": "both"
       }
     }

@@ -1,6 +1,6 @@
 /**
  * @file VaultManager.ts
- * meDoc Studio — Local-First Document Storage & Vault Manager
+ * meDocs Studio — Local-First Document Storage & Vault Manager
  * 100% In-Device File System & Local Storage Persistence
  */
 
@@ -30,21 +30,24 @@ export interface RecoverySnapshot {
   reason: 'autosave' | 'pre-import' | 'manual-backup';
 }
 
-const STORAGE_KEY_DOCS = 'medoc_vault_documents';
-const STORAGE_KEY_ACTIVE = 'medoc_active_doc_id';
-const STORAGE_KEY_RECOVERY = 'medoc_recovery_journal_v1';
+const STORAGE_KEY_DOCS = 'medocs_vault_documents';
+const STORAGE_KEY_ACTIVE = 'medocs_active_doc_id';
+const STORAGE_KEY_RECOVERY = 'medocs_recovery_journal_v1';
+const LEGACY_STORAGE_KEY_DOCS = 'medoc_vault_documents';
+const LEGACY_STORAGE_KEY_ACTIVE = 'medoc_active_doc_id';
+const LEGACY_STORAGE_KEY_RECOVERY = 'medoc_recovery_journal_v1';
 
 const STARTER_WELCOME_MD = `---
-title: Welcome to meDoc Studio
+title: Welcome to meDocs Studio
 date: 2026-11-24
 tags: [markdown, katex, typewriter, mecraft]
 author: meCraft Creative Team
 version: 1.0.0
 ---
 
-# Welcome to meDoc Studio
+# Welcome to meDocs Studio
 
-> **meDoc** is a distraction-free typographic studio engineered for high-density technical authoring, client-side KaTeX equations, Mermaid diagrams, and instant zero-cloud PDF generation.
+> **meDocs** is a distraction-free typographic studio engineered for high-density technical authoring, client-side KaTeX equations, Mermaid diagrams, and instant zero-cloud PDF generation.
 
 ---
 
@@ -91,7 +94,7 @@ export async function generateDocument(markdown: string): Promise<Uint8Array> {
 
 | Component | Architecture | Privacy Standard | Status |
 | :--- | :--- | :--- | :--- |
-| **meDoc Studio** | Pure Client-Side Typewriter | 100% In-Device RAM | **Active Production** |
+| **meDocs Studio** | Pure Client-Side Typewriter | 100% In-Device RAM | **Active Production** |
 | **mePDF Studio** | High-Throughput PDF Engine | Zero-Cloud Upload | **Active Production** |
 | **mePhoto Studio** | OpenCV Perspective Deskew | Zero External API | **Active Production** |
 | **meDrop Utility** | Zero-Window Radial HUD | 100% Local-First | **Active Production** |
@@ -243,7 +246,14 @@ export class VaultManager {
     }
 
     try {
-      const journalRaw = storage.getItem(STORAGE_KEY_RECOVERY);
+      let journalRaw = storage.getItem(STORAGE_KEY_RECOVERY);
+      if (!journalRaw) {
+        const legacyJournal = storage.getItem(LEGACY_STORAGE_KEY_RECOVERY);
+        if (legacyJournal) {
+          journalRaw = legacyJournal;
+          storage.setItem(STORAGE_KEY_RECOVERY, legacyJournal);
+        }
+      }
       if (journalRaw) {
         this.inMemoryRecoveryJournal = JSON.parse(journalRaw) || {};
       }
@@ -260,11 +270,18 @@ export class VaultManager {
           storage.setItem(STORAGE_KEY_DOCS, stage);
         }
       }
+      if (!stored) {
+        const legacyDocs = storage.getItem(LEGACY_STORAGE_KEY_DOCS) || storage.getItem(`${LEGACY_STORAGE_KEY_DOCS}__stage`);
+        if (legacyDocs) {
+          stored = legacyDocs;
+          storage.setItem(STORAGE_KEY_DOCS, legacyDocs);
+        }
+      }
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
           this.documents = parsed;
-          const savedActive = storage.getItem(STORAGE_KEY_ACTIVE);
+          const savedActive = storage.getItem(STORAGE_KEY_ACTIVE) || storage.getItem(LEGACY_STORAGE_KEY_ACTIVE);
           this.activeId = savedActive && this.documents.some(d => d.id === savedActive)
             ? savedActive
             : this.documents[0].id;
@@ -288,7 +305,7 @@ export class VaultManager {
     };
     const welcomeDoc: VaultDocument = {
       id: 'doc-welcome',
-      name: 'Welcome to meDoc.md',
+      name: 'Welcome to meDocs.md',
       content: STARTER_WELCOME_MD,
       lastModified: Date.now(),
       isDirty: false,
@@ -360,13 +377,15 @@ export class VaultManager {
     }
     const storage = this.getStorage();
     if (storage) {
-      try {
-        const journalRaw = storage.getItem(STORAGE_KEY_RECOVERY);
-        if (!journalRaw) return null;
-        const journal: Record<string, RecoverySnapshot> = JSON.parse(journalRaw);
-        return journal[docId] || null;
-      } catch {
-        return null;
+      for (const storageKey of [STORAGE_KEY_RECOVERY, LEGACY_STORAGE_KEY_RECOVERY]) {
+        try {
+          const journalRaw = storage.getItem(storageKey);
+          if (!journalRaw) continue;
+          const journal: Record<string, RecoverySnapshot> = JSON.parse(journalRaw);
+          if (journal[docId]) return journal[docId];
+        } catch {
+          // Continue to fallback key
+        }
       }
     }
     return null;
@@ -377,16 +396,18 @@ export class VaultManager {
 
     const storage = this.getStorage();
     if (storage) {
-      try {
-        const journalRaw = storage.getItem(STORAGE_KEY_RECOVERY);
-        if (journalRaw) {
-          const storedSnapshots: Record<string, RecoverySnapshot> = JSON.parse(journalRaw);
-          for (const [key, snap] of Object.entries(storedSnapshots)) {
-            snapshotsMap[key] = snap;
+      for (const storageKey of [LEGACY_STORAGE_KEY_RECOVERY, STORAGE_KEY_RECOVERY]) {
+        try {
+          const journalRaw = storage.getItem(storageKey);
+          if (journalRaw) {
+            const storedSnapshots: Record<string, RecoverySnapshot> = JSON.parse(journalRaw);
+            for (const [key, snap] of Object.entries(storedSnapshots)) {
+              snapshotsMap[key] = snap;
+            }
           }
+        } catch {
+          // Quota or parse issue
         }
-      } catch {
-        // Quota or parse issue
       }
     }
 

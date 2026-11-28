@@ -31,7 +31,7 @@ describe('@mecraft/core-bridge', () => {
     it('returns four ecosystem apps with valid structure', () => {
       const catalog = getDefaultCatalog();
       expect(catalog.length).toBe(4);
-      expect(catalog.map((c) => c.id)).toEqual(['mepdf', 'mephoto', 'mevector', 'medoc']);
+      expect(catalog.map((c) => c.id)).toEqual(['mepdf', 'mephoto', 'mevector', 'medocs']);
 
       const pdfApp = catalog.find((c) => c.id === 'mepdf')!;
       expect(pdfApp.name).toBe('mePDF Studio');
@@ -46,7 +46,7 @@ describe('@mecraft/core-bridge', () => {
       const vectorApp = catalog.find((c) => c.id === 'mevector')!;
       expect(vectorApp.comingSoon).toBe(true);
 
-      const docApp = catalog.find((c) => c.id === 'medoc')!;
+      const docApp = catalog.find((c) => c.id === 'medocs')!;
       expect(docApp.inDevelopment).toBe(true);
     });
   });

@@ -1,6 +1,6 @@
 /**
  * @file TocEngine.ts
- * meDoc Studio — Table of Contents Extraction & Anchor Slug Engine
+ * meDocs Studio — Table of Contents Extraction & Anchor Slug Engine
  * Zero-dependency In-Device Engine
  */
 

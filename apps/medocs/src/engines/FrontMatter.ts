@@ -1,6 +1,6 @@
 /**
  * @file FrontMatter.ts
- * meDoc Studio — Fast, Lightweight YAML Front Matter Parser & Stringifier
+ * meDocs Studio — Fast, Lightweight YAML Front Matter Parser & Stringifier
  * Zero-dependency In-Device Engine
  */
 

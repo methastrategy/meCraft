@@ -1,6 +1,6 @@
 /**
  * @file PdfExporter.ts
- * meDoc Studio — Clean Client-Side PDF Generation Engine
+ * meDocs Studio — Clean Client-Side PDF Generation Engine
  * Powered by pdf-lib · 100% In-Device RAM Privacy
  */
 
@@ -82,7 +82,7 @@ export async function exportMarkdownToPdf(
 ): Promise<Uint8Array> {
   const {
     title = 'Document',
-    author = 'meDoc Author',
+    author = 'meDocs Author',
     pageSize = 'A4',
     margin = 50,
   } = options;
@@ -95,7 +95,7 @@ export async function exportMarkdownToPdf(
   const pdfDoc = await PDFDocument.create();
   pdfDoc.setTitle(title);
   pdfDoc.setAuthor(author);
-  pdfDoc.setCreator('meDoc Studio (meCraft Suite)');
+  pdfDoc.setCreator('meDocs Studio (meCraft Suite)');
 
   const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -284,7 +284,7 @@ export async function exportMarkdownToPdf(
   const totalPages = pdfDoc.getPageCount();
   for (let i = 0; i < totalPages; i++) {
     const page = pdfDoc.getPage(i);
-    const footerText = sanitizePdfText(`meDoc Studio · Page ${i + 1} of ${totalPages} · 100% In-Device Privacy`);
+    const footerText = sanitizePdfText(`meDocs Studio · Page ${i + 1} of ${totalPages} · 100% In-Device Privacy`);
     page.drawText(footerText, {
       x: margin,
       y: margin - 20,

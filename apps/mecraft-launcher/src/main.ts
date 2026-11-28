@@ -350,16 +350,16 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
     },
   },
   {
-    id: 'medoc',
+    id: 'medocs',
     guardian: {
       th: 'พระสุนทรีวาณี (Sunthari Vani)',
       en: 'Sunthari Vani — Goddess of Eloquence & Crystal Lotus',
     },
-    name: 'meDoc Studio (Technical Documentation)',
+    name: 'meDocs Studio (Technical Documentation)',
     category: { en: 'Markdown & KaTeX Lab', th: 'บันทึกเอกสารวิจัย Markdown และ KaTeX' },
     version: 'v1.0.0',
     releaseDate: { en: 'Upcoming Release (Q1 2027)', th: 'กำลังพัฒนา (Q1 2027)' },
-    fileName: 'medoc.exe',
+    fileName: 'medocs.exe',
     fileSize: '~24.5 MB (Estimated)',
     status: 'in-dev',
     architecture: 'Windows 11 / 10 (64-bit x64) · Rust & KaTeX Engine',
@@ -652,12 +652,12 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     },
   },
   {
-    id: 'medoc',
+    id: 'medocs',
     guardian: {
       th: 'พระสุนทรีวาณี (Sunthari Vani)',
       en: 'Sunthari Vani — Goddess of Eloquence & Crystal Lotus',
     },
-    name: 'meDoc Studio',
+    name: 'meDocs Studio',
     category: 'document',
     categoryLabel: { en: 'Document', th: 'เอกสาร' },
     tagline: {
@@ -670,9 +670,9 @@ export const SHOWCASE_APPS: ShowcaseApp[] = [
     },
     status: 'active',
     version: 'v1.0.0',
-    exeName: 'meDoc.exe',
+    exeName: 'medocs.exe',
     exeSize: '~19.2 MB',
-    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meDoc.exe',
+    downloadUrl: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.4/medoc.exe',
     suiteDownloadUrl: SUITE_DOWNLOAD_URL,
     artcraftEquivalent: 'storytold/wordcraft',
     industryCounterpart: { en: 'Microsoft Word / Typora Alternative', th: 'ทางเลือกแทน Typora และ Microsoft Word' },
@@ -1441,8 +1441,9 @@ const APP_ICON_MAP: Record<string, string> = {
   design: 'medesign',
   meaudio: 'meaudio',
   audio: 'meaudio',
-  medoc: 'medoc',
-  doc: 'medoc',
+  medocs: 'medocs',
+  medoc: 'medocs',
+  doc: 'medocs',
   me3d: 'me3d',
   '3d': 'me3d',
   medeck: 'medeck',
@@ -1553,7 +1554,7 @@ export function getSpecializedStudioForFile(fileName: string): { id: string; nam
     case 'docx':
     case 'md':
     case 'markdown':
-      return { id: 'medoc', name: 'meDoc Studio' };
+      return { id: 'medocs', name: 'meDocs Studio' };
     case 'sheet':
     case 'csv':
     case 'xlsx':
@@ -3366,7 +3367,7 @@ console.log(initializeStudio(pdfStudio));`,
   }
 
   private renderUpcomingStudios(): string {
-    const apps = this.filteredApps().filter(app => app.id !== 'medoc');
+    const apps = this.filteredApps().filter(app => app.id !== 'medocs' && app.id !== 'medoc');
     if (apps.length === 0) {
       return `<p role="status" class="ws-view-subtitle">${this.lang === 'th' ? 'ไม่พบโปรแกรม ลองใช้คำค้นหรือหมวดหมู่อื่น' : 'No apps found. Try another search or category.'}</p>`;
     }
@@ -3401,8 +3402,8 @@ console.log(initializeStudio(pdfStudio));`,
     const installed = status?.installed === true;
     const action = status ? meDocPrimaryAction(installed, status.version, this.meDocPackage) : 'retry';
     const labels = th
-      ? { install: 'ติดตั้ง', open: 'เปิด meDoc', update: 'อัปเดต', retry: 'ตรวจอีกครั้ง' }
-      : { install: 'Install', open: 'Open meDoc', update: 'Update', retry: 'Check again' };
+      ? { install: 'ติดตั้ง', open: 'เปิด meDocs', update: 'อัปเดต', retry: 'ตรวจอีกครั้ง' }
+      : { install: 'Install', open: 'Open meDocs', update: 'Update', retry: 'Check again' };
     const state = installed
       ? (th ? 'ติดตั้งแล้ว' : 'Installed') + (status.version ? ` · v${escapeHtml(status.version)}` : '')
       : status ? (th ? 'ยังไม่ได้ติดตั้ง' : 'Not installed') : (th ? 'ตรวจสถานะในเครื่อง' : 'Local status');
@@ -3411,7 +3412,7 @@ console.log(initializeStudio(pdfStudio));`,
       <section class="ws-managed-card" aria-labelledby="ws-medoc-title">
         <div class="ws-managed-art"><img src="./branding/medoc.webp" alt="" /></div>
         <div class="ws-managed-content">
-          <h2 id="ws-medoc-title">meDoc</h2>
+          <h2 id="ws-medoc-title">meDocs</h2>
           <p>${th ? 'เขียน Markdown และสร้างเอกสารจากแม่แบบภาษาไทย' : 'Write in Markdown and start from Thai document templates.'}</p>
           <p class="ws-managed-version"><span class="ws-managed-state">${state}</span>${available && (action === 'install' || action === 'update') ? ` · v${escapeHtml(available.version)} · ${formatBytes(available.sizeBytes)}` : ''}</p>
         </div>
@@ -3461,7 +3462,7 @@ console.log(initializeStudio(pdfStudio));`,
       status: this.activeStatusFilter,
     });
     if (isDesktop && this.installedOnlyFilter) {
-      items = items.filter(p => p.id === 'medoc' && this.meDocStatus?.installed);
+      items = items.filter(p => (p.id === 'medocs' || p.id === 'medoc') && this.meDocStatus?.installed);
     }
     if (items.length === 0) {
       return `<p role="status" class="ws-view-subtitle">${this.lang === 'th' ? 'ไม่พบผลิตภัณฑ์ที่ตรงกับตัวกรอง' : 'No products match the selected filters.'}</p>`;
@@ -3469,7 +3470,7 @@ console.log(initializeStudio(pdfStudio));`,
     return items.map(product => renderCatalogProductCard(product, {
       lang: this.lang,
       isDesktop,
-      localStatus: isDesktop && product.id === 'medoc' ? (this.meDocStatus ?? undefined) : undefined,
+      localStatus: isDesktop && (product.id === 'medocs' || product.id === 'medoc') ? (this.meDocStatus ?? undefined) : undefined,
     })).join('');
   }
 
@@ -3478,11 +3479,11 @@ console.log(initializeStudio(pdfStudio));`,
     this.meDocBusy = true;
     this.meDocError = false;
     const th = this.lang === 'th';
-    this.meDocMessage = th ? 'กำลังตรวจสอบ meDoc…' : 'Checking meDoc…';
+    this.meDocMessage = th ? 'กำลังตรวจสอบ meDocs…' : 'Checking meDocs…';
     this.render();
     this.attachListeners();
     try {
-      this.meDocStatus = await this.bridge.checkAppStatus('medoc');
+      this.meDocStatus = await this.bridge.checkAppStatus('medocs');
       const v2Result = await fetchCatalogV2(this.getCatalogFeedUrl());
       this.catalogFromCache = v2Result.fromCache;
       this.catalogError = v2Result.error ?? null;
@@ -3490,7 +3491,7 @@ console.log(initializeStudio(pdfStudio));`,
         this.catalogProducts = v2Result.catalog.products;
       }
       this.meDocPackage = getMeDocPackageFromCatalogV2(v2Result.catalog) ?? await fetchMeDocPackage().catch(error => {
-        console.warn('[meCraft:meDoc] Cannot check packages', error);
+        console.warn('[meCraft:meDocs] Cannot check packages', error);
         return null;
       });
       this.meDocMessage = this.meDocPackage ? '' : (th
@@ -3498,8 +3499,8 @@ console.log(initializeStudio(pdfStudio));`,
         : 'Could not verify an online package. Try again when connected.');
     } catch (error) {
       this.meDocError = true;
-      this.meDocMessage = th ? 'ตรวจสถานะ meDoc ในเครื่องไม่ได้' : 'Could not read the local meDoc status.';
-      console.warn('[meCraft:meDoc]', error);
+      this.meDocMessage = th ? 'ตรวจสถานะ meDocs ในเครื่องไม่ได้' : 'Could not read the local meDocs status.';
+      console.warn('[meCraft:meDocs]', error);
     } finally {
       this.meDocBusy = false;
       this.render();
@@ -3512,7 +3513,7 @@ console.log(initializeStudio(pdfStudio));`,
     if (action === 'retry') return this.loadMeDocLibrary();
     const th = this.lang === 'th';
     const candidate = this.meDocPackage;
-    if (action === 'uninstall' && !window.confirm(th ? 'ถอนการติดตั้ง meDoc? เอกสารของคุณจะยังอยู่' : 'Uninstall meDoc? Your documents will be kept.')) return;
+    if (action === 'uninstall' && !window.confirm(th ? 'ถอนการติดตั้ง meDocs? เอกสารของคุณจะยังอยู่' : 'Uninstall meDocs? Your documents will be kept.')) return;
     this.meDocBusy = true;
     this.meDocError = false;
     this.meDocMessage = th ? 'กำลังดำเนินการ…' : 'Working…';
@@ -3521,16 +3522,16 @@ console.log(initializeStudio(pdfStudio));`,
     this.attachListeners();
     try {
       if (action === 'open') {
-        if (!(await this.bridge.launchApp({ appId: 'medoc', target: 'desktop' })).success) throw new Error('Launch failed');
-        this.meDocMessage = th ? 'เปิด meDoc แล้ว' : 'Opened meDoc.';
+        if (!(await this.bridge.launchApp({ appId: 'medocs', target: 'desktop' })).success) throw new Error('Launch failed');
+        this.meDocMessage = th ? 'เปิด meDocs แล้ว' : 'Opened meDocs.';
       } else if (action === 'uninstall') {
-        if (!(await this.bridge.uninstallApp('medoc')).success) throw new Error('Uninstall failed');
-        this.meDocMessage = th ? 'ถอนการติดตั้ง meDoc แล้ว' : 'meDoc uninstalled.';
+        if (!(await this.bridge.uninstallApp('medocs')).success) throw new Error('Uninstall failed');
+        this.meDocMessage = th ? 'ถอนการติดตั้ง meDocs แล้ว' : 'meDocs uninstalled.';
       } else if (candidate && (action === 'install' || action === 'update')) {
         const { invoke } = await import('@tauri-apps/api/core');
         const { listen } = await import('@tauri-apps/api/event');
         const unlisten = await listen<DownloadProgress>('download-progress', ({ payload }) => {
-          if (payload.appId !== 'medoc') return;
+          if (payload.appId !== 'medocs' && payload.appId !== 'medoc') return;
           this.meDocProgress = payload.percent;
           const progress = document.getElementById('ws-medoc-progress') as HTMLProgressElement | null;
           if (progress) progress.value = payload.percent;
@@ -3540,19 +3541,19 @@ console.log(initializeStudio(pdfStudio));`,
         } finally {
           unlisten();
         }
-        this.meDocMessage = th ? 'ติดตั้ง meDoc เรียบร้อย' : 'meDoc is ready to open.';
+        this.meDocMessage = th ? 'ติดตั้ง meDocs เรียบร้อย' : 'meDocs is ready to open.';
       }
     } catch (error) {
       this.meDocError = true;
       this.meDocMessage = th
-        ? 'ทำรายการไม่สำเร็จ ปิด meDoc หากเปิดอยู่ แล้วลองอีกครั้ง'
-        : 'Could not complete the action. Close meDoc if it is running, then try again.';
-      console.warn('[meCraft:meDoc]', error);
+        ? 'ทำรายการไม่สำเร็จ ปิด meDocs หากเปิดอยู่ แล้วลองอีกครั้ง'
+        : 'Could not complete the action. Close meDocs if it is running, then try again.';
+      console.warn('[meCraft:meDocs]', error);
     } finally {
       try {
-        this.meDocStatus = await this.bridge.checkAppStatus('medoc');
+        this.meDocStatus = await this.bridge.checkAppStatus('medocs');
       } catch (error) {
-        console.warn('[meCraft:meDoc] Cannot refresh status', error);
+        console.warn('[meCraft:meDocs] Cannot refresh status', error);
       }
       this.meDocBusy = false;
       this.meDocProgress = null;
@@ -5056,11 +5057,11 @@ console.log(initializeStudio(pdfStudio));`,
       `;
     }
 
-    if (app.id === 'medoc') {
+    if (app.id === 'medocs' || app.id === 'medoc') {
       return `
-        <!-- meDoc Studio Pro (Dark Teal Writer Cockpit) -->
+        <!-- meDocs Studio Pro (Dark Teal Writer Cockpit) -->
         <div class="mockup-menubar" style="border-bottom: 1px solid rgba(20, 184, 166, 0.2);">
-          <span class="mockup-menu-item" style="color: #14b8a6;"><b>meDoc Studio</b></span>
+          <span class="mockup-menu-item" style="color: #14b8a6;"><b>meDocs Studio</b></span>
           <span class="mockup-menu-item">File</span>
           <span class="mockup-menu-item">Edit</span>
           <span class="mockup-menu-item">Format</span>
@@ -6397,12 +6398,12 @@ console.log(initializeStudio(pdfStudio));`,
         filePath,
       });
       if (!result.success) {
-        if (appId === 'medoc' && target === 'desktop') {
+        if ((appId === 'medocs' || appId === 'medoc') && target === 'desktop') {
           this.desktopView = 'studios';
           await this.loadMeDocLibrary();
           if (this.meDocStatus?.installed) {
             this.meDocError = true;
-            this.meDocMessage = this.lang === 'th' ? 'เปิด meDoc ไม่สำเร็จ ลองอีกครั้งจากคลังโปรแกรม' : 'Could not open meDoc. Try again from Library.';
+            this.meDocMessage = this.lang === 'th' ? 'เปิด meDocs ไม่สำเร็จ ลองอีกครั้งจากคลังโปรแกรม' : 'Could not open meDocs. Try again from Library.';
             this.render();
             this.attachListeners();
           }
@@ -7171,8 +7172,8 @@ console.log(initializeStudio(pdfStudio));`,
           this.handleLaunchApp('mepdf', 'desktop');
         } else if (action === 'mephoto') {
           this.handleLaunchApp('mephoto', 'desktop');
-        } else if (action === 'medoc') {
-          this.handleLaunchApp('medoc', 'desktop');
+        } else if (action === 'medocs' || action === 'medoc') {
+          this.handleLaunchApp('medocs', 'desktop');
         }
       });
     });

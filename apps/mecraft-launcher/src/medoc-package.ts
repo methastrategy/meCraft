@@ -17,12 +17,15 @@ interface GitHubRelease {
 export function resolveMeDocPackage(release: GitHubRelease): MeDocPackage | null {
   const tag = release?.tag_name;
   if (typeof tag !== 'string' || release.prerelease !== false || release.draft !== false) return null;
-  const match = /^(?:medoc-)?v((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))$/.exec(tag);
+  const match = /^(?:medocs-|medoc-)?v((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))$/.exec(tag);
   const version = match?.[1];
   if (!version || version.length > 24 || !Array.isArray(release.assets)) return null;
 
-  const url = `https://github.com/methastrategy/meCraft/releases/download/${tag}/medoc.exe`;
-  const asset = release.assets.find(item => item?.name === 'medoc.exe' && item.browser_download_url === url);
+  const allowedRepos = ['methastrategy/meCraft', 'methastrategy/medocs'];
+  const asset = release.assets.find(item =>
+    (item?.name === 'medocs.exe' || item?.name === 'medoc.exe') &&
+    allowedRepos.some(repo => item.browser_download_url === `https://github.com/${repo}/releases/download/${tag}/${item.name}`)
+  );
   if (typeof asset?.digest !== 'string' || typeof asset.size !== 'number') return null;
   const digest = /^sha256:([a-f0-9]{64})$/i.exec(asset.digest);
   if (!digest || !Number.isSafeInteger(asset.size) ||
@@ -46,12 +49,15 @@ export function parseMeDocCatalog(input: unknown): MeDocPackage | null {
       !('packages' in input) || !Array.isArray(input.packages)) return null;
   const releases: GitHubRelease[] = [];
   for (const item of input.packages) {
-    if (item?.appId !== 'medoc' || item.platform !== 'windows-x64' ||
+    if ((item?.appId !== 'medocs' && item?.appId !== 'medoc') || item.platform !== 'windows-x64' ||
         typeof item.version !== 'string' ||
-        (item.releaseTag !== `v${item.version}` && item.releaseTag !== `medoc-v${item.version}`)) continue;
+        (item.releaseTag !== `v${item.version}` &&
+          item.releaseTag !== `medocs-v${item.version}` &&
+          item.releaseTag !== `medoc-v${item.version}`)) continue;
+    const assetName = typeof item.url === 'string' && item.url.endsWith('/medocs.exe') ? 'medocs.exe' : 'medoc.exe';
     releases.push({
       tag_name: item.releaseTag, prerelease: false, draft: false,
-      assets: [{ name: 'medoc.exe', browser_download_url: item.url, digest: `sha256:${item.sha256}`, size: item.sizeBytes }],
+      assets: [{ name: assetName, browser_download_url: item.url, digest: `sha256:${item.sha256}`, size: item.sizeBytes }],
     });
   }
   return selectMeDocPackage(releases);

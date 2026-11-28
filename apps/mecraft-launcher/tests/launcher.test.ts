@@ -56,7 +56,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
     const catalog = getDefaultCatalog();
 
     const docApps = catalog.filter((a: AppCatalogItem) => a.category === 'document' || a.category === 'writing');
-    expect(docApps.map((a: AppCatalogItem) => a.id)).toEqual(['mepdf', 'medoc']);
+    expect(docApps.map((a: AppCatalogItem) => a.id)).toEqual(['mepdf', 'medocs']);
 
     const graphicsApps = catalog.filter((a: AppCatalogItem) => a.category === 'graphics');
     expect(graphicsApps.map((a: AppCatalogItem) => a.id)).toEqual(['mephoto', 'mevector']);
@@ -151,7 +151,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
 
   it('ensures all catalog apps have valid IDs satisfying structural validation rules', () => {
     const catalog = getDefaultCatalog();
-    const validIds = new Set(['mepdf', 'mephoto', 'mevector', 'medoc']);
+    const validIds = new Set(['mepdf', 'mephoto', 'mevector', 'medocs']);
     const structuralRegex = /^[a-z0-9](?:[a-z0-9-]{0,30}[a-z0-9])?$/;
     catalog.forEach((app: AppCatalogItem) => {
       expect(validIds.has(app.id)).toBe(true);
@@ -703,7 +703,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(getSpecializedStudioForFile('model.gltf').id).toBe('me3d');
       expect(getSpecializedStudioForFile('firmware.bin').id).toBe('merea');
       expect(getSpecializedStudioForFile('module.wasm').id).toBe('merea');
-      expect(getSpecializedStudioForFile('notes.md').id).toBe('medoc');
+      expect(getSpecializedStudioForFile('notes.md').id).toBe('medocs');
       expect(getSpecializedStudioForFile('budget.csv').id).toBe('mesheet');
       expect(getSpecializedStudioForFile('blueprint.dxf').id).toBe('mecad');
       expect(getSpecializedStudioForFile('podcast.mp3').id).toBe('meaudio');

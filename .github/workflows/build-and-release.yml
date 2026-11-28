@@ -8,6 +8,7 @@ on:
       - 'mephoto-v*'
       - 'launcher-v*'
       - 'meide-v*'
+      - 'medocs-v*'
       - 'medoc-v*'
   workflow_dispatch:
     inputs:
@@ -20,7 +21,7 @@ on:
           - all
           - mecraft-launcher
           - meide
-          - medoc
+          - medocs
           - mepdf
           - mephoto
 
@@ -72,10 +73,10 @@ jobs:
             display_name: 'meIDE Studio'
             dir: apps/meide
             exe_name: meide
-          - app_id: medoc
-            display_name: 'meDoc Studio'
-            dir: apps/medoc
-            exe_name: medoc
+          - app_id: medocs
+            display_name: 'meDocs Studio'
+            dir: apps/medocs
+            exe_name: medocs
           - app_id: mepdf
             display_name: 'mePDF Studio'
             dir: apps/mepdf
@@ -112,7 +113,7 @@ jobs:
             echo "should_build=true" >> $GITHUB_OUTPUT
           elif [[ "$TAG" == meide-v* ]] && [ "$APP" = "meide" ]; then
             echo "should_build=true" >> $GITHUB_OUTPUT
-          elif [[ "$TAG" == medoc-v* ]] && [ "$APP" = "medoc" ]; then
+          elif [[ "$TAG" == medocs-v* || "$TAG" == medoc-v* ]] && [ "$APP" = "medocs" ]; then
             echo "should_build=true" >> $GITHUB_OUTPUT
           else
             echo "should_build=false" >> $GITHUB_OUTPUT
@@ -279,7 +280,7 @@ jobs:
           prerelease: false
           generate_release_notes: true
 
-      - name: Generate published meDoc catalog
+      - name: Generate published meDocs catalog
         if: github.repository == 'methastrategy/meCraft'
         shell: bash
         env:

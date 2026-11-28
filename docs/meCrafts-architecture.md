@@ -17,7 +17,12 @@ flowchart TD
     Callback --> Launcher
 ```
 
-ซอร์ส Launcher และสตูดิโออยู่ใน `apps/` ของ monorepo ใช้ `packages/core-bridge` สำหรับรอยต่อเดสก์ท็อปและบริการที่มีอยู่ ใช้ `packages/ui-tokens` สำหรับหน้าตาร่วม และ `packages/studio-shell` เฉพาะแอปที่ใช้ shell เดียวกัน ใช้ `packages/photo-core` สำหรับงานปรับภาพในเครื่องตามความเหมาะสม สตูดิโอที่ฟอร์กด้วยเทคโนโลยีอื่น build และติดตั้งเป็นแพ็กเกจของตัวเอง ภายใต้สัญญาการติดตั้งของ Launcher เว็บไซต์ที่ build แล้วส่งเข้ารีโพ meCrafts-web เพื่อ deploy
+ซอร์ส Launcher และสตูดิโออยู่ใน `apps/` ของ monorepo (`methastrategy/meCraft`) เพื่อแชร์ `packages/core-bridge`, `packages/ui-tokens`, `packages/studio-shell` และ `packages/photo-core` ร่วมกัน โดยปรับแนวทาง Git เป็น **Hybrid + Mirror Sync**:
+
+- **ศูนย์กลางพัฒนา (`methastrategy/meCraft`):** เก็บซอร์ส `mecraft-launcher`, สตูดิโอทั้งชุดใน `apps/*`, แพ็กเกจแกนกลาง `packages/*`, และชุดทดสอบรวม
+- **รีโพแยกรายแอปแบบอัตโนมัติ (Mirror Sync via `scripts/sync-app-repos.mjs`):** ซิงก์ `apps/<app>` ด้วย `git subtree split` ไปยังรีโพสาธารณะของแต่ละโปรแกรม ได้แก่ `methastrategy/medocs` (`meDocs` เปลี่ยนชื่อจาก `medoc` พร้อมคง alias เดิม), `meide`, `mepdf`, `mephoto`, `medrop`, `mesheet`, `medeck`, `mevector`, `me3d`, `meaudio`, `mefilm`, `melight`, `memotion` และ `medesign-studio` (เลี่ยงชื่อ `methastrategy/medesign` ที่มีอยู่แล้ว) ส่วน Launcher ใช้รีโพ `methastrategy/meCraft` (`mecraft` บน GitHub ไม่แยกตัวพิมพ์ใหญ่-เล็ก)
+- **ข้อยกเว้นแอปที่ฟอร์กต่างเทคโนโลยี:** สตูดิโอที่ฟอร์กด้วยเทคโนโลยีอื่น (เช่นแผน WordCraft สำหรับ `meDocs` หรือ OpenScreen สำหรับ `meCap`) สามารถพัฒนา/build แยกเป็นแพ็กเกจของตัวเองภายใต้สัญญาการติดตั้งของ Launcher
+- **เว็บไซต์:** โค้ดที่ build แล้วจาก monorepo ส่งเข้ารีโพ `methastrategy/meCrafts-web` เพื่อ deploy ขึ้น `mecrafts.vercel.app`
 
 ## ผังเว็บไซต์และสิ่งที่แสดง
 
@@ -352,7 +357,7 @@ flowchart TD
 
 | โปรแกรม | ที่พบ | แนวทางแรก | ต้นทางที่ควรเทียบ | ตัวอย่างงานที่ต้องผ่าน |
 |---|---|---|---|---|
-| meDoc | ซอร์ส | ทดลองฟอร์กเทียบกับใช้เอนจิน | [WordCraft](https://github.com/storytold/wordcraft#license-and-credits) · [LibreOffice](https://github.com/LibreOffice/core) | บันทึกข้อความไทย, DOCX เปิดซ้ำ, PDF ไทยเลือกข้อความได้ |
+| `meDocs` (`apps/medocs`, เดิม `medoc`) | ซอร์ส | ทดลองฟอร์กเทียบกับใช้เอนจิน (คง alias `medoc` ใน v1/storage/routes) | [WordCraft](https://github.com/storytold/wordcraft#license-and-credits) · [LibreOffice](https://github.com/LibreOffice/core) | บันทึกข้อความไทย, DOCX เปิดซ้ำ, PDF ไทยเลือกข้อความได้ |
 | mePDF | ซอร์ส | เก็บของเดิมและเทียบเอนจิน | [PdfCraft](https://github.com/storytold/pdfcraft#license-and-credits) · [qpdf](https://github.com/qpdf/qpdf) | รวม/แยก/เข้ารหัส, OCR ไทย, เปิด PDF ที่แก้แล้วได้ |
 | meSheet | ซอร์ส | ทดลองฟอร์ก | [GridCraft](https://github.com/storytold/gridcraft#license-and-credits) · [ONLYOFFICE](https://github.com/ONLYOFFICE/DesktopEditors) | สูตรและ XLSX เปิดซ้ำ, วันเดือนปีไทย, BAHTTEXT |
 | meDeck | ซอร์ส | ทดลองฟอร์ก | [DeckCraft](https://github.com/storytold/deckcraft#license-and-credits) · [LibreOffice](https://github.com/LibreOffice/core) | PPTX เปิดซ้ำ, ฟอนต์ไทย, ภาพและ PDF |

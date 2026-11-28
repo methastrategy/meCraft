@@ -17,7 +17,7 @@ import { createStudioShell as createFilmShell, APP_METADATA as FILM_META } from 
 import { createStudioShell as createLightShell, APP_METADATA as LIGHT_META } from '@mecraft/melight';
 import { createStudioShell as createMotionShell, APP_METADATA as MOTION_META } from '@mecraft/memotion';
 import { createStudioShell as createSheetShell, APP_METADATA as SHEET_META } from '@mecraft/mesheet';
-import { createStudioShell as createDocShell, APP_METADATA as DOC_META } from '@mecraft/medoc';
+import { createStudioShell as createDocShell, APP_METADATA as DOC_META } from '@mecraft/medocs';
 
 export interface StudioInfo {
   id: string;
@@ -80,8 +80,8 @@ export const ALL_STUDIOS: StudioInfo[] = [
     },
   },
   {
-    id: 'medoc',
-    name: 'meDoc Studio',
+    id: 'medocs',
+    name: 'meDocs Studio',
     tagline: {
       en: 'Distraction-Free Pro Writing, Real-Time Markdown & KaTeX Engine',
       th: 'โปรแกรมพิมพ์งานไร้สิ่งรบกวน Markdown, สมการ KaTeX และผัง Mermaid สด',
@@ -847,6 +847,7 @@ export function mountStudio(studioId: string, container: HTMLElement, lang: 'en'
     case 'medrop':
       shell = createDropStudioShell();
       break;
+    case 'medocs':
     case 'medoc':
       shell = createDocShell();
       break;

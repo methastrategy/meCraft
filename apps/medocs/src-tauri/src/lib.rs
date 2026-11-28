@@ -23,5 +23,5 @@ pub fn run() {
       Ok(())
     })
     .run(tauri::generate_context!())
-    .expect("error while building meDoc application");
+    .expect("error while building meDocs application");
 }

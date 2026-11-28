@@ -1,6 +1,6 @@
 /**
  * @file WriterApp.ts
- * meDoc Studio — Word-Class WYSIWYG A4 Document & Typography Component
+ * meDocs Studio — Word-Class WYSIWYG A4 Document & Typography Component
  * 100% In-Device RAM Privacy & Native OpenXML (.docx) Flow
  */
 
@@ -120,7 +120,7 @@ export class WriterApp {
         <header class="medoc-topbar" id="medoc-topbar">
           <div class="medoc-brand">
             <button type="button" class="medoc-btn" id="btn-toggle-sidebar" aria-controls="medoc-sidebar" aria-expanded="true" title="เปิด/ปิด แถบข้าง (Ctrl+B)">☰</button>
-            <button type="button" class="medoc-btn" id="btn-start-hub" title="หน้าเริ่มต้น meDoc (Start Hub)">เริ่มต้น</button>
+            <button type="button" class="medoc-btn" id="btn-start-hub" title="หน้าเริ่มต้น meDocs (Start Hub)">เริ่มต้น</button>
             <input type="text" class="medoc-doc-title-input" id="medoc-doc-title" aria-label="ชื่อเอกสาร" spellcheck="false" />
           </div>
           <div class="medoc-header-actions">
@@ -448,7 +448,7 @@ export class WriterApp {
         <div class="medoc-modal-backdrop" id="start-hub-modal" hidden>
           <div class="medoc-modal-card" role="dialog" aria-modal="true" aria-labelledby="start-hub-title">
             <div class="medoc-modal-header">
-              <h2 class="medoc-modal-title" id="start-hub-title">เริ่มต้นใช้งาน meDoc</h2>
+              <h2 class="medoc-modal-title" id="start-hub-title">เริ่มต้นใช้งาน meDocs</h2>
               <button type="button" class="medoc-modal-close" aria-label="ปิดหน้าต่าง" id="btn-close-hub">✕</button>
             </div>
             <div class="medoc-modal-body">
@@ -507,7 +507,7 @@ export class WriterApp {
                 <span>สำรองเอกสารที่เปิดอยู่ก่อนทำการนำเข้า (Safe Document Backup)</span>
               </label>
             </div>
-            <p id="import-format-warning" class="medoc-import-warning" hidden>meDoc รองรับ DOCX บางส่วน การบันทึกครั้งแรกจะสร้างสำเนา โปรดตรวจรูป ตาราง และการจัดหน้าก่อนส่งงาน</p>
+            <p id="import-format-warning" class="medoc-import-warning" hidden>meDocs รองรับ DOCX บางส่วน การบันทึกครั้งแรกจะสร้างสำเนา โปรดตรวจรูป ตาราง และการจัดหน้าก่อนส่งงาน</p>
             <div class="medoc-modal-footer">
               <button type="button" class="medoc-btn" id="btn-import-cancel">ยกเลิก</button>
               <button type="button" class="medoc-btn medoc-btn-primary" id="btn-import-confirm">ยืนยันนำเข้าเอกสาร</button>
@@ -741,7 +741,7 @@ export class WriterApp {
           <tbody>
             <tr>
               <td style="border: 1px solid #d1d5db; padding: 8px; text-align: center;">๑</td>
-              <td style="border: 1px solid #d1d5db; padding: 8px;">เอกสารราชการ meDoc</td>
+              <td style="border: 1px solid #d1d5db; padding: 8px;">เอกสารราชการ meDocs</td>
               <td style="border: 1px solid #d1d5db; padding: 8px; text-align: right;">1 ชุด</td>
               <td style="border: 1px solid #d1d5db; padding: 8px;">เรียบร้อย</td>
             </tr>
@@ -782,7 +782,7 @@ export class WriterApp {
     });
 
     document.getElementById('btn-fmt-code')?.addEventListener('click', () => {
-      this.insertHtmlAtSelection('<pre style="background: #1e293b; color: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace;"><code>// รหัสโปรแกรม\nconsole.log("meDoc Studio");</code></pre><p><br></p>');
+      this.insertHtmlAtSelection('<pre style="background: #1e293b; color: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace;"><code>// รหัสโปรแกรม\nconsole.log("meDocs Studio");</code></pre><p><br></p>');
     });
 
     // Layout Panel Actions
@@ -1439,7 +1439,7 @@ export class WriterApp {
           if (!docId) return;
           if (target.classList?.contains('btn-del-doc')) {
             e.stopPropagation();
-            if (typeof window !== 'undefined' && typeof window.confirm === 'function' && !window.confirm('ยืนยันการลบเอกสารนี้จาก meDoc?')) return;
+            if (typeof window !== 'undefined' && typeof window.confirm === 'function' && !window.confirm('ยืนยันการลบเอกสารนี้จาก meDocs?')) return;
             this.vault.deleteDocument(docId);
             this.switchDocument(this.vault.getActiveDocument());
             return;

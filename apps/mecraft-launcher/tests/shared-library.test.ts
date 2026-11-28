@@ -34,13 +34,15 @@ describe('Shared Product Catalog v2 & Build Validation', () => {
       expect(v2.schemaVersion).toBe(2);
       expect(v2.products.length).toBeGreaterThanOrEqual(18);
       expect(v2.products.some((p: CatalogProduct) => p.id === 'mecraft')).toBe(true);
-      expect(v2.products.some((p: CatalogProduct) => p.id === 'medoc')).toBe(true);
+      expect(v2.products.some((p: CatalogProduct) => p.id === 'medocs')).toBe(true);
 
-      // Legacy v1 reader must still parse v1.json cleanly
+      // Legacy v1 reader must still parse v1.json cleanly (both medocs and legacy medoc alias)
       const parsedV1 = parseMeDocCatalog(v1);
       expect(parsedV1).not.toBeNull();
       expect(parsedV1?.version).toBe('1.0.4');
       expect(parsedV1?.sizeBytes).toBe(103988736);
+      expect(v1.packages.some((pkg: any) => pkg.appId === 'medoc')).toBe(true);
+      expect(v1.packages.some((pkg: any) => pkg.appId === 'medocs')).toBe(true);
 
       // v2 reader must parse v2.json cleanly
       const parsedV2 = parseCatalogV2(JSON.parse(fs.readFileSync(path.join(tmpDir, 'v2.json'), 'utf8')));
@@ -160,7 +162,7 @@ describe('Shared Product Catalog v2 & Build Validation', () => {
     try {
       const { v2 } = buildCatalogFiles({ outDir: tmpDir });
       expect(filterCatalogProducts(v2.products, { query: 'mecraft-hub' }).some(p => p.id === 'mecraft')).toBe(false);
-      expect(filterCatalogProducts(v2.products, { query: 'medoc' }).map(p => p.id)).toContain('medoc');
+      expect(filterCatalogProducts(v2.products, { query: 'medocs' }).map(p => p.id)).toContain('medocs');
       expect(filterCatalogProducts(v2.products, { platform: 'windows' }).every(p => p.channels.some(c => c.platform === 'windows'))).toBe(true);
       expect(filterCatalogProducts(v2.products, { status: 'in-dev' }).every(p => p.status === 'in-dev')).toBe(true);
       expect(filterCatalogProducts(v2.products, { category: 'photo' }).every(p => p.category === 'photo')).toBe(true);
@@ -177,7 +179,7 @@ describe('Shared Product Catalog v2 & Build Validation', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mecraft-cat-rec-'));
     try {
       const { v2 } = buildCatalogFiles({ outDir: tmpDir });
-      const medoc = v2.products.find((p: CatalogProduct) => p.id === 'medoc')!;
+      const medoc = v2.products.find((p: CatalogProduct) => p.id === 'medocs')!;
       expect(getRecommendedChannel(medoc, 'windows')?.type).toBe('windows-exe');
       expect(getRecommendedChannel(medoc, 'ios')?.type).toBe('web-app');
     } finally {
@@ -186,7 +188,8 @@ describe('Shared Product Catalog v2 & Build Validation', () => {
   });
 
   it('parses /apps/<id>/ routes and renders detail & home screen UI cleanly', () => {
-    expect(parseProductRoute('/apps/medoc/')).toBe('medoc');
+    expect(parseProductRoute('/apps/medocs/')).toBe('medocs');
+    expect(parseProductRoute('/apps/medoc/')).toBe('medocs');
     expect(parseProductRoute('/apps/mecraft')).toBe('mecraft');
     expect(parseProductRoute('/apps/bad/path')).toBeNull();
     expect(parseProductRoute('/')).toBeNull();
@@ -194,11 +197,11 @@ describe('Shared Product Catalog v2 & Build Validation', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mecraft-cat-ui-'));
     try {
       const { v2 } = buildCatalogFiles({ outDir: tmpDir });
-      const medoc = v2.products.find((p: CatalogProduct) => p.id === 'medoc')!;
+      const medoc = v2.products.find((p: CatalogProduct) => p.id === 'medocs')!;
       const mecad = v2.products.find((p: CatalogProduct) => p.id === 'mecad')!;
 
       const webCard = renderCatalogProductCard(medoc, { lang: 'th', isDesktop: false });
-      expect(webCard).toContain('/apps/medoc/');
+      expect(webCard).toContain('/apps/medocs/');
       expect(webCard).toContain('เพิ่มไปยังหน้าจอโฮม');
 
       const inDevDetail = renderProductDetailView(mecad, { lang: 'th', isDesktop: false });
@@ -206,16 +209,16 @@ describe('Shared Product Catalog v2 & Build Validation', () => {
       expect(inDevDetail).toContain('shared-indev-notice');
       expect(inDevDetail).not.toContain('detail-channel-card');
 
-      const medocDetail = renderProductDetailView(medoc, { lang: 'th', isDesktop: true, localStatus: { installed: true, version: '1.0.4', exePath: 'C:\\meCraft\\medoc-1.0.4.exe' }, meDocAction: 'open' });
-      expect(medocDetail).toContain('เปิด meDoc');
+      const medocDetail = renderProductDetailView(medoc, { lang: 'th', isDesktop: true, localStatus: { installed: true, version: '1.0.4', exePath: 'C:\\meCraft\\medocs-1.0.4.exe' }, meDocAction: 'open' });
+      expect(medocDetail).toContain('เปิด meDocs');
       expect(medocDetail).toContain('744e3a9ae5b61c63171c77aa9cfeee878a7420b7dd4fbb1355c6e486c6d06ef7');
 
       const retryDetail = renderProductDetailView(medoc, { lang: 'th', isDesktop: true, localStatus: { installed: false }, meDocAction: 'retry' });
       expect(retryDetail).toContain('ลองใหม่');
 
       const updateDetail = renderProductDetailView(medoc, { lang: 'th', isDesktop: true, localStatus: { installed: true, version: '1.0.3' }, meDocAction: 'update' });
-      expect(updateDetail).toContain('อัปเดต meDoc');
-      expect(updateDetail).toContain('เปิด meDoc');
+      expect(updateDetail).toContain('อัปเดต meDocs');
+      expect(updateDetail).toContain('เปิด meDocs');
 
       const guide = renderHomeScreenGuideModal(true, 'th');
       expect(guide).toContain('iPhone / iPad (Safari)');
@@ -243,13 +246,13 @@ describe('Shared Product Catalog v2 & Build Validation', () => {
     expect(searchInput).not.toBeNull();
     searchInput.value = 'med';
     searchInput.dispatchEvent({ type: 'input' } as unknown as Event);
-    searchInput.value = 'medoc';
+    searchInput.value = 'medocs';
     searchInput.dispatchEvent({ type: 'input' } as unknown as Event);
 
     const webGrid = doc.getElementById('web-shared-catalog-grid')!;
     const cardsAfterSearch = webGrid.querySelectorAll('.shared-product-card');
     expect(cardsAfterSearch.length).toBe(1);
-    expect(cardsAfterSearch[0].getAttribute('data-product-id')).toBe('medoc');
+    expect(cardsAfterSearch[0].getAttribute('data-product-id')).toBe('medocs');
 
     // Language toggle still switches once (not duplicated by search input)
     const langBtnBefore = doc.getElementById('btn-lang')!;
@@ -258,10 +261,10 @@ describe('Shared Product Catalog v2 & Build Validation', () => {
     expect(doc.getElementById('btn-lang')!.textContent).not.toBe(initialLangText);
 
     // Clicking product detail link navigates to detail view and back link returns
-    const detailLink = doc.getElementById('web-shared-catalog-grid')!.querySelector('[data-product-link="medoc"]') as HTMLAnchorElement;
+    const detailLink = doc.getElementById('web-shared-catalog-grid')!.querySelector('[data-product-link="medocs"]') as HTMLAnchorElement;
     expect(detailLink).not.toBeNull();
     detailLink.click();
-    expect(doc.getElementById('detail-product-title')?.textContent).toBe('meDoc');
+    expect(doc.getElementById('detail-product-title')?.textContent).toBe('meDocs');
     (doc.querySelector('[data-back-to-library="true"]') as HTMLAnchorElement).click();
     expect(doc.getElementById('web-shared-catalog-grid')).not.toBeNull();
 
@@ -273,7 +276,7 @@ describe('Shared Product Catalog v2 & Build Validation', () => {
     photoPill.click();
     const photoCards = Array.from(doc.getElementById('web-shared-catalog-grid')!.querySelectorAll('.shared-product-card')) as Element[];
     expect(photoCards.length).toBeGreaterThan(0);
-    expect(photoCards.some(c => c.getAttribute('data-product-id') === 'medoc')).toBe(false);
+    expect(photoCards.some(c => c.getAttribute('data-product-id') === 'medocs')).toBe(false);
 
     // Desktop mode: search keeps card detail buttons alive
     const desktopDom = setupMockDom();
@@ -289,11 +292,11 @@ describe('Shared Product Catalog v2 & Build Validation', () => {
     new MeCraftsPortal();
     const wsSearch = desktopDom.doc.getElementById('ws-studios-search-input') as HTMLInputElement;
     expect(wsSearch).not.toBeNull();
-    wsSearch.value = 'medoc';
+    wsSearch.value = 'medocs';
     wsSearch.dispatchEvent({ type: 'input' } as unknown as Event);
-    const wsDetailBtn = desktopDom.doc.getElementById('ws-shared-catalog-grid')!.querySelector('[data-open-product-detail="medoc"]') as HTMLButtonElement;
+    const wsDetailBtn = desktopDom.doc.getElementById('ws-shared-catalog-grid')!.querySelector('[data-open-product-detail="medocs"]') as HTMLButtonElement;
     expect(wsDetailBtn).not.toBeNull();
     wsDetailBtn.click();
-    expect(desktopDom.doc.getElementById('detail-product-title')?.textContent).toBe('meDoc');
+    expect(desktopDom.doc.getElementById('detail-product-title')?.textContent).toBe('meDocs');
   });
 });

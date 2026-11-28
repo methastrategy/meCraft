@@ -1,0 +1,43 @@
+name: Sync Standalone Studio Mirror Repos
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/**'
+      - 'scripts/sync-app-repos.mjs'
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'Optional single app to sync (leave empty for all 14 mirrors)'
+        required: false
+        default: ''
+
+jobs:
+  sync-mirrors:
+    name: Subtree Sync to Studio Repositories
+    runs-on: ubuntu-latest
+    if: env.HAS_SYNC_TOKEN == 'true'
+    env:
+      HAS_SYNC_TOKEN: ${{ secrets.MECRAFT_REPO_SYNC_TOKEN != '' }}
+    steps:
+      - name: Checkout Monorepo with Full History
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Sync App Subtrees
+        env:
+          GH_SYNC_TOKEN: ${{ secrets.MECRAFT_REPO_SYNC_TOKEN }}
+        run: |
+          if [ -n "${{ inputs.app }}" ]; then
+            node scripts/sync-app-repos.mjs --app "${{ inputs.app }}"
+          else
+            node scripts/sync-app-repos.mjs
+          fi
