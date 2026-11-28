@@ -173,7 +173,7 @@ export function renderCatalogProductCard(
   const imgSrc = product.image || '/branding/mecraft-suite-wide.webp';
 
   return `
-    <article class="shared-product-card status-${product.status} ${shouldBlur ? 'is-blurred-card' : ''}" data-product-id="${esc(product.id)}" style="--app-accent: ${esc(product.accentColor)}">
+    <article class="shared-product-card status-${product.status} ${shouldBlur ? 'is-blurred-card' : ''}" data-product-id="${esc(product.id)}" data-open-product-detail="${esc(product.id)}" style="--app-accent: ${esc(product.accentColor)}">
       <div class="shared-card-media">
         <img src="${esc(imgSrc)}" alt="${esc(product.name)}" loading="lazy" onerror="this.style.display='none'" class="${shouldBlur ? 'is-blurred' : ''}" />
         ${shouldBlur ? `

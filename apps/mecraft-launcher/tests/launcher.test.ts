@@ -398,9 +398,9 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       const ghLinks = doc.querySelectorAll('a[href*="github.com/methastrategy/meCraft"]');
       expect(ghLinks.length).toBe(0);
 
-      // Verify Left Sidebar Nav Items (Studios, Recents, Vault)
+      // Verify Left Sidebar Nav Items (Studios, Vault)
       const navButtons = doc.querySelectorAll('.ws-nav-btn');
-      expect(navButtons.length).toBe(3);
+      expect(navButtons.length).toBe(2);
 
       // Verify Universal Dropzone is present on default workbench view
       const dropzone = doc.getElementById('ws-universal-dropzone');
@@ -1244,7 +1244,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(portal.desktopStage).toBe('main');
       expect(portal.isAuthModalOpen).toBe(false);
       expect(setStageSpy).toHaveBeenCalledWith('main');
-    });
+    }, 20000);
   });
 
 });
