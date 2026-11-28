@@ -2807,6 +2807,7 @@ console.log(initializeStudio(pdfStudio));`,
       <div class="ws-titlebar-left" data-tauri-drag-region>
         <img src="./branding/mecraft-suite.png" class="ws-titlebar-icon" alt="" onerror="this.style.display='none'" />
         <span class="ws-titlebar-text" data-tauri-drag-region>meCraft (${launcherVersion})</span>
+        <span class="ws-titlebar-badge" data-tauri-drag-region style="font-size: 10px; font-weight: 700; color: #d4af37; background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 4px; padding: 1px 6px; margin-left: 8px;">OFFICIAL SUITE</span>
       </div>
       <div class="ws-titlebar-controls">
         <button type="button" class="ws-win-btn" id="ws-win-min" aria-label="Minimize" title="Minimize">
@@ -3251,6 +3252,7 @@ console.log(initializeStudio(pdfStudio));`,
 
     return `
     <div class="ws-view ws-view-studios">
+      ${this.renderHero()}
       <header class="ws-view-header">
         <h1 class="ws-view-title">${isTh ? 'คลังโปรแกรม' : 'Library'}</h1>
         <p class="ws-view-subtitle">${isTh ? 'จัดการโปรแกรมบนเครื่องและสำรวจสตูดิโอที่กำลังพัฒนา' : 'Manage your installed apps and preview upcoming studios.'}</p>
@@ -3278,6 +3280,26 @@ console.log(initializeStudio(pdfStudio));`,
           <button type="button" class="ws-btn-subtle" data-quick-launch="meide" data-quick-action="workbench">${isTh ? 'เปิด meIDE' : 'Open meIDE'}</button>
         </div>
       </div>
+
+      <section class="ws-shared-catalog-section" aria-labelledby="ws-shared-catalog-title">
+        <div class="ws-shared-catalog-header">
+          <h2 id="ws-shared-catalog-title">${isTh ? 'คลังผลิตภัณฑ์ร่วม (meCraft & meCrafts Web)' : 'Shared Product Library'}</h2>
+        </div>
+        ${renderSharedFilterControls({
+          lang: this.lang,
+          isDesktop: true,
+          query: this.searchQuery,
+          category: this.activeFilter,
+          platform: this.activePlatformFilter,
+          status: this.activeStatusFilter,
+          installedOnly: this.installedOnlyFilter,
+          catalogFromCache: this.catalogFromCache,
+          catalogError: this.catalogError,
+        })}
+        <div class="shared-products-grid" id="ws-shared-catalog-grid">
+          ${this.renderSharedCatalogCards(true)}
+        </div>
+      </section>
 
       <section class="ws-library-catalog" aria-labelledby="ws-library-catalog-title">
       <h2 id="ws-library-catalog-title">${isTh ? 'โปรแกรมที่กำลังพัฒนา' : 'Upcoming apps'}</h2>
@@ -3308,25 +3330,21 @@ console.log(initializeStudio(pdfStudio));`,
       <div class="ws-studios-full-grid" id="ws-library-grid">${this.renderUpcomingStudios()}</div>
       </section>
 
-      <section class="ws-shared-catalog-section" aria-labelledby="ws-shared-catalog-title">
-        <div class="ws-shared-catalog-header">
-          <h2 id="ws-shared-catalog-title">${isTh ? 'คลังผลิตภัณฑ์ร่วม (meCraft & meCrafts Web)' : 'Shared Product Library'}</h2>
-        </div>
-        ${renderSharedFilterControls({
-          lang: this.lang,
-          isDesktop: true,
-          query: this.searchQuery,
-          category: this.activeFilter,
-          platform: this.activePlatformFilter,
-          status: this.activeStatusFilter,
-          installedOnly: this.installedOnlyFilter,
-          catalogFromCache: this.catalogFromCache,
-          catalogError: this.catalogError,
-        })}
-        <div class="shared-products-grid" id="ws-shared-catalog-grid">
-          ${this.renderSharedCatalogCards(true)}
-        </div>
-      </section>
+      <!-- Horizontal Studio Quick Switcher Bar -->
+      <div class="studio-nav-wrapper" style="margin-top: 36px;">
+        <nav class="studio-nav-bar" role="tablist" aria-label="Creative Studios Quick Switcher">
+          ${SHOWCASE_APPS.map(app => this.renderStudioNavPill(app, app.id === (SHOWCASE_APPS.find(a => a.id === this.activeStudioId) || SHOWCASE_APPS[0]).id)).join('')}
+        </nav>
+      </div>
+
+      <!-- Spotlight Stream -->
+      <div class="studios-spotlight-stream" id="studios-spotlight-stream">
+        ${this.filteredApps().map(app => this.renderStudioSpotlight(app)).join('')}
+      </div>
+
+      <!-- Specs & Privacy Manifesto Sections -->
+      ${this.renderManifesto()}
+      ${this.renderSpecs()}
     </div>`;
   }
 
@@ -5592,13 +5610,27 @@ console.log(initializeStudio(pdfStudio));`,
         </div>
 
         <div class="hero-official-ctas" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 32px 0 24px;">
-          <a href="./downloads" class="hero-cta-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 700; text-decoration: none; font-size: 15px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>${this.lang === 'th' ? 'ดาวน์โหลด meCraft สำหรับ Windows' : 'Download meCraft for Windows'}</span>
-          </a>
-          <a href="#apps-grid" class="hero-cta-secondary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; font-size: 15px;">
-            <span>${this.lang === 'th' ? `สำรวจโปรแกรมทั้งหมด (${SHOWCASE_APPS.length} สตูดิโอ) ↓` : `Explore All ${SHOWCASE_APPS.length} Studios ↓`}</span>
-          </a>
+          ${this.isDesktopMode() ? `
+            <button type="button" class="hero-cta-primary" data-quick-launch="meide" data-quick-action="workbench" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 700; text-decoration: none; font-size: 15px; cursor: pointer; border: none;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>${this.lang === 'th' ? '⚡ เปิด meIDE AI (Workbench)' : '⚡ Open meIDE AI (Workbench)'}</span>
+            </button>
+            <button type="button" class="hero-cta-secondary" id="hero-btn-browse-trigger" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; font-size: 15px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.12);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              <span>${this.lang === 'th' ? '📂 เปิดไฟล์ในเครื่อง…' : '📂 Open Local File…'}</span>
+            </button>
+            <a href="#ws-shared-catalog-title" class="hero-cta-secondary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; font-size: 15px; border: 1px solid rgba(255, 255, 255, 0.12);">
+              <span>${this.lang === 'th' ? `สำรวจคลังโปรแกรม (${SHOWCASE_APPS.length} สตูดิโอ) ↓` : `Explore All ${SHOWCASE_APPS.length} Studios ↓`}</span>
+            </a>
+          ` : `
+            <a href="./downloads" class="hero-cta-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 700; text-decoration: none; font-size: 15px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>${this.lang === 'th' ? 'ดาวน์โหลด meCraft สำหรับ Windows' : 'Download meCraft for Windows'}</span>
+            </a>
+            <a href="#apps-grid" class="hero-cta-secondary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; font-size: 15px;">
+              <span>${this.lang === 'th' ? `สำรวจโปรแกรมทั้งหมด (${SHOWCASE_APPS.length} สตูดิโอ) ↓` : `Explore All ${SHOWCASE_APPS.length} Studios ↓`}</span>
+            </a>
+          `}
         </div>
 
         <p class="hero-meta">Windows 11 / 10 (64-bit) · 100% In-Device Memory Execution · Zero Cloud Uploads · MIT Open Source</p>
@@ -7074,6 +7106,9 @@ console.log(initializeStudio(pdfStudio));`,
     const fileInput = document.getElementById('ws-file-input') as HTMLInputElement | null;
 
     document.getElementById('ws-btn-browse')?.addEventListener('click', () => {
+      fileInput?.click();
+    });
+    document.getElementById('hero-btn-browse-trigger')?.addEventListener('click', () => {
       fileInput?.click();
     });
 

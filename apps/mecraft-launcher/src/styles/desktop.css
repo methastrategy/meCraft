@@ -1,33 +1,50 @@
 .ws-desktop-frame,
 .ws-auth-dialog {
   color-scheme: dark;
-  --desktop-bg: #17191f;
-  --desktop-side: #1d2028;
-  --desktop-panel: #222631;
-  --desktop-hover: #30323d;
-  --desktop-line: #3b3d49;
-  --desktop-text: #f2f3f7;
-  --desktop-muted: #b4b7c7;
-  --desktop-accent: #aebaff;
-  --desktop-accent-text: #171c35;
-  --desktop-active: #32374f;
+  --desktop-bg: #090a0f;
+  --desktop-side: #0e111a;
+  --desktop-panel: #131722;
+  --desktop-hover: #1c2233;
+  --desktop-line: rgba(212, 175, 55, 0.16);
+  --desktop-text: #f8fafc;
+  --desktop-muted: #94a3b8;
+  --desktop-accent: #d4af37;
+  --desktop-accent-text: #090a0f;
+  --desktop-active: rgba(212, 175, 55, 0.14);
+  --gold: #d4af37;
+  --gold-light: #f7d774;
+  --gold-glow: rgba(212, 175, 55, 0.25);
   color: var(--desktop-text);
   font-family: 'Inter', 'IBM Plex Sans Thai', 'Segoe UI', 'Leelawadee UI', system-ui, sans-serif;
   letter-spacing: 0;
   line-height: 1.7;
 }
 
-.ws-desktop-frame { background: var(--desktop-bg); }
+.ws-desktop-frame {
+  background-color: var(--desktop-bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at -10% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 30% at 110% 40%, rgba(6, 182, 212, 0.04) 0%, transparent 50%);
+}
 .ws-desktop-frame .ws-titlebar {
-  background: var(--desktop-side);
+  background: rgba(9, 10, 15, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--desktop-line);
 }
-.ws-desktop-frame .ws-titlebar-text { color: var(--desktop-text); }
+.ws-desktop-frame .ws-titlebar-text {
+  color: var(--gold-light);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
 .ws-desktop-frame .ws-sidebar {
-  flex: 0 0 208px;
-  width: 208px;
+  flex: 0 0 216px;
+  width: 216px;
   min-width: 0;
-  background: var(--desktop-side);
+  background: rgba(14, 17, 26, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-right: 1px solid var(--desktop-line);
 }
 .ws-desktop-frame .ws-sidebar-top { padding: 16px 12px 10px; border: 0; }
@@ -46,7 +63,12 @@
 }
 .ws-desktop-frame .ws-nav-btn:hover,
 .ws-desktop-frame .ws-quick-btn:hover { background: var(--desktop-hover); color: var(--desktop-text); }
-.ws-desktop-frame .ws-nav-btn.active { background: var(--desktop-active); color: var(--desktop-text); }
+.ws-desktop-frame .ws-nav-btn.active {
+  background: var(--desktop-active);
+  color: var(--gold-light);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.12);
+}
 .ws-desktop-frame .ws-nav-title,
 .ws-desktop-frame .ws-quick-name { color: inherit; font-size: .875rem; }
 .ws-desktop-frame .ws-nav-section-label { margin-left: 12px; color: var(--desktop-muted); font-size: .75rem; font-weight: 500; }
@@ -77,40 +99,62 @@
 .ws-desktop-frame .ws-avatar { flex-shrink: 0; width: 26px; height: 26px; color: var(--desktop-accent); background: var(--desktop-active); }
 .ws-desktop-frame .ws-user-email { color: var(--desktop-text); text-align: start; }
 
-.ws-desktop-frame .workstation-canvas { background: var(--desktop-bg); min-width: 0; padding: 0; }
-.ws-desktop-frame .ws-view { max-width: 1260px; padding: clamp(22px, 4vw, 48px); margin-inline: auto; }
+.ws-desktop-frame .workstation-canvas {
+  background: var(--desktop-bg);
+  min-width: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+.ws-desktop-frame .ws-view {
+  max-width: 1400px;
+  padding: 0 clamp(22px, 3.5vw, 44px) 48px;
+  margin-inline: auto;
+}
+.ws-desktop-frame .ws-view-studios .portal-hero {
+  margin: 0 calc(clamp(22px, 3.5vw, 44px) * -1) 32px;
+  padding: clamp(48px, 6vw, 76px) clamp(22px, 3.5vw, 44px) 48px;
+  border-bottom: 1px solid var(--desktop-line);
+}
 .ws-desktop-frame .ws-view-header { margin-bottom: 24px; }
-.ws-desktop-frame .ws-view-title { color: var(--desktop-text); font-size: clamp(1.75rem, 2.5vw, 2.25rem); font-weight: 650; letter-spacing: 0; }
+.ws-desktop-frame .ws-view-title {
+  color: var(--desktop-text);
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
 .ws-desktop-frame .ws-view-subtitle { color: var(--desktop-muted); font-size: .9375rem; }
 .ws-desktop-frame .ws-managed-card {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 16px;
-  padding: 22px;
-  border: 1px solid var(--desktop-line);
-  border-radius: 8px;
-  background: linear-gradient(110deg, var(--desktop-active), var(--desktop-panel) 66%);
-  margin-bottom: 16px;
+  gap: 18px;
+  padding: 24px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(19, 23, 34, 0.85) 50%, rgba(9, 10, 15, 0.95) 100%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 20px rgba(212, 175, 55, 0.1);
+  margin-bottom: 24px;
 }
 .ws-desktop-frame .ws-managed-art {
   display: grid;
   place-items: center;
-  width: 64px;
-  height: 64px;
+  width: 68px;
+  height: 68px;
   min-height: 0;
   align-self: start;
-  border-radius: 8px;
-  background: var(--desktop-side);
+  border-radius: 12px;
+  background: rgba(9, 10, 15, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.15);
 }
-.ws-desktop-frame .ws-managed-art img { width: 38px; height: 38px; object-fit: contain; }
+.ws-desktop-frame .ws-managed-art img { width: 44px; height: 44px; object-fit: contain; }
 .ws-desktop-frame .ws-managed-content { padding: 0; }
-.ws-desktop-frame .ws-managed-content h2 { margin: 0; color: var(--desktop-text); font-size: 1.125rem; font-weight: 600; }
+.ws-desktop-frame .ws-managed-content h2 { margin: 0; color: var(--desktop-text); font-size: 1.25rem; font-weight: 700; }
 .ws-desktop-frame .ws-managed-content p { margin: 4px 0; color: var(--desktop-muted); font-size: .875rem; line-height: 1.7; }
 .ws-desktop-frame .ws-managed-content .ws-managed-version { margin-bottom: 0; font-size: .8125rem; }
-.ws-desktop-frame .ws-managed-state { color: var(--desktop-text); font-size: inherit; }
+.ws-desktop-frame .ws-managed-state { color: var(--gold-light); font-weight: 600; font-size: inherit; }
 .ws-desktop-frame .ws-managed-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; justify-content: end; }
-.ws-desktop-frame .ws-managed-actions > button { min-width: 84px; width: auto; justify-content: center; }
+.ws-desktop-frame .ws-managed-actions > button { min-width: 90px; width: auto; justify-content: center; }
 .ws-desktop-frame .ws-managed-feedback { grid-column: 2 / -1; min-width: 0; }
 .ws-desktop-frame .ws-managed-feedback progress { width: 100%; accent-color: var(--desktop-accent); }
 .ws-desktop-frame .ws-managed-message { margin: 0; color: var(--desktop-muted); }
@@ -118,7 +162,7 @@
 .ws-desktop-frame .ws-action-strip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
-  gap: 12px;
+  gap: 14px;
   margin-bottom: 32px;
 }
 .ws-desktop-frame :is(.ws-drop-compact, .ws-library-utility) {
@@ -126,20 +170,23 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  background: var(--desktop-panel);
+  gap: 12px;
+  background: rgba(19, 23, 34, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--desktop-line);
-  border-radius: 8px;
-  padding: 12px 18px;
+  border-radius: 10px;
+  padding: 14px 20px;
   min-height: 0;
+  transition: all 0.2s ease;
 }
 .ws-desktop-frame .ws-drop-compact { border-style: dashed; }
 .ws-desktop-frame .ws-drop-compact.drag-active { border-color: var(--desktop-accent); background: var(--desktop-active); }
-.ws-desktop-frame .ws-drop-info :is(h3, h4) { color: var(--desktop-text); font-size: .9375rem; margin: 0; }
+.ws-desktop-frame .ws-drop-info :is(h3, h4) { color: var(--desktop-text); font-size: .9375rem; margin: 0; font-weight: 600; }
 .ws-desktop-frame .ws-drop-info p { color: var(--desktop-muted); margin: 0; }
 .ws-desktop-frame .ws-managed-actions button:disabled { opacity: .55; cursor: wait; }
 .ws-desktop-frame .ws-managed-message:empty { display: none; }
-.ws-desktop-frame .ws-library-catalog > h2 { font-size: 1.25rem; margin: 0 0 12px; }
+.ws-desktop-frame .ws-library-catalog > h2 { font-size: 1.25rem; margin: 0 0 12px; font-weight: 650; }
 .ws-desktop-frame .ws-library-catalog .ws-toolbar { gap: 10px; margin-bottom: 16px; }
 .ws-desktop-frame .ws-search-box {
   min-height: 44px;
@@ -160,14 +207,22 @@
   color: var(--desktop-muted);
 }
 .ws-desktop-frame .ws-filter-pill:hover { background: var(--desktop-hover); color: var(--desktop-text); }
-.ws-desktop-frame .ws-filter-pill.active { background: var(--desktop-active); border-color: var(--desktop-line); color: var(--desktop-text); }
-.ws-desktop-frame .ws-studios-full-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 14px; }
+.ws-desktop-frame .ws-filter-pill.active { background: var(--desktop-active); border-color: var(--desktop-line); color: var(--gold-light); font-weight: 600; }
+.ws-desktop-frame .ws-studios-full-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 16px; }
 .ws-desktop-frame .ws-library-card {
   overflow: hidden;
   min-width: 0;
-  border: 1px solid var(--desktop-line);
-  border-radius: 10px;
-  background: var(--desktop-panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(19, 23, 34, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ws-desktop-frame .ws-library-card:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 16px rgba(212, 175, 55, 0.15);
 }
 .ws-desktop-frame .ws-library-art {
   display: grid;
@@ -215,14 +270,20 @@
 .ws-desktop-frame :is(.ws-btn-primary, .ws-managed-actions .ws-btn-launch),
 .ws-auth-dialog .btn-auth-submit {
   min-height: 44px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  background: var(--desktop-accent);
-  color: var(--desktop-accent-text);
-  box-shadow: none;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  color: #090a0f;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ws-desktop-frame :is(.ws-btn-primary, .ws-managed-actions .ws-btn-launch):hover,
-.ws-auth-dialog .btn-auth-submit:hover { background: #c7ceff; }
+.ws-auth-dialog .btn-auth-submit:hover {
+  background: linear-gradient(135deg, var(--gold-light) 0%, #ffffff 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
 .ws-desktop-frame :is(.ws-btn-subtle, .ws-btn-outline, .ws-lang-btn, .ws-signin-btn, .ws-table-btn):hover,
 .ws-auth-dialog :is(.ws-btn-subtle, .btn-auth-google, .btn-toggle-sync-import):hover { background: var(--desktop-hover); }
 .ws-desktop-frame button:focus-visible,
