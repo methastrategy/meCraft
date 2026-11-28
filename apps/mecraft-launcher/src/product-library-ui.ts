@@ -55,7 +55,6 @@ export function channelTypeLabel(ch: CatalogChannel, lang: 'en' | 'th'): string 
     case 'web-app':
       return lang === 'th' ? 'เว็บแอป (PWA)' : 'Web App (PWA)';
     case 'windows-msi':
-      return 'Windows Installer (.msi)';
     case 'windows-exe':
       return 'Windows (.exe)';
     case 'app-store':

@@ -26,40 +26,39 @@
         "mecraft",
         "launcher",
         "hub",
-        "msi",
+        "exe",
         "installer",
         "suite",
         "windows"
       ],
       "specs": {
         "en": [
-          "Single mecraft-hub.msi Windows 10/11 64-bit Installer",
+          "Single mecraft-setup.exe Windows 10/11 64-bit Executable",
           "SHA-256 & Size Verification for Managed Packages",
           "Offline-Capable Local Library & Launch",
           "Shared Catalog v2 Across Web & Windows"
         ],
         "th": [
-          "ตัวติดตั้ง Windows 10/11 64-bit ไฟล์เดียว mecraft-hub.msi",
+          "ตัวโปรแกรม Windows 10/11 64-bit ไฟล์เดียว mecraft-setup.exe",
           "ตรวจขนาดไฟล์และ SHA-256 ก่อนติดตั้งแอปในเครื่อง",
           "เปิดแอปที่ติดตั้งไว้ได้แม้ไม่มีอินเทอร์เน็ต",
           "ใช้แค็ตตาล็อกกลาง v2 ร่วมกันระหว่างเว็บและ Windows"
         ]
       },
       "supportedFormats": [
-        "MSI",
         "EXE"
       ],
       "channels": [
         {
           "platform": "windows",
-          "type": "windows-msi",
+          "type": "windows-exe",
           "stability": "stable",
           "version": "1.0.12",
           "releaseTag": "1.0.12",
           "arch": "x64",
-          "url": "https://github.com/methastrategy/meCraft/releases/download/1.0.12/mecraft-hub.msi",
-          "sizeBytes": 96907264,
-          "sha256": "d138409b711fa8c9729802095f6ff955afce3cb1ee18d16d80fb61b407613ea1",
+          "url": "https://github.com/methastrategy/meCraft/releases/download/1.0.12/mecraft-setup.exe",
+          "sizeBytes": 107545600,
+          "sha256": "9d036c4e99f5b69cab401191a2088e0c39dd59b75d12a2c4de8d196b3ae78fe9",
           "launcherManaged": false
         },
         {
