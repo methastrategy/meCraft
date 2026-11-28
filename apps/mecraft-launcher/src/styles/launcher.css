@@ -8162,7 +8162,7 @@ code, pre, kbd, samp, .font-mono, [class*="version"], [class*="hash"], [class*="
 /* 4. Compact Action Strip & Modern Card Polish */
 .ws-action-strip {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
   margin-bottom: 20px;
 }

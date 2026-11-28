@@ -141,9 +141,9 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
   en: {
     brandTitle: 'meCrafts',
     brandSubtitle: 'Official Creative Suite',
-    headerCta: 'Download meCraft (.msi)',
-    heroTitle: 'The Private-First AI IDE & 18 Creative Studios Suite for Windows',
-    heroSubtitle: 'VS Code & Windsurf-grade Next-Gen AI IDE Workspace with 100% Client-Side Local Execution, Real Folder Opening, In-Device Copilot, and 18 Purpose-Built Creative Studios — All Free, Forever.',
+    headerCta: 'Download meCraft (.exe)',
+    heroTitle: 'The Private-First 18 Creative Studios Suite for Windows',
+    heroSubtitle: 'Purpose-Built Creative Studios & Desktop Tools with 100% Client-Side Local Execution, Real File Processing, and Complete In-Device Privacy — All Free, Forever.',
     heroBadge1: '100% In-Device Privacy',
     heroBadge2: 'Zero Telemetry',
     heroBadge3: 'Open-Source',
@@ -190,9 +190,9 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
   th: {
     brandTitle: 'meCrafts',
     brandSubtitle: 'ชุดโปรแกรมสร้างสรรค์ทางการ',
-    headerCta: 'ดาวน์โหลด meCraft (.msi)',
-    heroTitle: 'ชุดโปรแกรมแก้ไขโค้ด AI IDE และ 18 สตูดิโอสร้างสรรค์ที่ให้ความเป็นส่วนตัว 100% สำหรับ Windows',
-    heroSubtitle: 'โปรแกรมแก้ไขโค้ด AI IDE ระดับเวิลด์คลาส เปิดโฟลเดอร์เครื่องจริง AI Copilot ใน RAM 100% พร้อม 18 สตูดิโอสร้างสรรค์และเครื่องมือเฉพาะทาง — ทำงานออฟไลน์สมบูรณ์แบบ ฟรีตลอดชีพ',
+    headerCta: 'ดาวน์โหลด meCraft (.exe)',
+    heroTitle: 'ชุด 18 สตูดิโอสร้างสรรค์ที่ให้ความเป็นส่วนตัว 100% สำหรับ Windows',
+    heroSubtitle: 'ชุดสตูดิโอสร้างสรรค์และเครื่องมือเฉพาะทางระดับเวิลด์คลาส ประมวลผลบนเครื่อง 100% ทำงานกับไฟล์จริง และรักษาความเป็นส่วนตัวสูงสุด — ทำงานออฟไลน์สมบูรณ์แบบ ฟรีตลอดชีพ',
     heroBadge1: 'ความเป็นส่วนตัว 100%',
     heroBadge2: 'ไม่มีการเก็บข้อมูล',
     heroBadge3: 'Open-Source',
@@ -2830,10 +2830,6 @@ console.log(initializeStudio(pdfStudio));`,
       { id: 'recents', label: isTh ? 'ไฟล์ล่าสุด' : 'Recent files' },
       { id: 'vault', label: isTh ? 'การตั้งค่า' : 'Settings' },
     ];
-    const quickLaunch = [
-      { id: 'meide', name: 'meIDE AI', color: '#3b82f6', action: 'workbench' },
-      ...(this.meDocStatus?.installed ? [{ id: 'medoc', name: 'meDoc', color: '#14b8a6', action: 'studio' }] : []),
-    ];
 
     return `
     <aside class="ws-sidebar" aria-label="Workstation Navigation">
@@ -2873,17 +2869,6 @@ console.log(initializeStudio(pdfStudio));`,
             <span class="ws-nav-title">${item.label}</span>
           </button>
         `).join('')}
-
-        <div class="ws-nav-section-label" style="margin-top: 14px;">${isTh ? 'เปิดด่วน' : 'QUICK LAUNCH'}</div>
-        <div class="ws-quick-list">
-          ${quickLaunch.map(q => `
-            <button type="button" class="ws-quick-btn" data-quick-launch="${q.id}" data-quick-action="${q.action}">
-              <span class="ws-quick-dot" style="background: ${q.color};"></span>
-              <span class="ws-quick-name">${q.name}</span>
-              <span class="ws-quick-arrow">↗</span>
-            </button>
-          `).join('')}
-        </div>
       </nav>
 
       <!-- Bottom Zone: Pinned Language & Updates -->
@@ -2938,7 +2923,7 @@ console.log(initializeStudio(pdfStudio));`,
   private renderInstalledView(): string {
     const th = this.lang === 'th';
     const installedMedoc = this.meDocStatus?.installed === true;
-    const installedProducts = this.catalogProducts.filter(p => (p.id === 'medoc' && installedMedoc) || p.id === 'meide');
+    const installedProducts = this.catalogProducts.filter(p => p.id === 'medoc' && installedMedoc);
     return `
     <div class="ws-view ws-view-installed">
       <header class="ws-view-header">
@@ -3272,13 +3257,6 @@ console.log(initializeStudio(pdfStudio));`,
           </button>
           <input type="file" id="ws-file-input" style="display:none;" multiple />
         </div>
-        <div class="ws-library-utility">
-          <div class="ws-drop-info"><div>
-            <h3>meIDE AI</h3>
-            <p>${isTh ? 'พื้นที่เขียนโค้ดใน meCraft' : 'The built-in coding workspace.'}</p>
-          </div></div>
-          <button type="button" class="ws-btn-subtle" data-quick-launch="meide" data-quick-action="workbench">${isTh ? 'เปิด meIDE' : 'Open meIDE'}</button>
-        </div>
       </div>
 
       <section class="ws-shared-catalog-section" aria-labelledby="ws-shared-catalog-title">
@@ -3436,7 +3414,7 @@ console.log(initializeStudio(pdfStudio));`,
       status: this.activeStatusFilter,
     });
     if (isDesktop && this.installedOnlyFilter) {
-      items = items.filter(p => (p.id === 'medoc' && this.meDocStatus?.installed) || p.id === 'meide');
+      items = items.filter(p => p.id === 'medoc' && this.meDocStatus?.installed);
     }
     if (items.length === 0) {
       return `<p role="status" class="ws-view-subtitle">${this.lang === 'th' ? 'ไม่พบผลิตภัณฑ์ที่ตรงกับตัวกรอง' : 'No products match the selected filters.'}</p>`;
@@ -5611,11 +5589,7 @@ console.log(initializeStudio(pdfStudio));`,
 
         <div class="hero-official-ctas" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 32px 0 24px;">
           ${this.isDesktopMode() ? `
-            <button type="button" class="hero-cta-primary" data-quick-launch="meide" data-quick-action="workbench" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 700; text-decoration: none; font-size: 15px; cursor: pointer; border: none;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              <span>${this.lang === 'th' ? '⚡ เปิด meIDE AI (Workbench)' : '⚡ Open meIDE AI (Workbench)'}</span>
-            </button>
-            <button type="button" class="hero-cta-secondary" id="hero-btn-browse-trigger" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; font-size: 15px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.12);">
+            <button type="button" class="hero-cta-primary" id="hero-btn-browse-trigger" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 700; text-decoration: none; font-size: 15px; cursor: pointer; border: none;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
               <span>${this.lang === 'th' ? '📂 เปิดไฟล์ในเครื่อง…' : '📂 Open Local File…'}</span>
             </button>
@@ -7971,10 +7945,22 @@ console.log(initializeStudio(pdfStudio));`,
     }
 
     const heroCta1 = document.querySelector('.hero-cta-primary span');
-    if (heroCta1) heroCta1.textContent = this.lang === 'th' ? 'ดาวน์โหลด meCraft สำหรับ Windows' : 'Download meCraft for Windows';
+    if (heroCta1) {
+      if (this.isDesktopMode()) {
+        heroCta1.textContent = this.lang === 'th' ? '📂 เปิดไฟล์ในเครื่อง…' : '📂 Open Local File…';
+      } else {
+        heroCta1.textContent = this.lang === 'th' ? 'ดาวน์โหลด meCraft สำหรับ Windows' : 'Download meCraft for Windows';
+      }
+    }
 
     const heroCta2 = document.querySelector('.hero-cta-secondary span') || document.querySelector('.hero-cta-secondary');
-    if (heroCta2) heroCta2.textContent = this.lang === 'th' ? `สำรวจโปรแกรมทั้งหมด (${SHOWCASE_APPS.length} สตูดิโอ) ↓` : `Explore All ${SHOWCASE_APPS.length} Studios ↓`;
+    if (heroCta2) {
+      if (this.isDesktopMode()) {
+        heroCta2.textContent = this.lang === 'th' ? `สำรวจคลังโปรแกรม (${SHOWCASE_APPS.length} สตูดิโอ) ↓` : `Explore All ${SHOWCASE_APPS.length} Studios ↓`;
+      } else {
+        heroCta2.textContent = this.lang === 'th' ? `สำรวจโปรแกรมทั้งหมด (${SHOWCASE_APPS.length} สตูดิโอ) ↓` : `Explore All ${SHOWCASE_APPS.length} Studios ↓`;
+      }
+    }
 
     // 4. Search and Filter
     const searchInput = document.getElementById('apps-search') as HTMLInputElement | null;
