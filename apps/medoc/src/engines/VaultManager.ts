@@ -4,6 +4,13 @@
  * 100% In-Device File System & Local Storage Persistence
  */
 
+import { parseDocxToHtml, exportHtmlToDocx } from './DocxEngine.js';
+
+export type NativeSaveResult =
+  | { status: 'saved'; path: string }
+  | { status: 'cancelled' }
+  | { status: 'failed' };
+
 export interface VaultDocument {
   id: string;
   name: string;
@@ -11,10 +18,21 @@ export interface VaultDocument {
   content: string;
   lastModified: number;
   isDirty: boolean;
+  format?: 'markdown' | 'docx';
+}
+
+export interface RecoverySnapshot {
+  id: string;
+  docId: string;
+  name: string;
+  content: string;
+  timestamp: number;
+  reason: 'autosave' | 'pre-import' | 'manual-backup';
 }
 
 const STORAGE_KEY_DOCS = 'medoc_vault_documents';
 const STORAGE_KEY_ACTIVE = 'medoc_active_doc_id';
+const STORAGE_KEY_RECOVERY = 'medoc_recovery_journal_v1';
 
 const STARTER_WELCOME_MD = `---
 title: Welcome to meDoc Studio
@@ -201,24 +219,52 @@ export const THAI_MEETING_MINUTES_MD = `# รายงานการประ�
 export class VaultManager {
   private documents: VaultDocument[] = [];
   private activeId: string = '';
+  private inMemoryRecoveryJournal: Record<string, RecoverySnapshot> = {};
 
   constructor() {
     this.loadFromStorage();
   }
 
+  private getStorage(): Storage | null {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return window.localStorage;
+    }
+    if (typeof globalThis !== 'undefined' && (globalThis as any).localStorage) {
+      return (globalThis as any).localStorage;
+    }
+    return null;
+  }
+
   private loadFromStorage(): void {
-    if (typeof window === 'undefined' || !window.localStorage) {
+    const storage = this.getStorage();
+    if (!storage) {
       this.initDefaultDocuments();
       return;
     }
 
     try {
-      const stored = localStorage.getItem(STORAGE_KEY_DOCS);
+      const journalRaw = storage.getItem(STORAGE_KEY_RECOVERY);
+      if (journalRaw) {
+        this.inMemoryRecoveryJournal = JSON.parse(journalRaw) || {};
+      }
+    } catch {
+      this.inMemoryRecoveryJournal = {};
+    }
+
+    try {
+      let stored = storage.getItem(STORAGE_KEY_DOCS);
+      if (!stored) {
+        const stage = storage.getItem(`${STORAGE_KEY_DOCS}__stage`);
+        if (stage) {
+          stored = stage;
+          storage.setItem(STORAGE_KEY_DOCS, stage);
+        }
+      }
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
           this.documents = parsed;
-          const savedActive = localStorage.getItem(STORAGE_KEY_ACTIVE);
+          const savedActive = storage.getItem(STORAGE_KEY_ACTIVE);
           this.activeId = savedActive && this.documents.some(d => d.id === savedActive)
             ? savedActive
             : this.documents[0].id;
@@ -233,6 +279,13 @@ export class VaultManager {
   }
 
   private initDefaultDocuments(): void {
+    const draft: VaultDocument = {
+      id: 'doc-draft',
+      name: 'Untitled.md',
+      content: '# Untitled\n',
+      lastModified: Date.now(),
+      isDirty: false,
+    };
     const welcomeDoc: VaultDocument = {
       id: 'doc-welcome',
       name: 'Welcome to meDoc.md',
@@ -249,19 +302,161 @@ export class VaultManager {
       isDirty: false,
     };
 
-    this.documents = [welcomeDoc, quantumDoc];
-    this.activeId = welcomeDoc.id;
+    this.documents = [draft, welcomeDoc, quantumDoc];
+    this.activeId = draft.id;
     this.persist();
   }
 
   public persist(): void {
-    if (typeof window === 'undefined' || !window.localStorage) return;
+    const storage = this.getStorage();
+    if (!storage) return;
     try {
-      localStorage.setItem(STORAGE_KEY_DOCS, JSON.stringify(this.documents));
-      localStorage.setItem(STORAGE_KEY_ACTIVE, this.activeId);
+      const payload = JSON.stringify(this.documents);
+      const stageKey = `${STORAGE_KEY_DOCS}__stage`;
+      // 1. Write to stage
+      storage.setItem(stageKey, payload);
+      // 2. Verify stage integrity
+      const readBack = storage.getItem(stageKey);
+      if (readBack === payload) {
+        // 3. Commit main atomically
+        storage.setItem(STORAGE_KEY_DOCS, payload);
+        storage.setItem(STORAGE_KEY_ACTIVE, this.activeId);
+        // 4. Prune stage
+        storage.removeItem(stageKey);
+      }
     } catch {
       // Storage quota or disabled
     }
+  }
+
+  public saveRecoverySnapshot(docId: string, content: string, reason: 'autosave' | 'pre-import' | 'manual-backup' = 'autosave'): void {
+    const doc = this.documents.find(d => d.id === docId);
+    const snapshot: RecoverySnapshot = {
+      id: `rec-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      docId,
+      name: doc?.name || 'Untitled.md',
+      content,
+      timestamp: Date.now(),
+      reason,
+    };
+    this.inMemoryRecoveryJournal[docId] = snapshot;
+
+    const storage = this.getStorage();
+    if (storage) {
+      try {
+        const journalRaw = storage.getItem(STORAGE_KEY_RECOVERY);
+        const journal: Record<string, RecoverySnapshot> = journalRaw ? JSON.parse(journalRaw) : {};
+        journal[docId] = snapshot;
+        storage.setItem(STORAGE_KEY_RECOVERY, JSON.stringify(journal));
+      } catch {
+        // Quota or storage disabled
+      }
+    }
+  }
+
+  public getRecoverySnapshot(docId: string): RecoverySnapshot | null {
+    if (this.inMemoryRecoveryJournal[docId]) {
+      return this.inMemoryRecoveryJournal[docId];
+    }
+    const storage = this.getStorage();
+    if (storage) {
+      try {
+        const journalRaw = storage.getItem(STORAGE_KEY_RECOVERY);
+        if (!journalRaw) return null;
+        const journal: Record<string, RecoverySnapshot> = JSON.parse(journalRaw);
+        return journal[docId] || null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  public getAllRecoverySnapshots(): RecoverySnapshot[] {
+    const snapshotsMap: Record<string, RecoverySnapshot> = {};
+
+    const storage = this.getStorage();
+    if (storage) {
+      try {
+        const journalRaw = storage.getItem(STORAGE_KEY_RECOVERY);
+        if (journalRaw) {
+          const storedSnapshots: Record<string, RecoverySnapshot> = JSON.parse(journalRaw);
+          for (const [key, snap] of Object.entries(storedSnapshots)) {
+            snapshotsMap[key] = snap;
+          }
+        }
+      } catch {
+        // Quota or parse issue
+      }
+    }
+
+    for (const [key, snap] of Object.entries(this.inMemoryRecoveryJournal)) {
+      snapshotsMap[key] = snap;
+    }
+
+    return Object.values(snapshotsMap).sort((a, b) => b.timestamp - a.timestamp);
+  }
+
+  public clearRecoverySnapshot(docId: string): void {
+    delete this.inMemoryRecoveryJournal[docId];
+    const storage = this.getStorage();
+    if (storage) {
+      try {
+        const journalRaw = storage.getItem(STORAGE_KEY_RECOVERY);
+        if (!journalRaw) return;
+        const journal: Record<string, RecoverySnapshot> = JSON.parse(journalRaw);
+        delete journal[docId];
+        storage.setItem(STORAGE_KEY_RECOVERY, JSON.stringify(journal));
+      } catch {}
+    }
+  }
+
+  public restoreFromRecovery(docId: string): boolean {
+    const snapshot = this.getRecoverySnapshot(docId);
+    if (!snapshot) return false;
+    let doc = this.documents.find(d => d.id === docId);
+    if (!doc) {
+      doc = {
+        id: docId,
+        name: snapshot.name || 'Restored.md',
+        content: snapshot.content,
+        lastModified: snapshot.timestamp,
+        isDirty: false,
+      };
+      this.documents.push(doc);
+    } else {
+      doc.content = snapshot.content;
+      doc.lastModified = snapshot.timestamp;
+      doc.isDirty = false;
+    }
+    this.activeId = doc.id;
+    this.persist();
+    this.clearRecoverySnapshot(docId);
+    return true;
+  }
+
+  public getRecentDocuments(limit: number = 10): VaultDocument[] {
+    return [...this.documents]
+      .sort((a, b) => b.lastModified - a.lastModified)
+      .slice(0, limit);
+  }
+
+  public backupDocument(id: string): VaultDocument | null {
+    const doc = this.documents.find(d => d.id === id);
+    if (!doc) return null;
+    const base = doc.name.replace(/\.md$/, '');
+    const backupName = `${base}.bak.md`;
+    const backupDoc: VaultDocument = {
+      id: `doc-bak-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      name: backupName,
+      content: doc.content,
+      lastModified: Date.now(),
+      isDirty: false,
+    };
+    this.documents.push(backupDoc);
+    this.saveRecoverySnapshot(id, doc.content, 'manual-backup');
+    this.persist();
+    return backupDoc;
   }
 
   public getDocuments(): VaultDocument[] {
@@ -319,6 +514,7 @@ export class VaultManager {
       doc.content = content;
       doc.lastModified = Date.now();
       doc.isDirty = true;
+      this.saveRecoverySnapshot(id, content, 'autosave');
       this.persist();
     }
   }
@@ -327,6 +523,7 @@ export class VaultManager {
     const doc = this.documents.find(d => d.id === id);
     if (doc) {
       doc.isDirty = false;
+      this.clearRecoverySnapshot(id);
       this.persist();
     }
   }
@@ -334,7 +531,12 @@ export class VaultManager {
   public renameDocument(id: string, newName: string): void {
     const doc = this.documents.find(d => d.id === id);
     if (doc) {
-      doc.name = newName.endsWith('.md') ? newName : `${newName}.md`;
+      if (newName.endsWith('.md') || newName.endsWith('.docx')) {
+        doc.name = newName;
+      } else {
+        const ext = doc.format === 'docx' ? '.docx' : '.md';
+        doc.name = `${newName}${ext}`;
+      }
       doc.lastModified = Date.now();
       this.persist();
     }
@@ -344,6 +546,7 @@ export class VaultManager {
     const idx = this.documents.findIndex(d => d.id === id);
     if (idx === -1) return false;
 
+    this.clearRecoverySnapshot(id);
     this.documents.splice(idx, 1);
     if (this.activeId === id) {
       this.activeId = this.documents.length > 0 ? this.documents[0].id : '';
@@ -353,8 +556,71 @@ export class VaultManager {
   }
 
   public async importFile(file: File): Promise<VaultDocument> {
-    const content = await file.text();
-    return this.createDocument(file.name, content);
+    const isDocx = file.name.toLowerCase().endsWith('.docx');
+    let content: string;
+    let format: 'markdown' | 'docx' = 'markdown';
+
+    if (isDocx) {
+      const buffer = await file.arrayBuffer();
+      content = await parseDocxToHtml(buffer);
+      format = 'docx';
+    } else {
+      content = await file.text();
+    }
+
+    const current = this.getActiveDocument();
+    if (current && current.isDirty) {
+      this.saveRecoverySnapshot(current.id, current.content, 'pre-import');
+    }
+    const doc = this.createDocument(file.name, content);
+    doc.format = format;
+    this.persist();
+    return doc;
+  }
+
+  public async exportDocxFile(doc: VaultDocument, customHtml?: string): Promise<Uint8Array | null> {
+    const htmlToExport = customHtml !== undefined ? customHtml : doc.content;
+    const title = doc.name.replace(/\.[^.]+$/, '');
+    const bytes = await exportHtmlToDocx(htmlToExport, { title });
+
+    if (typeof window !== 'undefined' && window.document) {
+      const blob = new Blob([bytes as any], {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${title}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    return bytes;
+  }
+
+  public async saveToNativeDisk(fileName: string, data: Uint8Array | string, existingPath?: string): Promise<NativeSaveResult> {
+    try {
+      const { save } = await import('@tauri-apps/plugin-dialog');
+      const { writeFile } = await import('@tauri-apps/plugin-fs');
+      const ext = fileName.toLowerCase().endsWith('.docx') ? 'docx' : 'md';
+      const filePath = existingPath ?? await save({
+        defaultPath: fileName,
+        filters: [
+          { name: ext === 'docx' ? 'Word Document (*.docx)' : 'Markdown Document (*.md)', extensions: [ext] },
+          { name: 'All Files (*.*)', extensions: ['*'] },
+        ],
+      });
+      if (filePath) {
+        const bytes = typeof data === 'string' ? new TextEncoder().encode(data) : data;
+        await writeFile(filePath, bytes);
+        return { status: 'saved', path: filePath };
+      }
+    } catch {
+      return { status: 'failed' };
+    }
+    return { status: 'cancelled' };
   }
 
   public exportMarkdownFile(doc: VaultDocument): void {
@@ -363,7 +629,7 @@ export class VaultManager {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = doc.name;
+    a.download = doc.name.endsWith('.md') ? doc.name : `${doc.name.replace(/\.[^.]+$/, '')}.md`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

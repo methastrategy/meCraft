@@ -3,6 +3,8 @@ import {
   exportMarkdownToPdf,
   sanitizePdfText,
   wrapText,
+  hasThaiOrNonWinAnsi,
+  printDocument,
 } from '../src/engines/PdfExporter.js';
 
 describe('meDoc Studio — PdfExporter', () => {
@@ -63,5 +65,15 @@ const ready = true;
 
     const bytes = await exportMarkdownToPdf(longMd);
     expect(bytes.byteLength).toBeGreaterThan(3000);
+  });
+
+  it('accurately detects Thai or non-WinAnsi text to advise native print / vector PDF', () => {
+    expect(hasThaiOrNonWinAnsi('Hello World')).toBe(false);
+    expect(hasThaiOrNonWinAnsi('ข้อความภาษาไทย สารบรรณ')).toBe(true);
+    expect(hasThaiOrNonWinAnsi('English with Thai ปนอยู่')).toBe(true);
+  });
+
+  it('provides safe printDocument function callable without throwing', () => {
+    expect(() => printDocument()).not.toThrow();
   });
 });

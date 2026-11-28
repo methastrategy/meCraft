@@ -5,23 +5,23 @@
  */
 
 :root {
-  --medoc-bg-canvas: #070b0e;
-  --medoc-bg-surface: #0e161c;
-  --medoc-bg-card: #141f27;
-  --medoc-bg-hover: #1b2934;
-  --medoc-border: rgba(20, 184, 166, 0.18);
-  --medoc-border-focus: #0d9488;
-  --medoc-accent: #0d9488;
-  --medoc-accent-light: #14b8a6;
-  --medoc-accent-glow: rgba(20, 184, 166, 0.25);
-  --medoc-accent-dim: rgba(13, 148, 136, 0.12);
-  --medoc-text-main: #f1f5f9;
-  --medoc-text-muted: #8e9fae;
-  --medoc-text-sub: #5d6f7e;
-  --medoc-danger: #ef4444;
-  --medoc-font-sans: "Inter", "IBM Plex Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --medoc-bg-canvas: #eeeff3;
+  --medoc-bg-surface: #f6f7fa;
+  --medoc-bg-card: #fff;
+  --medoc-bg-hover: #e8ebf2;
+  --medoc-border: #d6d9e2;
+  --medoc-border-focus: #3c54ab;
+  --medoc-accent: #354c9f;
+  --medoc-accent-light: #304594;
+  --medoc-accent-glow: #d5ddff;
+  --medoc-accent-dim: #e7ecff;
+  --medoc-text-main: #222630;
+  --medoc-text-muted: #4d5567;
+  --medoc-text-sub: #5a6274;
+  --medoc-danger: #a12637;
+  --medoc-font-sans: "Segoe UI", "Leelawadee UI", system-ui, sans-serif;
   --medoc-font-sarabun: "TH Sarabun New", "TH Sarabun PSK", "Sarabun", "Inter", "IBM Plex Sans Thai", sans-serif;
-  --medoc-font-mono: "JetBrains Mono", "Fira Code", monospace;
+  --medoc-font-mono: Consolas, "Leelawadee UI", monospace;
 }
 
 * {
@@ -636,3 +636,720 @@ body, html {
   border-color: var(--medoc-accent-light) !important;
   box-shadow: 0 0 10px var(--medoc-accent-glow);
 }
+
+.medoc-shell { color-scheme: light; }
+.medoc-shell .medoc-topbar { flex: none; height: auto; min-height: 56px; gap: 12px; padding: 9px 20px; }
+.medoc-brand { min-width: 0; }
+.medoc-doc-title-input { min-width: 0; width: clamp(140px, 28vw, 360px); max-width: none; font-weight: 600; }
+.medoc-toolbar {
+  position: relative;
+  z-index: 19;
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 20px;
+  background: var(--medoc-bg-surface);
+  border-bottom: 1px solid var(--medoc-border);
+}
+.medoc-toolbar .medoc-segmented { margin-inline-end: 8px; align-self: center; }
+.medoc-export-menu { margin-inline-start: auto; }
+.medoc-shell :is(button, summary, input):focus-visible { outline: 2px solid var(--medoc-border-focus); outline-offset: 2px; }
+.medoc-shell .medoc-btn-primary,
+.medoc-shell .medoc-segmented-item.active,
+.medoc-shell .medoc-btn.active-sarabun { box-shadow: none; }
+.medoc-shell .medoc-btn-primary:hover { background: #293d84; border-color: #293d84; }
+.medoc-dropdown { position: relative; }
+.medoc-dropdown summary { list-style: none; }
+.medoc-dropdown summary::-webkit-details-marker { display: none; }
+.medoc-dropdown summary::after { content: '▾'; margin-inline-start: 2px; font-size: .75em; }
+.medoc-dropdown-menu {
+  position: absolute;
+  inset-block-start: calc(100% + 5px);
+  inset-inline-start: 0;
+  min-width: 170px;
+  padding: 4px;
+  border: 1px solid var(--medoc-border);
+  border-radius: 6px;
+  background: var(--medoc-bg-card);
+  box-shadow: 0 5px 14px #18213a19;
+}
+.medoc-export-menu .medoc-dropdown-menu,
+.medoc-toolbar > .medoc-dropdown:last-child .medoc-dropdown-menu { inset-inline: auto 0; }
+.medoc-dropdown-item {
+  display: block;
+  width: 100%;
+  min-height: 34px;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--medoc-text-main);
+  font: inherit;
+  white-space: nowrap;
+  text-align: start;
+  cursor: pointer;
+}
+.medoc-dropdown-item:hover { background: var(--medoc-bg-hover); }
+.medoc-sidebar { width: 218px; flex-shrink: 0; }
+.medoc-sidebar-header {
+  justify-content: start;
+  gap: 4px;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--medoc-border);
+}
+.medoc-sidebar-header button,
+.medoc-doc-list-item button,
+.medoc-toc-item {
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  color: var(--medoc-text-muted);
+  font: inherit;
+  padding: 5px 8px;
+  cursor: pointer;
+}
+.medoc-sidebar-header button[aria-pressed="true"], .medoc-doc-list-item.active {
+  background: var(--medoc-accent-dim);
+  border-color: transparent;
+  color: var(--medoc-accent);
+}
+.medoc-doc-list-item { gap: 2px; padding: 2px; }
+.medoc-doc-list-item .medoc-doc-open {
+  min-width: 0;
+  flex: 1;
+  text-align: start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.medoc-doc-list-item button:hover { background: var(--medoc-bg-hover); }
+.medoc-doc-list-item .btn-del-doc:hover { color: var(--medoc-danger); }
+.medoc-toc-item { width: 100%; text-align: start; }
+.medoc-toc-item.level-2 { padding-inline-start: 18px; }
+.medoc-toc-item.level-3 { padding-inline-start: 28px; }
+.medoc-empty { color: var(--medoc-text-muted); padding: 12px; }
+
+.medoc-editor-pane,
+.medoc-preview-pane { min-width: 0; background: var(--medoc-bg-canvas); }
+.medoc-editor-pane { justify-content: center; }
+.medoc-gutter {
+  background: var(--medoc-bg-surface);
+  border-color: var(--medoc-border);
+  white-space: pre;
+  overflow: hidden;
+}
+.medoc-shell:not([data-view-mode="split"]) .medoc-gutter { display: none; }
+.medoc-textarea {
+  background: var(--medoc-bg-card);
+  max-width: 860px;
+  min-width: 0;
+  border-inline: 1px solid var(--medoc-border);
+  padding: 24px clamp(22px, 5vw, 72px);
+  font: 1rem/24px var(--medoc-font-sans);
+}
+.medoc-textarea::placeholder { color: var(--medoc-text-muted); }
+.medoc-shell[data-view-mode="split"] .medoc-textarea { border-inline: 0; padding-inline: 20px; font-family: var(--medoc-font-mono); }
+.medoc-preview-pane { padding: clamp(16px, 3vw, 36px); }
+.medoc-preview-container {
+  min-height: 70%;
+  padding: clamp(20px, 5vw, 60px);
+  background: var(--medoc-bg-card);
+  border: 1px solid var(--medoc-border);
+  color: var(--medoc-text-main);
+}
+.medoc-shell[data-view-mode="split"] .medoc-preview-container { padding: 24px; }
+.medoc-preview-container :is(h1, h2, h3, p, .medoc-quote) { color: var(--medoc-text-main); }
+.medoc-preview-container h1 { border-color: var(--medoc-border); }
+.medoc-math-inline { display: inline; color: inherit; padding: 0; }
+.medoc-math-display { display: block; padding: 8px 14px; background: var(--medoc-bg-surface); }
+.medoc-math-display .katex-display { min-width: max-content; }
+.medoc-code-block { background: #242936; color: #f4f6fc; }
+.medoc-code-block .hl-comment { color: #acb6c9; }
+.medoc-shell.zen-mode .medoc-toolbar,
+.medoc-shell.zen-mode .medoc-ribbon { display: none !important; }
+.medoc-zen-exit-pill { background: var(--medoc-bg-surface); }
+.medoc-shell .medoc-statusbar { flex-shrink: 0; }
+.sarabun-mode .medoc-preview-container {
+  font-family: var(--medoc-font-sarabun) !important;
+  font-size: 16pt !important;
+  line-height: 1.6 !important;
+}
+.sarabun-mode .medoc-textarea {
+  font-family: var(--medoc-font-sarabun) !important;
+  font-size: 16pt !important;
+  line-height: 1.6 !important;
+}
+.sarabun-mode .medoc-preview-container :is(th,td) { border-color: var(--medoc-border); }
+@media (prefers-reduced-motion: reduce) {
+  .medoc-shell *, .medoc-shell *::before, .medoc-shell *::after { transition-duration: 0s; }
+}
+
+/* =========================================================================
+   RIBBON TOOLBAR (5 TABS: หน้าแรก, แทรก, เค้าโครง, ตรวจทาน, มุมมอง)
+   ========================================================================= */
+.medoc-ribbon {
+  background: var(--medoc-bg-surface);
+  border-bottom: 1px solid var(--medoc-border);
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+.medoc-ribbon-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  background: var(--medoc-bg-surface);
+  border-bottom: 1px solid var(--medoc-border);
+}
+.medoc-ribbon-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--medoc-text-muted);
+  cursor: pointer;
+  min-height: 38px;
+  min-width: 44px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.medoc-ribbon-tab:hover {
+  color: var(--medoc-text-main);
+}
+.medoc-ribbon-tab.active,
+.medoc-ribbon-tab[aria-selected="true"] {
+  color: var(--medoc-accent);
+  border-bottom-color: var(--medoc-accent);
+  background: var(--medoc-accent-dim);
+}
+
+.medoc-ribbon-panels {
+  position: relative;
+  min-height: 62px;
+  background: var(--medoc-bg-card);
+}
+.medoc-ribbon-panel {
+  display: none;
+  padding: 6px 12px;
+  align-items: stretch;
+  gap: 12px;
+  overflow-x: auto;
+}
+.medoc-ribbon-panel.active {
+  display: flex;
+}
+.medoc-ribbon-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-right: 12px;
+  border-right: 1px solid var(--medoc-border);
+}
+.medoc-ribbon-group:last-child {
+  border-right: none;
+}
+.medoc-ribbon-group-items {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+.medoc-ribbon-group-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--medoc-text-sub);
+  text-align: center;
+  margin-top: 4px;
+}
+.medoc-ribbon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 9px;
+  min-height: 32px;
+  min-width: 32px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: var(--medoc-text-main);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.medoc-ribbon-btn:hover {
+  background: var(--medoc-bg-hover);
+  border-color: var(--medoc-border);
+}
+.medoc-ribbon-btn:active {
+  transform: scale(0.98);
+}
+.medoc-ribbon-btn.active,
+.medoc-ribbon-btn[aria-pressed="true"] {
+  background: var(--medoc-accent-dim);
+  border-color: var(--medoc-accent-light);
+  color: var(--medoc-accent);
+}
+.medoc-ribbon-btn-bold { font-weight: 800; }
+.medoc-ribbon-btn-italic { font-style: italic; }
+.medoc-ribbon-btn-strike { text-decoration: line-through; }
+
+/* Status Bar Layout & Items */
+.medoc-statusbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 32px;
+  padding: 0 16px;
+  background: var(--medoc-bg-surface);
+  border-top: 1px solid var(--medoc-border);
+  font-size: 12px;
+  color: var(--medoc-text-muted);
+  user-select: none;
+}
+.medoc-status-left,
+.medoc-status-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.medoc-status-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.medoc-zoom-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--medoc-bg-card);
+  border: 1px solid var(--medoc-border);
+  border-radius: 4px;
+  padding: 1px 4px;
+}
+.medoc-zoom-btn {
+  background: transparent;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 4px;
+  color: var(--medoc-text-main);
+  line-height: 1;
+}
+
+/* Modals (Start Hub, Safe Import, Recovery Journal) */
+.medoc-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.medoc-modal-card {
+  background: var(--medoc-bg-card);
+  border: 1px solid var(--medoc-border);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  color: var(--medoc-text-main);
+}
+.medoc-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--medoc-border);
+  background: var(--medoc-bg-surface);
+}
+.medoc-modal-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--medoc-text-main);
+}
+.medoc-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: var(--medoc-text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.medoc-modal-close:hover {
+  background: var(--medoc-bg-hover);
+  color: var(--medoc-text-main);
+}
+.medoc-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+.medoc-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--medoc-border);
+  background: var(--medoc-bg-surface);
+}
+
+.medoc-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.medoc-hub-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 10px;
+  border: 1px solid var(--medoc-border);
+  border-radius: 8px;
+  background: var(--medoc-bg-surface);
+  cursor: pointer;
+  text-align: center;
+  gap: 8px;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.medoc-hub-tile:hover {
+  border-color: var(--medoc-accent);
+  background: var(--medoc-accent-dim);
+  transform: translateY(-2px);
+}
+.medoc-hub-tile-icon {
+  font-size: 24px;
+}
+.medoc-hub-tile-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--medoc-text-main);
+}
+
+.medoc-recents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.medoc-recent-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--medoc-border);
+  background: var(--medoc-bg-surface);
+  cursor: pointer;
+}
+.medoc-recent-item:hover {
+  background: var(--medoc-bg-hover);
+  border-color: var(--medoc-accent-light);
+}
+.medoc-recent-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--medoc-text-main);
+}
+.medoc-recent-meta {
+  font-size: 11px;
+  color: var(--medoc-text-muted);
+}
+
+.medoc-preview-box {
+  background: var(--medoc-bg-surface);
+  border: 1px solid var(--medoc-border);
+  border-radius: 6px;
+  padding: 12px;
+  font-family: var(--medoc-font-mono);
+  font-size: 12px;
+  max-height: 180px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  margin: 12px 0;
+}
+
+/* =========================================================================
+   PRINT / NATIVE PDF EXPORT MEDIA STYLES
+   - Clean A4 page output with pure white background and true Thai typography
+   - Suppresses UI chrome (topbar, sidebar, statusbar, toolbars)
+   ========================================================================= */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 20mm 20mm 20mm 20mm;
+  }
+  html, body, .medoc-shell {
+    background: #ffffff !important;
+    color: #111827 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: var(--medoc-font-sans) !important;
+  }
+  .medoc-topbar,
+  .medoc-toolbar,
+  .medoc-sidebar,
+  .medoc-statusbar,
+  .medoc-gutter,
+  .medoc-zen-exit-pill,
+  .medoc-dropdown,
+  button,
+  input {
+    display: none !important;
+  }
+  .medoc-workspace {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .medoc-editor-pane {
+    display: none !important;
+  }
+  .medoc-preview-pane {
+    display: block !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+  }
+  .medoc-preview-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    color: #111827 !important;
+    font-size: 16pt !important;
+    line-height: 1.6 !important;
+  }
+  .sarabun-mode .medoc-preview-container {
+    font-family: var(--medoc-font-sarabun) !important;
+    font-size: 16pt !important;
+    line-height: 1.5 !important;
+    text-align: justify !important;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #111827 !important;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  table, tr, img, pre, blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  th, td {
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+  }
+  a {
+    color: #111827 !important;
+    text-decoration: underline;
+  }
+}
+
+/* =========================================================================
+   TRUE WYSIWYG A4 PAPER SHEET & RULER ENGINE
+   ========================================================================= */
+.medoc-paper-canvas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: #eef2f7;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.medoc-ruler-bar {
+  width: 100%;
+  height: 22px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--medoc-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+}
+
+.medoc-ruler-scale {
+  width: 794px;
+  height: 100%;
+  position: relative;
+  background: #ffffff;
+  border-left: 1px solid var(--medoc-border);
+  border-right: 1px solid var(--medoc-border);
+}
+
+.ruler-tick {
+  position: absolute;
+  top: 3px;
+  font-size: 9px;
+  color: var(--medoc-text-muted);
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+.medoc-paper-viewport {
+  padding: 32px 16px 80px 16px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.medoc-paper-sheet {
+  width: 794px;
+  min-height: 1123px;
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #d1d5db;
+  border-radius: 2px;
+  padding: 96px 96px;
+  box-sizing: border-box;
+  position: relative;
+  transition: transform 0.15s ease, padding 0.15s ease;
+}
+
+.medoc-paper-sheet[data-margin="narrow"] {
+  padding: 48px 48px;
+}
+
+.medoc-paper-sheet[data-margin="wide"] {
+  padding: 144px 144px;
+}
+
+.medoc-paper-sheet[data-orientation="landscape"] {
+  width: 1123px;
+  min-height: 794px;
+}
+
+.medoc-paper-header,
+.medoc-paper-footer {
+  font-size: 11px;
+  color: #9ca3af;
+  min-height: 20px;
+  outline: none;
+  border-bottom: 1px dashed transparent;
+  margin-bottom: 24px;
+}
+
+.medoc-paper-footer {
+  margin-top: 40px;
+  margin-bottom: 0;
+  border-top: 1px dashed transparent;
+  border-bottom: none;
+}
+
+.medoc-paper-header:empty::before,
+.medoc-paper-footer:empty::before {
+  content: attr(data-placeholder);
+  color: #cbd5e1;
+  font-style: italic;
+}
+
+.medoc-paper-header:focus,
+.medoc-paper-footer:focus {
+  border-color: #cbd5e1;
+}
+
+.medoc-paper-page {
+  width: 100%;
+  min-height: 800px;
+  outline: none;
+  font-family: var(--medoc-font-sarabun), 'TH Sarabun New', sans-serif;
+  font-size: 16pt;
+  line-height: 1.6;
+  color: #111827;
+  word-break: break-word;
+}
+
+.medoc-paper-page p {
+  margin: 0 0 8px 0;
+}
+
+.medoc-paper-page h1 {
+  font-size: 24pt;
+  margin: 16px 0 12px 0;
+  font-weight: bold;
+}
+
+.medoc-paper-page h2 {
+  font-size: 20pt;
+  margin: 14px 0 10px 0;
+  font-weight: bold;
+}
+
+.medoc-paper-page h3 {
+  font-size: 18pt;
+  margin: 12px 0 8px 0;
+  font-weight: bold;
+}
+
+.medoc-paper-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+.medoc-paper-page th,
+.medoc-paper-page td {
+  border: 1px solid #d1d5db;
+  padding: 8px 10px;
+  font-size: 15pt;
+}
+
+.medoc-paper-page th {
+  background: #f8fafc;
+  font-weight: bold;
+}
+
+.medoc-select {
+  background: #ffffff;
+  border: 1px solid var(--medoc-border);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 12px;
+  color: var(--medoc-text-main);
+  outline: none;
+}
+
+.medoc-ribbon-btn-sm {
+  background: #ffffff;
+  border: 1px solid var(--medoc-border);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 11px;
+  color: var(--medoc-text-main);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+}
+
+.medoc-ribbon-btn-sm:hover {
+  background: var(--medoc-bg-hover);
+  border-color: var(--medoc-accent);
+}
+

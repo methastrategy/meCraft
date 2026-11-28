@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "meDoc Studio — Distraction-Free Pro Writing & KaTeX Typography",
+        "title": "meDoc",
         "width": 1280,
         "height": 800,
         "minWidth": 800,
@@ -21,7 +21,7 @@
         "fullscreen": false,
         "transparent": false,
         "decorations": true,
-        "theme": "Dark"
+        "theme": "Light"
       }
     ],
     "security": {

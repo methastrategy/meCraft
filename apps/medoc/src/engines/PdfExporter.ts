@@ -29,6 +29,24 @@ export function sanitizePdfText(text: string): string {
 }
 
 /**
+ * Detects whether text contains Thai characters or characters outside standard WinAnsi
+ * Used to advise users to utilize Native Print / Print-to-PDF for 100% typography fidelity
+ */
+export function hasThaiOrNonWinAnsi(text: string): boolean {
+  return /[\u0E00-\u0E7F]/.test(text) || /[^\x00-\xFF]/.test(text.replace(/[\u2018\u2019\u201C\u201D\u2013\u2014\u2026]/g, ''));
+}
+
+/**
+ * Triggers native system print dialog which renders full DirectWrite/HarfBuzz shaped Thai fonts
+ * and saves as vector PDF without WinAnsi '?' corruption
+ */
+export function printDocument(): void {
+  if (typeof window !== 'undefined' && typeof window.print === 'function') {
+    window.print();
+  }
+}
+
+/**
  * Splits text into lines that fit within a maximum width
  */
 export function wrapText(text: string, maxWidth: number, fontSize: number, font: any): string[] {

@@ -7,6 +7,7 @@
 import { marked } from 'marked';
 import katex from 'katex';
 import { countWordsThaiMixed } from '@mecraft/core-bridge';
+import { parseFrontMatter } from './FrontMatter.js';
 
 export interface DocumentStats {
   words: number;
@@ -214,7 +215,8 @@ export async function renderMarkdown(markdown: string, options: RenderOptions = 
     enableSyntaxHighlight = true,
   } = options;
 
-  let textToParse = markdown;
+  const { data, content, hasFrontMatter } = parseFrontMatter(markdown);
+  let textToParse = hasFrontMatter && Object.keys(data).length > 0 ? content : markdown;
 
   // Process math before marked
   if (enableKaTeX) {

@@ -27,4 +27,6 @@ target/
 /meCrafts-website
 dist-artifacts/
 scratch/
+__pycache__/
+*.pyc
 
