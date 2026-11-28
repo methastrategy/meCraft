@@ -1,0 +1,1331 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-28T09:41:56.506Z",
+  "products": [
+    {
+      "id": "mecraft",
+      "name": "meCraft",
+      "category": "utility",
+      "categoryLabel": {
+        "en": "Suite & Launcher",
+        "th": "ชุดโปรแกรมและ Launcher"
+      },
+      "tagline": {
+        "en": "Official meCraft Hub & Windows Launcher for Private-First Studios",
+        "th": "ศูนย์รวมและตัวจัดการแอป meCraft บน Windows พร้อมระบบติดตั้งและอัปเดตที่ตรวจยืนยันแล้ว"
+      },
+      "description": {
+        "en": "Central Windows launcher and web portal for meCraft studios. Installs verified packages with SHA-256 checks, launches offline apps, and syncs account entitlements.",
+        "th": "ศูนย์กลางคลังผลิตภัณฑ์ meCraft บน Windows และเว็บ ตรวจขนาดและ SHA-256 ก่อนติดตั้ง เปิดใช้งานแอปในเครื่องได้แม้ไม่มีอินเทอร์เน็ต"
+      },
+      "status": "active",
+      "version": "1.0.12",
+      "icon": "mecraft",
+      "image": "/branding/mecraft-suite-wide.webp",
+      "accentColor": "#c5a45e",
+      "glowColor": "rgba(197,164,94,0.3)",
+      "keywords": [
+        "mecraft",
+        "launcher",
+        "hub",
+        "msi",
+        "installer",
+        "suite",
+        "windows"
+      ],
+      "specs": {
+        "en": [
+          "Single mecraft-hub.msi Windows 10/11 64-bit Installer",
+          "SHA-256 & Size Verification for Managed Packages",
+          "Offline-Capable Local Library & Launch",
+          "Shared Catalog v2 Across Web & Windows"
+        ],
+        "th": [
+          "ตัวติดตั้ง Windows 10/11 64-bit ไฟล์เดียว mecraft-hub.msi",
+          "ตรวจขนาดไฟล์และ SHA-256 ก่อนติดตั้งแอปในเครื่อง",
+          "เปิดแอปที่ติดตั้งไว้ได้แม้ไม่มีอินเทอร์เน็ต",
+          "ใช้แค็ตตาล็อกกลาง v2 ร่วมกันระหว่างเว็บและ Windows"
+        ]
+      },
+      "supportedFormats": [
+        "MSI",
+        "EXE"
+      ],
+      "channels": [
+        {
+          "platform": "windows",
+          "type": "windows-msi",
+          "stability": "stable",
+          "version": "1.0.12",
+          "releaseTag": "1.0.12",
+          "arch": "x64",
+          "url": "https://github.com/methastrategy/meCraft/releases/download/1.0.12/mecraft-hub.msi",
+          "sizeBytes": 96907264,
+          "sha256": "d138409b711fa8c9729802095f6ff955afce3cb1ee18d16d80fb61b407613ea1",
+          "launcherManaged": false
+        },
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "stable",
+          "version": "1.0.12",
+          "url": "https://mecrafts.vercel.app/"
+        }
+      ]
+    },
+    {
+      "id": "mepdf",
+      "name": "mePDF Studio",
+      "category": "document",
+      "categoryLabel": {
+        "en": "Document",
+        "th": "เอกสาร"
+      },
+      "tagline": {
+        "en": "Professional Client-Side PDF Engineering & Document Cockpit",
+        "th": "สตูดิโอวิศวกรรมเอกสาร PDF ค็อกพิทจัดการหน้า บีบอัด และฉีด OCR ในเครื่อง"
+      },
+      "description": {
+        "en": "Merge, split, visual page cockpit, lossless & scanned compression, AES-256 encryption, and searchable OCR text injection.",
+        "th": "รวม/แยก PDF, ค็อกพิทหน้าเพจแบบ Visual, บีบอัดแบบไม่สูญเสียคุณภาพ, เข้ารหัส AES-256 และฉีด OCR Text เพื่อค้นหา"
+      },
+      "status": "active",
+      "version": "1.0.4",
+      "icon": "pdf",
+      "image": "/branding/mepdf-wide.webp",
+      "accentColor": "#d4af37",
+      "glowColor": "rgba(212,175,55,0.3)",
+      "keywords": [
+        "pdf",
+        "merge",
+        "split",
+        "compress",
+        "encrypt",
+        "ocr",
+        "aes",
+        "document"
+      ],
+      "specs": {
+        "en": [
+          "4-Point Deskew & Local Otsu Binarization",
+          "Lossless Deflate & Scanned PDF Compression",
+          "Client-Side Searchable OCR Text Injection",
+          "AES-256 Bank-Grade Encryption & Sanitization",
+          "Visual Page Cockpit: Drag, Split, Merge"
+        ],
+        "th": [
+          "ปรับระนาบ 4-Point Deskew & ลบเงา Otsu ท้องถิ่น",
+          "บีบอัดเอกสาร Lossless Deflate สูงสุด 90%",
+          "ฝังข้อความ OCR ค้นหาคำได้ในเครื่อง 100%",
+          "เข้ารหัสความปลอดภัยระดับธนาคาร AES-256",
+          "จัดระเบียบหน้า ลากสลับ/แยก/รวมไฟล์อิสระ"
+        ]
+      },
+      "supportedFormats": [
+        "PDF",
+        "TIFF",
+        "PNG",
+        "JPG",
+        "TXT"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "stable",
+          "version": "1.0.4",
+          "url": "https://mecrafts.vercel.app/mepdf/"
+        },
+        {
+          "platform": "windows",
+          "type": "windows-exe",
+          "stability": "stable",
+          "arch": "x64",
+          "version": "1.0.4",
+          "releaseTag": "v1.0.4",
+          "url": "https://github.com/methastrategy/meCraft/releases/download/v1.0.4/mepdf.exe",
+          "sizeBytes": 109902848,
+          "sha256": "f6cbc80ecd1ba41a7b348811d4384be173de2b58a004b1f930588e3d9ae2adf5",
+          "launcherManaged": false
+        }
+      ]
+    },
+    {
+      "id": "mephoto",
+      "name": "mePhoto Studio",
+      "category": "photo",
+      "categoryLabel": {
+        "en": "Photo & Color",
+        "th": "ภาพและสี"
+      },
+      "tagline": {
+        "en": "CamScanner-Grade Document Restoration & Perspective Photo Lab",
+        "th": "ห้องปฏิบัติการตกแต่งภาพถ่าย กู้คืนเอกสาร และปรับระนาบมุมมอง"
+      },
+      "description": {
+        "en": "4-point homography perspective deskew, adaptive local Otsu binarization shadow eradication, Magic Color document enhancement, and 16-bit RAW darkroom.",
+        "th": "ปรับมุมมอง 4 จุด Homography, กำจัดเงาด้วย Otsu Binarization ท้องถิ่น, เพิ่มความสวยงามเอกสารด้วย Magic Color และ Darkroom ปรับ RAW 16-bit"
+      },
+      "status": "active",
+      "version": "1.0.4",
+      "icon": "photo",
+      "image": "/branding/mephoto-wide.webp",
+      "accentColor": "#10b981",
+      "glowColor": "rgba(16,185,129,0.3)",
+      "keywords": [
+        "photo",
+        "image",
+        "scanner",
+        "ocr",
+        "homography",
+        "perspective",
+        "color",
+        "restore",
+        "raw"
+      ],
+      "specs": {
+        "en": [
+          "4-Point Homography Perspective Correction",
+          "Adaptive Local Otsu Shadow Eradication",
+          "Magic Color Document Photo Enhancement",
+          "16-Bit RAW / DNG Digital Darkroom",
+          "Batch Multi-Document Scan Restoration"
+        ],
+        "th": [
+          "ดึงภาพถ่ายเอียงให้ตรงระนาบ 4-Point Homography",
+          "กำจัดเงาดำบนกระดาษด้วย Adaptive Otsu",
+          "เร่งความสดใสและคมชัดด้วย Magic Color",
+          "ห้องมืดตกแต่งภาพ RAW 16-Bit ไม่สูญเสียคุณภาพ",
+          "แต่งภาพและกู้เอกสารพร้อมกันแบบชุด"
+        ]
+      },
+      "supportedFormats": [
+        "RAW",
+        "DNG",
+        "PSD",
+        "PNG",
+        "JPG",
+        "WEBP"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "stable",
+          "version": "1.0.4",
+          "url": "https://mecrafts.vercel.app/mephoto/"
+        },
+        {
+          "platform": "windows",
+          "type": "windows-exe",
+          "stability": "stable",
+          "arch": "x64",
+          "version": "1.0.4",
+          "releaseTag": "v1.0.4",
+          "url": "https://github.com/methastrategy/meCraft/releases/download/v1.0.4/mephoto.exe",
+          "sizeBytes": 102135296,
+          "sha256": "cf2dcded04edf2b4120c67a9c2eb58010e8fa51c1c4c229927dadf41d8927cad",
+          "launcherManaged": false
+        }
+      ]
+    },
+    {
+      "id": "medrop",
+      "name": "meDrop Radial Converter",
+      "category": "utility",
+      "categoryLabel": {
+        "en": "Utility & REA",
+        "th": "เครื่องมือและ REA"
+      },
+      "tagline": {
+        "en": "Zero-Window Radial Drag & Drop File Converter HUD",
+        "th": "วงแหวนแปลงไฟล์เรเดียลรอบเคอร์เซอร์เมาส์ ลากวางแปลงทันทีใน RAM"
+      },
+      "description": {
+        "en": "Hold Ctrl and drag any file in Windows Explorer: instant radial donut menu converts images, PDFs, vectors & documents locally in RAM, or transfers to meCraft studios.",
+        "th": "เพียงลากไฟล์ใน Windows Explorer พร้อมกด Ctrl: เมนูวงแหวนรอบเมาส์จะแปลงไฟล์ภาพ, PDF, เวกเตอร์, เอกสารใน RAM ทันที หรือส่งต่อเข้าสู่สตูดิโอ meCraft"
+      },
+      "status": "active",
+      "version": "1.0.0",
+      "icon": "drop",
+      "image": "/branding/medrop-wide.webp",
+      "accentColor": "#06b6d4",
+      "glowColor": "rgba(6,182,212,0.3)",
+      "keywords": [
+        "drop",
+        "convert",
+        "radial",
+        "donut",
+        "hud",
+        "converter",
+        "drag",
+        "zero-window",
+        "local-first"
+      ],
+      "specs": {
+        "en": [
+          "Native Windows Low-Level Mouse & Keyboard Hook",
+          "Dynamic SVG Radial Arc HUD with 120fps Spring Physics",
+          "Client-Side RAM In-Place Conversion (No Cloud)",
+          "Context-Aware Smart Format Filtering by Extension",
+          "Cross-App Studio Gateway via ClipBus Memory Pipeline"
+        ],
+        "th": [
+          "Native Windows Low-Level Hook ดักจับเมาส์ความเร็วสูง",
+          "วงแหวนเรขาคณิต SVG Donut แอนิเมชัน 120fps ลื่นไหล",
+          "แปลงไฟล์ใน RAM บันทึกข้างไฟล์เดิม ไม่แตะ Cloud",
+          "กรอง Format ปลายทางอัตโนมัติตามนามสกุลไฟล์",
+          "ส่งต่อไฟล์เข้า mePDF / mePhoto ด้วย ClipBus Pipeline"
+        ]
+      },
+      "supportedFormats": [
+        "PDF",
+        "PNG",
+        "JPG",
+        "WEBP",
+        "SVG",
+        "MD",
+        "DOCX"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "stable",
+          "version": "1.0.0",
+          "url": "https://mecrafts.vercel.app/medrop/"
+        }
+      ]
+    },
+    {
+      "id": "meide",
+      "name": "meIDE AI",
+      "category": "utility",
+      "categoryLabel": {
+        "en": "Utility & REA",
+        "th": "เครื่องมือและ REA"
+      },
+      "tagline": {
+        "en": "Private-First In-Device AI Code Editor & Terminal Workbench",
+        "th": "พื้นที่เขียนโค้ด AI IDE และเทอร์มินัลในเครื่อง 100% ไร้การส่งโค้ดออกนอกเครื่อง"
+      },
+      "description": {
+        "en": "Built-in code editor with file explorer, split Markdown preview, terminal, and in-device AI Copilot.",
+        "th": "ตัวแก้ไขโค้ดพร้อมตัวจัดการไฟล์ พรีวิว Markdown เทอร์มินัล และ AI Copilot ในเครื่อง"
+      },
+      "status": "active",
+      "version": "1.0.4",
+      "icon": "meide",
+      "image": "/branding/in-device-engine-wide.webp",
+      "accentColor": "#38bdf8",
+      "glowColor": "rgba(56,189,248,0.3)",
+      "keywords": [
+        "ide",
+        "code",
+        "editor",
+        "terminal",
+        "ai",
+        "copilot",
+        "developer"
+      ],
+      "specs": {
+        "en": [
+          "In-Browser & Desktop Code Workbench",
+          "Integrated Terminal & Markdown Split Preview",
+          "100% Client-Side File Handling"
+        ],
+        "th": [
+          "พื้นที่เขียนโค้ดทั้งบนเว็บและเดสก์ท็อป",
+          "เทอร์มินัลและพรีวิว Markdown ในตัว",
+          "จัดการไฟล์ในเครื่อง 100% ไม่ส่งขึ้นคลาวด์"
+        ]
+      },
+      "supportedFormats": [
+        "TS",
+        "JS",
+        "MD",
+        "JSON",
+        "RS",
+        "HTML",
+        "CSS"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "stable",
+          "version": "1.0.4",
+          "url": "https://mecrafts.vercel.app/meide/"
+        },
+        {
+          "platform": "windows",
+          "type": "windows-exe",
+          "stability": "stable",
+          "arch": "x64",
+          "version": "1.0.4",
+          "releaseTag": "v1.0.4",
+          "url": "https://github.com/methastrategy/meCraft/releases/download/v1.0.4/meide.exe",
+          "sizeBytes": 11183616,
+          "sha256": "ffd784822339a40241a2b7814c70a4d8eedcf716aa06d92daa9644961b399534",
+          "launcherManaged": false
+        }
+      ]
+    },
+    {
+      "id": "medoc",
+      "name": "meDoc",
+      "category": "document",
+      "categoryLabel": {
+        "en": "Document",
+        "th": "เอกสาร"
+      },
+      "tagline": {
+        "en": "Distraction-Free Markdown Typewriter & KaTeX Studio",
+        "th": "โปรแกรมพิมพ์งานไร้สิ่งรบกวน Markdown, สมการ KaTeX และผัง Mermaid สด"
+      },
+      "description": {
+        "en": "Distraction-free typography, split-view real-time Markdown, live KaTeX LaTeX equations, inline Mermaid diagrams, and instant zero-cloud PDF/DOCX generation.",
+        "th": "ตัวพิมพ์ไร้สิ่งรบกวน, หน้าต่างแยกซ้าย-ขวาพิมพ์ Markdown และสมการ KaTeX สด, ไดอะแกรม Mermaid เวกเตอร์ และสร้างเอกสารสิ่งพิมพ์ PDF/DOCX ในเครื่อง 100%"
+      },
+      "status": "active",
+      "version": "1.0.4",
+      "icon": "doc",
+      "image": "/branding/medoc-wide.webp",
+      "accentColor": "#0d9488",
+      "glowColor": "rgba(13,148,136,0.3)",
+      "keywords": [
+        "markdown",
+        "word",
+        "document",
+        "latex",
+        "writing",
+        "typewriter",
+        "katex",
+        "mermaid",
+        "pdf"
+      ],
+      "specs": {
+        "en": [
+          "Split-View Real-Time Markdown & KaTeX Engine",
+          "Inline Mermaid Vector Diagrams & Syntax Highlighting",
+          "Distraction-Free Zen Fullscreen Focus Mode",
+          "Client-Side Instant PDF Publishing via pdf-lib",
+          "Local-First Vault & Dynamic Outline Heading Jump"
+        ],
+        "th": [
+          "หน้าต่างแยกซ้าย-ขวาพิมพ์ Markdown และ KaTeX สด",
+          "เรนเดอร์ Mermaid ไดอะแกรมเวกเตอร์และเน้นสีโค้ด",
+          "โหมด Zen ไร้สิ่งรบกวนเขียนงานสบายตาระดับสมาธิ",
+          "สร้าง PDF สิ่งพิมพ์ในหน่วยความจำเครื่องผ่าน pdf-lib",
+          "ระบบจัดเก็บไฟล์ในเครื่องและกระโดดตามหัวข้อ Outline"
+        ]
+      },
+      "supportedFormats": [
+        "MD",
+        "MARKDOWN",
+        "PDF",
+        "DOCX",
+        "TXT"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "stable",
+          "version": "1.0.4",
+          "url": "https://mecrafts.vercel.app/medoc/"
+        },
+        {
+          "platform": "windows",
+          "type": "windows-exe",
+          "stability": "stable",
+          "arch": "x64",
+          "version": "1.0.4",
+          "releaseTag": "v1.0.4",
+          "url": "https://github.com/methastrategy/meCraft/releases/download/v1.0.4/medoc.exe",
+          "sizeBytes": 103988736,
+          "sha256": "744e3a9ae5b61c63171c77aa9cfeee878a7420b7dd4fbb1355c6e486c6d06ef7",
+          "launcherManaged": true
+        }
+      ]
+    },
+    {
+      "id": "mevector",
+      "name": "meVector Studio",
+      "category": "vector",
+      "categoryLabel": {
+        "en": "Vector & CAD",
+        "th": "เวกเตอร์และ CAD"
+      },
+      "tagline": {
+        "en": "Precision Bézier Vector Illustration & SVG Studio",
+        "th": "สตูดิโอวาดภาพเวกเตอร์ Bézier ความแม่นยำสูง และส่งออก SVG/PDF สะอาด"
+      },
+      "description": {
+        "en": "Resolution-independent path editing, node manipulation, boolean vector geometry, and SVG/PDF icon workspace.",
+        "th": "แก้ไขเส้นพาธอิสระจากความละเอียด, ดัดแปลง Node, ตรรกะเวกเตอร์ Boolean และพื้นที่ทำงานไอคอน SVG/PDF"
+      },
+      "status": "preview",
+      "version": "1.0.0",
+      "icon": "vector",
+      "image": "/branding/mevector-wide.webp",
+      "accentColor": "#3b82f6",
+      "glowColor": "rgba(59,130,246,0.3)",
+      "keywords": [
+        "vector",
+        "svg",
+        "bezier",
+        "illustration",
+        "path",
+        "node",
+        "icon",
+        "design"
+      ],
+      "specs": {
+        "en": [
+          "Resolution-Independent Bézier Splines",
+          "Sub-Pixel Node & Tangent Manipulation",
+          "Boolean Geometry (Unite, Minus, Intersect)",
+          "Clean SVG 2.0 & Vector PDF Exporter",
+          "Hardware-Accelerated Path Tessellation"
+        ],
+        "th": [
+          "วาดเส้น Bézier คมชัดทุกระดับความละเอียด",
+          "ดัดแปลง Node ปรับแขนความโค้งแม่นยำ",
+          "ตรรกะรูปทรง Boolean รวม/ตัด/เจาะรู",
+          "ส่งออก SVG 2.0 และ PDF Vector ไม่แตก",
+          "เรนเดอร์เส้นพาธด้วย GPU ความเร็วสูง"
+        ]
+      },
+      "supportedFormats": [
+        "SVG",
+        "AI",
+        "EPS",
+        "PDF",
+        "DXF"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "preview",
+          "version": "1.0.0",
+          "url": "https://mecrafts.vercel.app/mevector/"
+        }
+      ]
+    },
+    {
+      "id": "me3d",
+      "name": "me3D Studio",
+      "category": "audio",
+      "categoryLabel": {
+        "en": "3D & Sound",
+        "th": "3D และเสียง"
+      },
+      "tagline": {
+        "en": "Spatial 3D Modeling, Scene Lighting & Geometry Workspace",
+        "th": "ปั้นโมเดลโพลีกอน 3 มิติ, จัดวางวัสดุ PBR และแสงสตูดิโอ HDRI แบบเรียลไทม์"
+      },
+      "description": {
+        "en": "Polygon mesh modeling, PBR material staging, real-time spatial previews, and GLTF/OBJ asset export.",
+        "th": "โมเดลตาข่าย Polygon, จัดวาง PBR Material, Preview เชิงพื้นที่แบบ Real-time และส่งออก GLTF/OBJ"
+      },
+      "status": "preview",
+      "version": "1.0.0",
+      "icon": "3d",
+      "image": "/branding/me3d-wide.webp",
+      "accentColor": "#6366f1",
+      "glowColor": "rgba(99,102,241,0.3)",
+      "keywords": [
+        "3d",
+        "blender",
+        "model",
+        "mesh",
+        "pbr",
+        "gltf",
+        "obj",
+        "spatial",
+        "scene"
+      ],
+      "specs": {
+        "en": [
+          "Subdivision Polygon Mesh Modeling Workspace",
+          "PBR Metallic/Roughness Material Staging",
+          "Real-Time HDRI Environmental Scene Lighting",
+          "GLTF 2.0, OBJ & STL 3D Print Geometry Export",
+          "Hardware WebGPU Spatial Viewport Gizmo"
+        ],
+        "th": [
+          "ปั้นโมเดลโพลีกอน Polygon Mesh ความแม่นยำสูง",
+          "จัดวางพื้นผิววัสดุ PBR เสมือนจริง",
+          "จำลองแสงสตูดิโอและแสง HDRI แบบเรียลไทม์",
+          "ส่งออกไฟล์สำหรับ 3D Print และเกม (GLTF/OBJ/STL)",
+          "Viewport 3 มิติเร่งความเร็วด้วย WebGPU"
+        ]
+      },
+      "supportedFormats": [
+        "GLTF",
+        "GLB",
+        "OBJ",
+        "STL",
+        "FBX",
+        "USDZ"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "preview",
+          "version": "1.0.0",
+          "url": "https://mecrafts.vercel.app/me3d/"
+        }
+      ]
+    },
+    {
+      "id": "mefilm",
+      "name": "meFilm Studio",
+      "category": "video",
+      "categoryLabel": {
+        "en": "Video & Motion",
+        "th": "วิดีโอและโมชัน"
+      },
+      "tagline": {
+        "en": "Multi-Track Timeline Video Editor & Lossless Slicer",
+        "th": "ตัดต่อวิดีโอหลายเลเยอร์ Non-Linear, ใส่ Transition และเรนเดอร์ MP4 ด่วน"
+      },
+      "description": {
+        "en": "Non-linear multi-layer video cutting, transitions, hardware-accelerated MP4 rendering, and clip sequencing.",
+        "th": "ตัดต่อวิดีโอ Non-linear หลายเลเยอร์, Transition, เรนเดอร์ MP4 เร่งด้วย Hardware และจัดลำดับ Clip"
+      },
+      "status": "preview",
+      "version": "1.0.0",
+      "icon": "film",
+      "image": "/branding/mefilm-wide.webp",
+      "accentColor": "#ef4444",
+      "glowColor": "rgba(239,68,68,0.3)",
+      "keywords": [
+        "video",
+        "film",
+        "timeline",
+        "edit",
+        "mp4",
+        "transition",
+        "cut",
+        "render"
+      ],
+      "specs": {
+        "en": [
+          "Multi-Track Non-Linear Timeline Slicer",
+          "Lossless Keyframe Trimming Without Re-encode",
+          "GPU Hardware-Accelerated 4K MP4 Export",
+          "Multi-Layer Transitions & Color LUTs",
+          "Multi-Audio Track Mixing & Waveforms"
+        ],
+        "th": [
+          "ตัดต่อวิดีโอหลายแทร็กบนไทม์ไลน์อิสระ",
+          "ตัดซอยคลิปตาม Keyframe โดยไม่เสียคุณภาพ",
+          "เรนเดอร์ 4K MP4 ด้วยฮาร์ดแวร์ GPU",
+          "ใส่ทรานซิชันและเกรดสีภาพยนตร์ด้วย LUTs",
+          "ซิงค์แทร็กเสียงหลายช่องสัญญาณ"
+        ]
+      },
+      "supportedFormats": [
+        "MP4",
+        "MOV",
+        "WEBM",
+        "MKV",
+        "WAV",
+        "AAC"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "preview",
+          "version": "1.0.0",
+          "url": "https://mecrafts.vercel.app/mefilm/"
+        }
+      ]
+    },
+    {
+      "id": "melight",
+      "name": "meLight Studio",
+      "category": "photo",
+      "categoryLabel": {
+        "en": "Photo & Color",
+        "th": "ภาพและสี"
+      },
+      "tagline": {
+        "en": "HDR Tone Mapping, Parametric Exposure & RAW Photo Grade Lab",
+        "th": "ปรับแต่งภาพถ่าย RAW, ปรับแสง Parametric Exposure และ Tone Mapping HDR"
+      },
+      "description": {
+        "en": "High dynamic range tone-mapping, exposure calibration, parametric curves, and batch photography grading.",
+        "th": "Tone-mapping HDR, ปรับ Exposure, Curves แบบ Parametric และ Grade ภาพถ่ายแบบ Batch"
+      },
+      "status": "preview",
+      "version": "1.0.0",
+      "icon": "light",
+      "image": "/branding/melight-wide.webp",
+      "accentColor": "#eab308",
+      "glowColor": "rgba(234,179,8,0.3)",
+      "keywords": [
+        "raw",
+        "lightroom",
+        "photo",
+        "color",
+        "grading",
+        "hdr",
+        "exposure",
+        "darkroom"
+      ],
+      "specs": {
+        "en": [
+          "High Dynamic Range (HDR) Tone-Mapping",
+          "Parametric RGB Curves & Exposure Calibration",
+          "Zero-Loss Demosaicing & Sensor Profiles",
+          "HSL Selective Color Adjustment Wheels",
+          "Instant Recipe Presets & Batch Grading"
+        ],
+        "th": [
+          "เกลี่ยแสงมืด/สว่างด้วย HDR Tone-Mapping",
+          "ปรับ Parametric RGB Curves และแสงละเอียด",
+          "ถอดรหัสเซนเซอร์ภาพ RAW 16-Bit ไร้ Noise",
+          "วงล้อปรับสี HSL แยกรายเฉดสีอย่างแม่นยำ",
+          "บันทึกสูตร Preset และคัดลอกโทนสีแบบชุด"
+        ]
+      },
+      "supportedFormats": [
+        "RAW",
+        "CR2",
+        "NEF",
+        "ARW",
+        "DNG",
+        "TIFF"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "preview",
+          "version": "1.0.0",
+          "url": "https://mecrafts.vercel.app/melight/"
+        }
+      ]
+    },
+    {
+      "id": "memotion",
+      "name": "meMotion Studio",
+      "category": "video",
+      "categoryLabel": {
+        "en": "Video & Motion",
+        "th": "วิดีโอและโมชัน"
+      },
+      "tagline": {
+        "en": "Keyframe Motion Graphics, Kinetic Typography & Particle VFX",
+        "th": "แอนิเมชันกราฟิกเคลื่อนไหว Keyframe, ตัวอักษร Kinetic และเอฟเฟกต์อนุภาค"
+      },
+      "description": {
+        "en": "Timeline-based layer motion, kinetic typography, particle presets, and vector path animation.",
+        "th": "โมชัน Layer บน Timeline, ตัวอักษรเคลื่อนไหว, Preset อนุภาค และแอนิเมชันเส้นพาธเวกเตอร์"
+      },
+      "status": "preview",
+      "version": "1.0.0",
+      "icon": "motion",
+      "image": "/branding/memotion-wide.webp",
+      "accentColor": "#a855f7",
+      "glowColor": "rgba(168,85,247,0.3)",
+      "keywords": [
+        "motion",
+        "animation",
+        "keyframe",
+        "effects",
+        "vfx",
+        "typography",
+        "particle"
+      ],
+      "specs": {
+        "en": [
+          "Timeline-Based Layer Keyframe Motion",
+          "Kinetic Typography & Text Motion Presets",
+          "Physics-Driven 2D Particle System",
+          "Vector Path Morphing & Easing Graph Editor",
+          "Alpha Channel Transparent Video Export"
+        ],
+        "th": [
+          "แอนิเมชันเลเยอร์บนไทม์ไลน์ด้วย Keyframe",
+          "ตัวอักษรเคลื่อนไหว Kinetic Typography สำเร็จรูป",
+          "เอฟเฟกต์อนุภาค Particle จำลองฟิสิกส์",
+          "ดัดรูปทรงเวกเตอร์ Morphing พร้อมกราฟ Easing",
+          "ส่งออกวิดีโอพื้นหลังโปร่งใส Alpha Channel"
+        ]
+      },
+      "supportedFormats": [
+        "MP4",
+        "WEBM",
+        "LOTTIE",
+        "JSON",
+        "GIF",
+        "APNG"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "preview",
+          "version": "1.0.0",
+          "url": "https://mecrafts.vercel.app/memotion/"
+        }
+      ]
+    },
+    {
+      "id": "medesign",
+      "name": "meDesign Studio",
+      "category": "vector",
+      "categoryLabel": {
+        "en": "Vector & CAD",
+        "th": "เวกเตอร์และ CAD"
+      },
+      "tagline": {
+        "en": "Desktop Publishing, Editorial Layout & Print Pre-flight",
+        "th": "ออกแบบ UI/UX Prototyping, ระบบ Design System และจัดวางหน้ากระดาษสิ่งพิมพ์"
+      },
+      "description": {
+        "en": "Grid-based page layout for magazines, multi-page posters, brochures, and CMYK print PDF export.",
+        "th": "จัดวางหน้าบนกริดสำหรับนิตยสาร, โปสเตอร์หลายหน้า, โบรชัวร์ และส่งออก PDF สี CMYK"
+      },
+      "status": "preview",
+      "version": "1.0.0",
+      "icon": "design",
+      "image": "/branding/medesign-wide.webp",
+      "accentColor": "#f97316",
+      "glowColor": "rgba(249,115,22,0.3)",
+      "keywords": [
+        "layout",
+        "indesign",
+        "publish",
+        "magazine",
+        "print",
+        "cmyk",
+        "brochure",
+        "grid"
+      ],
+      "specs": {
+        "en": [
+          "12-Column Modular Editorial Grid Engine",
+          "CMYK FOGRA39 & Swatch Color Profiles",
+          "Master Pages & Linked Flow Text Frames",
+          "Print Bleed, Margins & Slug Management",
+          "Standards-Compliant PDF/X-1a Publishing"
+        ],
+        "th": [
+          "จัดเลย์เอาต์สิ่งพิมพ์บน Modular Grid 12 คอลัมน์",
+          "โปรไฟล์สีมาตรฐานงานพิมพ์ CMYK FOGRA39",
+          "ระบบ Master Pages และเฟรมข้อความเชื่อมต่อกัน",
+          "คุมระยะตัดตก Bleed และขอบกระดาษพิมพ์",
+          "ส่งออกไฟล์งานพิมพ์มาตรฐานสากล PDF/X-1a"
+        ]
+      },
+      "supportedFormats": [
+        "INDD",
+        "IDML",
+        "PDF/X",
+        "EPS",
+        "SVG"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "preview",
+          "version": "1.0.0",
+          "url": "https://mecrafts.vercel.app/medesign/"
+        }
+      ]
+    },
+    {
+      "id": "meaudio",
+      "name": "meAudio Studio",
+      "category": "audio",
+      "categoryLabel": {
+        "en": "3D & Sound",
+        "th": "3D และเสียง"
+      },
+      "tagline": {
+        "en": "Speech Master, Spectral Denoise & Multi-Track Podcast Audio Studio",
+        "th": "มาสเตอร์เสียงพูด, ตัดเสียงรบกวน Spectral และตัดต่อพอดแคสต์หลายไมค์"
+      },
+      "description": {
+        "en": "Voice track mastering, spectral noise reduction, podcast multi-mic editing, and lossy/lossless audio export.",
+        "th": "Master เสียงพูด, ลด Noise แบบ Spectral, ตัดต่อ Podcast หลายไมค์ และส่งออกเสียงแบบ Lossy/Lossless"
+      },
+      "status": "preview",
+      "version": "1.0.0",
+      "icon": "audio",
+      "image": "/branding/meaudio-wide.webp",
+      "accentColor": "#ec4899",
+      "glowColor": "rgba(236,72,153,0.3)",
+      "keywords": [
+        "audio",
+        "sound",
+        "daw",
+        "podcast",
+        "noise",
+        "mastering",
+        "music",
+        "wav",
+        "mp3"
+      ],
+      "specs": {
+        "en": [
+          "Multi-Track Digital Audio Workstation Engine",
+          "AI Spectral Noise Reduction & Hum Eradication",
+          "Multi-Band Parametric EQ & Dynamics Comp",
+          "Podcast Multi-Mic Auto-Leveling Cockpit",
+          "Lossless 32-Bit Float WAV & FLAC Mastering"
+        ],
+        "th": [
+          "ห้องบันทึกและมิกซ์เสียงดิจิทัลหลายแทร็ก",
+          "ลบเสียงฮัมและเสียงรบกวนด้วย Spectral De-Noise",
+          "ปรับแต่งเสียงด้วย Parametric EQ และ Compressor",
+          "บาลานซ์เสียงไมค์ Podcast หลายตัวอัตโนมัติ",
+          "ส่งออกไฟล์เสียงคุณภาพสูง 32-Bit Float WAV/FLAC"
+        ]
+      },
+      "supportedFormats": [
+        "WAV",
+        "FLAC",
+        "MP3",
+        "AAC",
+        "OGG",
+        "AIFF"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "preview",
+          "version": "1.0.0",
+          "url": "https://mecrafts.vercel.app/meaudio/"
+        }
+      ]
+    },
+    {
+      "id": "medeck",
+      "name": "meDeck Studio",
+      "category": "document",
+      "categoryLabel": {
+        "en": "Document",
+        "th": "เอกสาร"
+      },
+      "tagline": {
+        "en": "High-Impact Interactive Presentation & Keynote Slide Studio",
+        "th": "สร้างสไลด์นำเสนอเชิงโต้ตอบ กราฟิกการนำเสนอ และส่งออก PDF/WebDeck"
+      },
+      "description": {
+        "en": "Apple Keynote-grade presentation canvas, DrawingML vector shapes, text warps, PPTX clean-room authoring, and web-ready deck exports.",
+        "th": "ผืนผ้าใบนำเสนอระดับ Apple Keynote, รูปทรงเวกเตอร์ DrawingML, บิดข้อความ, สร้างไฟล์ PPTX ปราศจากคลาวด์ และส่งออก WebDeck ทันที"
+      },
+      "status": "preview",
+      "version": "1.0.0",
+      "icon": "deck",
+      "image": "/branding/mecraft-suite-wide.webp",
+      "accentColor": "#fb923c",
+      "glowColor": "rgba(251,146,60,0.3)",
+      "keywords": [
+        "deck",
+        "keynote",
+        "powerpoint",
+        "slide",
+        "presentation",
+        "pitch",
+        "pptx"
+      ],
+      "specs": {
+        "en": [
+          "Apple Keynote-Grade Cinematic Slide Canvas",
+          "DrawingML Clean-Room Vector Shapes & Text Warps",
+          "Smart Guides & Fluid Physics Transitions",
+          "Zero-Cloud PPTX & Standalone HTML WebDeck Export",
+          "Dual-Monitor Presenter Display Cockpit"
+        ],
+        "th": [
+          "แคนวาสสไลด์นำเสนอคมชัดระดับภาพยนตร์",
+          "รูปทรงเวกเตอร์ DrawingML และบิดข้อความอิสระ",
+          "เส้นกะระยะอัจฉริยะและแอนิเมชันทรานซิชันฟิสิกส์",
+          "ส่งออกไฟล์ PPTX และ HTML WebDeck ไร้คลาวด์",
+          "หน้าจอผู้บรรยายสองจอแยกพร้อมบันทึกส่วนตัว"
+        ]
+      },
+      "supportedFormats": [
+        "PPTX",
+        "KEY",
+        "PDF",
+        "HTML5",
+        "PNG"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "preview",
+          "version": "1.0.0",
+          "url": "https://mecrafts.vercel.app/medeck/"
+        }
+      ]
+    },
+    {
+      "id": "mecad",
+      "name": "meCAD Studio",
+      "category": "vector",
+      "categoryLabel": {
+        "en": "Vector & CAD",
+        "th": "เวกเตอร์และ CAD"
+      },
+      "tagline": {
+        "en": "2D Engineering CAD Drafting & Millimeter Precision Plotter",
+        "th": "เขียนแบบวิศวกรรม 2D CAD ความแม่นยำสูงระดับมิลลิเมตร และจัดการ DXF"
+      },
+      "description": {
+        "en": "Clean-room DXF (R12 to 2018 ASCII/Binary), entity blocks, coordinate snapping, geometric constraints, and millimeter-accurate plotting.",
+        "th": "อ่านและเขียนไฟล์ DXF ทุกเวอร์ชัน, บล็อกเอนทิตี, สแน็ปพิกัดแม่นยำ, ข้อกำหนดเรขาคณิต และพล็อตแบบแปลนความแม่นยำระดับมิลลิเมตร"
+      },
+      "status": "in-dev",
+      "version": "1.0.0",
+      "icon": "cad",
+      "image": "/branding/mecraft-suite-wide.webp",
+      "accentColor": "#0ea5e9",
+      "glowColor": "rgba(14,165,233,0.3)",
+      "keywords": [
+        "cad",
+        "autocad",
+        "dxf",
+        "dwg",
+        "drafting",
+        "engineering",
+        "blueprint",
+        "survey"
+      ],
+      "specs": {
+        "en": [
+          "Clean-Room DXF Parsing (R12 to 2018 ASCII/Binary)",
+          "Entity Blocks, Geometric Snapping & Ortho Locks",
+          "Dimensioning, Tolerancing & Millimeter-Accurate Plotting",
+          "Layer Management with TrueColor & Linetype Specs",
+          "SVG and High-Res Vector PDF Plan Blueprints"
+        ],
+        "th": [
+          "อ่านและเขียน DXF มาตรฐานสากลทั้ง ASCII และ Binary",
+          "บล็อกชิ้นงาน สแน็ปจุดสัมผัส และล็อกแกนออร์โท",
+          "บอกขนาด กำหนดพิกัด และพล็อตแบบละเอียดระดับมิลลิเมตร",
+          "จัดการเลเยอร์ สี TrueColor และรูปแบบเส้นประหลากหลาย",
+          "แปลงแบบแปลนเป็น SVG และ PDF เวกเตอร์ความละเอียดสูง"
+        ]
+      },
+      "supportedFormats": [
+        "DXF",
+        "DWG",
+        "SVG",
+        "PDF",
+        "HPGL"
+      ],
+      "channels": []
+    },
+    {
+      "id": "mesheet",
+      "name": "meSheet Studio",
+      "category": "document",
+      "categoryLabel": {
+        "en": "Document",
+        "th": "เอกสาร"
+      },
+      "tagline": {
+        "en": "Reactive Financial Modeling & High-Volume Spreadsheet Grid",
+        "th": "ตารางคำนวณสเปรดชีตสูตรการเงินความเร็วสูง และประมวลผลข้อมูลใน RAM"
+      },
+      "description": {
+        "en": "Reactive spreadsheet formula engine, memory-mapped CSV/TSV/XLSX streaming, instant scrolling across 1,000,000+ rows in local device RAM.",
+        "th": "เครื่องยนต์คำนวณสูตรสเปรดชีตแบบ Reactive, สตรีมไฟล์ CSV/TSV/XLSX ในหน่วยความจำ, เลื่อนหน้าจอ 1,000,000+ แถวลื่นไหลโดยไม่กระตุก"
+      },
+      "status": "preview",
+      "version": "1.0.0",
+      "icon": "sheet",
+      "image": "/branding/mecraft-suite-wide.webp",
+      "accentColor": "#14b8a6",
+      "glowColor": "rgba(20,184,166,0.3)",
+      "keywords": [
+        "sheet",
+        "excel",
+        "spreadsheet",
+        "csv",
+        "formula",
+        "grid",
+        "table",
+        "finance"
+      ],
+      "specs": {
+        "en": [
+          "Reactive Formula Engine (SUM, VLOOKUP, XLOOKUP, IF)",
+          "Virtualized Canvas Grid Scrolling (1,000,000+ Rows)",
+          "Instant Memory-Mapped CSV & TSV Import/Export",
+          "Financial Modeling, Charting & Data Validation",
+          "Clean-Room XLSX Parsing with Zero Cloud Dependencies"
+        ],
+        "th": [
+          "สูตรคำนวณ Reactive รองรับ SUM, VLOOKUP, XLOOKUP, IF",
+          "แสดงผลบน Canvas เสมือนจริงเลื่อนล้านแถวไม่หน่วง",
+          "เปิดและส่งออก CSV/TSV ขนาดมหึมาทันทีใน RAM",
+          "แบบจำลองการเงิน กราฟิก และการตรวจสอบความถูกต้อง",
+          "อ่านเขียน XLSX ปราศจากโมดูลภายนอกและไม่ต่อเน็ต"
+        ]
+      },
+      "supportedFormats": [
+        "XLSX",
+        "CSV",
+        "TSV",
+        "PARQUET",
+        "JSON"
+      ],
+      "channels": [
+        {
+          "platform": "web",
+          "type": "web-app",
+          "stability": "preview",
+          "version": "1.0.0",
+          "url": "https://mecrafts.vercel.app/mesheet/"
+        }
+      ]
+    },
+    {
+      "id": "metexture",
+      "name": "meTexture Studio",
+      "category": "audio",
+      "categoryLabel": {
+        "en": "3D & Sound",
+        "th": "3D และเสียง"
+      },
+      "tagline": {
+        "en": "Direct 3D Mesh Brush Painter & UV Unwrapping Workspace",
+        "th": "เพนต์ลวดลายบนผิวโมเดล 3D Mesh โดยตรง และกางระนาบ UV เกาะผิวโมเดล"
+      },
+      "description": {
+        "en": "Direct 3D mesh brush painting, UV unwrapping, DirectDraw Surface (DDS / BC1–BC5) block compression, and mipmap generators in device memory.",
+        "th": "ระบายสีลงบนผิวโมเดล 3 มิติโดยตรง, คลี่พิกัด UV, บีบอัดพื้นผิว DirectDraw Surface (DDS BC1-BC5) และสร้าง Mipmap ในเครื่อง"
+      },
+      "status": "in-dev",
+      "version": "1.0.0",
+      "icon": "texture",
+      "image": "/branding/mecraft-suite-wide.webp",
+      "accentColor": "#f43f5e",
+      "glowColor": "rgba(244,63,94,0.3)",
+      "keywords": [
+        "texture",
+        "painter",
+        "substance",
+        "3d",
+        "brush",
+        "uv",
+        "pbr",
+        "dds"
+      ],
+      "specs": {
+        "en": [
+          "Direct 3D Mesh Brush Painting & Decal Stamping",
+          "UV Island Unwrapping & Seam Stitching Workspace",
+          "DirectDraw Surface (DDS / BC1-BC5) Block Compression",
+          "Multi-Resolution Mipmap Synthesis in Device Memory",
+          "PBR Texture Sets (BaseColor, Normal, Roughness, Metalness)"
+        ],
+        "th": [
+          "ระบายสีและประทับสติกเกอร์ลงบนผิวโมเดล 3D โดยตรง",
+          "ระบบกางเกาะ UV และเย็บรอยต่อตะเข็บโมเดลอย่างแม่นยำ",
+          "บีบอัดกราฟิก DDS (BC1-BC5) ประสิทธิภาพระดับการ์ดจอ",
+          "สังเคราะห์ Mipmap หลายระดับความละเอียดในแรม",
+          "ชุดเท็กซ์เจอร์ PBR ครบวงจร ทั้งสี ความเงา และความนูน"
+        ]
+      },
+      "supportedFormats": [
+        "DDS",
+        "PNG",
+        "EXR",
+        "HDR",
+        "TIFF",
+        "OBJ"
+      ],
+      "channels": []
+    },
+    {
+      "id": "mematerial",
+      "name": "meMaterial Studio",
+      "category": "audio",
+      "categoryLabel": {
+        "en": "3D & Sound",
+        "th": "3D และเสียง"
+      },
+      "tagline": {
+        "en": "Procedural Node-Based PBR Material & Shader Synthesizer",
+        "th": "สังเคราะห์พื้นผิว PBR เสมือนจริงด้วยโหนดเชื่อมต่อ และเขียน WebGPU Shader"
+      },
+      "description": {
+        "en": "Node-based shader graph, real-time WGSL compilation, procedural noise synthesis, and metallic/roughness PBR staging.",
+        "th": "กราฟโหนดสร้างพื้นผิวอัตโนมัติ, คอมไพล์ภาษา WGSL สด, สังเคราะห์ Noise ทางคณิตศาสตร์ และจัดวางแสงเงา PBR ในเครื่อง"
+      },
+      "status": "in-dev",
+      "version": "1.0.0",
+      "icon": "material",
+      "image": "/branding/mecraft-suite-wide.webp",
+      "accentColor": "#8b5cf6",
+      "glowColor": "rgba(139,92,246,0.3)",
+      "keywords": [
+        "material",
+        "substance",
+        "designer",
+        "shader",
+        "node",
+        "procedural",
+        "wgsl",
+        "pbr"
+      ],
+      "specs": {
+        "en": [
+          "Node-Based Visual Shader Graph Architecture",
+          "Procedural Noise Synthesis (Perlin, Simplex, Voronoi)",
+          "Real-Time WebGPU WGSL Shader Compilation",
+          "Non-Destructive Multi-Resolution Texture Baking",
+          "Seamless 4K Tiling & Seamless Pattern Export"
+        ],
+        "th": [
+          "สถาปัตยกรรมกราฟโหนดเชื่อมต่อที่ยืดหยุ่นไม่ทำลายต้นฉบับ",
+          "สังเคราะห์สัญญาณนอยส์ Perlin, Simplex, Voronoi อิสระ",
+          "คอมไพล์โค้ด WebGPU WGSL แสดงผลแสงจริงในเสี้ยววินาที",
+          "อบเท็กซ์เจอร์หลายระดับความละเอียดบันทึกในเครื่อง",
+          "สร้างลวดลายไร้รอยต่อความละเอียดระดับ 4K พร้อมใช้งาน"
+        ]
+      },
+      "supportedFormats": [
+        "SBSAR",
+        "WGSL",
+        "EXR",
+        "PNG",
+        "TIFF"
+      ],
+      "channels": []
+    },
+    {
+      "id": "meani",
+      "name": "meAni Studio",
+      "category": "video",
+      "categoryLabel": {
+        "en": "Video & Motion",
+        "th": "วิดีโอและโมชัน"
+      },
+      "tagline": {
+        "en": "2D Skeletal Animation, Inverse Kinematics & Sprite Rigging",
+        "th": "แอนิเมชัน 2 มิติติดกระดูกโครงสร้าง สรีระจำลอง IK และทำ Sprite Sheet เกม"
+      },
+      "description": {
+        "en": "Frame-by-frame light table, onion skinning, skeletal bone rigging, curve interpolation, and sprite sheet / vector SVG export.",
+        "th": "โต๊ะไฟสเก็ตช์ทีละเฟรม, หัวหอมพรีวิว Onion Skinning, ดัดกระดูกโครงสร้างตัวละคร 2 มิติ และส่งออก Sprite Sheet สู่เอนจินเกม"
+      },
+      "status": "in-dev",
+      "version": "1.0.0",
+      "icon": "ani",
+      "image": "/branding/mecraft-suite-wide.webp",
+      "accentColor": "#d946ef",
+      "glowColor": "rgba(217,70,239,0.3)",
+      "keywords": [
+        "animation",
+        "spine",
+        "rigging",
+        "bones",
+        "ik",
+        "sprite",
+        "2d",
+        "onion-skin"
+      ],
+      "specs": {
+        "en": [
+          "2D Skeletal Bone Rigging & Inverse Kinematics (IK)",
+          "Frame-by-Frame Light Table & Onion Skinning",
+          "Dope Sheet & Bézier Motion Curve Editor",
+          "Packed Texture Atlas & Sprite Sheet Generation",
+          "Clean SVG & Game-Ready JSON Vector Animation Export"
+        ],
+        "th": [
+          "ติดกระดูกโครงสร้าง 2 มิติพร้อมจำลองการเคลื่อนไหว IK",
+          "โต๊ะไฟวาดเฟรมต่อเฟรมและภาพซ้อนหัวหอม Onion Skin",
+          "ตาราง Dope Sheet และดัดความเร็วด้วยเส้นโค้ง Bézier",
+          "จัดเรียงภาพลง Atlas และ Sprite Sheet สำหรับเกม",
+          "ส่งออก JSON และ SVG Vector นำไปใช้ใน Web/Unity/Godot"
+        ]
+      },
+      "supportedFormats": [
+        "JSON",
+        "ATLAS",
+        "PNG",
+        "SVG",
+        "GIF",
+        "WEBM"
+      ],
+      "channels": []
+    },
+    {
+      "id": "merea",
+      "name": "meREA Studio",
+      "category": "utility",
+      "categoryLabel": {
+        "en": "Utility & REA",
+        "th": "เครื่องมือและ REA"
+      },
+      "tagline": {
+        "en": "Forensic Binary Reverse Engineering & Clean-Room Code Synthesis",
+        "th": "แกะรอยระบบ ถอดรหัสไบนารี สถาปัตยกรรมย้อนรอย และสร้างโค้ดอัตโนมัติ"
+      },
+      "description": {
+        "en": "Universal REA toolkit with 320 CLI/MCP forensic tools, PE/COFF, ELF, Mach-O, WASM and AST disassembly, memory layout inspection, and clean-room code synthesis for autonomous AI agents.",
+        "th": "ชุดเครื่องมือวิศวกรรมย้อนรอยครอบจักรวาล 320 คำสั่ง CLI/MCP, ถอดรหัสไฟล์ PE, ELF, Mach-O, WASM, วิเคราะห์โครงสร้างเมมโมรี่ และสร้างโค้ดสะอาดสำหรับ AI Agent"
+      },
+      "status": "in-dev",
+      "version": "1.0.0",
+      "icon": "rea",
+      "image": "/branding/mecraft-suite-wide.webp",
+      "accentColor": "#00f0ff",
+      "glowColor": "rgba(0,240,255,0.3)",
+      "keywords": [
+        "rea",
+        "reverse-engineering",
+        "binary",
+        "disassembly",
+        "decompilation",
+        "agent",
+        "mcp"
+      ],
+      "specs": {
+        "en": [
+          "320 CLI/MCP Forensic Reverse Engineering Tools",
+          "PE/COFF, ELF, Mach-O, WASM & AST Disassembly",
+          "Cross-Reference (XRef) & Call-Graph Reconstruction",
+          "Memory Layout Inspection & Clean-Room Code Synthesis",
+          "Direct LLM Agent Integration via Model Context Protocol"
+        ],
+        "th": [
+          "เครื่องมือตรวจพิสูจน์วิศวกรรมย้อนรอย 320 รายการผ่าน MCP",
+          "ถอดรหัสและวิเคราะห์โครงสร้าง PE, ELF, Mach-O และ WASM",
+          "สร้างผังเชื่อมโยง Cross-Reference และกราฟเรียกฟังก์ชัน",
+          "ตรวจสอบโครงสร้างเมมโมรี่และสังเคราะห์โค้ดสะอาดใหม่",
+          "เชื่อมต่อตรงสู่โมเดลปัญญาประดิษฐ์ผ่าน Model Context Protocol"
+        ]
+      },
+      "supportedFormats": [
+        "EXE",
+        "DLL",
+        "ELF",
+        "WASM",
+        "SO",
+        "DYLIB",
+        "JSON"
+      ],
+      "channels": []
+    }
+  ]
+}

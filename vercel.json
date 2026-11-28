@@ -27,13 +27,28 @@
   ],
   "rewrites": [
     { "source": "/auth", "destination": "/index.html" },
-    { "source": "/auth/(.*)", "destination": "/index.html" }
+    { "source": "/auth/(.*)", "destination": "/index.html" },
+    { "source": "/apps/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
       "source": "/catalog/v1.json",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=300" }
+      ]
+    },
+    {
+      "source": "/catalog/v2.json",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=300" }
+      ]
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json; charset=utf-8" },
         { "key": "Cache-Control", "value": "public, max-age=300" }
       ]
     },

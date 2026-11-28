@@ -85,6 +85,20 @@ fn activate(dir: &Path, staged: &Path, version_file: &Path, version: &str) -> Re
     Ok(())
 }
 
+fn verify_medoc_payload(
+    downloaded: u64,
+    expected_size: u64,
+    hash: Sha256,
+    expected_sha256: &str,
+) -> Result<(), String> {
+    if downloaded != expected_size
+        || !format!("{:x}", hash.finalize()).eq_ignore_ascii_case(expected_sha256)
+    {
+        return Err("Downloaded meDoc package failed verification".to_string());
+    }
+    Ok(())
+}
+
 #[tauri::command]
 pub(crate) async fn install_verified_medoc(
     app_handle: tauri::AppHandle,
@@ -175,11 +189,7 @@ pub(crate) async fn install_verified_medoc(
                 emitted = Instant::now();
             }
         }
-        if downloaded != size_bytes
-            || !format!("{:x}", hash.finalize()).eq_ignore_ascii_case(&sha256)
-        {
-            return Err("Downloaded meDoc package failed verification".to_string());
-        }
+        verify_medoc_payload(downloaded, size_bytes, hash, &sha256)?;
         file.sync_all().await.map_err(|error| error.to_string())?;
         drop(file);
         activate(&dir, &staged, &version_file, &version)
@@ -225,5 +235,20 @@ mod tests {
         assert!(document.is_file());
         fs::remove_file(document).unwrap();
         fs::remove_dir(dir).unwrap();
+    }
+
+    #[test]
+    fn payload_verification_rejects_wrong_size_or_sha256() {
+        let payload = b"medoc-test-binary";
+        let mut ok_hash = Sha256::new();
+        ok_hash.update(payload);
+        let expected_sha = format!("{:x}", ok_hash.clone().finalize());
+
+        assert!(verify_medoc_payload(payload.len() as u64, payload.len() as u64, ok_hash.clone(), &expected_sha).is_ok());
+        assert!(verify_medoc_payload((payload.len() - 1) as u64, payload.len() as u64, ok_hash.clone(), &expected_sha).is_err());
+
+        let mut bad_hash = Sha256::new();
+        bad_hash.update(b"tampered-binary");
+        assert!(verify_medoc_payload(payload.len() as u64, payload.len() as u64, bad_hash, &expected_sha).is_err());
     }
 }

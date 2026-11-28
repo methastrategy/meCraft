@@ -9,6 +9,10 @@ const rootDir = fs.realpathSync(path.resolve(__dirname, '..'));
 
 console.log('[build-web] Starting unified meCraft multi-app web build...');
 
+// 0. Validate and build central catalog (v2.json + v1.json)
+console.log('[build-web] Validating and building catalog/v2.json and catalog/v1.json...');
+execSync('node scripts/build-catalog.js', { cwd: rootDir, stdio: 'inherit' });
+
 // 1. Run workspace builds
 console.log('[build-web] Building all workspaces with npm run build:all...');
 execSync('npm run build:all', { cwd: rootDir, stdio: 'inherit' });
@@ -129,6 +133,7 @@ const rootPathedHtml = launcherHtml
   .replaceAll('src="./assets/', 'src="/assets/')
   .replaceAll('href="./assets/', 'href="/assets/')
   .replaceAll('href="./branding/', 'href="/branding/')
+  .replaceAll('href="./manifest.webmanifest"', 'href="/manifest.webmanifest"')
   .replaceAll('content="./assets/', 'content="/assets/');
 
 for (const studio of additionalStudios) {
@@ -136,6 +141,22 @@ for (const studio of additionalStudios) {
   const studioDir = path.join(distDir, studio);
   fs.mkdirSync(studioDir, { recursive: true });
   fs.writeFileSync(path.join(studioDir, 'index.html'), rootPathedHtml, 'utf-8');
+}
+
+// Generate static /apps/<id>/index.html pages from catalog/v2.json for shareable product URLs
+const catalogV2Path = path.join(rootDir, 'public', 'catalog', 'v2.json');
+if (fs.existsSync(catalogV2Path)) {
+  const catalogV2 = JSON.parse(fs.readFileSync(catalogV2Path, 'utf-8'));
+  for (const product of catalogV2.products || []) {
+    const appRouteDir = path.join(distDir, 'apps', product.id);
+    fs.mkdirSync(appRouteDir, { recursive: true });
+    const appHtml = rootPathedHtml.replace(
+      '<title>meCrafts</title>',
+      `<title>${product.name} — meCrafts</title>`,
+    );
+    fs.writeFileSync(path.join(appRouteDir, 'index.html'), appHtml, 'utf-8');
+  }
+  console.log(`[build-web] Generated ${(catalogV2.products || []).length} static /apps/<id>/ routes.`);
 }
 
 // Generate unified 18-studio downloads portal with Home Page sanctuary aesthetic + ArtCraft card-table architecture

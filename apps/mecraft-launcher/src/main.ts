@@ -31,6 +31,26 @@ import { fetchMeDocPackage, meDocPrimaryAction, type MeDocPackage } from './medo
 import { version as packageVersion } from '../package.json';
 let launcherVersion = packageVersion;
 import { clearLauncherUpdateResult, takeLauncherUpdateResult } from './launcher-updater';
+import catalogSeed from '../../../catalog/registry.json';
+import {
+  DEFAULT_DESKTOP_CATALOG_V2_URL,
+  DEFAULT_WEB_CATALOG_V2_URL,
+  fetchCatalogV2,
+  filterCatalogProducts,
+  getMeDocPackageFromCatalogV2,
+  parseCatalogV2,
+  parseProductRoute,
+  type CatalogCategory,
+  type CatalogPlatform,
+  type CatalogProduct,
+  type CatalogStatus,
+} from './catalog';
+import {
+  renderCatalogProductCard,
+  renderHomeScreenGuideModal,
+  renderProductDetailView,
+  renderSharedFilterControls,
+} from './product-library-ui';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PORTAL INVARIANT: This file is the OFFICIAL SHOWCASE & DISCOVERY WEB PORTAL.
@@ -1738,10 +1758,19 @@ class MeCraftsPortal {
   private meDocProgress: number | null = null;
   private meDocMessage = '';
   private meDocError = false;
+  private catalogProducts: CatalogProduct[] = parseCatalogV2({ schemaVersion: 2, products: catalogSeed.products })?.products ?? [];
+  private catalogFromCache = false;
+  private catalogError: string | null = null;
+  private activePlatformFilter: CatalogPlatform | 'all' = 'all';
+  private activeStatusFilter: CatalogStatus | 'all' = 'all';
+  private installedOnlyFilter = false;
+  private selectedProductId: string | null = null;
+  private isHomeScreenGuideOpen = false;
+  private shareLinkCopied = false;
   public forceDesktopMode: boolean | null = null;
   private selectedDetailApp: ShowcaseApp | null = null;
   private isDetailModalOpen = false;
-    public desktopView: 'studios' | 'workbench' | 'recents' | 'vault' = 'studios';
+    public desktopView: 'studios' | 'installed' | 'workbench' | 'recents' | 'vault' = 'studios';
 
   // ── meCraft IDE Workspace State ──
   public openedFolderName: string = 'workspace';
@@ -1990,12 +2019,25 @@ console.log(initializeStudio(pdfStudio));`,
       });
     }
 
+    if (typeof window !== 'undefined' && window.location && !this.isDesktopMode()) {
+      this.selectedProductId = parseProductRoute(window.location.pathname);
+      window.addEventListener('popstate', () => {
+        this.selectedProductId = parseProductRoute(window.location.pathname);
+        this.shareLinkCopied = false;
+        this.render();
+        this.attachListeners();
+      });
+    }
+
     this.render();
     this.attachListeners();
     this.loadRecentProjects();
 
     const isDesktop = this.isDesktopMode();
     const isVitest = typeof process !== 'undefined' && (process.env?.VITEST || process.env?.NODE_ENV === 'test');
+    if (!isVitest) {
+      void this.loadSharedCatalog();
+    }
     const hasSkipParam = typeof window !== 'undefined' && Boolean(window.location && window.location.search && window.location.search.includes('skipSteam'));
     if (isDesktop && !isVitest && !hasSkipParam) {
       this.initDesktopStartup();
@@ -2720,27 +2762,43 @@ console.log(initializeStudio(pdfStudio));`,
         ${this.renderUpdateModal()}
         ${this.renderStudioDetailModal()}
       `;
-    } else {
-      this.appEl.innerHTML = `
-        ${this.renderHeader()}
-        <main id="portal-main" class="workstation-main">
-          ${this.renderHero()}
-          ${this.renderFilterBar()}
-          ${this.renderAppsGrid()}
-          ${this.renderManifesto()}
-          ${this.renderSpecs()}
-        </main>
-        ${this.renderFooter()}
-        ${this.renderSteamSplashUpdater()}
-        ${this.renderAuthModal()}
-        ${this.renderUserProfileModal()}
-        ${this.renderDesktopPreviewModal()}
-        ${this.renderFullscreenMockupModal()}
-        ${this.renderDownloadsModal()}
-        ${this.renderUpdateModal()}
-        ${this.renderStudioDetailModal()}
-      `;
-    }
+      } else {
+        const selectedProduct = this.selectedProductId
+          ? this.catalogProducts.find(p => p.id === this.selectedProductId) ?? null
+          : null;
+        this.appEl.innerHTML = `
+          ${this.renderHeader()}
+          <main id="portal-main" class="workstation-main">
+            ${this.selectedProductId ? (selectedProduct ? renderProductDetailView(selectedProduct, {
+              lang: this.lang,
+              isDesktop: false,
+              shareCopied: this.shareLinkCopied,
+            }) : `
+              <section class="shared-detail-page">
+                <a href="/" class="shared-btn-secondary" data-back-to-library="true">← ${this.lang === 'th' ? 'กลับคลังผลิตภัณฑ์' : 'Back to Library'}</a>
+                <h1>${this.lang === 'th' ? 'ไม่พบผลิตภัณฑ์ที่ต้องการ' : 'Product not found'}</h1>
+                <p>${this.lang === 'th' ? 'รหัสผลิตภัณฑ์นี้ไม่อยู่ในแค็ตตาล็อกปัจจุบัน' : 'This product ID is not in the current catalog.'}</p>
+              </section>
+            `) : `
+              ${this.renderHero()}
+              ${this.renderFilterBar()}
+              ${this.renderAppsGrid()}
+              ${this.renderManifesto()}
+              ${this.renderSpecs()}
+            `}
+          </main>
+          ${this.renderFooter()}
+          ${this.renderSteamSplashUpdater()}
+          ${this.renderAuthModal()}
+          ${this.renderUserProfileModal()}
+          ${this.renderDesktopPreviewModal()}
+          ${this.renderFullscreenMockupModal()}
+          ${this.renderDownloadsModal()}
+          ${this.renderUpdateModal()}
+          ${this.renderStudioDetailModal()}
+          ${renderHomeScreenGuideModal(this.isHomeScreenGuideOpen, this.lang)}
+        `;
+      }
   }
 
   private renderTitlebar(): string {
@@ -2844,7 +2902,26 @@ console.log(initializeStudio(pdfStudio));`,
   }
 
   private renderDesktopView(): string {
+    if (this.selectedProductId && (this.desktopView === 'studios' || this.desktopView === 'installed')) {
+      const product = this.catalogProducts.find(p => p.id === this.selectedProductId);
+      if (product) {
+        const installed = this.meDocStatus?.installed === true;
+        const action = this.meDocStatus ? meDocPrimaryAction(installed, this.meDocStatus.version, this.meDocPackage) : 'retry';
+        return `<div class="ws-view ws-view-detail">${renderProductDetailView(product, {
+          lang: this.lang,
+          isDesktop: true,
+          localStatus: product.id === 'medoc' ? this.meDocStatus ?? undefined : undefined,
+          meDocAction: product.id === 'medoc' ? action : undefined,
+          meDocBusy: this.meDocBusy,
+          meDocMessage: this.meDocMessage,
+          meDocError: this.meDocError,
+          meDocProgress: this.meDocProgress,
+        })}</div>`;
+      }
+    }
     switch (this.desktopView) {
+      case 'installed':
+        return this.renderInstalledView();
       case 'recents':
         return this.renderRecentsView();
       case 'vault':
@@ -2855,6 +2932,29 @@ console.log(initializeStudio(pdfStudio));`,
       default:
         return this.renderStudiosCatalogView();
     }
+  }
+
+  private renderInstalledView(): string {
+    const th = this.lang === 'th';
+    const installedMedoc = this.meDocStatus?.installed === true;
+    const installedProducts = this.catalogProducts.filter(p => (p.id === 'medoc' && installedMedoc) || p.id === 'meide');
+    return `
+    <div class="ws-view ws-view-installed">
+      <header class="ws-view-header">
+        <h1 class="ws-view-title">${th ? 'แอปที่ติดตั้งแล้วบนเครื่อง' : 'Installed Apps'}</h1>
+        <p class="ws-view-subtitle">${th ? 'เปิดใช้งานแอปที่ติดตั้งไว้ได้ทันที แม้ไม่มีอินเทอร์เน็ต' : 'Launch locally installed apps anytime, even offline.'}</p>
+      </header>
+      ${this.renderMeDocLibraryCard()}
+      <div class="shared-products-grid" id="ws-installed-grid">
+        ${installedProducts.map(p => renderCatalogProductCard(p, {
+          lang: this.lang,
+          isDesktop: true,
+          localStatus: p.id === 'medoc'
+            ? this.meDocStatus ?? { installed: false }
+            : { installed: true, version: p.version },
+        })).join('')}
+      </div>
+    </div>`;
   }
 
   private renderWorkbenchView(): string {
@@ -3207,6 +3307,26 @@ console.log(initializeStudio(pdfStudio));`,
 
       <div class="ws-studios-full-grid" id="ws-library-grid">${this.renderUpcomingStudios()}</div>
       </section>
+
+      <section class="ws-shared-catalog-section" aria-labelledby="ws-shared-catalog-title">
+        <div class="ws-shared-catalog-header">
+          <h2 id="ws-shared-catalog-title">${isTh ? 'คลังผลิตภัณฑ์ร่วม (meCraft & meCrafts Web)' : 'Shared Product Library'}</h2>
+        </div>
+        ${renderSharedFilterControls({
+          lang: this.lang,
+          isDesktop: true,
+          query: this.searchQuery,
+          category: this.activeFilter,
+          platform: this.activePlatformFilter,
+          status: this.activeStatusFilter,
+          installedOnly: this.installedOnlyFilter,
+          catalogFromCache: this.catalogFromCache,
+          catalogError: this.catalogError,
+        })}
+        <div class="shared-products-grid" id="ws-shared-catalog-grid">
+          ${this.renderSharedCatalogCards(true)}
+        </div>
+      </section>
     </div>`;
   }
 
@@ -3265,6 +3385,51 @@ console.log(initializeStudio(pdfStudio));`,
       </section>`;
   }
 
+  private getCatalogFeedUrl(): string {
+    if (typeof window !== 'undefined' && window.location) {
+      const override = new URLSearchParams(window.location.search).get('catalog');
+      if (override && (/^https:\/\//i.test(override) || /^http:\/\/(localhost|127\.0\.0\.1)(:|\/)/i.test(override))) {
+        return override;
+      }
+    }
+    return this.isDesktopMode() ? DEFAULT_DESKTOP_CATALOG_V2_URL : DEFAULT_WEB_CATALOG_V2_URL;
+  }
+
+  private async loadSharedCatalog(): Promise<void> {
+    const result = await fetchCatalogV2(this.getCatalogFeedUrl());
+    this.catalogFromCache = result.fromCache;
+    this.catalogError = result.error ?? null;
+    if (result.catalog) {
+      this.catalogProducts = result.catalog.products;
+      const v2Medoc = getMeDocPackageFromCatalogV2(result.catalog);
+      if (v2Medoc) {
+        this.meDocPackage = v2Medoc;
+      }
+    }
+    this.render();
+    this.attachListeners();
+  }
+
+  private renderSharedCatalogCards(isDesktop: boolean): string {
+    let items = filterCatalogProducts(this.catalogProducts, {
+      query: this.searchQuery,
+      category: this.activeFilter,
+      platform: this.activePlatformFilter,
+      status: this.activeStatusFilter,
+    });
+    if (isDesktop && this.installedOnlyFilter) {
+      items = items.filter(p => (p.id === 'medoc' && this.meDocStatus?.installed) || p.id === 'meide');
+    }
+    if (items.length === 0) {
+      return `<p role="status" class="ws-view-subtitle">${this.lang === 'th' ? 'ไม่พบผลิตภัณฑ์ที่ตรงกับตัวกรอง' : 'No products match the selected filters.'}</p>`;
+    }
+    return items.map(product => renderCatalogProductCard(product, {
+      lang: this.lang,
+      isDesktop,
+      localStatus: isDesktop && product.id === 'medoc' ? (this.meDocStatus ?? undefined) : undefined,
+    })).join('');
+  }
+
   private async loadMeDocLibrary(): Promise<void> {
     if (!this.bridge.isTauri() || this.meDocBusy) return;
     this.meDocBusy = true;
@@ -3275,7 +3440,13 @@ console.log(initializeStudio(pdfStudio));`,
     this.attachListeners();
     try {
       this.meDocStatus = await this.bridge.checkAppStatus('medoc');
-      this.meDocPackage = await fetchMeDocPackage().catch(error => {
+      const v2Result = await fetchCatalogV2(this.getCatalogFeedUrl());
+      this.catalogFromCache = v2Result.fromCache;
+      this.catalogError = v2Result.error ?? null;
+      if (v2Result.catalog) {
+        this.catalogProducts = v2Result.catalog.products;
+      }
+      this.meDocPackage = getMeDocPackageFromCatalogV2(v2Result.catalog) ?? await fetchMeDocPackage().catch(error => {
         console.warn('[meCraft:meDoc] Cannot check packages', error);
         return null;
       });
@@ -5484,13 +5655,30 @@ console.log(initializeStudio(pdfStudio));`,
       <div class="portal-section-inner">
         <div class="showcase-header">
           <div class="showcase-header-left">
-            <div class="section-eyebrow" aria-hidden="true">${SHOWCASE_APPS.length} CREATIVE WORKSTATIONS &amp; UTILITIES</div>
-            <h2 class="section-title" id="apps-title">${this.lang === 'th' ? 'คลังโปรแกรมสตูดิโอ &amp; ค็อกพิทพรีวิวสด' : 'Creative Workstation Studios &amp; Live Desktop Cockpit'}</h2>
-            <p class="section-subtitle">${this.lang === 'th' ? 'เลือกสตูดิโอด้านล่างเพื่อสำรวจฟีเจอร์เชิงลึก พร้อมพรีวิวหน้าต่างซอฟต์แวร์จริงบน Windows แบบเรียลไทม์' : 'Select a studio below to inspect deep specifications alongside real-time native Windows desktop window previews.'}</p>
+            <div class="section-eyebrow" aria-hidden="true">${this.catalogProducts.length} SHARED PRODUCTS · WEB &amp; WINDOWS</div>
+            <h2 class="section-title" id="apps-title">${this.lang === 'th' ? 'คลังผลิตภัณฑ์ meCrafts &amp; meCraft' : 'meCrafts &amp; meCraft Shared Product Library'}</h2>
+            <p class="section-subtitle">${this.lang === 'th' ? 'ค้นหา กรองตามหมวด แพลตฟอร์ม และสถานะ เปิดเว็บแอป แชร์ลิงก์ /apps/<id>/ หรือดาวน์โหลดรุ่น Windows ได้โดยไม่ต้องล็อกอิน' : 'Search and filter by category, platform, and status. Open web apps, share /apps/<id>/ links, or download for Windows without signing in.'}</p>
           </div>
-          <div class="showcase-header-pill">
-            <span class="pulse-indicator"></span>
-            <span>100% In-Device Memory · Zero-Cloud</span>
+          <div class="showcase-header-pill" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <button type="button" class="shared-btn-secondary" data-open-homescreen-guide="true">
+              📲 ${this.lang === 'th' ? 'เพิ่มไปยังหน้าจอโฮม' : 'Add to Home Screen'}
+            </button>
+          </div>
+        </div>
+
+        <div id="shared-product-library" class="shared-product-library-wrap">
+          ${renderSharedFilterControls({
+            lang: this.lang,
+            isDesktop: false,
+            query: this.searchQuery,
+            category: this.activeFilter,
+            platform: this.activePlatformFilter,
+            status: this.activeStatusFilter,
+            catalogFromCache: this.catalogFromCache,
+            catalogError: this.catalogError,
+          })}
+          <div class="shared-products-grid" id="web-shared-catalog-grid">
+            ${this.renderSharedCatalogCards(false)}
           </div>
         </div>
 
@@ -6189,8 +6377,100 @@ console.log(initializeStudio(pdfStudio));`,
     });
     if (authDialog && !authDialog.open && typeof authDialog.showModal === 'function') authDialog.showModal();
     document.getElementById('ws-auth-back')?.addEventListener('click', () => void closeDesktopAuth());
-    document.querySelectorAll<HTMLButtonElement>('[data-medoc-action]').forEach(button => {
-      button.addEventListener('click', () => void this.manageMeDoc(button.dataset.medocAction ?? 'retry'));
+
+    // ── Shared Product Library Controls (Web & Desktop) ──
+    document.querySelectorAll<HTMLButtonElement>('[data-lib-cat]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.activeFilter = (btn.dataset.libCat as CatalogCategory | 'all') || 'all';
+        this.render();
+        this.attachListeners();
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-lib-platform]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.activePlatformFilter = (btn.dataset.libPlatform as CatalogPlatform | 'all') || 'all';
+        this.render();
+        this.attachListeners();
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-lib-status]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.activeStatusFilter = (btn.dataset.libStatus as CatalogStatus | 'all') || 'all';
+        this.render();
+        this.attachListeners();
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-lib-installed-only]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.installedOnlyFilter = !this.installedOnlyFilter;
+        this.render();
+        this.attachListeners();
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-lib-retry]').forEach(btn => {
+      btn.addEventListener('click', () => void this.loadSharedCatalog());
+    });
+
+    this.attachSharedLibraryCardListeners(document);
+
+    document.querySelectorAll<HTMLAnchorElement>('[data-back-to-library]').forEach(link => {
+      link.addEventListener('click', e => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        this.selectedProductId = null;
+        this.shareLinkCopied = false;
+        if (typeof window !== 'undefined' && window.history) {
+          window.history.pushState({}, '', '/');
+        }
+        this.render();
+        this.attachListeners();
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-close-product-detail]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.selectedProductId = null;
+        this.render();
+        this.attachListeners();
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-copy-share-url]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const url = typeof window !== 'undefined' ? window.location.href : '';
+        try {
+          await navigator.clipboard?.writeText(url);
+        } catch {
+          /* Clipboard may be unavailable in test environments */
+        }
+        this.shareLinkCopied = true;
+        this.render();
+        this.attachListeners();
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-open-homescreen-guide]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.isHomeScreenGuideOpen = true;
+        this.render();
+        this.attachListeners();
+      });
+    });
+
+    document.getElementById('btn-close-homescreen-modal')?.addEventListener('click', () => {
+      this.isHomeScreenGuideOpen = false;
+      this.render();
+      this.attachListeners();
+    });
+
+    document.getElementById('homescreen-modal-backdrop')?.addEventListener('click', () => {
+      this.isHomeScreenGuideOpen = false;
+      this.render();
+      this.attachListeners();
     });
     // ── User Profile Capsule & Modal Handlers ──
     document.getElementById('user-profile-pill')?.addEventListener('click', () => {
@@ -6552,17 +6832,32 @@ console.log(initializeStudio(pdfStudio));`,
     document.getElementById('apps-search')?.addEventListener('input', (e) => {
       this.searchQuery = (e.target as HTMLInputElement).value;
       this.updateGrid();
+      const sharedWebGrid = document.getElementById('web-shared-catalog-grid');
+      if (sharedWebGrid) {
+        sharedWebGrid.innerHTML = this.renderSharedCatalogCards(false);
+        this.attachSharedLibraryCardListeners(sharedWebGrid);
+      }
     });
 
     // Category filter pills
     document.querySelectorAll('.filter-pill').forEach(btn => {
       btn.addEventListener('click', () => {
-        this.activeFilter = (btn as HTMLElement).dataset.filter as AppCategory | 'all';
+        this.activeFilter = ((btn as HTMLElement).dataset?.filter ?? (btn as HTMLElement).getAttribute('data-filter')) as AppCategory | 'all';
         document.querySelectorAll('.filter-pill').forEach(b => {
           b.classList.toggle('active', b === btn);
           b.setAttribute('aria-selected', String(b === btn));
         });
+        document.querySelectorAll<HTMLButtonElement>('[data-lib-cat]').forEach(libBtn => {
+          const isMatch = (libBtn.dataset?.libCat ?? libBtn.getAttribute('data-lib-cat')) === this.activeFilter;
+          libBtn.classList.toggle('active', isMatch);
+          libBtn.setAttribute('aria-pressed', String(isMatch));
+        });
         this.updateGrid();
+        const sharedWebGrid = document.getElementById('web-shared-catalog-grid');
+        if (sharedWebGrid) {
+          sharedWebGrid.innerHTML = this.renderSharedCatalogCards(false);
+          this.attachSharedLibraryCardListeners(sharedWebGrid);
+        }
       });
     });
 
@@ -6856,10 +7151,15 @@ console.log(initializeStudio(pdfStudio));`,
 
     // 9. Studios Search and Category Filtering
     const libraryGrid = document.getElementById('ws-library-grid');
+    const sharedDesktopGrid = document.getElementById('ws-shared-catalog-grid');
     const categoryButtons = document.querySelectorAll<HTMLButtonElement>('.ws-filter-pill[data-cat-filter]');
     document.getElementById('ws-studios-search-input')?.addEventListener('input', (e) => {
       this.searchQuery = (e.target as HTMLInputElement).value;
       if (libraryGrid) libraryGrid.innerHTML = this.renderUpcomingStudios();
+      if (sharedDesktopGrid) {
+        sharedDesktopGrid.innerHTML = this.renderSharedCatalogCards(true);
+        this.attachSharedLibraryCardListeners(sharedDesktopGrid);
+      }
     });
 
     categoryButtons.forEach(btn => {
@@ -6869,7 +7169,64 @@ console.log(initializeStudio(pdfStudio));`,
           category.classList.toggle('active', category === btn);
           category.setAttribute('aria-pressed', String(category === btn));
         });
+        document.querySelectorAll<HTMLButtonElement>('[data-lib-cat]').forEach(libBtn => {
+          const isMatch = libBtn.dataset.libCat === this.activeFilter;
+          libBtn.classList.toggle('active', isMatch);
+          libBtn.setAttribute('aria-pressed', String(isMatch));
+        });
         if (libraryGrid) libraryGrid.innerHTML = this.renderUpcomingStudios();
+        if (sharedDesktopGrid) {
+          sharedDesktopGrid.innerHTML = this.renderSharedCatalogCards(true);
+          this.attachSharedLibraryCardListeners(sharedDesktopGrid);
+        }
+      });
+    });
+  }
+
+  private attachSharedLibraryCardListeners(root: ParentNode = document): void {
+    root.querySelectorAll<HTMLButtonElement>('[data-medoc-action]').forEach(button => {
+      button.addEventListener('click', () => void this.manageMeDoc(button.dataset?.medocAction ?? button.getAttribute('data-medoc-action') ?? 'retry'));
+    });
+
+    root.querySelectorAll<HTMLAnchorElement>('[data-product-link]').forEach(link => {
+      link.addEventListener('click', e => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        const id = link.dataset?.productLink ?? link.getAttribute('data-product-link');
+        if (!id) return;
+        this.selectedProductId = id;
+        this.shareLinkCopied = false;
+        if (typeof window !== 'undefined' && window.history) {
+          window.history.pushState({}, '', `/apps/${id}/`);
+          window.scrollTo?.({ top: 0, behavior: 'smooth' });
+        }
+        this.render();
+        this.attachListeners();
+      });
+    });
+
+    root.querySelectorAll<HTMLButtonElement>('[data-open-product-detail]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.selectedProductId = btn.dataset?.openProductDetail ?? btn.getAttribute('data-open-product-detail') ?? null;
+        this.render();
+        this.attachListeners();
+      });
+    });
+
+    root.querySelectorAll<HTMLButtonElement>('[data-open-web-url]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const url = btn.dataset?.openWebUrl ?? btn.getAttribute('data-open-web-url');
+        if (!url) return;
+        if (this.bridge.isTauri()) {
+          try {
+            const { invoke } = await import('@tauri-apps/api/core');
+            await invoke('open_browser_url', { url });
+            return;
+          } catch {
+            /* fallback */
+          }
+        }
+        window.open(url, '_blank', 'noopener,noreferrer');
       });
     });
   }
