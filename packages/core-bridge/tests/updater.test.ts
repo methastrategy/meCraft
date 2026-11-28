@@ -70,9 +70,9 @@ describe('meCraft Universal Update Engine (@mecraft/core-bridge)', () => {
         html_url: 'https://github.com/methastrategy/meCraft/releases/tag/v1.0.1',
         assets: [
           {
-            name: 'meCraft-Setup.exe',
+            name: 'mecraft-hub.msi',
             size: 15500000,
-            browser_download_url: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.1/meCraft-Setup.exe',
+            browser_download_url: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.1/mecraft-hub.msi',
             content_type: 'application/x-msdownload',
           },
           {
@@ -97,9 +97,25 @@ describe('meCraft Universal Update Engine (@mecraft/core-bridge)', () => {
       expect(update.hasUpdate).toBe(true);
       expect(update.latestVersion).toBe('1.0.1');
       expect(update.releaseTag).toBe('v1.0.1');
-      expect(update.suiteAsset?.name).toBe('meCraft-Setup.exe');
+      expect(update.suiteAsset?.name).toBe('mecraft-hub.msi');
       expect(update.changelog.length).toBe(2);
       expect(update.changelog[0]).toBe('Fix installer hook');
+    });
+
+    it('does not offer an older EXE release as the new meCraft installer', async () => {
+      globalThis.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          tag_name: 'v1.0.11',
+          assets: [{
+            name: 'meCraft-Setup.exe',
+            browser_download_url: 'https://github.com/methastrategy/meCraft/releases/download/v1.0.11/meCraft-Setup.exe',
+          }],
+        }),
+      });
+      const update = await checkSoftwareUpdate({ currentVersion: '1.0.10', force: true });
+      expect(update.suiteAsset).toBeUndefined();
+      expect(update.hasUpdate).toBe(false);
     });
 
     it('gracefully handles offline or network errors without crashing', async () => {

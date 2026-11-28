@@ -268,6 +268,7 @@ export function createLauncherBridge(): LauncherBridge {
           return await invoke<AppStatusResult>('check_app_status', { appId });
         } catch (e) {
           console.warn(`[LauncherBridge] Tauri check_app_status failed for ${appId}:`, e);
+          throw e;
         }
       }
 

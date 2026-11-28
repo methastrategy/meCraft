@@ -119,7 +119,11 @@ export async function checkSoftwareUpdate(options: CheckUpdateOptions = {}): Pro
       if (cachedStr) {
         const cached: SoftwareUpdateInfo = JSON.parse(cachedStr);
         if (Date.now() - cached.checkedAt < CACHE_TTL_MS) {
-          cached.hasUpdate = compareSemver(cached.latestVersion, currentVersion) > 0;
+          if (appId === 'mecraft-suite' && cached.suiteAsset?.name.toLowerCase() !== 'mecraft-hub.msi') {
+            cached.suiteAsset = undefined;
+          }
+          cached.hasUpdate = compareSemver(cached.latestVersion, currentVersion) > 0 &&
+            (appId !== 'mecraft-suite' || Boolean(cached.suiteAsset));
           return cached;
         }
       }
@@ -165,10 +169,7 @@ export async function checkSoftwareUpdate(options: CheckUpdateOptions = {}): Pro
       : [];
 
     // Find Suite Master Installer
-    const suiteAsset = allAssets.find(a => 
-      a.name.toLowerCase().includes('mecraft-setup') ||
-      a.name.toLowerCase().includes('setup.exe')
-    ) || allAssets.find(a => a.name.toLowerCase().endsWith('.exe'));
+    const suiteAsset = allAssets.find(a => a.name.toLowerCase() === 'mecraft-hub.msi');
 
     // Find Target Sub-App Asset
     let appAsset: ReleaseAsset | undefined;
@@ -180,7 +181,8 @@ export async function checkSoftwareUpdate(options: CheckUpdateOptions = {}): Pro
       });
     }
 
-    const hasUpdate = compareSemver(latestVersion, currentVersion) > 0;
+    const hasUpdate = compareSemver(latestVersion, currentVersion) > 0 &&
+      (appId !== 'mecraft-suite' || Boolean(suiteAsset));
 
     const result: SoftwareUpdateInfo = {
       hasUpdate,

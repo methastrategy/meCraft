@@ -18,7 +18,8 @@ from PIL import Image
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-ROOT_DIR = r'd:\METHA\Projects\meCraft-Project'
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+WEBSITE_DIR = os.path.join(os.path.dirname(ROOT_DIR), 'mecrafts-website')
 SRC_IMAGE = r'D:\Users\hotme\Downloads\Golden_M_monogram_icon_39014b75_2K.jpg'
 
 def process_suite_monogram():
@@ -97,8 +98,8 @@ def distribute_branding_assets(wide_img, square_img):
         os.path.join(ROOT_DIR, 'apps', 'mepdf', 'public', 'assets', 'branding'),
         os.path.join(ROOT_DIR, 'apps', 'mephoto', 'public', 'branding'),
         os.path.join(ROOT_DIR, 'apps', 'mephoto', 'public', 'assets', 'branding'),
-        os.path.join(ROOT_DIR, 'meCrafts-website', 'assets', 'branding'),
-        os.path.join(ROOT_DIR, 'meCrafts-website', 'branding'),
+        os.path.join(WEBSITE_DIR, 'assets', 'branding'),
+        os.path.join(WEBSITE_DIR, 'branding'),
     ]
     for d in core_dirs:
         target_dirs.add(d)

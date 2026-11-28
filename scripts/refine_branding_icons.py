@@ -30,14 +30,15 @@ IMAGE_MAPPING = [
     ('Gold_Thai_armor_emblem_badge_649968b7_2K.jpg', 'privacy-seal.png'),
 ]
 
-ROOT_DIR = r'd:\METHA\Projects\meCraft-Project'
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+WEBSITE_DIR = os.path.join(os.path.dirname(ROOT_DIR), 'mecrafts-website')
 SOURCE_DIR = r'D:\Users\hotme\Downloads'
 
 TARGET_DIRS = [
     os.path.join(ROOT_DIR, 'public', 'branding'),
     os.path.join(ROOT_DIR, 'assets', 'icons'),
     os.path.join(ROOT_DIR, 'apps', 'mecraft-launcher', 'public', 'branding'),
-    os.path.join(ROOT_DIR, 'meCrafts-website', 'assets', 'branding'),
+    os.path.join(WEBSITE_DIR, 'assets', 'branding'),
 ]
 
 def process_image(src_path, dst_name):

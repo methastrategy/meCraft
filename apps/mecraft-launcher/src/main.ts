@@ -1,4 +1,5 @@
 import './styles/launcher.css';
+import './styles/desktop.css';
 import {
   createLauncherBridge,
   getDefaultCatalog,
@@ -18,6 +19,7 @@ import {
   checkSoftwareUpdate,
   type SoftwareUpdateInfo,
   type AppCatalogItem,
+  type AppStatusResult,
   type RecentProject,
   type DownloadProgress,
   type AuthSession,
@@ -25,6 +27,10 @@ import {
 } from '@mecraft/core-bridge';
 import { supabase } from './supabase';
 import { detectStudioRoute, mountStudio } from './studio-runner';
+import { fetchMeDocPackage, meDocPrimaryAction, type MeDocPackage } from './medoc-package';
+import { version as packageVersion } from '../package.json';
+let launcherVersion = packageVersion;
+import { clearLauncherUpdateResult, takeLauncherUpdateResult } from './launcher-updater';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PORTAL INVARIANT: This file is the OFFICIAL SHOWCASE & DISCOVERY WEB PORTAL.
@@ -115,7 +121,7 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
   en: {
     brandTitle: 'meCrafts',
     brandSubtitle: 'Official Creative Suite',
-    headerCta: 'Download Suite (.exe)',
+    headerCta: 'Download meCraft (.msi)',
     heroTitle: 'The Private-First AI IDE & 18 Creative Studios Suite for Windows',
     heroSubtitle: 'VS Code & Windsurf-grade Next-Gen AI IDE Workspace with 100% Client-Side Local Execution, Real Folder Opening, In-Device Copilot, and 18 Purpose-Built Creative Studios — All Free, Forever.',
     heroBadge1: '100% In-Device Privacy',
@@ -134,7 +140,7 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     filterAudio: '3D & Sound (4)',
     statusActive: 'Active Production',
     statusInDev: 'In Development',
-    btnDownloadExe: '⬇ Download .exe',
+    btnDownloadExe: '⬇ Get meCraft',
     btnDownloadSuite: '⬇ Download Suite',
     btnInDev: '🚧 In Development • Learn More',
     manifestoTitle: 'Privacy Architecture Manifesto',
@@ -164,7 +170,7 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
   th: {
     brandTitle: 'meCrafts',
     brandSubtitle: 'ชุดโปรแกรมสร้างสรรค์ทางการ',
-    headerCta: 'ดาวน์โหลด Suite (.exe)',
+    headerCta: 'ดาวน์โหลด meCraft (.msi)',
     heroTitle: 'ชุดโปรแกรมแก้ไขโค้ด AI IDE และ 18 สตูดิโอสร้างสรรค์ที่ให้ความเป็นส่วนตัว 100% สำหรับ Windows',
     heroSubtitle: 'โปรแกรมแก้ไขโค้ด AI IDE ระดับเวิลด์คลาส เปิดโฟลเดอร์เครื่องจริง AI Copilot ใน RAM 100% พร้อม 18 สตูดิโอสร้างสรรค์และเครื่องมือเฉพาะทาง — ทำงานออฟไลน์สมบูรณ์แบบ ฟรีตลอดชีพ',
     heroBadge1: 'ความเป็นส่วนตัว 100%',
@@ -183,7 +189,7 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
     filterAudio: '3D และเสียง (4)',
     statusActive: 'ใช้งานได้จริง',
     statusInDev: 'กำลังพัฒนา',
-    btnDownloadExe: '⬇ ดาวน์โหลด .exe',
+    btnDownloadExe: '⬇ ดาวน์โหลด meCraft',
     btnDownloadSuite: '⬇ ดาวน์โหลด Suite',
     btnInDev: '🚧 กำลังพัฒนา • ดูรายละเอียด',
     manifestoTitle: 'หลักการสถาปัตยกรรมความเป็นส่วนตัว',
@@ -212,7 +218,7 @@ const PORTAL_I18N: Record<'en' | 'th', PortalTranslations> = {
   },
 };
 
-const SUITE_DOWNLOAD_URL = 'https://github.com/methastrategy/meCraft/releases/download/v1.0.0/meCraft-Setup.exe';
+const SUITE_DOWNLOAD_URL = '/downloads/';
 
 export interface ReleaseBinaryItem {
   id: string;
@@ -238,20 +244,20 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
     id: 'mecraft-suite',
     name: 'meCraft Installer',
     category: { en: 'All-in-One Creative & Document Suite', th: 'ชุดโปรแกรมสร้างสรรค์และจัดการเอกสารครบวงจร' },
-    version: 'v1.0.0',
-    releaseDate: { en: 'Nov 23, 2026 (Latest Stable)', th: '23 พ.ย. 2026 (เวอร์ชันเสถียรล่าสุด)' },
-    fileName: 'meCraft-Setup.exe',
-    fileSize: '14.8 MB',
+    version: 'MSI',
+    releaseDate: { en: 'Check the download page', th: 'ตรวจสอบบนหน้าดาวน์โหลด' },
+    fileName: 'mecraft-hub.msi',
+    fileSize: 'ตรวจสอบรุ่นบนหน้าดาวน์โหลด',
     downloadUrl: SUITE_DOWNLOAD_URL,
     isSuite: true,
     status: 'active',
     architecture: 'Windows 11 / 10 (64-bit x64)',
-    sha256: '9f8e7d4a6b1c2e3f...ed25519_verified',
+    sha256: 'Available with the published release',
     accentColor: '#d4af37',
     glowColor: 'rgba(212, 175, 55, 0.4)',
     highlights: {
-      en: ['All 18 Creative & Document Studios Included', '100% In-Device Memory Execution · Zero-Cloud', 'Automated in-app delta updates with Ed25519 signing'],
-      th: ['รวมทั้ง 18 โปรแกรมสตูดิโอและยูทิลิตี้ในตัวติดตั้งเดียว', 'ประมวลผลบนเครื่อง 100% ปราศจากคลาวด์ ปลอดภัยสูงสุด', 'ระบบตรวจจับและอัปเดตอัตโนมัติพร้อมลายเซ็น Ed25519'],
+      en: ['Install the meCraft Launcher', 'Manage available apps from Library', 'Signed update packages'],
+      th: ['ติดตั้ง meCraft Launcher', 'จัดการแอปที่พร้อมใช้งานจาก Library', 'แพ็กเกจอัปเดตตรวจลายเซ็น'],
     },
   },
   {
@@ -459,24 +465,6 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
     highlights: {
       en: ['Real-Time PBR Shaders & Hardware Raytracing', 'Import & Export OBJ, STL, GLTF & USDZ', 'Automated 3D Print Slicing & Mesh Topology Repair'],
       th: ['แสดงผลโมเดล 3D และเรนเดอร์แสงเงา Raytracing แบบเรียลไทม์', 'รองรับไฟล์สากล OBJ, STL, GLTF และ USDZ', 'เครื่องมือเตรียมโมเดลสำหรับ 3D Printer และซ่อม Mesh'],
-    },
-  },
-  {
-    id: 'mecraft-hub',
-    name: 'meCraft Hub Workstation Launcher',
-    category: { en: 'Central Daemon & Desktop License Bridge', th: 'ศูนย์รวมลอนเชอร์และตัวจัดการไลเซนส์เดสก์ท็อป' },
-    version: 'v1.0.0',
-    releaseDate: { en: 'Nov 23, 2026', th: '23 พ.ย. 2026' },
-    fileName: 'mecraft-hub.exe',
-    fileSize: 'Included in Suite (~14.8 MB)',
-    status: 'active',
-    architecture: 'Windows 11 / 10 (64-bit x64) · Tauri v2 Bridge',
-    sha256: 'Included in Suite Bundle',
-    accentColor: '#eab308',
-    glowColor: 'rgba(234, 179, 8, 0.4)',
-    highlights: {
-      en: ['Central Workstation Switcher & Recent Projects', 'Local Ed25519 License Vault & Account Sync', 'Background Delta Updates & Integrity Checks'],
-      th: ['หน้าต่างศูนย์กลางเปิดโปรแกรมทั้งหมดและประวัติโปรเจกต์ล่าสุด', 'ซิงค์ไลเซนส์และบัญชีปลอดภัยด้วย Ed25519 ภายในเครื่อง', 'ตรวจจับและดาวน์โหลดตัวอัปเดตอัตโนมัติ'],
     },
   },
 ];
@@ -1739,6 +1727,17 @@ class MeCraftsPortal {
   private updateInfo: SoftwareUpdateInfo | null = null;
   private isUpdateModalOpen = false;
   private isCheckingUpdate = false;
+  private updateCheckFailed = false;
+  private launcherUpdateState: 'idle' | 'checking' | 'available' | 'downloading' | 'installing' | 'current' | 'error' | 'restored' | 'recovery_required' | 'busy' = 'idle';
+  private launcherUpdatePercent: number | null = null;
+  private launcherRecoveryPath = '';
+  private meDocStatus: AppStatusResult | null = null;
+  private desktopOAuthState: string | null = null;
+  private meDocPackage: MeDocPackage | null = null;
+  private meDocBusy = false;
+  private meDocProgress: number | null = null;
+  private meDocMessage = '';
+  private meDocError = false;
   public forceDesktopMode: boolean | null = null;
   private selectedDetailApp: ShowcaseApp | null = null;
   private isDetailModalOpen = false;
@@ -2028,75 +2027,72 @@ console.log(initializeStudio(pdfStudio));`,
   }
 
   private async initDesktopStartup(): Promise<void> {
-    // 1. Immediately launch into workstation (if logged in) or auth (if not logged in) without artificial delay
-    if (this.currentSession) {
-      this.desktopStage = 'main';
-      await this.bridge.setWindowStage('main');
-      this.render();
-      this.attachListeners();
-    } else {
-      this.desktopStage = 'auth';
-      await this.bridge.setWindowStage('auth');
-      this.render();
-      this.attachListeners();
-    }
-
-    // 2. Perform silent, non-blocking check for real updates on GitHub Releases
-    try {
-      const info = await checkSoftwareUpdate({
-        currentVersion: '1.0.3',
-        appId: 'mecraft-suite',
-        force: false,
-      });
-
-      // ONLY IF an actual newer version exists, show the Steam update window!
-      if (info && info.hasUpdate) {
-        this.updateInfo = info;
-        this.desktopStage = 'updater';
-        this.isSteamUpdating = true;
-        this.steamUpdateProgress = 5;
-        this.steamUpdateStatus = this.lang === 'th' ? 'กำลังดาวน์โหลดอัปเดต meCraft...' : 'Downloading package...';
-        await this.bridge.setWindowStage('updater');
-        this.render();
-        this.attachListeners();
-
-        const downloadUrl = info.suiteAsset?.downloadUrl || 'https://raw.githubusercontent.com/methastrategy/meCrafts-web/main/downloads/meCraft-Setup.exe';
-        try {
-          const updateResult = await this.bridge.applyLauncherUpdate(downloadUrl, (progress) => {
-            this.steamUpdateProgress = Math.max(5, Math.min(100, progress.percent));
-            this.steamUpdateStatus = `${this.lang === 'th' ? 'กำลังแตกไฟล์แพ็กเกจ...' : 'Extracting package...'} ${progress.percent}%`;
-            this.render();
-            this.attachListeners();
-          });
-
-          if (updateResult.success) {
-            this.steamUpdateProgress = 100;
-            this.steamUpdateCompleted = true;
-            this.steamUpdateStatus = this.lang === 'th' ? 'กำลังเริ่มระบบใหม่...' : 'Restarting meCraft...';
-            this.render();
-            this.attachListeners();
-            if (this.bridge.isTauri()) {
-              return;
-            }
-          }
-        } catch (updateErr) {
-          console.warn('[meCraft:startup] Update installation error:', updateErr);
-        }
-
-        // If update failed or cancelled, restore window
-        this.isSteamUpdating = false;
-        if (this.currentSession) {
-          await this.enterMainWorkstation();
-        } else {
-          this.desktopStage = 'auth';
-          await this.bridge.setWindowStage('auth');
-          this.render();
-          this.attachListeners();
-        }
+    if (this.bridge.isTauri()) {
+      try {
+        const { getVersion } = await import('@tauri-apps/api/app');
+        const installedVersion = await getVersion();
+        if (installedVersion) launcherVersion = installedVersion;
+      } catch (error) {
+        console.warn('[meCraft] Could not read installed application version:', error);
       }
-    } catch (e) {
-      console.warn('[meCraft:startup] Silent update check skipped:', e);
     }
+    await this.enterMainWorkstation();
+    if (this.bridge.isTauri()) {
+      try {
+        const result = await takeLauncherUpdateResult();
+        if (result) {
+          const [status, backupPath] = result.split('\n', 2);
+          this.launcherRecoveryPath = backupPath ?? '';
+          const updateState = status === 'installed' ? 'current' : status === 'restored' ? 'restored' :
+            status === 'recovery_required' ? 'recovery_required' : status === 'busy' ? 'busy' : 'error';
+          this.updateLauncherStatus(updateState);
+          if (updateState !== 'current') {
+            await this.loadMeDocLibrary();
+            return;
+          }
+        }
+      } catch (error) {
+        console.warn('[meCraft:updater] Could not read update result:', error);
+        this.updateLauncherStatus('error');
+        await this.loadMeDocLibrary();
+        return;
+      }
+    }
+    await Promise.all([this.loadMeDocLibrary(), this.checkForUpdates()]);
+  }
+
+  private launcherUpdateMessage(): string {
+    const th = this.lang === 'th';
+    switch (this.launcherUpdateState) {
+      case 'checking': return th ? 'กำลังตรวจสอบอัปเดต meCraft…' : 'Checking for meCraft updates…';
+      case 'available': return th ? `มี meCraft v${this.updateInfo?.latestVersion} ให้ดาวน์โหลด` : `meCraft v${this.updateInfo?.latestVersion} is available to download`;
+      case 'downloading': return th
+        ? `กำลังดาวน์โหลดอัปเดต${this.launcherUpdatePercent === null ? '…' : ` ${this.launcherUpdatePercent}%`}`
+        : `Downloading update${this.launcherUpdatePercent === null ? '…' : ` ${this.launcherUpdatePercent}%`}`;
+      case 'installing': return th ? 'กำลังติดตั้งอัปเดต…' : 'Installing update…';
+      case 'current': return th ? 'meCraft เป็นเวอร์ชันล่าสุดแล้ว' : 'meCraft is up to date';
+      case 'error': return th ? 'ตรวจสอบหรือติดตั้งอัปเดตไม่ได้ ลองอีกครั้งในการตั้งค่า' : 'Could not check or install the update. Try again in Settings.';
+      case 'restored': return th ? 'อัปเดตไม่สำเร็จ ระบบเปิดรุ่นก่อนหน้าแล้ว ลองอีกครั้งในการตั้งค่า' : 'Update failed. The previous version was restored. Retry in Settings.';
+      case 'recovery_required': return th
+        ? `อัปเดตถูกขัดจังหวะ กรุณารีสตาร์ต Windows แล้วเปิดทางลัด meCraft Recovery บน Desktop หากยังไม่สำเร็จ สำเนาสำรองอยู่ที่ ${this.launcherRecoveryPath}`
+        : `Update interrupted. Restart Windows and open the meCraft Recovery shortcut on the Desktop. The backup is at ${this.launcherRecoveryPath}`;
+      case 'busy': return th ? 'มีการอัปเดต meCraft กำลังดำเนินการอยู่' : 'A meCraft update is already running.';
+      default: return '';
+    }
+  }
+
+  private updateLauncherStatus(state: typeof this.launcherUpdateState): void {
+    this.launcherUpdateState = state;
+    const status = document.getElementById('ws-launcher-update-status');
+    if (status) status.textContent = this.launcherUpdateMessage();
+    const settings = document.getElementById('ws-launcher-update-settings');
+    if (settings) settings.textContent = this.launcherUpdateMessage();
+    const button = document.getElementById('ws-btn-check-update-vault') as HTMLButtonElement | null;
+    if (button) button.disabled = ['checking', 'downloading', 'installing', 'recovery_required'].includes(state);
+  }
+
+  private async checkLauncherUpdate(): Promise<void> {
+    await this.checkForUpdates(true);
   }
 
   private async checkForUpdates(force = false) {
@@ -2104,25 +2100,38 @@ console.log(initializeStudio(pdfStudio));`,
     if (!this.isDesktopMode() && !force) return;
     if (this.isCheckingUpdate) return;
     this.isCheckingUpdate = true;
+    this.updateCheckFailed = false;
+    if (force) {
+      this.render();
+      this.attachListeners();
+    }
     try {
       const info = await checkSoftwareUpdate({
-        currentVersion: '1.0.3',
+        currentVersion: launcherVersion,
         appId: 'mecraft-suite',
         force,
       });
       this.updateInfo = info;
+      this.updateLauncherStatus(info.hasUpdate ? 'available' : 'current');
       if (info.hasUpdate) {
         const dismissed = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('mecraft_dismissed_update') : null;
         if (dismissed !== info.latestVersion) {
           this.isUpdateModalOpen = true;
         }
-        this.render();
-        this.attachListeners();
       }
     } catch (e) {
+      this.updateCheckFailed = true;
+      this.updateLauncherStatus('error');
       console.warn('[meCraft:updater] Update check error:', e);
     } finally {
       this.isCheckingUpdate = false;
+      if (force || this.updateInfo?.hasUpdate) {
+        this.render();
+        this.attachListeners();
+        if (!this.isUpdateModalOpen && this.desktopView === 'vault') {
+          document.getElementById('ws-btn-check-update-vault')?.focus();
+        }
+      }
     }
   }
 
@@ -2157,7 +2166,7 @@ console.log(initializeStudio(pdfStudio));`,
       let info: SoftwareUpdateInfo | null = null;
       try {
         const checkPromise = checkSoftwareUpdate({
-          currentVersion: '1.0.3',
+          currentVersion: launcherVersion,
           appId: 'mecraft-suite',
           force: options.force ?? true,
         });
@@ -2185,7 +2194,7 @@ console.log(initializeStudio(pdfStudio));`,
       if (info && info.hasUpdate) {
         this.updateInfo = info;
         const isTh = this.lang === 'th';
-        const downloadUrl = info.suiteAsset?.downloadUrl || 'https://raw.githubusercontent.com/methastrategy/meCrafts-web/main/downloads/meCraft-Setup.exe';
+        const downloadUrl = info.suiteAsset?.downloadUrl || SUITE_DOWNLOAD_URL;
 
         this.steamUpdateStep = 4;
         this.steamUpdateProgress = 12;
@@ -2503,6 +2512,7 @@ console.log(initializeStudio(pdfStudio));`,
   }
 
   public async handleGoogleAuth() {
+    if (this.bridge.isTauri() && this.desktopOAuthState) return;
     this.authLoading = true;
     this.authError = '';
     this.render();
@@ -2518,50 +2528,49 @@ console.log(initializeStudio(pdfStudio));`,
           this.render();
           this.attachListeners();
 
-          try {
-            const port = await this.bridge.startAuthHandshake();
-            // Use /auth relay path — Supabase Allowed Redirect URLs must include "https://mecrafts.vercel.app/auth*"
-            // The /auth relay page reads handshake_port from the URL and POSTs the token back to the Desktop app.
-            let authUrl = port > 0
-              ? `https://mecrafts.vercel.app/auth?source=desktop&handshake_port=${port}`
-              : `https://mecrafts.vercel.app/auth?source=desktop`;
-
-            // If Supabase client is configured, get the direct Google OAuth URL so it opens Google directly!
-            if (supabase) {
-              try {
-                const { data, error } = await supabase.auth.signInWithOAuth({
-                  provider: 'google',
-                  options: {
-                    redirectTo: authUrl,
-                    skipBrowserRedirect: true,
-                  },
-                });
-                if (!error && data?.url) {
-                  authUrl = data.url;
-                }
-              } catch (oauthErr) {
-                console.warn('[meCraft:auth] Direct OAuth URL generation skipped:', oauthErr);
-              }
+          const client = supabase;
+          if (!client) throw new Error('Authentication is not configured.');
+          const { Channel, invoke } = await import('@tauri-apps/api/core');
+          const state = Array.from(crypto.getRandomValues(new Uint8Array(32)), byte => byte.toString(16).padStart(2, '0')).join('');
+          const channel = new Channel<{ status: 'code'; code: string } | { status: 'expired' }>();
+          const fail = () => {
+            if (this.desktopOAuthState !== state) return;
+            this.desktopOAuthState = null;
+            this.authLoading = false;
+            this.authError = this.lang === 'th' ? 'เข้าสู่ระบบไม่สำเร็จ ลองใหม่จาก meCraft' : 'Sign-in could not be completed. Try again from meCraft.';
+            this.render();
+            this.attachListeners();
+          };
+          this.desktopOAuthState = state;
+          channel.onmessage = async event => {
+            if (this.desktopOAuthState !== state) return;
+            if (event.status === 'expired') return fail();
+            let success = false;
+            try {
+              const { data, error } = await client.auth.exchangeCodeForSession(event.code);
+              if (error || !data.session) return;
+              await this.syncSupabaseSession(data.session);
+              await this.enterMainWorkstation();
+              this.desktopOAuthState = null;
+              success = true;
+            } catch {
+              success = false;
+            } finally {
+              await invoke('finish_desktop_oauth', { state, success }).catch(() => {});
+              if (!success) fail();
             }
-
-            await this.bridge.openExternal(authUrl);
-
-            this.authLoading = false;
-            this.authError = this.lang === 'th'
-              ? '🌐 เปิดเบราว์เซอร์สำหรับ Google Sign-In แล้ว... (ระบบจะเชื่อมต่อให้เองอัตโนมัติ ไม่ต้องกรอกอะไรเลย)'
-              : '🌐 Browser opened for Google Sign-In... (Syncing automatically, no typing needed)';
-            this.render();
-            this.attachListeners();
-          } catch (err: any) {
-            console.warn('[meCraft:auth] Google OAuth launch error:', err);
-            await this.bridge.openExternal('https://mecrafts.vercel.app/?source=desktop');
-            this.authLoading = false;
-            this.showSyncImport = true;
-            this.authError = this.lang === 'th'
-              ? '🌐 เปิดหน้าต่างเว็บสำหรับ Google OAuth แล้ว — กรุณาคัดลอกรหัสเชื่อมต่อ (Sync Code) จากเว็บมาวางในช่องด้านล่าง'
-              : '🌐 Web browser opened for Google OAuth — Please copy your Sync Code from web and paste below';
-            this.render();
-            this.attachListeners();
+          };
+          try {
+            const port = await invoke<number>('start_desktop_oauth', { state, onEvent: channel });
+            const redirect = new URL('https://mecrafts.vercel.app/desktop-auth/');
+            redirect.search = new URLSearchParams({ port: String(port), desktop_state: state }).toString();
+            const { data, error } = await client.auth.signInWithOAuth({
+              provider: 'google', options: { redirectTo: redirect.href, skipBrowserRedirect: true },
+            });
+            if (error || !data.url) throw new Error('Could not start Google sign-in.');
+            await invoke('open_browser_url', { url: data.url });
+          } catch {
+            fail();
           }
           return;
         }
@@ -2645,8 +2654,8 @@ console.log(initializeStudio(pdfStudio));`,
     this.isAuthModalOpen = false;
 
     if (this.isDesktopMode()) {
-      this.desktopStage = 'auth';
-      await this.bridge.setWindowStage('auth');
+      await this.enterMainWorkstation();
+      return;
     }
 
     this.render();
@@ -2693,13 +2702,10 @@ console.log(initializeStudio(pdfStudio));`,
         this.appEl.innerHTML = this.renderSteamLoadingUser();
         return;
       }
-      if (this.desktopStage === 'auth') {
-        this.appEl.innerHTML = this.renderSteamAuthGate();
-        return;
-      }
+      const signingIn = this.desktopStage === 'auth';
 
       this.appEl.innerHTML = `
-        <div class="ws-desktop-frame" id="ws-desktop-frame">
+        <div class="ws-desktop-frame" id="ws-desktop-frame" ${signingIn ? 'inert' : ''}>
           ${this.renderTitlebar()}
           <div class="workstation-shell" id="workstation-shell">
             ${this.renderSidebar()}
@@ -2709,7 +2715,7 @@ console.log(initializeStudio(pdfStudio));`,
           </div>
         </div>
         ${this.renderSteamSplashUpdater()}
-        ${this.renderAuthModal()}
+        ${signingIn ? this.renderSteamAuthGate() : this.renderAuthModal()}
         ${this.renderUserProfileModal()}
         ${this.renderUpdateModal()}
         ${this.renderStudioDetailModal()}
@@ -2742,7 +2748,7 @@ console.log(initializeStudio(pdfStudio));`,
     <header class="ws-titlebar" data-tauri-drag-region>
       <div class="ws-titlebar-left" data-tauri-drag-region>
         <img src="./branding/mecraft-suite.png" class="ws-titlebar-icon" alt="" onerror="this.style.display='none'" />
-        <span class="ws-titlebar-text" data-tauri-drag-region>meCrafts</span>
+        <span class="ws-titlebar-text" data-tauri-drag-region>meCraft (${launcherVersion})</span>
       </div>
       <div class="ws-titlebar-controls">
         <button type="button" class="ws-win-btn" id="ws-win-min" aria-label="Minimize" title="Minimize">
@@ -2761,44 +2767,25 @@ console.log(initializeStudio(pdfStudio));`,
   private renderSidebar(): string {
     const isTh = this.lang === 'th';
     const navItems = [
-      { id: 'studios', icon: '📦', label: isTh ? 'คลังโปรแกรม' : 'Library', desc: isTh ? `${SHOWCASE_APPS.length} สตูดิโอ` : `${SHOWCASE_APPS.length} Studios` },
-      { id: 'recents', icon: '🕒', label: isTh ? 'ประวัติงาน' : 'Recent Work', desc: isTh ? 'ไฟล์ล่าสุด' : 'Recent Files' },
-      { id: 'vault', icon: '⚙️', label: isTh ? 'อัปเดต & ตั้งค่า' : 'Updates & Settings', desc: isTh ? 'ระบบและเวอร์ชัน' : 'Engine & Version' },
+      { id: 'studios', label: isTh ? 'คลังโปรแกรม' : 'Library' },
+      { id: 'recents', label: isTh ? 'ไฟล์ล่าสุด' : 'Recent files' },
+      { id: 'vault', label: isTh ? 'การตั้งค่า' : 'Settings' },
     ];
     const quickLaunch = [
       { id: 'meide', name: 'meIDE AI', color: '#3b82f6', action: 'workbench' },
-      { id: 'mepdf', name: 'mePDF Studio', color: '#ef4444', action: 'studio' },
-      { id: 'mephoto', name: 'mePhoto Studio', color: '#10b981', action: 'studio' },
-      { id: 'medoc', name: 'meDoc Studio', color: '#14b8a6', action: 'studio' },
+      ...(this.meDocStatus?.installed ? [{ id: 'medoc', name: 'meDoc', color: '#14b8a6', action: 'studio' }] : []),
     ];
 
     return `
     <aside class="ws-sidebar" aria-label="Workstation Navigation">
       <!-- Top Zone: Brand + Account Capsule (Always Visible) -->
       <div class="ws-sidebar-top">
-        <div class="ws-sidebar-brand">
-          <div class="ws-brand-emblem" aria-hidden="true">
-            <img src="./branding/mecraft-suite.png" class="ws-brand-img" alt="meCraft" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='inline-flex';}" />
-            <svg width="26" height="26" viewBox="0 0 32 32" fill="none" class="ws-brand-fallback" style="display:none;">
-              <rect x="2" y="2" width="28" height="28" rx="8" fill="#d4af37" opacity="0.15"/>
-              <path d="M8 24 L16 8 L24 24" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="ws-brand-meta">
-            <span class="ws-brand-title">meCraft</span>
-            <span class="ws-brand-pill">v1.0.3</span>
-          </div>
-        </div>
-
         ${this.currentSession ? `
-          <div class="ws-profile-capsule" id="ws-profile-capsule" role="button" tabindex="0" title="${escapeHtml(this.currentSession.user.email)}">
-            <div class="ws-avatar">${escapeHtml((this.currentSession.user.fullName || this.currentSession.user.email).charAt(0).toUpperCase())}</div>
-            <div class="ws-user-info">
+          <div class="ws-profile-capsule">
+            <button type="button" class="ws-account-button" id="ws-profile-capsule" title="${escapeHtml(this.currentSession.user.email)}">
+              <span class="ws-avatar" aria-hidden="true">${escapeHtml((this.currentSession.user.fullName || this.currentSession.user.email).charAt(0).toUpperCase())}</span>
               <span class="ws-user-email">${escapeHtml(this.currentSession.user.fullName || this.currentSession.user.email)}</span>
-              <span class="ws-tier-tag ${getTierBadge(this.currentSession.user.tier).isPro ? 'tier-pro' : 'tier-free'}">
-                ${getTierBadge(this.currentSession.user.tier).label}
-              </span>
-            </div>
+            </button>
             <button type="button" class="ws-signout-btn" id="ws-btn-signout" title="${this.t.signOutBtn}" aria-label="Sign Out">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             </button>
@@ -2815,22 +2802,16 @@ console.log(initializeStudio(pdfStudio));`,
       </div>
 
       <!-- Middle Zone: Primary Navigation -->
-      <nav class="ws-sidebar-nav" role="tablist" aria-label="Workstation views">
-        <div class="ws-nav-section-label">${isTh ? 'เมนูหลัก' : 'WORKSPACE'}</div>
+      <nav class="ws-sidebar-nav" aria-label="${isTh ? 'เมนูหลัก' : 'Main navigation'}">
         ${navItems.map(item => `
           <button
             type="button"
             class="ws-nav-btn ${this.desktopView === item.id ? 'active' : ''}"
             data-ws-view="${item.id}"
-            role="tab"
-            aria-selected="${this.desktopView === item.id}"
+            ${this.desktopView === item.id ? 'aria-current="page"' : ''}
             aria-label="${item.label}"
           >
-            <span class="ws-nav-icon" aria-hidden="true">${item.icon}</span>
-            <div class="ws-nav-labels">
-              <span class="ws-nav-title">${item.label}</span>
-              <span class="ws-nav-desc">${item.desc}</span>
-            </div>
+            <span class="ws-nav-title">${item.label}</span>
           </button>
         `).join('')}
 
@@ -2856,7 +2837,7 @@ console.log(initializeStudio(pdfStudio));`,
         ` : ''}
 
         <button type="button" class="ws-lang-btn" id="ws-btn-lang" aria-label="Toggle language">
-          <span>${this.lang === 'en' ? '🇹🇭 ภาษาไทย' : '🇬🇧 English'}</span>
+          <span>${this.lang === 'en' ? 'ภาษาไทย' : 'English'}</span>
         </button>
       </div>
     </aside>`;
@@ -3158,7 +3139,6 @@ console.log(initializeStudio(pdfStudio));`,
 
   private renderStudiosCatalogView(): string {
     const isTh = this.lang === 'th';
-    const apps = this.filteredApps();
     const categories: Array<{ key: AppCategory | 'all'; label: string }> = [
       { key: 'all', label: this.t.filterAll },
       { key: 'document', label: this.t.filterDocument },
@@ -3172,44 +3152,35 @@ console.log(initializeStudio(pdfStudio));`,
     return `
     <div class="ws-view ws-view-studios">
       <header class="ws-view-header">
-        <div class="ws-view-eyebrow">ALL ${SHOWCASE_APPS.length} STANDALONE CREATIVE STUDIOS</div>
-        <h1 class="ws-view-title">${isTh ? 'คลังโปรแกรมสตูดิโอทั้งหมด' : 'All Studios & Workstations'}</h1>
-        <p class="ws-view-subtitle">${isTh ? 'โปรแกรมทั้งหมดทำงานแบบ Standalone ออฟไลน์ 100% ไร้คลาวด์' : 'Every studio runs standalone offline in 100% local device memory.'}</p>
+        <h1 class="ws-view-title">${isTh ? 'คลังโปรแกรม' : 'Library'}</h1>
+        <p class="ws-view-subtitle">${isTh ? 'จัดการโปรแกรมบนเครื่องและสำรวจสตูดิโอที่กำลังพัฒนา' : 'Manage your installed apps and preview upcoming studios.'}</p>
+        <p class="ws-view-subtitle" id="ws-launcher-update-status" role="status">${escapeHtml(this.launcherUpdateMessage())}</p>
       </header>
-      
-      <!-- Compact Dual Action Strip (Dropzone + meIDE Spotlight) -->
+      ${this.renderMeDocLibraryCard()}
       <div class="ws-action-strip">
         <div class="ws-universal-drop-hub ws-drop-compact" id="ws-universal-dropzone">
           <div class="ws-drop-info">
-            <span class="ws-drop-bolt">⚡</span>
             <div>
-              <h4>${isTh ? 'ลากไฟล์มาวางเพื่อเปิดสตูดิโอทันที' : 'Drop any file to launch its studio'}</h4>
-              <p>${isTh ? 'PDF, รูปภาพ, โค้ด, 3D, เสียง — ประมวลผลในเครื่อง' : 'PDF, Images, Code, 3D, Audio — Local RAM'}</p>
+              <h4>${isTh ? 'เปิดไฟล์จากเครื่อง' : 'Open a local file'}</h4>
+              <p>${isTh ? 'เลือกไฟล์หรือลากมาวางที่นี่' : 'Choose a file or drop it here.'}</p>
             </div>
           </div>
           <button type="button" class="ws-btn-subtle" id="ws-btn-browse">
-            <span>📁 ${isTh ? 'เลือกไฟล์...' : 'Browse...'}</span>
+            <span>${isTh ? 'เลือกไฟล์…' : 'Browse…'}</span>
           </button>
           <input type="file" id="ws-file-input" style="display:none;" multiple />
         </div>
-
-        <div class="ws-ide-compact-card">
-          <div class="ws-ide-compact-info">
-            <span class="ws-ide-icon">💻</span>
-            <div>
-              <div style="display:flex;align-items:center;gap:6px;">
-                <h4>meIDE AI Studio</h4>
-                <span class="ws-badge-flagship">IDE</span>
-              </div>
-              <p>${isTh ? 'เขียนโค้ด & เอกสาร Markdown + Terminal' : 'Code & Markdown IDE + Terminal'}</p>
-            </div>
-          </div>
-          <button type="button" class="ws-btn-primary-sm" id="btn-switch-to-meide">
-            <span>${isTh ? 'เปิด meIDE →' : 'Open meIDE →'}</span>
-          </button>
+        <div class="ws-library-utility">
+          <div class="ws-drop-info"><div>
+            <h3>meIDE AI</h3>
+            <p>${isTh ? 'พื้นที่เขียนโค้ดใน meCraft' : 'The built-in coding workspace.'}</p>
+          </div></div>
+          <button type="button" class="ws-btn-subtle" data-quick-launch="meide" data-quick-action="workbench">${isTh ? 'เปิด meIDE' : 'Open meIDE'}</button>
         </div>
       </div>
 
+      <section class="ws-library-catalog" aria-labelledby="ws-library-catalog-title">
+      <h2 id="ws-library-catalog-title">${isTh ? 'โปรแกรมที่กำลังพัฒนา' : 'Upcoming apps'}</h2>
       <div class="ws-toolbar">
         <div class="ws-search-box">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -3217,62 +3188,164 @@ console.log(initializeStudio(pdfStudio));`,
             type="search"
             id="ws-studios-search-input"
             class="ws-search-input"
-            placeholder="${this.t.searchPlaceholder}"
+            aria-label="${isTh ? 'ค้นหาสตูดิโอ' : 'Search studios'}"
+            placeholder="${isTh ? 'ค้นหาโปรแกรมที่กำลังพัฒนา' : 'Search upcoming apps'}"
             value="${escapeHtml(this.searchQuery)}"
           />
         </div>
-        <div class="ws-filter-pills" role="tablist">
+        <div class="ws-filter-pills" role="group" aria-label="${isTh ? 'หมวดหมู่โปรแกรม' : 'App categories'}">
           ${categories.map(c => `
             <button
               type="button"
               class="ws-filter-pill ${this.activeFilter === c.key ? 'active' : ''}"
               data-cat-filter="${c.key}"
-              role="tab"
-              aria-selected="${this.activeFilter === c.key}"
-            >${c.label}</button>
+              aria-pressed="${this.activeFilter === c.key}"
+            >${c.label.replace(/\s+\(\d+\)$/, '')}</button>
           `).join('')}
         </div>
       </div>
 
-      <div class="ws-studios-full-grid">
-        ${apps.map(app => {
-          const isActive = app.status === 'active';
-          return `
-          <div class="ws-studio-card-full" style="--accent:${app.accentColor}; --glow:${app.glowColor};">
-            <div class="ws-card-full-header">
-              <div class="ws-studio-icon" aria-hidden="true">${getAppIcon(app.id, app.accentColor)}</div>
-              <div class="ws-card-full-titlegroup">
-                <div class="ws-title-row">
-                  <h3 class="ws-card-full-name">${app.name}</h3>
-                  <span class="ws-status-badge ${isActive ? 'badge-active' : 'badge-indev'}">
-                    ${isActive ? (isTh ? 'พร้อมใช้งาน' : 'Ready') : (isTh ? 'กำลังพัฒนา' : 'In Dev')}
-                  </span>
-                </div>
-                ${app.industryCounterpart ? `
-                  <div class="ws-counterpart-badge">
-                    <span>✦ ${app.industryCounterpart[this.lang]}</span>
-                  </div>
-                ` : ''}
-              </div>
-            </div>
-            <p class="ws-card-full-desc">${app.tagline[this.lang]}</p>
-            <div class="ws-card-full-footer">
-              <button type="button" class="ws-btn-launch" data-launch-app="${app.id}" style="${!isActive ? 'background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14);' : ''}">
-                <span>${isActive ? (isTh ? 'เปิดใช้งาน' : 'Launch') : (isTh ? 'พรีวิว' : 'Preview')}</span>
-                <span aria-hidden="true">→</span>
-              </button>
-              <div style="display: flex; gap: 6px;">
-                <button type="button" class="ws-btn-web-pill" data-launch-web-studio="${app.id}" title="${isTh ? 'เปิดบนเว็บ' : 'Open in Web'}">
-                  <span>🌐</span>
-                </button>
-                <button type="button" class="ws-btn-detail-pill" data-open-detail-modal="${app.id}" title="${isTh ? 'รายละเอียดและคีย์ลัด' : 'Specs & Shortcuts'}">
-                  <span>ℹ️</span>
-                </button>
-              </div>
-            </div>
-          </div>`;
-        }).join('')}</div>
+      <div class="ws-studios-full-grid" id="ws-library-grid">${this.renderUpcomingStudios()}</div>
+      </section>
     </div>`;
+  }
+
+  private renderUpcomingStudios(): string {
+    const apps = this.filteredApps().filter(app => app.id !== 'medoc');
+    if (apps.length === 0) {
+      return `<p role="status" class="ws-view-subtitle">${this.lang === 'th' ? 'ไม่พบโปรแกรม ลองใช้คำค้นหรือหมวดหมู่อื่น' : 'No apps found. Try another search or category.'}</p>`;
+    }
+    const bannerApps = new Set(['mepdf', 'mephoto', 'medrop', 'mevector', 'me3d', 'mefilm', 'melight', 'memotion', 'medesign', 'meaudio']);
+    return `
+        ${apps.map(app => `
+          <article class="ws-library-card" style="--app-accent: ${app.accentColor}">
+            <div class="ws-library-art" aria-hidden="true">
+              ${bannerApps.has(app.id)
+                ? `<img src="./branding/${app.id}-wide.webp" alt="" loading="lazy" />`
+                : getAppIcon(app.icon, app.accentColor)}
+            </div>
+            <div class="ws-library-card-copy">
+              <span class="ws-library-category">${app.categoryLabel[this.lang]}</span>
+              <h3>${app.name}</h3>
+              <p>${app.tagline[this.lang]}</p>
+            </div>
+          </article>`).join('')}`;
+  }
+
+  private renderMeDocLibraryCard(): string {
+    const th = this.lang === 'th';
+    const status = this.meDocStatus;
+    const installed = status?.installed === true;
+    const action = status ? meDocPrimaryAction(installed, status.version, this.meDocPackage) : 'retry';
+    const labels = th
+      ? { install: 'ติดตั้ง', open: 'เปิด meDoc', update: 'อัปเดต', retry: 'ตรวจอีกครั้ง' }
+      : { install: 'Install', open: 'Open meDoc', update: 'Update', retry: 'Check again' };
+    const state = installed
+      ? (th ? 'ติดตั้งแล้ว' : 'Installed') + (status.version ? ` · v${escapeHtml(status.version)}` : '')
+      : status ? (th ? 'ยังไม่ได้ติดตั้ง' : 'Not installed') : (th ? 'ตรวจสถานะในเครื่อง' : 'Local status');
+    const available = this.meDocPackage;
+    return `
+      <section class="ws-managed-card" aria-labelledby="ws-medoc-title">
+        <div class="ws-managed-art"><img src="./branding/medoc.webp" alt="" /></div>
+        <div class="ws-managed-content">
+          <h2 id="ws-medoc-title">meDoc</h2>
+          <p>${th ? 'เขียน Markdown และสร้างเอกสารจากแม่แบบภาษาไทย' : 'Write in Markdown and start from Thai document templates.'}</p>
+          <p class="ws-managed-version"><span class="ws-managed-state">${state}</span>${available && (action === 'install' || action === 'update') ? ` · v${escapeHtml(available.version)} · ${formatBytes(available.sizeBytes)}` : ''}</p>
+        </div>
+          <div class="ws-managed-actions">
+            <button type="button" class="ws-btn-launch" data-medoc-action="${action}" ${this.meDocBusy ? 'disabled' : ''}>${labels[action]}</button>
+            ${installed && action === 'update' ? `<button type="button" class="ws-btn-subtle" data-medoc-action="open" ${this.meDocBusy ? 'disabled' : ''}>${labels.open}</button>` : ''}
+            ${installed ? `<button type="button" class="ws-btn-subtle" data-medoc-action="uninstall" ${this.meDocBusy ? 'disabled' : ''}>${th ? 'ถอนการติดตั้ง' : 'Uninstall'}</button>` : ''}
+            ${action !== 'retry' ? `<button type="button" class="ws-btn-subtle" data-medoc-action="retry" ${this.meDocBusy ? 'disabled' : ''}>${th ? 'ตรวจเวอร์ชัน' : 'Check version'}</button>` : ''}
+          </div>
+        ${this.meDocProgress !== null || this.meDocMessage ? `<div class="ws-managed-feedback">
+          ${this.meDocProgress !== null ? `<progress id="ws-medoc-progress" max="100" value="${this.meDocProgress}" aria-label="${th ? 'ความคืบหน้าการดาวน์โหลด' : 'Download progress'}"></progress>` : ''}
+          <div class="ws-managed-message ${this.meDocError ? 'is-error' : ''}" role="status">${escapeHtml(this.meDocMessage)}</div>
+        </div>` : ''}
+      </section>`;
+  }
+
+  private async loadMeDocLibrary(): Promise<void> {
+    if (!this.bridge.isTauri() || this.meDocBusy) return;
+    this.meDocBusy = true;
+    this.meDocError = false;
+    const th = this.lang === 'th';
+    this.meDocMessage = th ? 'กำลังตรวจสอบ meDoc…' : 'Checking meDoc…';
+    this.render();
+    this.attachListeners();
+    try {
+      this.meDocStatus = await this.bridge.checkAppStatus('medoc');
+      this.meDocPackage = await fetchMeDocPackage().catch(error => {
+        console.warn('[meCraft:meDoc] Cannot check packages', error);
+        return null;
+      });
+      this.meDocMessage = this.meDocPackage ? '' : (th
+        ? 'ตรวจแพ็กเกจออนไลน์ไม่ได้ ลองตรวจอีกครั้งเมื่อเชื่อมต่ออินเทอร์เน็ต'
+        : 'Could not verify an online package. Try again when connected.');
+    } catch (error) {
+      this.meDocError = true;
+      this.meDocMessage = th ? 'ตรวจสถานะ meDoc ในเครื่องไม่ได้' : 'Could not read the local meDoc status.';
+      console.warn('[meCraft:meDoc]', error);
+    } finally {
+      this.meDocBusy = false;
+      this.render();
+      this.attachListeners();
+    }
+  }
+
+  private async manageMeDoc(action: string): Promise<void> {
+    if (!this.bridge.isTauri() || this.meDocBusy) return;
+    if (action === 'retry') return this.loadMeDocLibrary();
+    const th = this.lang === 'th';
+    const candidate = this.meDocPackage;
+    if (action === 'uninstall' && !window.confirm(th ? 'ถอนการติดตั้ง meDoc? เอกสารของคุณจะยังอยู่' : 'Uninstall meDoc? Your documents will be kept.')) return;
+    this.meDocBusy = true;
+    this.meDocError = false;
+    this.meDocMessage = th ? 'กำลังดำเนินการ…' : 'Working…';
+    if ((action === 'install' || action === 'update') && candidate) this.meDocProgress = 0;
+    this.render();
+    this.attachListeners();
+    try {
+      if (action === 'open') {
+        if (!(await this.bridge.launchApp({ appId: 'medoc', target: 'desktop' })).success) throw new Error('Launch failed');
+        this.meDocMessage = th ? 'เปิด meDoc แล้ว' : 'Opened meDoc.';
+      } else if (action === 'uninstall') {
+        if (!(await this.bridge.uninstallApp('medoc')).success) throw new Error('Uninstall failed');
+        this.meDocMessage = th ? 'ถอนการติดตั้ง meDoc แล้ว' : 'meDoc uninstalled.';
+      } else if (candidate && (action === 'install' || action === 'update')) {
+        const { invoke } = await import('@tauri-apps/api/core');
+        const { listen } = await import('@tauri-apps/api/event');
+        const unlisten = await listen<DownloadProgress>('download-progress', ({ payload }) => {
+          if (payload.appId !== 'medoc') return;
+          this.meDocProgress = payload.percent;
+          const progress = document.getElementById('ws-medoc-progress') as HTMLProgressElement | null;
+          if (progress) progress.value = payload.percent;
+        });
+        try {
+          await invoke('install_verified_medoc', { ...candidate });
+        } finally {
+          unlisten();
+        }
+        this.meDocMessage = th ? 'ติดตั้ง meDoc เรียบร้อย' : 'meDoc is ready to open.';
+      }
+    } catch (error) {
+      this.meDocError = true;
+      this.meDocMessage = th
+        ? 'ทำรายการไม่สำเร็จ ปิด meDoc หากเปิดอยู่ แล้วลองอีกครั้ง'
+        : 'Could not complete the action. Close meDoc if it is running, then try again.';
+      console.warn('[meCraft:meDoc]', error);
+    } finally {
+      try {
+        this.meDocStatus = await this.bridge.checkAppStatus('medoc');
+      } catch (error) {
+        console.warn('[meCraft:meDoc] Cannot refresh status', error);
+      }
+      this.meDocBusy = false;
+      this.meDocProgress = null;
+      this.render();
+      this.attachListeners();
+      if (this.desktopView === 'studios') document.querySelector<HTMLButtonElement>('[data-medoc-action]')?.focus();
+    }
   }
 
   private renderRecentsView(): string {
@@ -3281,9 +3354,8 @@ console.log(initializeStudio(pdfStudio));`,
     <div class="ws-view ws-view-recents">
       <header class="ws-view-header ws-header-with-actions">
         <div>
-          <div class="ws-view-eyebrow">LOCAL FILE HISTORY</div>
-          <h1 class="ws-view-title">${isTh ? 'ประวัติโครงการและเอกสารล่าสุด' : 'Recent Projects & Documents'}</h1>
-          <p class="ws-view-subtitle">${isTh ? 'บันทึกบนเครื่องของคุณ 100% ไม่มีข้อมูลใดส่งขึ้นคลาวด์' : 'Stored locally in your device history. Zero data uploaded to cloud.'}</p>
+          <h1 class="ws-view-title">${isTh ? 'ไฟล์ล่าสุด' : 'Recent files'}</h1>
+          <p class="ws-view-subtitle">${isTh ? 'ประวัติการเปิดไฟล์ใน meCraft บนเครื่องนี้' : 'Files recently opened through meCraft on this PC.'}</p>
         </div>
         ${this.recentProjects.length > 0 ? `
           <button type="button" class="ws-btn-outline" id="ws-btn-clear-recents">
@@ -3295,11 +3367,10 @@ console.log(initializeStudio(pdfStudio));`,
 
       ${this.recentProjects.length === 0 ? `
         <div class="ws-empty-state">
-          <div class="ws-empty-icon">📁</div>
           <h3>${isTh ? 'ยังไม่มีประวัติการเปิดไฟล์' : 'No Recent Files'}</h3>
           <p>${this.t.noRecentProjects}</p>
-          <button type="button" class="ws-btn-primary" data-switch-view="workbench">
-            <span>${isTh ? 'ไปยังโปรแกรมแก้ไข' : 'Go to IDE Workspace'}</span>
+          <button type="button" class="ws-btn-primary" data-switch-view="studios">
+            <span>${isTh ? 'เปิดคลังโปรแกรม' : 'Open Library'}</span>
           </button>
         </div>
       ` : `
@@ -3347,56 +3418,37 @@ console.log(initializeStudio(pdfStudio));`,
     return `
     <div class="ws-view ws-view-vault">
       <header class="ws-view-header">
-        <div class="ws-view-eyebrow">SECURITY VAULT &amp; ENGINE DIAGNOSTICS</div>
-        <h1 class="ws-view-title">${isTh ? 'สถานะเครื่องยนต์และความปลอดภัย' : 'Local Engine & Security Vault'}</h1>
-        <p class="ws-view-subtitle">${isTh ? 'ตรวจสอบความปลอดภัย ไร้คลาวด์ 100% สิทธิ์การใช้งาน และเวอร์ชันซอฟต์แวร์' : 'Verify 100% zero-cloud architecture, cryptographic integrity, and entitlements.'}</p>
+        <h1 class="ws-view-title">${isTh ? 'การตั้งค่า' : 'Settings'}</h1>
+        <p class="ws-view-subtitle">${isTh ? 'จัดการบัญชีและการอัปเดต meCraft' : 'Manage your account and meCraft updates.'}</p>
       </header>
 
       <div class="ws-vault-grid">
         <div class="ws-vault-card">
-          <div class="ws-vault-card-icon">🛡️</div>
-          <h3>${isTh ? 'สถาปัตยกรรมไร้คลาวด์ 100%' : '100% Zero-Cloud Architecture'}</h3>
-          <p>${isTh ? 'ทุกฟังก์ชันของสตูดิโอ mePDF, mePhoto, meDoc ทำงานบน RAM ภายในเครื่องคอมพิวเตอร์ของคุณเท่านั้น ไม่มีการส่งเนื้อหาเอกสารหรือรูปภาพออกสู่เครือข่าย' : 'All studios execute entirely in local RAM. Zero document bytes or photos are ever transmitted to any remote servers.'}</p>
-          <div class="ws-vault-metrics">
-            <div class="ws-metric">
-              <span class="ws-metric-val" style="color: #10b981;">0 Bytes</span>
-              <span class="ws-metric-lbl">${isTh ? 'ข้อมูลอัปโหลดออก' : 'Cloud Uploads'}</span>
-            </div>
-            <div class="ws-metric">
-              <span class="ws-metric-val" style="color: #3b82f6;">DirectComposition</span>
-              <span class="ws-metric-lbl">${isTh ? 'ระบบเรนเดอร์ GPU' : 'Rendering Engine'}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="ws-vault-card">
-          <div class="ws-vault-card-icon">🚀</div>
-          <h3>${isTh ? 'เวอร์ชันและการอัปเดต' : 'Software Version & Updates'}</h3>
-          <p>${isTh ? 'เวอร์ชันปัจจุบัน: v1.0.3 (Official Stable Release) ทำงานบนเครื่องยนต์ Tauri v2 Native Windows 64-bit' : 'Current version: v1.0.3 (Official Stable Release). Built with Tauri v2 Native Windows 64-bit engine.'}</p>
+          <h2>${isTh ? 'อัปเดตโปรแกรม' : 'Software updates'}</h2>
+          <p>${isTh ? 'เวอร์ชันปัจจุบัน' : 'Current version'} · v${launcherVersion}</p>
           <div class="ws-vault-status-row">
-            <span class="ws-badge-ok">✓ ${isTh ? 'เวอร์ชันล่าสุดเสถียร' : 'Latest Official Stable'}</span>
-            <button type="button" class="ws-btn-primary" id="ws-btn-check-update-vault">
-              <span>${isTh ? 'ตรวจสอบการอัปเดต' : 'Check for Updates'}</span>
+            <span role="status" id="ws-launcher-update-settings">${escapeHtml(this.launcherUpdateMessage())}</span>
+            <button type="button" class="ws-btn-primary" id="ws-btn-check-update-vault" ${['checking', 'downloading', 'installing', 'recovery_required'].includes(this.launcherUpdateState) ? 'disabled' : ''}>
+              <span>${isTh ? 'ตรวจสอบการอัปเดต' : 'Check for updates'}</span>
             </button>
           </div>
+          ${this.launcherUpdateState === 'recovery_required' ? `<button type="button" class="ws-btn-outline" id="ws-btn-recovery-complete">${isTh ? 'กู้คืนโปรแกรมแล้ว' : 'I have recovered the app'}</button>` : ''}
         </div>
 
         <div class="ws-vault-card">
-          <div class="ws-vault-card-icon">🔑</div>
-          <h3>${isTh ? 'สิทธิ์การใช้งานและความปลอดภัย' : 'License & Cryptographic Vault'}</h3>
-          <p>${isTh ? 'ระบบกุญแจ Ed25519 ประจำเครื่อง ตรวจสอบสิทธิ์ออฟไลน์สูงสุด 30 วันโดยไม่ต้องต่ออินเทอร์เน็ต' : 'Ed25519 local cryptographic verification with 30-day offline grace period.'}</p>
+          <h2>${isTh ? 'บัญชี' : 'Account'}</h2>
           <div class="ws-vault-auth-box">
             ${this.currentSession ? `
               <div class="ws-auth-active">
-                <span class="ws-auth-email">👤 ${escapeHtml(this.currentSession.user.email)}</span>
+                <span class="ws-auth-email">${escapeHtml(this.currentSession.user.email)}</span>
                 <span class="ws-tier-tag ${isPro ? 'tier-pro' : 'tier-free'}">
                   ${getTierBadge(this.currentSession.user.tier).label}
                 </span>
               </div>
             ` : `
               <div class="ws-auth-guest">
-                <span>👤 ${isTh ? 'ผู้ใช้งานทั่วไป (Free Member)' : 'Local User (Free Member)'}</span>
-                <button type="button" class="ws-btn-outline" id="ws-btn-vault-signin">${isTh ? 'เข้าสู่ระบบ / ซิงค์สิทธิ์' : 'Sign In & Sync'}</button>
+                <span>${isTh ? 'กำลังใช้งานแบบผู้เยี่ยมชม' : 'Using meCraft as a guest'}</span>
+                <button type="button" class="ws-btn-outline" id="ws-btn-vault-signin">${isTh ? 'เข้าสู่ระบบ' : 'Sign in'}</button>
               </div>
             `}
           </div>
@@ -3453,17 +3505,12 @@ console.log(initializeStudio(pdfStudio));`,
           </ul>
         </div>
 
-        <div class="update-security-note" style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #10b981; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px; padding: 8px 12px; margin-bottom: 20px;">
-          <span class="shield-icon" aria-hidden="true">🛡️</span>
-          <span>${this.lang === 'th' ? 'ตรวจสอบลายเซ็น Ed25519 ดิจิทัลเรียบร้อยแล้ว — 100% ปลอดภัย ไร้มัลแวร์' : 'Cryptographically signed & verified — 100% clean and malware-free'}</span>
-        </div>
-
         <div class="update-actions-row" style="display: flex; gap: 10px;">
           <button type="button" class="btn-auth-submit" id="btn-update-later" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15); color: #94a3b8; flex: 1;">
             ${this.lang === 'th' ? 'ไว้ภายหลัง (Later)' : 'Later'}
           </button>
-          <a href="${downloadUrl}" download="meCraft-Setup.exe" class="btn-auth-submit" id="btn-update-now" style="background: linear-gradient(135deg, #2563eb, #0284c7); color: #fff; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; flex: 2; font-weight: 600;">
-            <span>⚡ ${this.lang === 'th' ? 'ดาวน์โหลดและติดตั้งทันที (Update Now)' : 'Download & Install Update Now'}</span>
+          <a href="${downloadUrl}" class="btn-auth-submit" id="btn-update-now" style="background: linear-gradient(135deg, #2563eb, #0284c7); color: #fff; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; flex: 2; font-weight: 600;">
+            <span>↓ ${this.lang === 'th' ? 'ดาวน์โหลด MSI เพื่อติดตั้งเอง' : 'Download MSI to install'}</span>
           </a>
         </div>
       </div>
@@ -3564,7 +3611,7 @@ console.log(initializeStudio(pdfStudio));`,
         <div class="settings-group" style="margin-top: 8px;">
           <label class="settings-label">${isTh ? 'การตรวจสอบเวอร์ชันอัตโนมัติ' : 'Autonomous Update Check'}</label>
           <div class="settings-info-badge">
-            🟢 ${isTh ? 'เปิดใช้งาน (ตรวจสอบจาก GitHub Releases อัตโนมัติ)' : 'Enabled (Verified with Official GitHub Releases)'}
+            🟢 ${isTh ? 'แจ้งเตือนรุ่นใหม่จาก GitHub Releases แล้วให้เลือกดาวน์โหลด' : 'Checks GitHub Releases and offers a download'}
           </div>
         </div>
       `;
@@ -3859,23 +3906,16 @@ console.log(initializeStudio(pdfStudio));`,
   public renderSteamAuthGate(): string {
     const isTh = this.lang === 'th';
     return `
-    <div class="steam-compact-window steam-auth-win" id="steam-auth-gate">
-      <div class="steam-compact-topbar" data-tauri-drag-region>
-        <div class="steam-compact-brand" data-tauri-drag-region>
-          <img src="./branding/mecraft-suite.png" alt="meCraft" onerror="this.style.display='none'" />
-          <span data-tauri-drag-region>meCraft Sign In</span>
-        </div>
-        <button type="button" class="steam-compact-close" id="btn-steam-close" aria-label="Close">✕</button>
-      </div>
+    <dialog class="steam-auth-win ws-auth-dialog" id="steam-auth-gate" aria-labelledby="ws-auth-title">
       <div class="steam-auth-body">
         <div class="auth-brand">
-          <h2 class="auth-title">${isTh ? 'เข้าสู่ระบบบัญชี meCraft' : 'Sign in to meCraft'}</h2>
-          <p class="auth-subtitle">${isTh ? 'ซิงค์สิทธิ์สตูดิโอและพื้นที่ทำงานของคุณ' : 'Sync your studios, licenses, and workspace.'}</p>
+          <h2 class="auth-title" id="ws-auth-title">${isTh ? 'เข้าสู่ระบบ meCraft' : 'Sign in to meCraft'}</h2>
+          <p class="auth-subtitle">${isTh ? 'คุณใช้คลังโปรแกรมต่อในฐานะผู้เยี่ยมชมได้' : 'You can keep using the Library as a guest.'}</p>
         </div>
 
-        <div class="auth-tabs" role="tablist">
-          <button type="button" class="auth-tab ${this.authTab === 'signin' ? 'active' : ''}" id="modal-tab-signin" role="tab">${isTh ? 'เข้าสู่ระบบ' : 'Sign In'}</button>
-          <button type="button" class="auth-tab ${this.authTab === 'signup' ? 'active' : ''}" id="modal-tab-signup" role="tab">${isTh ? 'สร้างบัญชี' : 'Create Account'}</button>
+        <div class="auth-tabs" role="group" aria-label="${isTh ? 'รูปแบบบัญชี' : 'Account action'}">
+          <button type="button" class="auth-tab ${this.authTab === 'signin' ? 'active' : ''}" id="modal-tab-signin" aria-pressed="${this.authTab === 'signin'}">${isTh ? 'เข้าสู่ระบบ' : 'Sign In'}</button>
+          <button type="button" class="auth-tab ${this.authTab === 'signup' ? 'active' : ''}" id="modal-tab-signup" aria-pressed="${this.authTab === 'signup'}">${isTh ? 'สร้างบัญชี' : 'Create Account'}</button>
         </div>
 
         ${this.authError ? `
@@ -3917,15 +3957,15 @@ console.log(initializeStudio(pdfStudio));`,
 
           <button type="button" class="btn-auth-google" id="modal-btn-auth-google">
             <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-            <span>Continue with Google</span>
+            <span>${isTh ? 'ดำเนินการต่อด้วย Google' : 'Continue with Google'}</span>
           </button>
 
           <!-- Desktop Sync Code Import Drawer -->
           <div class="auth-sync-desktop-box" style="margin-top: 12px;">
             <button type="button" class="btn-toggle-sync-import" id="btn-toggle-sync-import">
               ${this.showSyncImport 
-                ? (isTh ? '▲ ซ่อนช่องกรอกรหัสเชื่อมต่อ' : '▲ Hide Sync Code Input') 
-                : (isTh ? '📥 หรือวางรหัสเชื่อมต่อจากเว็บ (Sync Code)' : '📥 Or Paste Web Sync Code')}
+                ? (isTh ? 'ซ่อนช่องกรอกรหัสเชื่อมต่อ' : 'Hide sync code')
+                : (isTh ? 'ใช้รหัสเชื่อมต่อจากเว็บ' : 'Use a web sync code')}
             </button>
             <div class="sync-import-form" id="sync-import-drawer" style="${this.showSyncImport ? '' : 'display: none;'}">
               <input type="text" id="input-sync-code" placeholder="MC3.eyJhbGciOi..." class="input-sync-code" spellcheck="false" />
@@ -3935,8 +3975,9 @@ console.log(initializeStudio(pdfStudio));`,
             </div>
           </div>
         </form>
+        <button type="button" class="ws-btn-subtle" id="ws-auth-back">${isTh ? 'กลับไปที่คลังโปรแกรม' : 'Back to Library'}</button>
       </div>
-    </div>`;
+    </dialog>`;
   }
 
   public renderAuthModal(): string {
@@ -5382,7 +5423,7 @@ console.log(initializeStudio(pdfStudio));`,
         <div class="hero-official-ctas" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 32px 0 24px;">
           <a href="./downloads" class="hero-cta-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-md); font-weight: 700; text-decoration: none; font-size: 15px;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>${this.lang === 'th' ? 'ศูนย์ดาวน์โหลดตัวติดตั้งทั้งหมด (.exe)' : 'Downloads Directory (.exe)'}</span>
+            <span>${this.lang === 'th' ? 'ดาวน์โหลด meCraft สำหรับ Windows' : 'Download meCraft for Windows'}</span>
           </a>
           <a href="#apps-grid" class="hero-cta-secondary" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; font-size: 15px;">
             <span>${this.lang === 'th' ? `สำรวจโปรแกรมทั้งหมด (${SHOWCASE_APPS.length} สตูดิโอ) ↓` : `Explore All ${SHOWCASE_APPS.length} Studios ↓`}</span>
@@ -5559,9 +5600,9 @@ console.log(initializeStudio(pdfStudio));`,
           <div class="spotlight-action-row">
             ${isActive ? `
               <div class="spotlight-actions-flex" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                <a href="${app.downloadUrl || './downloads'}" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank" rel="noopener noreferrer"'} class="spotlight-cta-btn" style="background: ${app.accentColor}; color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700;">
+                <a href="${SUITE_DOWNLOAD_URL}" class="spotlight-cta-btn" style="background: ${app.accentColor}; color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700;">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  <span>${this.lang === 'th' ? `ดาวน์โหลด ${app.exeName || (app.name + '.exe')}` : `Download ${app.exeName || (app.name + '.exe')}`}</span>
+                  <span>${this.lang === 'th' ? 'รับผ่าน meCraft' : 'Get via meCraft'}</span>
                 </a>
                 <a href="./downloads" class="quick-launch-chip" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px;">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -5657,8 +5698,8 @@ console.log(initializeStudio(pdfStudio));`,
         <button type="button" class="eco-btn-web" data-launch-web-studio="${app.id}" title="${this.lang === 'th' ? `เปิด ${app.name} บนเบราว์เซอร์` : `Launch ${app.name} in Web Browser`}">
           <span>🚀 ${this.lang === 'th' ? 'เปิดบนเว็บ' : 'Open Web'}</span>
         </button>
-        <a href="${app.downloadUrl || SUITE_DOWNLOAD_URL}" class="eco-btn-dl" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank" rel="noopener noreferrer"'} title="${this.lang === 'th' ? `ดาวน์โหลด ${app.exeName || (app.name + '.exe')}` : `Download ${app.exeName || (app.name + '.exe')}`}">
-          <span>⬇️ .exe</span>
+        <a href="${SUITE_DOWNLOAD_URL}" class="eco-btn-dl" title="${this.lang === 'th' ? 'รับผ่าน meCraft' : 'Get via meCraft'}">
+          <span>meCraft</span>
         </a>
         <button type="button" class="eco-btn-detail" data-open-detail-modal="${app.id}" title="${this.lang === 'th' ? 'ดูสเปกและคีย์ลัด' : 'View Specifications & Shortcuts'}">
           <span>ℹ️</span>
@@ -5754,8 +5795,8 @@ console.log(initializeStudio(pdfStudio));`,
             <button type="button" class="btn-detail-launch-web" data-launch-web-studio="${app.id}">
               <span>🚀 ${isTh ? `เปิด ${app.name} บนเบราว์เซอร์` : `Open ${app.name} in Browser`}</span>
             </button>
-            <a href="${app.downloadUrl || SUITE_DOWNLOAD_URL}" class="btn-detail-download" ${app.downloadUrl ? `download="${app.exeName || (app.name + '.exe')}"` : 'target="_blank" rel="noopener noreferrer"'}>
-              <span>⬇️ ${isTh ? `ดาวน์โหลด .exe (${app.exeSize || 'Installer'})` : `Download .exe (${app.exeSize || 'Installer'})`}</span>
+            <a href="${SUITE_DOWNLOAD_URL}" class="btn-detail-download">
+              <span>⬇️ ${isTh ? 'รับผ่าน meCraft' : 'Get via meCraft'}</span>
             </a>
           </div>
         </div>
@@ -5787,12 +5828,7 @@ console.log(initializeStudio(pdfStudio));`,
   private renderDownloadsModal(): string {
     if (!this.isDownloadsModalOpen) return '';
 
-    let items = RELEASE_BINARIES;
-    if (this.downloadsFilter === 'production') {
-      items = items.filter(i => i.status === 'active');
-    } else if (this.downloadsFilter === 'indev') {
-      items = items.filter(i => i.status === 'in-dev');
-    }
+    const items = RELEASE_BINARIES.filter(item => item.isSuite);
 
     return `
     <div class="downloads-modal-overlay active" id="downloads-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-downloads-title">
@@ -5805,12 +5841,12 @@ console.log(initializeStudio(pdfStudio));`,
             </div>
             <div>
               <h2 class="downloads-modal-title" id="modal-downloads-title">
-                ${this.lang === 'th' ? 'ศูนย์รวมไฟล์ดาวน์โหลดตัวติดตั้ง (.exe)' : 'meCrafts Downloads & Release Directory'}
+                ${this.lang === 'th' ? 'ดาวน์โหลด meCraft สำหรับ Windows' : 'Download meCraft for Windows'}
               </h2>
               <p class="downloads-modal-subtitle">
                 ${this.lang === 'th'
-                  ? 'ไฟล์ติดตั้ง (.exe) ทุกโปรแกรมในเครือ meCrafts · จัดเรียงตามรุ่นและอัปเดตล่าสุด · ปลอดภัย 100% In-Device Memory'
-                  : 'Official standalone and suite installer binaries (.exe) for Windows 10/11 · Up-to-date releases · 100% In-Device Privacy'}
+                  ? 'ใช้ตัวติดตั้ง mecraft-hub.msi ไฟล์เดียว แล้วจัดการแอปที่พร้อมใช้งานใน Library'
+                  : 'One mecraft-hub.msi installer for Windows 10/11. Manage available apps from the Library.'}
               </p>
             </div>
           </div>
@@ -5818,20 +5854,10 @@ console.log(initializeStudio(pdfStudio));`,
         </div>
 
         <div class="downloads-toolbar">
-          <div class="downloads-filter-pills" role="tablist" aria-label="Filter release binaries">
-            <button type="button" class="dl-filter-pill ${this.downloadsFilter === 'all' ? 'active' : ''}" data-dl-filter="all">
-              ${this.lang === 'th' ? 'ทั้งหมด (12 ไฟล์)' : 'All Files (12)'}
-            </button>
-            <button type="button" class="dl-filter-pill ${this.downloadsFilter === 'production' ? 'active' : ''}" data-dl-filter="production">
-              ${this.lang === 'th' ? 'พร้อมดาวน์โหลด (.exe)' : 'Active Releases (.exe)'}
-            </button>
-            <button type="button" class="dl-filter-pill ${this.downloadsFilter === 'indev' ? 'active' : ''}" data-dl-filter="indev">
-              ${this.lang === 'th' ? 'กำลังพัฒนา (Roadmap)' : 'In Development'}
-            </button>
-          </div>
+          <span>${this.lang === 'th' ? 'ตัวติดตั้ง Windows: MSI' : 'Windows installer: MSI'}</span>
           <div class="downloads-meta-badge">
             <span class="dl-pulse-dot" aria-hidden="true"></span>
-            <span>${this.lang === 'th' ? 'สถานะ: เผยแพร่เวอร์ชัน v1.0.3' : 'Channel: Stable v1.0.3'}</span>
+            <span>${this.lang === 'th' ? 'ตรวจสอบรุ่นล่าสุดบนหน้าดาวน์โหลด' : 'Check the download page for availability'}</span>
           </div>
         </div>
 
@@ -5850,10 +5876,10 @@ console.log(initializeStudio(pdfStudio));`,
                   <h3 class="dl-item-title">${item.name}</h3>
                   <span class="dl-version-tag">${item.version}</span>
                   ${item.isSuite ? `<span class="dl-suite-badge">${this.lang === 'th' ? '★ ชุดโปรแกรมหลัก' : '★ All-in-One'}</span>` : ''}
-                  <span class="dl-status-badge ${isActive ? 'status-active' : 'status-indev'}">
+                  ${!item.isSuite ? `<span class="dl-status-badge ${isActive ? 'status-active' : 'status-indev'}">
                     <span class="status-dot" aria-hidden="true"></span>
                     ${isActive ? (this.lang === 'th' ? 'พร้อมดาวน์โหลด' : 'Production Ready') : (this.lang === 'th' ? 'กำลังพัฒนา' : 'In Development')}
-                  </span>
+                  </span>` : ''}
                 </div>
 
                 <div class="dl-item-meta">
@@ -5872,17 +5898,14 @@ console.log(initializeStudio(pdfStudio));`,
                   ${highlights.map(h => `<span class="dl-spec-tag">✦ ${escapeHtml(h)}</span>`).join('')}
                 </div>
 
-                <div class="dl-checksum-note">
-                  <span>🔒 SHA-256:</span>
-                  <span>${item.sha256}</span>
-                </div>
+                <div class="dl-checksum-note"><span>${this.lang === 'th' ? 'ตรวจสอบขนาดและ SHA-256 บนหน้าดาวน์โหลดเมื่อเผยแพร่' : 'Check size and SHA-256 on the download page when published'}</span></div>
               </div>
 
               <div class="download-item-right">
                 ${isActive && item.downloadUrl ? `
-                  <a href="${item.downloadUrl}" download="${item.fileName}" class="dl-action-btn dl-btn-download">
+                  <a href="${SUITE_DOWNLOAD_URL}" class="dl-action-btn dl-btn-download">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    <span>${this.lang === 'th' ? `ดาวน์โหลด ${item.fileName}` : `Download ${item.fileName}`}</span>
+                    <span>${this.lang === 'th' ? `ตรวจสอบ ${item.fileName}` : `Check ${item.fileName}`}</span>
                     <span class="dl-btn-size">${item.fileSize}</span>
                   </a>
                 ` : `
@@ -5897,7 +5920,7 @@ console.log(initializeStudio(pdfStudio));`,
 
         <div class="downloads-modal-footer">
           <div class="dl-footer-left">
-            <span>🛡️ ${this.lang === 'th' ? 'ทุกไฟล์คอมไพล์จากโค้ดต้นฉบับ ปราศจากโฆษณา และทำงานบนหน่วยความจำเครื่อง 100%' : 'All binaries compiled from source, ad-free, zero-telemetry, and MIT licensed.'}</span>
+            <span>🛡️ ${this.lang === 'th' ? 'ดาวน์โหลดเมื่อรุ่นเผยแพร่พร้อมบนหน้า Downloads' : 'Download when a published release is available on the Downloads page.'}</span>
           </div>
           <div class="dl-footer-right">
             <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="dl-gh-link">
@@ -6011,12 +6034,12 @@ console.log(initializeStudio(pdfStudio));`,
             <img src="./branding/suite-installer-box.png" class="specs-box-img" alt="meCraft Suite Windows Package" loading="lazy" />
             <div class="specs-box-desc">
               <h4>${this.lang === 'th' ? 'meCraft Installer สำหรับ Windows 11 / 10' : 'meCraft Installer for Windows 11 / 10'}</h4>
-              <p>${this.lang === 'th' ? `รวมครบทั้ง ${SHOWCASE_APPS.length} โปรแกรมในตัวติดตั้งเดียว ติดตั้งออฟไลน์ 100% ไร้โฆษณา ไร้การติดตาม` : `All ${SHOWCASE_APPS.length} standalone studios bundled in one lightweight offline installer. Zero ads, zero telemetry.`}</p>
+              <p>${this.lang === 'th' ? 'ติดตั้ง meCraft Launcher แล้วเลือกแอปที่พร้อมใช้งานจาก Library' : 'Install the meCraft Launcher, then choose available apps from its Library.'}</p>
             </div>
           </div>
           <div class="specs-actions">
-            <a href="${SUITE_DOWNLOAD_URL}" download="meCraft-Setup.exe" class="hero-cta-primary">
-              ${this.lang === 'en' ? 'Download Suite (.exe) — 14.8 MB' : 'ดาวน์โหลด Suite (.exe) — 14.8 MB'}
+            <a href="${SUITE_DOWNLOAD_URL}" class="hero-cta-primary">
+              ${this.lang === 'en' ? 'Download meCraft for Windows' : 'ดาวน์โหลด meCraft สำหรับ Windows'}
             </a>
             <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="hero-cta-secondary">
               ${this.lang === 'en' ? 'View All Releases & Source on GitHub →' : 'ดูประวัติ Releases และ Source Code บน GitHub →'}
@@ -6038,7 +6061,7 @@ console.log(initializeStudio(pdfStudio));`,
         <nav class="footer-links" aria-label="Footer links">
           <a href="https://github.com/methastrategy/meCraft" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Repository</a>
           <a href="https://github.com/methastrategy/meCraft/releases" target="_blank" rel="noopener noreferrer" class="footer-link">Releases (v1.0.0)</a>
-          <a href="./downloads" class="footer-link" id="footer-btn-open-downloads">${this.lang === 'th' ? 'ศูนย์ดาวน์โหลด (.exe)' : 'Downloads Directory'}</a>
+          <a href="./downloads" class="footer-link" id="footer-btn-open-downloads">${this.lang === 'th' ? 'ดาวน์โหลด meCraft' : 'Download meCraft'}</a>
           <a href="https://github.com/methastrategy/meCraft/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="footer-link">MIT License</a>
           ${!this.currentSession ? `
             <button type="button" class="footer-link btn-trigger-auth" id="footer-btn-open-auth">${this.t.signInBtn}</button>
@@ -6121,17 +6144,54 @@ console.log(initializeStudio(pdfStudio));`,
     }
 
     try {
-      await this.bridge.launchApp({
+      if (target === 'web') {
+        if (/^[a-z0-9-]+$/.test(appId)) {
+          await this.bridge.openExternal(`https://mecrafts.vercel.app/${appId}/`);
+        }
+        return;
+      }
+      const result = await this.bridge.launchApp({
         appId,
         target,
         filePath,
       });
+      if (!result.success) {
+        if (appId === 'medoc' && target === 'desktop') {
+          this.desktopView = 'studios';
+          await this.loadMeDocLibrary();
+          if (this.meDocStatus?.installed) {
+            this.meDocError = true;
+            this.meDocMessage = this.lang === 'th' ? 'เปิด meDoc ไม่สำเร็จ ลองอีกครั้งจากคลังโปรแกรม' : 'Could not open meDoc. Try again from Library.';
+            this.render();
+            this.attachListeners();
+          }
+        } else {
+          window.alert(this.lang === 'th' ? 'เปิดโปรแกรมไม่สำเร็จ ตรวจสอบว่าติดตั้งโปรแกรมบนเครื่องนี้แล้ว' : 'Could not open the app. Check that it is installed on this PC.');
+        }
+      }
     } catch (err) {
       console.warn(`[meCraft:launch] Error launching ${appId}:`, err);
     }
   }
 
   private attachListeners() {
+    const closeDesktopAuth = async () => {
+      this.desktopOAuthState = null;
+      this.authLoading = false;
+      this.authError = '';
+      await this.enterMainWorkstation();
+      document.getElementById(this.desktopView === 'vault' ? 'ws-btn-vault-signin' : 'ws-btn-auth')?.focus();
+    };
+    const authDialog = document.querySelector<HTMLDialogElement>('#steam-auth-gate');
+    authDialog?.addEventListener('cancel', event => {
+      event.preventDefault();
+      void closeDesktopAuth();
+    });
+    if (authDialog && !authDialog.open && typeof authDialog.showModal === 'function') authDialog.showModal();
+    document.getElementById('ws-auth-back')?.addEventListener('click', () => void closeDesktopAuth());
+    document.querySelectorAll<HTMLButtonElement>('[data-medoc-action]').forEach(button => {
+      button.addEventListener('click', () => void this.manageMeDoc(button.dataset.medocAction ?? 'retry'));
+    });
     // ── User Profile Capsule & Modal Handlers ──
     document.getElementById('user-profile-pill')?.addEventListener('click', () => {
       this.isUserProfileModalOpen = true;
@@ -6615,6 +6675,10 @@ console.log(initializeStudio(pdfStudio));`,
     document.getElementById('btn-close-update-modal')?.addEventListener('click', closeUpdate);
     document.getElementById('btn-update-later')?.addEventListener('click', closeUpdate);
     document.getElementById('modal-update-backdrop')?.addEventListener('click', closeUpdate);
+    document.getElementById('btn-update-now')?.addEventListener('click', event => {
+      event.preventDefault();
+      void this.bridge.openExternal('https://mecrafts.vercel.app/downloads/');
+    });
 
     // Desktop Workstation Sidebar & Views Bindings
     this.bindDesktopWorkstationListeners();
@@ -6660,7 +6724,19 @@ console.log(initializeStudio(pdfStudio));`,
       this.attachListeners();
     });
     document.getElementById('ws-btn-check-update-vault')?.addEventListener('click', () => {
-      this.checkForUpdates(true);
+      void this.checkLauncherUpdate();
+    });
+    document.getElementById('ws-btn-recovery-complete')?.addEventListener('click', async () => {
+      try {
+        await clearLauncherUpdateResult();
+        this.launcherRecoveryPath = '';
+        this.updateLauncherStatus('idle');
+        this.render();
+        this.attachListeners();
+        document.getElementById('ws-btn-check-update-vault')?.focus();
+      } catch (error) {
+        console.warn('[meCraft:updater] Could not clear recovery status:', error);
+      }
     });
 
     // 4. User profile / Auth in sidebar & vault
@@ -6779,22 +6855,21 @@ console.log(initializeStudio(pdfStudio));`,
     });
 
     // 9. Studios Search and Category Filtering
+    const libraryGrid = document.getElementById('ws-library-grid');
+    const categoryButtons = document.querySelectorAll<HTMLButtonElement>('.ws-filter-pill[data-cat-filter]');
     document.getElementById('ws-studios-search-input')?.addEventListener('input', (e) => {
       this.searchQuery = (e.target as HTMLInputElement).value;
-      this.render();
-      this.attachListeners();
-      const input = document.getElementById('ws-studios-search-input') as HTMLInputElement;
-      if (input) {
-        input.focus();
-        input.selectionStart = input.selectionEnd = input.value.length;
-      }
+      if (libraryGrid) libraryGrid.innerHTML = this.renderUpcomingStudios();
     });
 
-    document.querySelectorAll<HTMLElement>('.ws-filter-pill[data-cat-filter]').forEach(btn => {
+    categoryButtons.forEach(btn => {
       btn.addEventListener('click', () => {
-        this.activeFilter = (btn.getAttribute('data-cat-filter') as AppCategory | 'all') || 'all';
-        this.render();
-        this.attachListeners();
+        this.activeFilter = (btn.dataset.catFilter as AppCategory | 'all') || 'all';
+        categoryButtons.forEach(category => {
+          category.classList.toggle('active', category === btn);
+          category.setAttribute('aria-pressed', String(category === btn));
+        });
+        if (libraryGrid) libraryGrid.innerHTML = this.renderUpcomingStudios();
       });
     });
   }
@@ -7504,7 +7579,7 @@ console.log(initializeStudio(pdfStudio));`,
     }
 
     const heroCta1 = document.querySelector('.hero-cta-primary span');
-    if (heroCta1) heroCta1.textContent = this.lang === 'th' ? 'ศูนย์ดาวน์โหลดตัวติดตั้งทั้งหมด (.exe)' : 'Downloads Directory (.exe)';
+    if (heroCta1) heroCta1.textContent = this.lang === 'th' ? 'ดาวน์โหลด meCraft สำหรับ Windows' : 'Download meCraft for Windows';
 
     const heroCta2 = document.querySelector('.hero-cta-secondary span') || document.querySelector('.hero-cta-secondary');
     if (heroCta2) heroCta2.textContent = this.lang === 'th' ? `สำรวจโปรแกรมทั้งหมด (${SHOWCASE_APPS.length} สตูดิโอ) ↓` : `Explore All ${SHOWCASE_APPS.length} Studios ↓`;
@@ -7574,7 +7649,7 @@ console.log(initializeStudio(pdfStudio));`,
 
       const dlBtnSpan = card.querySelector('.spotlight-cta-btn span');
       if (dlBtnSpan) {
-        dlBtnSpan.textContent = this.lang === 'th' ? `ดาวน์โหลด ${app.exeName || (app.name + '.exe')}` : `Download ${app.exeName || (app.name + '.exe')}`;
+        dlBtnSpan.textContent = this.lang === 'th' ? 'รับผ่าน meCraft' : 'Get via meCraft';
       }
 
       const hubBtnSpan = card.querySelector('.quick-launch-chip span');
@@ -7610,7 +7685,7 @@ console.log(initializeStudio(pdfStudio));`,
     if (specsBoxP) specsBoxP.textContent = this.lang === 'th' ? `รวมครบทั้ง ${SHOWCASE_APPS.length} โปรแกรมในตัวติดตั้งเดียว ติดตั้งออฟไลน์ 100% ไร้โฆษณา ไร้การติดตาม` : `All ${SHOWCASE_APPS.length} standalone studios bundled in one lightweight offline installer. Zero ads, zero telemetry.`;
 
     const footerDl = document.getElementById('footer-btn-open-downloads');
-    if (footerDl) footerDl.textContent = this.lang === 'th' ? 'ศูนย์ดาวน์โหลด (.exe)' : 'Downloads Directory';
+    if (footerDl) footerDl.textContent = this.lang === 'th' ? 'ดาวน์โหลด meCraft' : 'Download meCraft';
   }
 
 private updateGrid() {

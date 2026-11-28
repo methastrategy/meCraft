@@ -29,7 +29,7 @@
 - 📝 **meDoc Office Studio (Sarabun & Thai Gov Templates):** [https://mecrafts.vercel.app/medoc/](https://mecrafts.vercel.app/medoc/)
 - 📊 **meSheet Studio (=BAHTTEXT & Formulas):** [https://mecrafts.vercel.app/mesheet/](https://mecrafts.vercel.app/mesheet/)
 - 📽️ **meDeck Studio (Thai Typography Slides):** [https://mecrafts.vercel.app/medeck/](https://mecrafts.vercel.app/medeck/)
-- 💾 **Download 15 Windows Standalone .exe Installers:** [Official Downloads Portal](https://mecrafts.vercel.app/downloads.html) & [GitHub Releases](https://github.com/methastrategy/meCraft/releases)
+- 💾 **meCraft สำหรับ Windows:** [หน้า Downloads](https://mecrafts.vercel.app/downloads/) แสดงปุ่ม `mecraft-hub.msi` เมื่อมีรุ่น MSI ที่เผยแพร่จริง โปรแกรมย่อยที่พร้อมใช้งานจัดการผ่าน Library ใน meCraft
 
 ---
 
@@ -49,9 +49,8 @@
 ---
 
 ## 📚 Documentation Index
-- 🏗️ **[System Architecture](docs/ARCHITECTURE.md)** — Monorepo Seams, Universal ClipBus, 4-Point Homography, and Worker Pipelines
+- 🏗️ **[meCraft Blueprint](docs/meCrafts-architecture.md)** — Architecture, website structure, release plan, and studio register
 - 🎨 **[Design System Specification](docs/DESIGN_SYSTEM.md)** — Neue Klasse Luxury Dark Studio, OKLCH Tokens, Thai-Latin Typography
-- 🗺️ **[Ecosystem Master Roadmap](docs/ROADMAP.md)** — Work Breakdown Structure, Feature Gates, and Upcoming Apps (`meVector`, `meDoc`)
 - 🤝 **[Contributing Guidelines](CONTRIBUTING.md)** — Local Setup, Quality Gates, and Branch Conventions
 - 📝 **[Changelog](CHANGELOG.md)** — Semantic Versioning Release Notes
 - 🔒 **[Security & Privacy Policy](SECURITY.md)** — 100% In-Browser Privacy Guarantee & Vulnerability Disclosure

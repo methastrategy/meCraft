@@ -18,7 +18,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-ROOT_DIR = r'd:\METHA\Projects\meCraft-Project'
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+WEBSITE_DIR = os.path.join(os.path.dirname(ROOT_DIR), 'mecrafts-website')
 MONOGRAM_PATH = os.path.join(ROOT_DIR, 'public', 'branding', 'mecraft-suite.png')
 CYBER_SANCTUARY_PATH = r'D:\Users\hotme\Downloads\Cyber_sanctuary_with_floating_pa…_d7af2773_2K.jpg'
 
@@ -243,7 +244,7 @@ def generate_social_preview():
         os.path.join(ROOT_DIR, 'apps', 'medrop', 'public', 'assets', 'branding'),
         os.path.join(ROOT_DIR, 'apps', 'mepdf', 'public', 'assets', 'branding'),
         os.path.join(ROOT_DIR, 'apps', 'mephoto', 'public', 'assets', 'branding'),
-        os.path.join(ROOT_DIR, 'meCrafts-website', 'assets', 'branding'),
+        os.path.join(WEBSITE_DIR, 'assets', 'branding'),
     ]
     for d in core_banner_dirs:
         banner_dirs.add(d)

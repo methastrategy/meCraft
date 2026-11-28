@@ -22,6 +22,7 @@
     { "source": "/mematerial", "destination": "/mematerial/", "permanent": true },
     { "source": "/meani", "destination": "/meani/", "permanent": true },
     { "source": "/merea", "destination": "/merea/", "permanent": true },
+    { "source": "/downloads/meCraft-Setup.exe", "destination": "/downloads/", "permanent": false },
     { "source": "/downloads", "destination": "/downloads/", "permanent": false }
   ],
   "rewrites": [
@@ -30,11 +31,25 @@
   ],
   "headers": [
     {
+      "source": "/catalog/v1.json",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=300" }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/desktop-auth(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" },
+        { "key": "Referrer-Policy", "value": "no-referrer" }
       ]
     }
   ]
