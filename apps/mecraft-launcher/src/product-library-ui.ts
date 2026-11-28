@@ -165,15 +165,22 @@ export function renderCatalogProductCard(
 ): string {
   const th = opts.lang === 'th';
   const platforms = Array.from(new Set(product.channels.map(c => c.platform)));
-  const webChannel = product.channels.find(c => c.type === 'web-app');
   const winChannel = product.channels.find(c => c.platform === 'windows');
   const installed = opts.localStatus?.installed === true;
+  const isCoreApp = product.id === 'medoc' || product.id === 'mecraft';
+  const isReady = product.status === 'active';
+  const shouldBlur = !isReady;
   const imgSrc = product.image || '/branding/mecraft-suite-wide.webp';
 
   return `
-    <article class="shared-product-card status-${product.status}" data-product-id="${esc(product.id)}" style="--app-accent: ${esc(product.accentColor)}">
+    <article class="shared-product-card status-${product.status} ${shouldBlur ? 'is-blurred-card' : ''}" data-product-id="${esc(product.id)}" style="--app-accent: ${esc(product.accentColor)}">
       <div class="shared-card-media">
-        <img src="${esc(imgSrc)}" alt="" loading="lazy" onerror="this.style.display='none'" />
+        <img src="${esc(imgSrc)}" alt="${esc(product.name)}" loading="lazy" onerror="this.style.display='none'" class="${shouldBlur ? 'is-blurred' : ''}" />
+        ${shouldBlur ? `
+          <div class="shared-blur-lock-overlay" aria-hidden="true">
+            <span>🔒 ${th ? (product.status === 'in-dev' ? 'กำลังพัฒนา' : 'เร็วๆ นี้') : (product.status === 'in-dev' ? 'In Development' : 'Coming Soon')}</span>
+          </div>
+        ` : ''}
         <span class="shared-status-badge is-${product.status}">${esc(statusLabel(product.status, opts.lang))}</span>
       </div>
       <div class="shared-card-body">
@@ -187,7 +194,7 @@ export function renderCatalogProductCard(
           ${platforms.length > 0
             ? platforms.map(p => `<span class="shared-platform-chip">${esc(platformLabel(p, opts.lang))}</span>`).join('')
             : `<span class="shared-platform-chip is-muted">${th ? 'ยังไม่มีช่องทางเผยแพร่' : 'No release channels yet'}</span>`}
-          ${webChannel ? `<span class="shared-pwa-chip">${th ? 'เพิ่มไปยังหน้าจอโฮม' : 'Add to Home Screen'}</span>` : ''}
+          ${product.channels.some(c => c.type === 'web-app') ? `<span class="shared-pwa-chip">${th ? 'เพิ่มไปยังหน้าจอโฮม' : 'Add to Home Screen'}</span>` : ''}
         </div>
         ${opts.isDesktop && opts.localStatus ? `
           <div class="shared-local-status ${installed ? 'is-installed' : ''}">
@@ -197,8 +204,12 @@ export function renderCatalogProductCard(
           </div>
         ` : ''}
       </div>
-      <div class="shared-card-actions">
-        ${opts.isDesktop ? `
+      <div class="shared-card-actions ${!isCoreApp ? 'is-showcase-only' : ''}">
+        ${!isCoreApp ? `
+          <span class="shared-showcase-pill">
+            ${shouldBlur ? (th ? '🔒 กำลังพัฒนา' : '🔒 In Development') : (th ? '📷 ภาพตัวอย่างโปรแกรม' : '📷 Studio Preview')}
+          </span>
+        ` : opts.isDesktop ? `
           <button type="button" class="shared-btn-secondary" data-open-product-detail="${esc(product.id)}">
             ${th ? 'รายละเอียด' : 'Details'}
           </button>
@@ -210,20 +221,12 @@ export function renderCatalogProductCard(
             <button type="button" class="shared-btn-primary" data-medoc-action="install">
               ${th ? 'ติดตั้ง' : 'Install'}
             </button>
-          ` : webChannel ? `
-            <button type="button" class="shared-btn-primary" data-open-web-url="${esc(webChannel.url)}">
-              ${th ? 'เปิดเว็บแอป' : 'Open Web App'}
-            </button>
           ` : ''}
         ` : `
           <a href="/apps/${esc(product.id)}/" class="shared-btn-secondary" data-product-link="${esc(product.id)}">
             ${th ? 'ดูรายละเอียด' : 'Details'}
           </a>
-          ${webChannel ? `
-            <a href="/${esc(product.id === 'mecraft' ? '' : `${product.id}/`)}" class="shared-btn-primary">
-              ${th ? 'เปิดเว็บแอป' : 'Open Web App'}
-            </a>
-          ` : winChannel && product.status !== 'in-dev' ? `
+          ${winChannel && product.status !== 'in-dev' ? `
             <a href="${esc(product.id === 'mecraft' ? '/downloads/' : winChannel.url)}" class="shared-btn-primary">
               ${th ? 'ดาวน์โหลด' : 'Download'}
             </a>
@@ -286,9 +289,8 @@ export function renderProductDetailView(
         <div class="detail-channel-actions">
           ${isWeb ? `
             ${opts.isDesktop ? `
-              <button type="button" class="shared-btn-primary" data-open-web-url="${esc(ch.url)}">${th ? 'เปิดเว็บแอป' : 'Open Web App'}</button>
+              <span class="shared-pwa-chip">${th ? 'เว็บแอป' : 'Web App'}</span>
             ` : `
-              <a href="${esc(ch.url)}" class="shared-btn-primary">${th ? 'เปิดเว็บแอป' : 'Open Web App'}</a>
               <button type="button" class="shared-btn-secondary" data-open-homescreen-guide="true">${th ? 'เพิ่มไปยังหน้าจอโฮม' : 'Add to Home Screen'}</button>
             `}
           ` : opts.isDesktop && product.id === 'medoc' && ch.launcherManaged ? `
@@ -336,7 +338,12 @@ export function renderProductDetailView(
 
       <div class="shared-detail-hero">
         <div class="shared-detail-art">
-          <img src="${esc(imgSrc)}" alt="${esc(product.name)}" onerror="this.style.display='none'" />
+          <img src="${esc(imgSrc)}" alt="${esc(product.name)}" onerror="this.style.display='none'" class="${product.status !== 'active' ? 'is-blurred' : ''}" />
+          ${product.status !== 'active' ? `
+            <div class="shared-blur-lock-overlay" aria-hidden="true">
+              <span>🔒 ${th ? (product.status === 'in-dev' ? 'กำลังพัฒนา' : 'เร็วๆ นี้') : (product.status === 'in-dev' ? 'In Development' : 'Coming Soon')}</span>
+            </div>
+          ` : ''}
         </div>
         <div class="shared-detail-summary">
           <div class="shared-card-meta">

@@ -8827,6 +8827,33 @@ code, pre, kbd, samp, .font-mono, [class*="version"], [class*="hash"], [class*="
   display: block;
 }
 
+.shared-card-media img.is-blurred,
+.shared-detail-art img.is-blurred,
+.ws-library-art img.is-blurred {
+  filter: blur(8px) brightness(0.65);
+  transform: scale(1.08);
+  transition: filter 0.25s ease, transform 0.25s ease;
+}
+
+.shared-blur-lock-overlay,
+.ws-blur-lock-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 2;
+  pointer-events: none;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+}
+
 .shared-status-badge {
   position: absolute;
   top: 10px;
@@ -8927,6 +8954,28 @@ code, pre, kbd, samp, .font-mono, [class*="version"], [class*="hash"], [class*="
   gap: 8px;
   padding: 10px 16px 14px;
   flex-wrap: wrap;
+}
+
+.shared-card-actions.is-showcase-only {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 16px 12px;
+}
+
+.shared-showcase-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--desktop-muted, #94a3b8);
+  letter-spacing: 0.02em;
 }
 
 .shared-btn-primary,

@@ -3333,19 +3333,27 @@ console.log(initializeStudio(pdfStudio));`,
     }
     const bannerApps = new Set(['mepdf', 'mephoto', 'medrop', 'mevector', 'me3d', 'mefilm', 'melight', 'memotion', 'medesign', 'meaudio']);
     return `
-        ${apps.map(app => `
+        ${apps.map(app => {
+          const isIndev = app.status !== 'active';
+          return `
           <article class="ws-library-card" style="--app-accent: ${app.accentColor}">
-            <div class="ws-library-art" aria-hidden="true">
+            <div class="ws-library-art" aria-hidden="true" style="overflow: hidden; position: relative;">
               ${bannerApps.has(app.id)
-                ? `<img src="./branding/${app.id}-wide.webp" alt="" loading="lazy" />`
+                ? `<img src="./branding/${app.id}-wide.webp" alt="" loading="lazy" class="${isIndev ? 'is-blurred' : ''}" />`
                 : getAppIcon(app.icon, app.accentColor)}
+              ${isIndev ? `
+                <div class="ws-blur-lock-overlay" aria-hidden="true">
+                  <span>🔒 ${this.lang === 'th' ? 'กำลังพัฒนา' : 'In Development'}</span>
+                </div>
+              ` : ''}
             </div>
             <div class="ws-library-card-copy">
               <span class="ws-library-category">${app.categoryLabel[this.lang]}</span>
               <h3>${app.name}</h3>
               <p>${app.tagline[this.lang]}</p>
             </div>
-          </article>`).join('')}`;
+          </article>`;
+        }).join('')}`;
   }
 
   private renderMeDocLibraryCard(): string {
@@ -5663,7 +5671,7 @@ console.log(initializeStudio(pdfStudio));`,
           <div class="showcase-header-left">
             <div class="section-eyebrow" aria-hidden="true">${this.catalogProducts.length} SHARED PRODUCTS · WEB &amp; WINDOWS</div>
             <h2 class="section-title" id="apps-title">${this.lang === 'th' ? 'คลังผลิตภัณฑ์ meCrafts &amp; meCraft' : 'meCrafts &amp; meCraft Shared Product Library'}</h2>
-            <p class="section-subtitle">${this.lang === 'th' ? 'ค้นหา กรองตามหมวด แพลตฟอร์ม และสถานะ เปิดเว็บแอป แชร์ลิงก์ /apps/<id>/ หรือดาวน์โหลดรุ่น Windows ได้โดยไม่ต้องล็อกอิน' : 'Search and filter by category, platform, and status. Open web apps, share /apps/<id>/ links, or download for Windows without signing in.'}</p>
+            <p class="section-subtitle">${this.lang === 'th' ? 'ค้นหา กรองตามหมวด แพลตฟอร์ม และสถานะ สำรวจโปรแกรม แชร์ลิงก์ /apps/<id>/ หรือดาวน์โหลดรุ่น Windows ได้โดยไม่ต้องล็อกอิน' : 'Search and filter by category, platform, and status. Explore studios, share /apps/<id>/ links, or download for Windows without signing in.'}</p>
           </div>
           <div class="showcase-header-pill" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
             <button type="button" class="shared-btn-secondary" data-open-homescreen-guide="true">
