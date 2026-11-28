@@ -19,4 +19,4 @@ meCraft Launcher is the central desktop command center and web portal for the en
 - **Framework:** TypeScript, Vite, Web Components
 - **Native Desktop Shell:** Tauri v2 (Rust `std::process::Command` detached spawner)
 - **Shared Packages:** `@mecraft/core-bridge`, `@mecraft/studio-shell`, `@mecraft/ui-tokens`
-- **Windows installer:** `mecraft-hub.msi` เป็นชื่อไฟล์แจก meCraft ชื่อเดียว; Tauri สร้างไฟล์ MSI ภายในชื่อ `meCraft_<version>_x64_en-US.msi` ก่อนตรวจลายเซ็นและคัดลอกเป็นชื่อสำหรับเผยแพร่
+- **Windows executable:** `mecraft.exe` เป็นชื่อไฟล์แจก meCraft ชื่อเดียวสำหรับ Windows 10/11 64-bit โดยตรง ไม่ต้องมีหลายไฟล์หรือแยกระหว่าง MSI/EXE ให้สับสน

@@ -8,8 +8,8 @@ if (!script) throw new Error('Download page script is missing');
 
 async function load(releases: unknown) {
   const elements = new Map<string, Record<string, any>>();
-  for (const id of ['release-status', 'download-msi', 'release-meta']) {
-    elements.set(id, { hidden: id === 'download-msi', dataset: {}, textContent: '' });
+  for (const id of ['release-status', 'download-exe', 'release-meta']) {
+    elements.set(id, { hidden: id === 'download-exe', dataset: {}, textContent: '' });
   }
   runInNewContext(script, {
     document: { getElementById: (id: string) => elements.get(id) },
@@ -24,18 +24,18 @@ async function load(releases: unknown) {
 }
 
 describe('public meCraft download page', () => {
-  it('shows no download button while the public release only has EXE files', async () => {
-    const elements = await load([{ draft: false, prerelease: false, assets: [{ name: 'meCraft-Setup.exe' }] }]);
-    expect(elements.get('download-msi')?.hidden).toBe(true);
+  it('shows no download button while the public release does not have mecraft.exe', async () => {
+    const elements = await load([{ draft: false, prerelease: false, assets: [{ name: 'other-file.zip' }] }]);
+    expect(elements.get('download-exe')?.hidden).toBe(true);
     expect(elements.get('release-status')?.textContent).toContain('ยังไม่พร้อม');
   });
 
-  it('shows only a verified GitHub MSI release address', async () => {
-    const url = 'https://github.com/methastrategy/meCraft/releases/download/v1.0.10/mecraft-hub.msi';
-    const elements = await load([{ tag_name: 'v1.0.10', draft: false, prerelease: false,
-      assets: [{ name: 'mecraft-hub.msi', browser_download_url: url, size: 96907264 }] }]);
-    expect(elements.get('download-msi')?.hidden).toBe(false);
-    expect(elements.get('download-msi')?.href).toBe(url);
-    expect(elements.get('release-status')?.textContent).toContain('v1.0.10');
+  it('shows only a verified GitHub mecraft.exe release address', async () => {
+    const url = 'https://github.com/methastrategy/meCraft/releases/download/v1.0.12/mecraft.exe';
+    const elements = await load([{ tag_name: 'v1.0.12', draft: false, prerelease: false,
+      assets: [{ name: 'mecraft.exe', browser_download_url: url, size: 107545600 }] }]);
+    expect(elements.get('download-exe')?.hidden).toBe(false);
+    expect(elements.get('download-exe')?.href).toBe(url);
+    expect(elements.get('release-status')?.textContent).toContain('v1.0.12');
   });
 });

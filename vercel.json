@@ -23,6 +23,7 @@
     { "source": "/meani", "destination": "/meani/", "permanent": true },
     { "source": "/merea", "destination": "/merea/", "permanent": true },
     { "source": "/downloads/meCraft-Setup.exe", "destination": "/downloads/", "permanent": false },
+    { "source": "/downloads/mecraft-hub.msi", "destination": "/downloads/", "permanent": false },
     { "source": "/downloads", "destination": "/downloads/", "permanent": false }
   ],
   "rewrites": [

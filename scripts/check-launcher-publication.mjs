@@ -44,8 +44,9 @@ export async function checkPublication(manifestBytes, signatureBytes, fetcher = 
   if (!artifact || !Number.isSafeInteger(artifact.size) || artifact.size < 1 || artifact.size > maximumInstallerSize || !/^[a-f0-9]{64}$/i.test(artifact.sha256)) {
     throw new Error('Invalid installer metadata');
   }
-  if (new URL(artifact.url).pathname.split('/').at(-1)?.toLowerCase() !== 'mecraft-hub.msi') {
-    throw new Error('Launcher release must use mecraft-hub.msi');
+  const artifactName = new URL(artifact.url).pathname.split('/').at(-1)?.toLowerCase();
+  if (artifactName !== 'mecraft.exe' && artifactName !== 'mecraft-hub.msi') {
+    throw new Error('Launcher release must use mecraft.exe');
   }
   for (const [url, expected] of [[endpoint, manifestBytes], [`${endpoint}.sig`, signatureBytes]]) {
     const actual = await download(url, 64 * 1024, fetcher);

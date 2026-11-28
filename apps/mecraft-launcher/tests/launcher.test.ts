@@ -872,7 +872,7 @@ describe('meCraft Launcher Core & Catalog Engine', () => {
       expect(doc.getElementById('steam-dialog-window') || doc.querySelector('.steam-dialog-window')).toBeNull();
     });
 
-    it('checks for an available MSI without starting the native installer', async () => {
+    it('checks for an available update without starting the native installer', async () => {
       const { doc } = setupMockDom();
       doc.body.innerHTML = '<div id="app"></div>';
       const portal = new MeCraftsPortal();

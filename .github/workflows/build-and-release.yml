@@ -180,7 +180,7 @@ jobs:
         run: |
           if ("${{ matrix.app_id }}" -eq 'mecraft-launcher' -and '${{ github.ref_type }}' -eq 'tag') {
             $version = (Get-Content 'apps/mecraft-launcher/package.json' -Raw | ConvertFrom-Json).version
-            $url = "https://github.com/$env:GITHUB_REPOSITORY/releases/download/$env:GITHUB_REF_NAME/mecraft-hub.msi"
+            $url = "https://github.com/$env:GITHUB_REPOSITORY/releases/download/$env:GITHUB_REF_NAME/mecraft.exe"
             & ./scripts/build-signed-launcher.ps1 -InstallerUrl $url -ManifestOutput (Join-Path $env:RUNNER_TEMP 'stable.json') -Channel stable
             if ($LASTEXITCODE -ne 0) { throw 'Signed Launcher build failed.' }
           } else {
@@ -197,11 +197,17 @@ jobs:
           New-Item -ItemType Directory -Force -Path $outDir
 
           if ("${{ matrix.app_id }}" -eq "mecraft-launcher") {
-            # Public meCraft download has one stable MSI asset name.
+            # Public meCraft download has one stable EXE asset name.
             $version = (Get-Content 'apps/mecraft-launcher/package.json' -Raw | ConvertFrom-Json).version
-            $msi = "apps/mecraft-launcher/src-tauri/target/release/bundle/msi/meCraft_$($version)_x64_en-US.msi"
-            if (-not (Test-Path -LiteralPath $msi)) { throw 'Launcher MSI artifact is missing.' }
-            Copy-Item -LiteralPath $msi -Destination "$outDir/mecraft-hub.msi" -Force
+            $builtExe = "apps/mecraft-launcher/src-tauri/target/release/mecraft-launcher.exe"
+            $nsisExe = "apps/mecraft-launcher/src-tauri/target/release/bundle/nsis/meCraft_$($version)_x64-setup.exe"
+            if (Test-Path -LiteralPath $nsisExe) {
+              Copy-Item -LiteralPath $nsisExe -Destination "$outDir/mecraft.exe" -Force
+            } elseif (Test-Path -LiteralPath $builtExe) {
+              Copy-Item -LiteralPath $builtExe -Destination "$outDir/mecraft.exe" -Force
+            } else {
+              throw 'Launcher EXE artifact is missing.'
+            }
           } else {
             # Ecosystem Sub-Apps (mePDF, mePhoto) - Distributed for in-app 1-click install via meCraft Hub
             $exe = "${{ matrix.dir }}/src-tauri/target/release/${{ matrix.exe_name }}.exe"
@@ -220,7 +226,7 @@ jobs:
           if ($env:EXPECTED_THUMBPRINT -notmatch '^[0-9A-Fa-f]{40}$') {
             throw 'Configure the expected Windows publisher before releasing Launcher.'
           }
-          $installer = 'dist-artifacts/mecraft-launcher/mecraft-hub.msi'
+          $installer = 'dist-artifacts/mecraft-launcher/mecraft.exe'
           $signature = Get-AuthenticodeSignature -LiteralPath $installer
           if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Thumbprint -ne $env:EXPECTED_THUMBPRINT) {
             throw 'Launcher installer must be signed by the configured publisher.'

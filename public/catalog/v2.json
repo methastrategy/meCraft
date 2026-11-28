@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-28T14:55:30.649Z",
+  "generatedAt": "2026-11-28T15:05:51.777Z",
   "products": [
     {
       "id": "mecraft",
@@ -35,13 +35,13 @@
       ],
       "specs": {
         "en": [
-          "Single mecraft-setup.exe Windows 10/11 64-bit Executable",
+          "Single mecraft.exe Windows 10/11 64-bit Executable",
           "SHA-256 & Size Verification for Managed Packages",
           "Offline-Capable Local Library & Launch",
           "Shared Catalog v2 Across Web & Windows"
         ],
         "th": [
-          "ตัวโปรแกรม Windows 10/11 64-bit ไฟล์เดียว mecraft-setup.exe",
+          "ตัวโปรแกรม Windows 10/11 64-bit ไฟล์เดียว mecraft.exe",
           "ตรวจขนาดไฟล์และ SHA-256 ก่อนติดตั้งแอปในเครื่อง",
           "เปิดแอปที่ติดตั้งไว้ได้แม้ไม่มีอินเทอร์เน็ต",
           "ใช้แค็ตตาล็อกกลาง v2 ร่วมกันระหว่างเว็บและ Windows"
@@ -58,7 +58,7 @@
           "version": "1.0.12",
           "releaseTag": "1.0.12",
           "arch": "x64",
-          "url": "https://github.com/methastrategy/meCraft/releases/download/1.0.12/mecraft-setup.exe",
+          "url": "https://github.com/methastrategy/meCraft/releases/download/1.0.12/mecraft.exe",
           "sizeBytes": 107545600,
           "sha256": "9d036c4e99f5b69cab401191a2088e0c39dd59b75d12a2c4de8d196b3ae78fe9",
           "launcherManaged": false

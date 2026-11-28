@@ -37,7 +37,7 @@ describe('published Launcher artifact verification', () => {
       size: installer.length,
       sha256: createHash('sha256').update(installer).digest('hex'),
     } } }));
-    await expect(checkPublication(old, signature, server())).rejects.toThrow('mecraft-hub.msi');
+    await expect(checkPublication(old, signature, server())).rejects.toThrow('mecraft.exe');
   });
 
   it('allows a GitHub release redirect to its approved asset host', async () => {

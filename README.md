@@ -29,7 +29,7 @@
 - 📝 **meDoc Office Studio (Sarabun & Thai Gov Templates):** [https://mecrafts.vercel.app/medoc/](https://mecrafts.vercel.app/medoc/)
 - 📊 **meSheet Studio (=BAHTTEXT & Formulas):** [https://mecrafts.vercel.app/mesheet/](https://mecrafts.vercel.app/mesheet/)
 - 📽️ **meDeck Studio (Thai Typography Slides):** [https://mecrafts.vercel.app/medeck/](https://mecrafts.vercel.app/medeck/)
-- 💾 **meCraft สำหรับ Windows:** [หน้า Downloads](https://mecrafts.vercel.app/downloads/) แสดงปุ่ม `mecraft-hub.msi` เมื่อมีรุ่น MSI ที่เผยแพร่จริง โปรแกรมย่อยที่พร้อมใช้งานจัดการผ่าน Library ใน meCraft
+- 💾 **meCraft สำหรับ Windows:** [หน้า Downloads](https://mecrafts.vercel.app/downloads/) แสดงปุ่ม `mecraft.exe` สำหรับตัวโปรแกรม Windows ไฟล์เดียว เมื่อมีรุ่นที่เผยแพร่จริง โปรแกรมย่อยที่พร้อมใช้งานจัดการผ่าน Library ใน meCraft
 
 ---
 

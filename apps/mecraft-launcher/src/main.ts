@@ -264,9 +264,9 @@ export const RELEASE_BINARIES: ReleaseBinaryItem[] = [
     id: 'mecraft-suite',
     name: 'meCraft Installer',
     category: { en: 'All-in-One Creative & Document Suite', th: 'ชุดโปรแกรมสร้างสรรค์และจัดการเอกสารครบวงจร' },
-    version: 'MSI',
+    version: 'EXE',
     releaseDate: { en: 'Check the download page', th: 'ตรวจสอบบนหน้าดาวน์โหลด' },
-    fileName: 'mecraft-hub.msi',
+    fileName: 'mecraft.exe',
     fileSize: 'ตรวจสอบรุ่นบนหน้าดาวน์โหลด',
     downloadUrl: SUITE_DOWNLOAD_URL,
     isSuite: true,
@@ -6086,8 +6086,8 @@ console.log(initializeStudio(pdfStudio));`,
               </h2>
               <p class="downloads-modal-subtitle">
                 ${this.lang === 'th'
-                  ? 'ใช้ตัวติดตั้ง mecraft-hub.msi ไฟล์เดียว แล้วจัดการแอปที่พร้อมใช้งานใน Library'
-                  : 'One mecraft-hub.msi installer for Windows 10/11. Manage available apps from the Library.'}
+                  ? 'ใช้ตัวโปรแกรม mecraft.exe ไฟล์เดียว แล้วจัดการแอปที่พร้อมใช้งานใน Library'
+                  : 'One mecraft.exe executable for Windows 10/11. Manage available apps from the Library.'}
               </p>
             </div>
           </div>
@@ -6095,7 +6095,7 @@ console.log(initializeStudio(pdfStudio));`,
         </div>
 
         <div class="downloads-toolbar">
-          <span>${this.lang === 'th' ? 'ตัวติดตั้ง Windows: MSI' : 'Windows installer: MSI'}</span>
+          <span>${this.lang === 'th' ? 'โปรแกรม Windows: mecraft.exe' : 'Windows executable: mecraft.exe'}</span>
           <div class="downloads-meta-badge">
             <span class="dl-pulse-dot" aria-hidden="true"></span>
             <span>${this.lang === 'th' ? 'ตรวจสอบรุ่นล่าสุดบนหน้าดาวน์โหลด' : 'Check the download page for availability'}</span>

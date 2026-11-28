@@ -119,7 +119,7 @@ export async function checkSoftwareUpdate(options: CheckUpdateOptions = {}): Pro
       if (cachedStr) {
         const cached: SoftwareUpdateInfo = JSON.parse(cachedStr);
         if (Date.now() - cached.checkedAt < CACHE_TTL_MS) {
-          if (appId === 'mecraft-suite' && cached.suiteAsset?.name.toLowerCase() !== 'mecraft-hub.msi') {
+          if (appId === 'mecraft-suite' && cached.suiteAsset?.name.toLowerCase() !== 'mecraft.exe') {
             cached.suiteAsset = undefined;
           }
           cached.hasUpdate = compareSemver(cached.latestVersion, currentVersion) > 0 &&
@@ -169,7 +169,7 @@ export async function checkSoftwareUpdate(options: CheckUpdateOptions = {}): Pro
       : [];
 
     // Find Suite Master Installer
-    const suiteAsset = allAssets.find(a => a.name.toLowerCase() === 'mecraft-hub.msi');
+    const suiteAsset = allAssets.find(a => a.name.toLowerCase() === 'mecraft.exe');
 
     // Find Target Sub-App Asset
     let appAsset: ReleaseAsset | undefined;

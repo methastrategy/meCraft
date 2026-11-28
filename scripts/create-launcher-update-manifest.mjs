@@ -25,8 +25,8 @@ const url = new URL(downloadUrl);
 if (url.protocol !== 'https:' || url.username || url.password || !['github.com', 'mecrafts.vercel.app'].includes(url.hostname)) {
   throw new Error('Installer URL must use an approved HTTPS host');
 }
-if (basename(url.pathname).toLowerCase() !== 'mecraft-hub.msi') {
-  throw new Error('Public Launcher update URL must use mecraft-hub.msi');
+if (!['mecraft.exe', 'mecraft-hub.msi'].includes(basename(url.pathname).toLowerCase())) {
+  throw new Error('Public Launcher update URL must use mecraft.exe');
 }
 const publisher = process.env.MECRAFT_SIGNING_THUMBPRINT?.toUpperCase();
 if (!publisher || !/^[0-9A-F]{40}$/.test(publisher)) {
